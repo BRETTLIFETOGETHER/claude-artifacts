@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>patch_finder.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Building a 100 master themes content system</div>
+<h1>patch_finder.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">18 KB</span>
+<a class="btn" href="../../artifacts/Building%20a%20100%20master%20themes%20content%20system/patch_finder.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Rewrite finder.html quiz: 6 questions, 30-Day, real dataset scoring, working previews, customize tab</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">p</span><span class="o">=</span><span class="s1">'/home/claude/site/out/finder.html'</span>
+<span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">NEW</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""&lt;script src="data.js"&gt;&lt;/script&gt;</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">const HUE={1:['var(--c1a)','var(--c1b)'],2:['var(--c2a)','var(--c2b)'],3:['var(--c3a)','var(--c3b)'],4:['var(--c4a)','var(--c4b)'],</span>
+<span class="s2">5:['var(--c5a)','var(--c5b)'],6:['var(--c6a)','var(--c6b)'],7:['var(--c7a)','var(--c7b)'],8:['var(--c8a)','var(--c8b)'],9:['var(--c9a)','var(--c9b)'],10:['var(--c10a)','var(--c10b)']};</span>
+<span class="s2">const CHNAME=window.CATS;</span>
+<span class="s2">const SEAS={new:'New Year',lent:'Lent &amp; Easter',fall:'Fall kickoff',advent:'Advent &amp; Christmas',yearend:'year-end giving',any:'any season'};</span>
+<span class="s2">const OUTL={groups:'launch and strengthen groups',generosity:'grow generosity',emotional:'bring peace &amp; emotional health',discipleship:'deepen discipleship',outreach:'mobilize outreach'};</span>
+<span class="s2">// row: [title,sub,cat,fmt,seasons[],outcomes[],pop,new,flag,id,theme,audience,event,scripture]</span>
+<span class="s2">const DATA=window.CAMPAIGNS;</span>
+
+<span class="s2">/* ---- questions (6) ---- */</span>
+<span class="s2">const Q=[</span>
+<span class="s2"> {key:'outcome',h:'What do you most want to happen?',sub:'Pick the change you\u2019re hoping for in your church.',opts:[</span>
+<span class="s2">   ['groups','Launch or strengthen groups','Get people into real community','var(--c5a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.9'],</span>
+<span class="s2">   ['generosity','Grow generosity','Open hands, kingdom giving','var(--c6a)','M12 17v5M9 10.8V5a3 3 0 0 1 6 0v5.8a4 4 0 1 1-6 0z'],</span>
+<span class="s2">   ['emotional','Bring peace &amp; healing','Care for anxious, weary hearts','var(--c3a)','M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.6a5.5 5.5 0 0 0 0-7.8z'],</span>
+<span class="s2">   ['discipleship','Deepen discipleship','A closer walk with Christ','var(--c1a)','M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2z'],</span>
+<span class="s2">   ['outreach','Mobilize outreach','Reach the community','var(--c8a)','M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20'],</span>
+<span class="s2"> ]},</span>
+<span class="s2"> {key:'audience',h:'Who is this campaign mainly for?',sub:'We\u2019ll surface the right editions too.',opts:[</span>
+<span class="s2">   ['church','The whole church','One movement, everyone together','var(--c9a)','M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5'],</span>
+<span class="s2">   ['families','Families &amp; the home','Parents, kids, next-gen faith','var(--c4a)','M9 21v-6h6v6M3 10l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],</span>
+<span class="s2">   ['leaders','Leaders &amp; staff','Develop your team','var(--c7a)','M3 3v18h18M7 14l4-4 3 3 5-6'],</span>
+<span class="s2">   ['groups','A small-group season','Curriculum for groups','var(--c5a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'],</span>
+<span class="s2"> ]},</span>
+<span class="s2"> {key:'feel',h:'Where is your church right now?',sub:'This helps us match the tone.',opts:[</span>
+<span class="s2">   ['vision','Ready for fresh vision','Energy, momentum, a next step','var(--c9a)','M12 2l2.4 5 5.6.8-4 3.9 1 5.5L12 15.8 6 18.2l1-5.5-4-3.9 5.6-.8z'],</span>
+<span class="s2">   ['hard','Walking through something hard','Grief, anxiety, weariness','var(--c3a)','M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.6a5.5 5.5 0 0 0 0-7.8z'],</span>
+<span class="s2">   ['deeper','Hungry to go deeper','Ready to grow in the Word','var(--c1a)','M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2z'],</span>
+<span class="s2">   ['reach','Wanting to reach out','Turn outward to the community','var(--c8a)','M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20'],</span>
+<span class="s2">   ['belong','Craving connection','Build belonging &amp; community','var(--c5a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8'],</span>
+<span class="s2"> ]},</span>
+<span class="s2"> {key:'season',h:'When are you planning to launch?',sub:'Campaigns can auto-surface for the season.',opts:[</span>
+<span class="s2">   ['new','New Year','January reset &amp; prayer','var(--c3a)','M12 2v4M12 18v4M2 12h4M18 12h4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z'],</span>
+<span class="s2">   ['lent','Lent &amp; Easter','The road to resurrection','var(--c2a)','M12 2v20M6 8h12'],</span>
+<span class="s2">   ['fall','Fall kickoff','Launch the ministry year','var(--c5a)','M12 2C8 6 6 9 6 13a6 6 0 0 0 12 0c0-4-2-7-6-11z'],</span>
+<span class="s2">   ['yearend','Year-end giving','Generosity season','var(--c6a)','M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7S9 2 6.5 3.5 8 7 12 7zM12 7s3-5 5.5-3.5S16 7 12 7z'],</span>
+<span class="s2">   ['advent','Advent &amp; Christmas','Waiting on the King','var(--c7a)','M12 2l2.4 5 5.6.8-4 3.9 1 5.5L12 15.8 6 18.2l1-5.5-4-3.9 5.6-.8z'],</span>
+<span class="s2">   ['any','No particular season','Evergreen, launch anytime','var(--c1a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],</span>
+<span class="s2"> ]},</span>
+<span class="s2"> {key:'format',h:'How long can your church commit?',sub:'Every campaign comes in multiple lengths.',opts:[</span>
+<span class="s2">   ['7-Day','7 days','A short, high-energy week','var(--c8a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],</span>
+<span class="s2">   ['21-Day','21 days','Enough to form a habit','var(--c5a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],</span>
+<span class="s2">   ['30-Day','30 days','A clean calendar month','var(--c2a)','M8 2v4M16 2v4M3 9h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z'],</span>
+<span class="s2">   ['40-Day','40 days','A full churchwide movement','var(--c6a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],</span>
+<span class="s2">   ['6-Week','A 6-week group series','Leader-led small groups','var(--c7a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'],</span>
+<span class="s2">   ['any','Not sure yet','Show me the best fit','var(--c9a)','M9.1 9a3 3 0 1 1 5.8 1c0 2-3 3-3 3M12 17h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],</span>
+<span class="s2"> ]},</span>
+<span class="s2"> {key:'size',h:'How large is your church?',sub:'Average weekend attendance — this shapes your launch plan (and your pricing tier).',opts:[</span>
+<span class="s2">   ['u100','Under 100','One service, one family feel','var(--c1a)','M3 21h18M5 21V8l7-5 7 5v13'],</span>
+<span class="s2">   ['100','100 – 250','Groups &amp; volunteer teams forming','var(--c5a)','M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5'],</span>
+<span class="s2">   ['250','251 – 500','Multi-service, staff-led ministries','var(--c6a)','M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5M9 12h6'],</span>
+<span class="s2">   ['500','501 – 1,000','Large single-site momentum','var(--c7a)','M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5M9 12h6M9 9h6'],</span>
+<span class="s2">   ['1000','Over 1,000 / multisite','Campuses &amp; network scale','var(--c9a)','M2 21h20M4 21V10l6-4v15M14 21V6l6 4v11M8 13h.01M8 17h.01M18 13h.01M18 17h.01'],</span>
+<span class="s2"> ]},</span>
+<span class="s2">];</span>
+<span class="s2">const FEEL2CH={vision:[1],hard:[2,9],deeper:[7],reach:[10],belong:[8]};</span>
+<span class="s2">const FEEL2OUT={vision:'discipleship',hard:'emotional',deeper:'discipleship',reach:'outreach',belong:'groups'};</span>
+<span class="s2">const AUD2CH={church:[],families:[3,4],leaders:[7],groups:[8]};</span>
+<span class="s2">const SIZEL={u100:'under 100',100:'100–250',250:'251–500',500:'501–1,000',1000:'over 1,000'};</span>
+<span class="s2">const SIZEPRICE={u100:'$49/mo ($490/yr)','100':'$89/mo ($890/yr)','250':'$149/mo ($1,490/yr)','500':'$249/mo ($2,490/yr)','1000':'custom network pricing'};</span>
+
+<span class="s2">/* ---- state ---- */</span>
+<span class="s2">const stage=document.getElementById('stage');</span>
+<span class="s2">let step=-1; const ans=</span><span class="si">{}</span><span class="s2">;</span>
+
+<span class="s2">function render(){</span>
+<span class="s2">  if(step===-1)return intro();</span>
+<span class="s2">  if(step&gt;=Q.length)return results('matches');</span>
+<span class="s2">  const q=Q[step];</span>
+<span class="s2">  stage.innerHTML=`</span>
+<span class="s2">   &lt;div class="prog"&gt;</span>
+<span class="s2">     &lt;div class="meta"&gt;</span>
+<span class="s2">       &lt;span class="step"&gt;Question ${step+1} of $</span><span class="si">{Q.length}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">       ${step&gt;0?'&lt;span class="back" id="back"&gt;&lt;svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M15 18l-6-6 6-6"/&gt;&lt;/svg&gt; Back&lt;/span&gt;':'&lt;span class="back" id="back"&gt;&lt;svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M15 18l-6-6 6-6"/&gt;&lt;/svg&gt; Start over&lt;/span&gt;'}</span>
+<span class="s2">     &lt;/div&gt;</span>
+<span class="s2">     &lt;div class="bar"&gt;&lt;div class="fill" style="width:${(step/Q.length)*100}%"&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">   &lt;/div&gt;</span>
+<span class="s2">   &lt;div class="q"&gt;</span>
+<span class="s2">     &lt;h2&gt;$</span><span class="si">{q.h}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">     &lt;div class="qsub"&gt;$</span><span class="si">{q.sub}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">     &lt;div class="opts"&gt;</span>
+<span class="s2">       ${q.opts.map(o=&gt;`&lt;button class="opt ${ans[q.key]===o[0]?'sel':''}" data-v="$</span><span class="si">{o[0]}</span><span class="s2">"&gt;</span>
+<span class="s2">          &lt;span class="oi" style="background:$</span><span class="si">{o[3]}</span><span class="s2">"&gt;&lt;svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"&gt;&lt;path d="$</span><span class="si">{o[4]}</span><span class="s2">"/&gt;&lt;/svg&gt;&lt;/span&gt;</span>
+<span class="s2">          &lt;span&gt;&lt;span class="ot"&gt;$</span><span class="si">{o[1]}</span><span class="s2">&lt;/span&gt;&lt;span class="od"&gt;$</span><span class="si">{o[2]}</span><span class="s2">&lt;/span&gt;&lt;/span&gt;</span>
+<span class="s2">          &lt;span class="chk"&gt;&lt;svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"&gt;&lt;path d="M5 12l5 5 9-11"/&gt;&lt;/svg&gt;&lt;/span&gt;</span>
+<span class="s2">        &lt;/button&gt;`).join('')}</span>
+<span class="s2">     &lt;/div&gt;</span>
+<span class="s2">   &lt;/div&gt;`;</span>
+<span class="s2">  stage.querySelectorAll('.opt').forEach(b=&gt;b.addEventListener('click',()=&gt;{</span>
+<span class="s2">    ans[q.key]=b.dataset.v;</span>
+<span class="s2">    stage.querySelectorAll('.opt').forEach(x=&gt;x.classList.remove('sel'));b.classList.add('sel');</span>
+<span class="s2">    setTimeout(()=&gt;{step++;render();window.scrollTo({top:0,behavior:'smooth'});},240);</span>
+<span class="s2">  }));</span>
+<span class="s2">  const back=document.getElementById('back');</span>
+<span class="s2">  if(back)back.addEventListener('click',()=&gt;{ if(step===0){step=-1;} else {step--;} render();window.scrollTo(</span><span class="si">{top:0}</span><span class="s2">); });</span>
+<span class="s2">}</span>
+
+<span class="s2">function intro(){</span>
+<span class="s2">  stage.innerHTML=`&lt;div class="intro"&gt;</span>
+<span class="s2">    &lt;span class="badge"&gt;Campaign Finder&lt;/span&gt;</span>
+<span class="s2">    &lt;h1&gt;Find your church\u2019s next campaign&lt;/h1&gt;</span>
+<span class="s2">    &lt;p&gt;Answer six quick questions and we\u2019ll search all 1,000+ campaigns to recommend your three best fits — with the right format, season, and a launch plan sized to your church.&lt;/p&gt;</span>
+<span class="s2">    &lt;button class="btn btn-orange" id="start" style="font-size:16px;padding:15px 28px;"&gt;Start the finder &lt;svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M5 12h14M13 6l6 6-6 6"/&gt;&lt;/svg&gt;&lt;/button&gt;</span>
+<span class="s2">    &lt;div class="mini"&gt;Takes about 45 seconds · No sign-in required&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;`;</span>
+<span class="s2">  document.getElementById('start').addEventListener('click',()=&gt;{step=0;render();});</span>
+<span class="s2">}</span>
+
+<span class="s2">/* ---- scoring against the full library ---- */</span>
+<span class="s2">function score(row){</span>
+<span class="s2">  const [t,s2,ch,fmt,seas,outs,pop,nw,flag]=row; let s=0; const hits=[];</span>
+<span class="s2">  if(ans.outcome &amp;&amp; outs.includes(ans.outcome)){s+=6;hits.push('outcome');}</span>
+<span class="s2">  if(ans.season &amp;&amp; ans.season!=='any'){ if(seas.includes(ans.season)){s+=4;hits.push('season');} else if(seas.includes('any')){s+=1.5;} }</span>
+<span class="s2">  if(ans.format &amp;&amp; ans.format!=='any'){ if(fmt===ans.format){s+=4;hits.push('format');} }</span>
+<span class="s2">  if(ans.audience){ const set=AUD2CH[ans.audience]||[]; if(set.includes(ch)){s+=3;hits.push('aud');} if(ans.audience==='church'&amp;&amp;flag)s+=1.5; }</span>
+<span class="s2">  if(ans.feel){ if((FEEL2CH[ans.feel]||[]).includes(ch)){s+=4;hits.push('feel');}</span>
+<span class="s2">    if(FEEL2OUT[ans.feel] &amp;&amp; outs.includes(FEEL2OUT[ans.feel])){s+=2;if(!hits.includes('outcome'))hits.push('outcome');} }</span>
+<span class="s2">  if(flag)s+=1.2;</span>
+<span class="s2">  s+=pop/100;</span>
+<span class="s2">  return {s,hits};</span>
+<span class="s2">}</span>
+<span class="s2">function fitPct(s){ return Math.min(98, Math.round(70 + s*1.55)); }</span>
+<span class="s2">function whyText(row,hits){</span>
+<span class="s2">  const [t,s2,ch,fmt]=row; const parts=[];</span>
+<span class="s2">  if(hits.includes('outcome')&amp;&amp;ans.outcome)parts.push(`helps you $</span><span class="si">{OUTL[ans.outcome]}</span><span class="s2">`);</span>
+<span class="s2">  if(hits.includes('season')&amp;&amp;ans.season&amp;&amp;ans.season!=='any')parts.push(`fits $</span><span class="si">{SEAS[ans.season]}</span><span class="s2">`);</span>
+<span class="s2">  if(hits.includes('format')&amp;&amp;ans.format&amp;&amp;ans.format!=='any')parts.push(`runs as a $</span><span class="si">{fmt}</span><span class="s2"> campaign`);</span>
+<span class="s2">  if(hits.includes('feel')&amp;&amp;!hits.includes('outcome'))parts.push(`lands in $</span><span class="si">{CHNAME[ch]}</span><span class="s2">`);</span>
+<span class="s2">  if(hits.includes('aud'))parts.push(`is written toward ${row[11].toLowerCase()}`);</span>
+<span class="s2">  if(!parts.length)parts.push(`a strong, proven fit in $</span><span class="si">{CHNAME[ch]}</span><span class="s2">`);</span>
+<span class="s2">  let str=parts.slice(0,3).join(', ').replace(/,([^,]*)$/,', and$1');</span>
+<span class="s2">  return str.charAt(0).toUpperCase()+str.slice(1)+'.';</span>
+<span class="s2">}</span>
+
+<span class="s2">let RANKED=null;</span>
+<span class="s2">function results(tab){</span>
+<span class="s2">  if(!RANKED){</span>
+<span class="s2">    const seen=new Set();</span>
+<span class="s2">    RANKED=DATA.map(r=&gt;({r,...score(r)})).sort((a,b)=&gt;b.s-a.s)</span>
+<span class="s2">      .filter(o=&gt;{const th=o.r[10]; if(seen.has(th))return false; seen.add(th); return true;});</span>
+<span class="s2">  }</span>
+<span class="s2">  const top=RANKED[0], r2=RANKED[1], r3=RANKED[2];</span>
+<span class="s2">  const tabs=`&lt;div style="display:flex;gap:8px;justify-content:center;margin-bottom:26px;"&gt;</span>
+<span class="s2">    &lt;button class="btn ${tab==='matches'?'btn-dark':'btn-white'}" id="tabm"&gt;Your matches&lt;/button&gt;</span>
+<span class="s2">    &lt;button class="btn ${tab==='custom'?'btn-dark':'btn-white'}" id="tabc"&gt;Customize &amp;amp; launch&lt;/button&gt;&lt;/div&gt;`;</span>
+<span class="s2">  if(tab==='matches')renderMatches(tabs,top,r2,r3); else renderCustomize(tabs,top);</span>
+<span class="s2">  document.getElementById('tabm').addEventListener('click',()=&gt;results('matches'));</span>
+<span class="s2">  document.getElementById('tabc').addEventListener('click',()=&gt;results('custom'));</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderMatches(tabs,top,r2,r3){</span>
+<span class="s2">  const covBig=(row)=&gt;{const ch=row[2];const[a,b]=HUE[ch];</span>
+<span class="s2">    return `&lt;div class="cov big"&gt;&lt;div class="canvas" style="--ca:$</span><span class="si">{a}</span><span class="s2">;--cb:$</span><span class="si">{b}</span><span class="s2">"&gt;&lt;div class="tab"&gt;&lt;b&gt;${row[3].replace('-',' ').toUpperCase()}&lt;/b&gt;&lt;/div&gt;&lt;div class="nm"&gt;$</span><span class="si">{row[0]}</span><span class="s2">&lt;/div&gt;&lt;span class="fmt"&gt;$</span><span class="si">{row[3]}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;`;};</span>
+<span class="s2">  const covSm=(row)=&gt;{const ch=row[2];const[a,b]=HUE[ch];</span>
+<span class="s2">    return `&lt;div class="cov sm"&gt;&lt;div class="canvas" style="--ca:$</span><span class="si">{a}</span><span class="s2">;--cb:$</span><span class="si">{b}</span><span class="s2">"&gt;&lt;div class="tab"&gt;&lt;b&gt;${row[3].replace('-',' ').toUpperCase()}&lt;/b&gt;&lt;/div&gt;&lt;div class="nm"&gt;$</span><span class="si">{row[0]}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`;};</span>
+<span class="s2">  const runner=(o)=&gt;`&lt;div class="runner"&gt;${covSm(o.r)}</span>
+<span class="s2">     &lt;div class="rinfo"&gt;&lt;div class="fit"&gt;${fitPct(o.s)}% match&lt;/div&gt;&lt;h4&gt;$</span><span class="si">{o.r[0]}</span><span class="s2">&lt;/h4&gt;</span>
+<span class="s2">       &lt;div class="ch"&gt;${CHNAME[o.r[2]]} · $</span><span class="si">{o.r[3]}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">       &lt;div class="why"&gt;${whyText(o.r,o.hits)}&lt;/div&gt;</span>
+<span class="s2">       &lt;a class="btn btn-white" href="campaign.html?id=$</span><span class="si">{o.r[9]}</span><span class="s2">" style="font-size:13px;padding:9px 15px;"&gt;Preview&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;`;</span>
+<span class="s2">  stage.innerHTML=`&lt;div class="res"&gt;</span>
+<span class="s2">    &lt;h1&gt;Your top matches&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class="rsub"&gt;Scored against all ${DATA.length.toLocaleString()} campaigns. Here are the three built for this moment.&lt;/div&gt;</span>
+<span class="s2">    $</span><span class="si">{tabs}</span>
+<span class="s2">    &lt;div class="topmatch"&gt;</span>
+<span class="s2">      &lt;span class="rank"&gt;★ Best match&lt;/span&gt;</span>
+<span class="s2">      ${covBig(top.r)}</span>
+<span class="s2">      &lt;div class="tm-info"&gt;</span>
+<span class="s2">        &lt;span class="fit"&gt;&lt;svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"&gt;&lt;path d="M12 2l2.4 5 5.6.8-4 3.9 1 5.5L12 15.8 6 18.2l1-5.5-4-3.9 5.6-.8z"/&gt;&lt;/svg&gt; ${fitPct(top.s)}% match&lt;/span&gt;</span>
+<span class="s2">        &lt;h3&gt;$</span><span class="si">{top.r[0]}</span><span class="s2">&lt;/h3&gt;</span>
+<span class="s2">        &lt;div class="ch"&gt;${CHNAME[top.r[2]]} · $</span><span class="si">{top.r[10]}</span><span class="s2"> · $</span><span class="si">{top.r[3]}</span><span class="s2"> campaign&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="why"&gt;${whyText(top.r,top.hits)} &lt;em&gt;$</span><span class="si">{top.r[1]}</span><span class="s2">.&lt;/em&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="acts"&gt;</span>
+<span class="s2">          &lt;a class="btn btn-dark" href="campaign.html?id=$</span><span class="si">{top.r[9]}</span><span class="s2">"&gt;Preview campaign &lt;svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M7 17 17 7M8 7h9v9"/&gt;&lt;/svg&gt;&lt;/a&gt;</span>
+<span class="s2">          &lt;button class="btn btn-white" id="gocustom"&gt;Customize it&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="runners"&gt;${runner(r2)}${runner(r3)}&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="foot"&gt;</span>
+<span class="s2">      &lt;button class="btn btn-white" id="restart"&gt;Start over&lt;/button&gt;</span>
+<span class="s2">      &lt;a class="btn btn-orange" href="browse.html"&gt;Browse the full library &lt;svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M5 12h14M13 6l6 6-6 6"/&gt;&lt;/svg&gt;&lt;/a&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;`;</span>
+<span class="s2">  document.getElementById('gocustom').addEventListener('click',()=&gt;results('custom'));</span>
+<span class="s2">  document.getElementById('restart').addEventListener('click',()=&gt;{Object.keys(ans).forEach(k=&gt;delete ans[k]);RANKED=null;step=-1;render();window.scrollTo(</span><span class="si">{top:0}</span><span class="s2">);});</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderCustomize(tabs,top){</span>
+<span class="s2">  const r=top.r; const fmt=(ans.format&amp;&amp;ans.format!=='any')?ans.format:r[3];</span>
+<span class="s2">  const size=ans.size||'100'; const days={'7-Day':'7 days','21-Day':'21 days','30-Day':'30 days','40-Day':'40 days','6-Week':'6 weekly sessions'}[fmt];</span>
+<span class="s2">  const groupTip={u100:'Aim for 6–10 groups of 8. In a church your size the pastor personally inviting hosts fills the roster fastest.',</span>
+<span class="s2">   '100':'Aim for 12–25 groups. Recruit hosts three weeks out; a live sign-up moment in the service fills most of them.',</span>
+<span class="s2">   '250':'Aim for 25–50 groups. Appoint 2–3 coach volunteers so no host feels alone, and open online sign-ups alongside the lobby table.',</span>
+<span class="s2">   '500':'Aim for 50–100 groups. Run host orientation twice (in person + Zoom) and assign a coach per 8–10 hosts.',</span>
+<span class="s2">   '1000':'Plan by campus: one launch team per site, shared start date, central host training. Network licensing includes a planning call with us.'}[size];</span>
+<span class="s2">  const card=(h,b)=&gt;`&lt;div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;text-align:left;"&gt;</span>
+<span class="s2">    &lt;div style="font-family:'Hanken Grotesk';font-weight:800;font-size:14.5px;margin-bottom:5px;"&gt;$</span><span class="si">{h}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="font-size:13px;color:var(--ink-2);line-height:1.55;"&gt;$</span><span class="si">{b}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;`;</span>
+<span class="s2">  stage.innerHTML=`&lt;div class="res"&gt;</span>
+<span class="s2">    &lt;h1&gt;Customize &amp;amp; launch&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class="rsub"&gt;Your plan for &lt;b&gt;$</span><span class="si">{r[0]}</span><span class="s2">&lt;/b&gt; — sized for a church of $</span><span class="si">{SIZEL[size]}</span><span class="s2">.&lt;/div&gt;</span>
+<span class="s2">    $</span><span class="si">{tabs}</span>
+<span class="s2">    &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;"&gt;</span>
+<span class="s2">      ${card('Format for your church', `You chose &lt;b&gt;$</span><span class="si">{days}</span><span class="s2">&lt;/b&gt;. ${fmt==='40-Day'?'The full movement — six aligned sermons carry the weekend while the church reads daily.':fmt==='6-Week'?'A leader-led group series; pair it with the daily devotional for churchwide reach.':'Every campaign also runs as the classic 40-Day movement when you\u2019re ready for it.'} All five formats are included with your license.`)}</span>
+<span class="s2">      ${card('Launch timeline', `&lt;b&gt;Weeks 1–2:&lt;/b&gt; pick &amp;amp; customize · &lt;b&gt;Weeks 3–5:&lt;/b&gt; recruit hosts, promote, open sign-ups · &lt;b&gt;Week 6:&lt;/b&gt; Launch Sunday, everyone starts Day 1 · &lt;b&gt;Final weekend:&lt;/b&gt; Celebration Sunday. The launch kit includes every script and graphic.`)}</span>
+<span class="s2">      ${card('Group launch for your size', groupTip)}</span>
+<span class="s2">      ${card('Sermon alignment', `Six message outlines match the ${fmt==='6-Week'?'six sessions':'weekly arc'} of &lt;em&gt;$</span><span class="si">{r[0]}</span><span class="s2">&lt;/em&gt; — anchored in $</span><span class="si">{r[13]}</span><span class="s2"> (NIV). Preach them as-is or fold the outline into your own series.`)}</span>
+<span class="s2">      ${card('Make it yours', `Every license: print-ready PDF (Letter/A5) with congregation print rights, plus Canva import today. All Access adds editable Google Docs/Word. One-click "Open in Canva" is in development and free at launch.`)}</span>
+<span class="s2">      ${card('Pastor-branded edition', `Your logo, colors, and your pastor\u2019s name across all four member-facing formats — done for you, $499 per campaign. &lt;a href="pricing.html#premium" style="color:var(--orange);font-weight:700;"&gt;See premium options →&lt;/a&gt;`)}</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div style="background:#FBF7EE;border:1px solid #EFE3C8;border-radius:16px;padding:16px 20px;margin:16px 0 22px;font-size:13.5px;text-align:left;"&gt;</span>
+<span class="s2">      &lt;b style="font-family:'Hanken Grotesk';"&gt;Your tier:&lt;/b&gt; at $</span><span class="si">{SIZEL[size]}</span><span class="s2"> attendance, All Access is &lt;b&gt;$</span><span class="si">{SIZEPRICE[size]}</span><span class="s2">&lt;/b&gt; — or run just this campaign for &lt;b&gt;$199&lt;/b&gt;. &lt;a href="pricing.html" style="color:var(--orange);font-weight:700;"&gt;Full pricing →&lt;/a&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="foot"&gt;</span>
+<span class="s2">      &lt;a class="btn btn-dark" href="campaign.html?id=$</span><span class="si">{r[9]}</span><span class="s2">"&gt;Preview $</span><span class="si">{r[0]}</span><span class="s2">&lt;/a&gt;</span>
+<span class="s2">      &lt;a class="btn btn-orange" href="get-access.html"&gt;Start this campaign &lt;svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M5 12h14M13 6l6 6-6 6"/&gt;&lt;/svg&gt;&lt;/a&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;`;</span>
+<span class="s2">}</span>
+
+<span class="s2">render();</span>
+<span class="s2">&lt;/script&gt;"""</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'&lt;script&gt;</span><span class="se">\n</span><span class="s1">const HUE='</span><span class="p">)</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'&lt;/script&gt;'</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s1">'&lt;/script&gt;'</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span> <span class="o">+</span> <span class="n">NEW</span> <span class="o">+</span> <span class="n">f</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'finder rewritten'</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/site/patch_finder.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

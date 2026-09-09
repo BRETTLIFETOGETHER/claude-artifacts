@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>editions.js</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; John - 15,000+ campaigns website</div>
+<h1>editions.js</h1>
+<div class="meta"><span class="ext e-js">js</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">15 KB</span>
+<a class="btn" href="../../artifacts/John%20-%2015%2C000%2B%20campaigns%20website/editions.js" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">The editions engine: Youth and Kids &amp; Family generators with authored pools, dealt distinctness, verse-binding preserved</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="cm">/* Editions layer — Youth and Kids &amp; Family, generated from the same</span>
+<span class="cm">   verse-bound day atoms as the adult engine. Authored pools, per-campaign</span>
+<span class="cm">   dealt decks (no repeats until pool exhaustion), editable Word output. */</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+<span class="s2">"use strict"</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">E</span><span class="o">=</span><span class="nb">window</span><span class="p">.</span><span class="nx">Engine</span><span class="p">;</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">mul</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span><span class="k">return</span><span class="w"> </span><span class="kd">function</span><span class="p">(){</span><span class="nx">a</span><span class="o">|=</span><span class="mf">0</span><span class="p">;</span><span class="nx">a</span><span class="o">=</span><span class="nx">a</span><span class="o">+</span><span class="mh">0x6D2B79F5</span><span class="o">|</span><span class="mf">0</span><span class="p">;</span><span class="kd">var</span><span class="w"> </span><span class="nx">t</span><span class="o">=</span><span class="nb">Math</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="nx">a</span><span class="o">^</span><span class="nx">a</span><span class="o">&gt;&gt;&gt;</span><span class="mf">15</span><span class="p">,</span><span class="mf">1</span><span class="o">|</span><span class="nx">a</span><span class="p">);</span><span class="nx">t</span><span class="o">=</span><span class="nx">t</span><span class="o">+</span><span class="nb">Math</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="nx">t</span><span class="o">^</span><span class="nx">t</span><span class="o">&gt;&gt;&gt;</span><span class="mf">7</span><span class="p">,</span><span class="mf">61</span><span class="o">|</span><span class="nx">t</span><span class="p">)</span><span class="o">^</span><span class="nx">t</span><span class="p">;</span><span class="k">return</span><span class="p">((</span><span class="nx">t</span><span class="o">^</span><span class="nx">t</span><span class="o">&gt;&gt;&gt;</span><span class="mf">14</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="mf">0</span><span class="p">)</span><span class="o">/</span><span class="mf">4294967296</span><span class="p">}}</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">seed</span><span class="p">(</span><span class="nx">s</span><span class="p">){</span><span class="kd">let</span><span class="w"> </span><span class="nx">h</span><span class="o">=</span><span class="mf">2166136261</span><span class="p">;</span><span class="k">for</span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="o">=</span><span class="mf">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">s</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">){</span><span class="nx">h</span><span class="o">^=</span><span class="nx">s</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span><span class="nx">h</span><span class="o">=</span><span class="nb">Math</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="nx">h</span><span class="p">,</span><span class="mf">16777619</span><span class="p">)}</span><span class="k">return</span><span class="w"> </span><span class="nx">h</span><span class="o">&gt;&gt;&gt;</span><span class="mf">0</span><span class="p">}</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">DECKS</span><span class="o">=</span><span class="p">{};</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">deal</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="nx">slot</span><span class="p">,</span><span class="nx">pool</span><span class="p">,</span><span class="nx">i</span><span class="p">){</span>
+<span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">k</span><span class="o">=</span><span class="nx">id</span><span class="o">+</span><span class="s2">"|"</span><span class="o">+</span><span class="nx">slot</span><span class="p">,</span><span class="w"> </span><span class="nx">cyc</span><span class="o">=</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">i</span><span class="o">/</span><span class="nx">pool</span><span class="p">.</span><span class="nx">length</span><span class="p">),</span><span class="w"> </span><span class="nx">key</span><span class="o">=</span><span class="nx">k</span><span class="o">+</span><span class="s2">"|"</span><span class="o">+</span><span class="nx">cyc</span><span class="p">;</span>
+<span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">DECKS</span><span class="p">[</span><span class="nx">key</span><span class="p">]){</span><span class="kd">const</span><span class="w"> </span><span class="nx">r</span><span class="o">=</span><span class="nx">mul</span><span class="p">(</span><span class="nx">seed</span><span class="p">(</span><span class="nx">key</span><span class="p">));</span><span class="kd">const</span><span class="w"> </span><span class="nx">d</span><span class="o">=</span><span class="nx">pool</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">_</span><span class="p">,</span><span class="nx">x</span><span class="p">)=&gt;</span><span class="nx">x</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">j</span><span class="o">=</span><span class="nx">d</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mf">1</span><span class="p">;</span><span class="nx">j</span><span class="o">&gt;</span><span class="mf">0</span><span class="p">;</span><span class="nx">j</span><span class="o">--</span><span class="p">){</span><span class="kd">const</span><span class="w"> </span><span class="nx">q</span><span class="o">=</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">r</span><span class="p">()</span><span class="o">*</span><span class="p">(</span><span class="nx">j</span><span class="o">+</span><span class="mf">1</span><span class="p">));[</span><span class="nx">d</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span><span class="nx">d</span><span class="p">[</span><span class="nx">q</span><span class="p">]]</span><span class="o">=</span><span class="p">[</span><span class="nx">d</span><span class="p">[</span><span class="nx">q</span><span class="p">],</span><span class="nx">d</span><span class="p">[</span><span class="nx">j</span><span class="p">]]}</span>
+<span class="w">  </span><span class="nx">DECKS</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span><span class="o">=</span><span class="nx">d</span><span class="p">}</span>
+<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">pool</span><span class="p">[</span><span class="nx">DECKS</span><span class="p">[</span><span class="nx">key</span><span class="p">][</span><span class="nx">i</span><span class="o">%</span><span class="nx">pool</span><span class="p">.</span><span class="nx">length</span><span class="p">]];</span>
+<span class="p">}</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">esc</span><span class="p">(</span><span class="nx">s</span><span class="p">){</span><span class="k">return</span><span class="w"> </span><span class="nb">String</span><span class="p">(</span><span class="nx">s</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&amp;/g</span><span class="p">,</span><span class="s2">"&amp;amp;"</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;/g</span><span class="p">,</span><span class="s2">"&amp;lt;"</span><span class="p">)}</span>
+
+<span class="cm">/* ---------------- YOUTH ---------------- */</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">Y_HOOK</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Be honest: would the people who see you every day say this is true of you?"</span><span class="p">,</span>
+<span class="s2">"Nobody posts about this part of their life. That is exactly why it matters."</span><span class="p">,</span>
+<span class="s2">"You have felt this in a hallway before — the moment everyone is watching and no one is looking."</span><span class="p">,</span>
+<span class="s2">"There is a version of you that shows up online and a version that shows up at 11pm. Today is for the second one."</span><span class="p">,</span>
+<span class="s2">"Some things you cannot skip, screenshot, or speed up. This is one of them."</span><span class="p">,</span>
+<span class="s2">"You already know somebody who needs today's verse. It might be you."</span><span class="p">,</span>
+<span class="s2">"The quiet kid in your class understands this better than most adults. Ask yourself why."</span><span class="p">,</span>
+<span class="s2">"If your week had a caption, what would it be? Hold that thought."</span><span class="p">,</span>
+<span class="s2">"This is not about trying harder. You have tried harder. This is about something else."</span><span class="p">,</span>
+<span class="s2">"Everyone is performing something. Today you get to stop for ten minutes."</span><span class="p">,</span>
+<span class="s2">"You do not need more information. You need one honest minute. This is it."</span><span class="p">,</span>
+<span class="s2">"Somewhere between first period and practice, you decided some things about yourself. Let's check them."</span><span class="p">,</span>
+<span class="s2">"The pressure you feel is real. So is what God says about it. Both can be true at once."</span><span class="p">,</span>
+<span class="s2">"Today's reading is short on purpose. What it asks of you is not."</span><span class="p">,</span>
+<span class="s2">"You can fake a lot of things. You cannot fake peace. Keep reading."</span><span class="p">,</span>
+<span class="s2">"If God actually meant this verse, something in your week has to change. Find out what."</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">Y_REAL</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Here is the thing about {W}: it does not wait until you are older to matter."</span><span class="p">,</span>
+<span class="s2">"{W} is not a church word. It is a Tuesday word — it shows up in group chats, tryouts, and the seat you choose at lunch."</span><span class="p">,</span>
+<span class="s2">"Most people your age think {W} is for someday. Scripture treats it like it is for today."</span><span class="p">,</span>
+<span class="s2">"You will make a decision about {W} this week whether you notice it or not. Better to notice."</span><span class="p">,</span>
+<span class="s2">"Adults talk about {W} like it is complicated. The verse you just read makes it startlingly simple."</span><span class="p">,</span>
+<span class="s2">"{W} is decided in small, unphotographed moments. You will get about three of them today."</span><span class="p">,</span>
+<span class="s2">"The world has a counterfeit version of {W}. It looks similar and costs more. Learn the difference now."</span><span class="p">,</span>
+<span class="s2">"Your friends are already teaching you their version of {W}. Today God gets a turn."</span><span class="p">,</span>
+<span class="s2">"If {W} were easy, everyone would have it. The verse tells you where it actually comes from."</span><span class="p">,</span>
+<span class="s2">"You cannot inherit {W} from your parents or download it from anyone. It gets built — starting today."</span><span class="p">,</span>
+<span class="s2">"{W} at your age is not smaller than {W} at forty. It is the foundation version. Foundations matter most."</span><span class="p">,</span>
+<span class="s2">"Nobody drifts into {W}. People drift away from it. Today is a steering day."</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">Y_DARE</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Send one honest text you have been avoiding. Today."</span><span class="p">,</span>
+<span class="s2">"Sit somewhere new at lunch and learn one name you did not know this morning."</span><span class="p">,</span>
+<span class="s2">"Say the true thing out loud to one person — kindly, but actually say it."</span><span class="p">,</span>
+<span class="s2">"Put your phone in another room for thirty minutes and let the quiet happen."</span><span class="p">,</span>
+<span class="s2">"Thank one adult specifically — name the thing they did. Watch their face."</span><span class="p">,</span>
+<span class="s2">"Do the chore nobody asked you to do, and tell no one."</span><span class="p">,</span>
+<span class="s2">"Write today's verse on your hand or your mirror. Let it interrupt you."</span><span class="p">,</span>
+<span class="s2">"Ask a friend a second question after they answer the first one. Then actually listen."</span><span class="p">,</span>
+<span class="s2">"Give away something you like — not something you were done with."</span><span class="p">,</span>
+<span class="s2">"Apologize for the thing you have been justifying. Short and real beats long and polished."</span><span class="p">,</span>
+<span class="s2">"Invite the person who is always on the edge of the group into the middle of it."</span><span class="p">,</span>
+<span class="s2">"Skip one thing you always do and use that time to pray for three people by name."</span><span class="p">,</span>
+<span class="s2">"Tell your parent or guardian one true thing about your week — the real version."</span><span class="p">,</span>
+<span class="s2">"Encourage somebody who competes with you. Mean it."</span><span class="p">,</span>
+<span class="s2">"Stand up for someone today even if it costs you social points. Especially then."</span><span class="p">,</span>
+<span class="s2">"Fast one app until sunset. Notice what you reach for instead."</span><span class="p">,</span>
+<span class="s2">"Write down the lie you believe most often. Then write today's verse under it."</span><span class="p">,</span>
+<span class="s2">"Pray with your eyes open on the way to school — whole trip, no music."</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">Y_TALK</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Where does this get hardest for you — school, home, online — and why there?"</span><span class="p">,</span>
+<span class="s2">"Who do you know that actually lives this out? What is different about them?"</span><span class="p">,</span>
+<span class="s2">"What would change in your friend group if you took today's verse seriously?"</span><span class="p">,</span>
+<span class="s2">"What is the cost of doing this at your age? Is it worth it? Be honest."</span><span class="p">,</span>
+<span class="s2">"When did you last feel the opposite of today's word? What happened?"</span><span class="p">,</span>
+<span class="s2">"If a younger student asked you about this, what would you tell them?"</span><span class="p">,</span>
+<span class="s2">"What is one thing adults get wrong about this — and one thing they get right?"</span><span class="p">,</span>
+<span class="s2">"Which is harder for you: believing this is true, or acting like it is? Why?"</span><span class="p">,</span>
+<span class="s2">"What would you have to stop doing to start doing this?"</span><span class="p">,</span>
+<span class="s2">"Where have you already seen God do this in your life, even a little?"</span><span class="p">,</span>
+<span class="s2">"Who makes it easier for you to live this way? Who makes it harder?"</span><span class="p">,</span>
+<span class="s2">"If you did today's dare, what happened? If you skipped it, what stopped you?"</span><span class="p">,</span>
+<span class="s2">"What scares you about taking this seriously?"</span><span class="p">,</span>
+<span class="s2">"What is one place this week you can practice this where nobody will see?"</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">Y_PRAY</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"God, I do not want to fake this part. Make it real in me, starting with today."</span><span class="p">,</span>
+<span class="s2">"Jesus, you know what my week actually looks like. Meet me in the true version, not the posted one."</span><span class="p">,</span>
+<span class="s2">"Father, I believe — help the part of me that is still deciding."</span><span class="p">,</span>
+<span class="s2">"God, give me the guts to do today's dare and the honesty to admit if I do not."</span><span class="p">,</span>
+<span class="s2">"Jesus, be louder than the voices I listen to most. You know which ones."</span><span class="p">,</span>
+<span class="s2">"God, I want the real thing, not the performance. Start wherever you need to."</span><span class="p">,</span>
+<span class="s2">"Father, make this verse true of me before anyone is watching."</span><span class="p">,</span>
+<span class="s2">"Jesus, I hand you the thing I keep taking back. You know what it is."</span><span class="p">,</span>
+<span class="s2">"God, use me today for someone who feels invisible. Show me who."</span><span class="p">,</span>
+<span class="s2">"Father, I am tired of pretending I am fine. Today I would rather be honest with you."</span><span class="p">,</span>
+<span class="s2">"Jesus, make my private life match my public one — and make both look like you."</span><span class="p">,</span>
+<span class="s2">"God, thank you that you are not waiting for me to be older to take me seriously."</span>
+<span class="p">];</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">youthDay</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">n</span><span class="p">){</span>
+<span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">d</span><span class="o">=</span><span class="nx">E</span><span class="p">.</span><span class="nx">day</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">n</span><span class="p">);</span>
+<span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">W</span><span class="o">=</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="o">||</span><span class="s2">""</span><span class="p">).</span><span class="nx">toLowerCase</span><span class="p">();</span>
+<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="nx">unit</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">unit</span><span class="p">,</span><span class="nx">n</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">n</span><span class="p">,</span><span class="nx">title</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">title</span><span class="o">||</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="p">,</span><span class="nx">ref</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">ref</span><span class="p">,</span><span class="nx">word</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="p">,</span><span class="nx">sunday</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">sunday</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">hook</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"yhook"</span><span class="p">,</span><span class="nx">Y_HOOK</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">real</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"yreal"</span><span class="p">,</span><span class="nx">Y_REAL</span><span class="p">,</span><span class="nx">i</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\{W\}/g</span><span class="p">,</span><span class="nx">W</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">truth</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">truth</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">dare</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"ydare"</span><span class="p">,</span><span class="nx">Y_DARE</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">q1</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">q</span><span class="p">,</span><span class="w"> </span><span class="nx">q2</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"ytalk"</span><span class="p">,</span><span class="nx">Y_TALK</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">pray</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"ypray"</span><span class="p">,</span><span class="nx">Y_PRAY</span><span class="p">,</span><span class="nx">i</span><span class="p">)};</span>
+<span class="p">}</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">youthHTML</span><span class="p">(</span><span class="nx">d</span><span class="p">){</span>
+<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="sb">`&lt;h2&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/h2&gt;&lt;p class="muted"&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">unit</span><span class="p">)</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">d</span><span class="p">.</span><span class="nx">n</span><span class="si">}</span><span class="sb"> · Read </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">ref</span><span class="p">)</span><span class="si">}</span><span class="sb"> — twice, slowly.&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Straight up.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">hook</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">real</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;i&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">truth</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/i&gt;&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;The dare.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">dare</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Talk it out.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">q1</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">q2</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Pray it.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">pray</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;`</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ------------- KIDS &amp; FAMILY (Table Talk) ------------- */</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">K_WONDER</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"If kindness had a color at our table tonight, what color would it be — and why?"</span><span class="p">,</span>
+<span class="s2">"What is one thing that made you laugh today? Tell the long version."</span><span class="p">,</span>
+<span class="s2">"If our family had a team name for this week, what should it be?"</span><span class="p">,</span>
+<span class="s2">"What is something you saw today that you think God was happy about?"</span><span class="p">,</span>
+<span class="s2">"Who was brave today — you, or someone you watched? What happened?"</span><span class="p">,</span>
+<span class="s2">"If you could give one person in this house a prize tonight, who gets it and for what?"</span><span class="p">,</span>
+<span class="s2">"What sound would today make if it were a song — loud, quiet, bouncy, slow?"</span><span class="p">,</span>
+<span class="s2">"What is one thing you are wondering about God lately? Any question counts."</span><span class="p">,</span>
+<span class="s2">"If tonight's dinner could talk, what would it say about our family?"</span><span class="p">,</span>
+<span class="s2">"What was the hardest part of today? You can say it. We are listening."</span><span class="p">,</span>
+<span class="s2">"Who needed a friend today? Did they find one?"</span><span class="p">,</span>
+<span class="s2">"If we could send one giant thank-you balloon into the sky tonight, whose name goes on it?"</span><span class="p">,</span>
+<span class="s2">"What is something you can do now that you could not do last year?"</span><span class="p">,</span>
+<span class="s2">"If Jesus sat in the empty chair tonight, what would you want to ask him first?"</span><span class="p">,</span>
+<span class="s2">"What made someone at this table smile today? Catch them telling it."</span><span class="p">,</span>
+<span class="s2">"What is one small thing we could do as a family tomorrow that would make someone's day better?"</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">K_FRAME</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Hand the Bible to the youngest reader who can. Everyone else, listen with your eyes closed."</span><span class="p">,</span>
+<span class="s2">"Read it once in a normal voice, then once in a whisper. Which way made you listen harder?"</span><span class="p">,</span>
+<span class="s2">"Have two people read it — one verse-half each — like passing a ball."</span><span class="p">,</span>
+<span class="s2">"Read it slowly. Every time you hear God's name, everyone taps the table once."</span><span class="p">,</span>
+<span class="s2">"Let the oldest person read it tonight, the way they wish someone had read it to them."</span><span class="p">,</span>
+<span class="s2">"Read it, then have everyone say the one word they remember most."</span><span class="p">,</span>
+<span class="s2">"Read it twice. The second time, stop before the last word and let the family finish it."</span><span class="p">,</span>
+<span class="s2">"One person reads; everyone else holds one hand open on the table, ready to receive it."</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">K_BIG</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Big idea: God's {W} is for our whole house — even the smallest person at this table."</span><span class="p">,</span>
+<span class="s2">"Big idea: {W} is something our family can practice together, one small day at a time."</span><span class="p">,</span>
+<span class="s2">"Big idea: God does not wait for us to be grown-ups to give us {W}."</span><span class="p">,</span>
+<span class="s2">"Big idea: {W} starts at home — at this table, in these chairs, tonight."</span><span class="p">,</span>
+<span class="s2">"Big idea: when one of us practices {W}, the whole family gets stronger."</span><span class="p">,</span>
+<span class="s2">"Big idea: God loves to grow {W} in families that ask him for it."</span><span class="p">,</span>
+<span class="s2">"Big idea: {W} is not just for church. It is for kitchens, cars, and bunk beds."</span><span class="p">,</span>
+<span class="s2">"Big idea: our family does not have to be perfect for God to build {W} in us."</span><span class="p">,</span>
+<span class="s2">"Big idea: little steps of {W} count. God sees every one."</span><span class="p">,</span>
+<span class="s2">"Big idea: tonight, {W} has a seat at our table."</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">K_Q</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"When did someone make room for you this week? How did it feel?"</span><span class="p">,</span>
+<span class="s2">"What is one way our family already does this — and one way we could do it more?"</span><span class="p">,</span>
+<span class="s2">"Who do we know who needs this right now? What could we do for them this week?"</span><span class="p">,</span>
+<span class="s2">"What makes this hard for kids? What makes it hard for grown-ups?"</span><span class="p">,</span>
+<span class="s2">"If you practiced this at school or work tomorrow, what would you do first?"</span><span class="p">,</span>
+<span class="s2">"When have you seen someone in this family do this? Tell the story."</span><span class="p">,</span>
+<span class="s2">"What would our home feel like if we did this every single day?"</span><span class="p">,</span>
+<span class="s2">"What is one word from tonight's verse you want to keep? Why that one?"</span><span class="p">,</span>
+<span class="s2">"Who taught you about this first? What did they do?"</span><span class="p">,</span>
+<span class="s2">"If we forget everything else, what is the one thing from tonight to remember?"</span><span class="p">,</span>
+<span class="s2">"What is something you want to ask God for help with this week?"</span><span class="p">,</span>
+<span class="s2">"How could we surprise someone with this before Sunday?"</span><span class="p">,</span>
+<span class="s2">"What part of tonight's verse sounds like good news to you?"</span><span class="p">,</span>
+<span class="s2">"Where in our week is the best time to practice this together?"</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">K_DO</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Everyone writes or draws one worry on paper. Fold them into the middle of the table and pray over the pile together."</span><span class="p">,</span>
+<span class="s2">"Go around twice: first time say one thank-you, second time say one hope for tomorrow."</span><span class="p">,</span>
+<span class="s2">"Make a family high-five chain — each person adds one word of tonight's verse as you go."</span><span class="p">,</span>
+<span class="s2">"Pick one person this family will secretly encourage this week. Plan it right now."</span><span class="p">,</span>
+<span class="s2">"Everyone points to someone at the table and says one true, kind sentence about them."</span><span class="p">,</span>
+<span class="s2">"Draw tonight's verse as a picture in two minutes. Stick the drawings on the fridge."</span><span class="p">,</span>
+<span class="s2">"Build the verse: each person says the next word from memory until the family finishes it."</span><span class="p">,</span>
+<span class="s2">"Choose a family signal — a word or a hand sign — that means 'remember tonight's verse.' Practice it three times."</span><span class="p">,</span>
+<span class="s2">"Set a one-minute timer and let everyone say prayer requests fast — popcorn style."</span><span class="p">,</span>
+<span class="s2">"Trade chairs with the person across from you and say one thing you appreciate about their spot in this family."</span><span class="p">,</span>
+<span class="s2">"Plan one small act of generosity for a neighbor this week. Put it on the calendar before you leave the table."</span><span class="p">,</span>
+<span class="s2">"Everyone holds hands and squeezes a 'pulse' around the circle while one person prays."</span><span class="p">,</span>
+<span class="s2">"Write tonight's one big word on a sticky note for every bedroom door."</span><span class="p">,</span>
+<span class="s2">"Let the youngest choose a motion for tonight's word. Everyone does it together on the count of three."</span><span class="p">,</span>
+<span class="s2">"Each person names one place they will see tomorrow — home, school, work — and how the verse could show up there."</span><span class="p">,</span>
+<span class="s2">"Make tomorrow's breakfast plan include one act of kindness. Decide who does what."</span><span class="p">,</span>
+<span class="s2">"Have everyone whisper the verse to the person on their left, all the way around, like the best kind of telephone."</span><span class="p">,</span>
+<span class="s2">"Pick a family memory that matches tonight's word. Let two people tell it together."</span>
+<span class="p">];</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">K_PRAY</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"God, thank you for this table and every person around it. Grow tonight's big word in our house. Amen."</span><span class="p">,</span>
+<span class="s2">"Father, you know each name here. Help our family practice this together tomorrow. Amen."</span><span class="p">,</span>
+<span class="s2">"Jesus, thank you for being with us at dinner and at bedtime. Make our home look more like you. Amen."</span><span class="p">,</span>
+<span class="s2">"God, bless the person each of us thought of tonight. Show our family how to love them well. Amen."</span><span class="p">,</span>
+<span class="s2">"Father, thank you for the laughing parts and the hard parts of today. We give you both. Amen."</span><span class="p">,</span>
+<span class="s2">"Jesus, help the smallest and the biggest person in this house believe tonight's verse. Amen."</span><span class="p">,</span>
+<span class="s2">"God, make our family brave enough to do what we planned tonight. Amen."</span><span class="p">,</span>
+<span class="s2">"Father, watch over everyone who could not be at this table tonight. Keep them close to you. Amen."</span><span class="p">,</span>
+<span class="s2">"Jesus, we want our home to be a place where you feel welcome. Come be with us. Amen."</span><span class="p">,</span>
+<span class="s2">"God, thank you that we do not have to be perfect to be yours. Hold this family together. Amen."</span><span class="p">,</span>
+<span class="s2">"Father, tuck tonight's verse into our dreams and wake us up ready to live it. Amen."</span><span class="p">,</span>
+<span class="s2">"Jesus, thank you for stories, food, and each other. Teach us your way all week. Amen."</span>
+<span class="p">];</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">kidsDay</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">n</span><span class="p">){</span>
+<span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">d</span><span class="o">=</span><span class="nx">E</span><span class="p">.</span><span class="nx">day</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">n</span><span class="p">);</span>
+<span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">W</span><span class="o">=</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="o">||</span><span class="s2">""</span><span class="p">).</span><span class="nx">toLowerCase</span><span class="p">();</span>
+<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="nx">unit</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">unit</span><span class="p">,</span><span class="nx">n</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">n</span><span class="p">,</span><span class="nx">title</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">title</span><span class="o">||</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="p">,</span><span class="nx">ref</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">ref</span><span class="p">,</span><span class="nx">word</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="p">,</span><span class="nx">sunday</span><span class="o">:</span><span class="nx">d</span><span class="p">.</span><span class="nx">sunday</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">wonder</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"kwon"</span><span class="p">,</span><span class="nx">K_WONDER</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">frame</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"kfrm"</span><span class="p">,</span><span class="nx">K_FRAME</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">big</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"kbig"</span><span class="p">,</span><span class="nx">K_BIG</span><span class="p">,</span><span class="nx">i</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\{W\}/g</span><span class="p">,</span><span class="nx">W</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">q</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"kq"</span><span class="p">,</span><span class="nx">K_Q</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">act</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"kdo"</span><span class="p">,</span><span class="nx">K_DO</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">pray</span><span class="o">:</span><span class="nx">deal</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="s2">"kpray"</span><span class="p">,</span><span class="nx">K_PRAY</span><span class="p">,</span><span class="nx">i</span><span class="p">)};</span>
+<span class="p">}</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">kidsHTML</span><span class="p">(</span><span class="nx">d</span><span class="p">){</span>
+<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="sb">`&lt;h2&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">word</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/h2&gt;&lt;p class="muted"&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">unit</span><span class="p">)</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">d</span><span class="p">.</span><span class="nx">n</span><span class="si">}</span><span class="sb"> · Table Talk for the whole family&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Wonder together.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">wonder</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Read together — </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">ref</span><span class="p">)</span><span class="si">}</span><span class="sb">.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">frame</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;i&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">big</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/i&gt;&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Family question.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">q</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Do together.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">act</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;</span>
+<span class="sb">&lt;p&gt;&lt;b&gt;Table prayer.&lt;/b&gt; </span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">pray</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/p&gt;`</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">fullDoc</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">n</span><span class="p">,</span><span class="nx">dayFn</span><span class="p">,</span><span class="nx">htmlFn</span><span class="p">,</span><span class="nx">label</span><span class="p">){</span>
+<span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nx">h</span><span class="o">=</span><span class="sb">`&lt;h1&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">t</span><span class="p">)</span><span class="si">}</span><span class="sb"> — </span><span class="si">${</span><span class="nx">label</span><span class="si">}</span><span class="sb">&lt;/h1&gt;&lt;p&gt;&lt;i&gt;</span><span class="si">${</span><span class="nx">esc</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">s</span><span class="o">||</span><span class="s2">""</span><span class="p">)</span><span class="si">}</span><span class="sb">&lt;/i&gt;&lt;/p&gt;`</span><span class="p">;</span>
+<span class="w"> </span><span class="k">for</span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="o">=</span><span class="mf">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">n</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">){</span><span class="nx">h</span><span class="o">+=</span><span class="sb">`&lt;hr/&gt;`</span><span class="o">+</span><span class="nx">htmlFn</span><span class="p">(</span><span class="nx">dayFn</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">n</span><span class="p">))}</span>
+<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">E</span><span class="p">.</span><span class="nx">docWrap</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">o</span><span class="p">.</span><span class="nx">t</span><span class="si">}</span><span class="sb"> — </span><span class="si">${</span><span class="nx">label</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="nx">h</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">Editions</span><span class="o">=</span><span class="p">{</span>
+<span class="w"> </span><span class="nx">youthDay</span><span class="p">,</span><span class="nx">youthHTML</span><span class="p">,</span><span class="nx">kidsDay</span><span class="p">,</span><span class="nx">kidsHTML</span><span class="p">,</span>
+<span class="w"> </span><span class="nx">fullYouth</span><span class="o">:</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">n</span><span class="p">)=&gt;</span><span class="nx">fullDoc</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">n</span><span class="p">,</span><span class="nx">youthDay</span><span class="p">,</span><span class="nx">youthHTML</span><span class="p">,</span><span class="s2">"Youth Edition"</span><span class="p">),</span>
+<span class="w"> </span><span class="nx">fullKids</span><span class="o">:</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">n</span><span class="p">)=&gt;</span><span class="nx">fullDoc</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span><span class="nx">fmt</span><span class="p">,</span><span class="nx">n</span><span class="p">,</span><span class="nx">kidsDay</span><span class="p">,</span><span class="nx">kidsHTML</span><span class="p">,</span><span class="s2">"Kids &amp; Family Edition"</span><span class="p">)</span>
+<span class="p">};</span>
+<span class="p">})();</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/site/assets/js/editions.js</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

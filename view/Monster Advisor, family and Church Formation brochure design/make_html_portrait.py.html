@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>make_html_portrait.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Monster Advisor, family and Church Formation brochure design</div>
+<h1>make_html_portrait.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">1 edit</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">24 KB</span>
+<a class="btn" href="../../artifacts/Monster%20Advisor%2C%20family%20and%20Church%20Formation%20brochure%20design/make_html_portrait.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Portrait 8.5x11 version of the original Church Formation System brochure</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"/home/claude/build"</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">diagrams</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ecosystem_diagram</span><span class="p">,</span> <span class="n">wheel_diagram</span><span class="p">,</span> <span class="n">vertical_levels</span><span class="p">,</span> <span class="n">step_chain_vertical</span><span class="p">)</span>
+
+<span class="n">PAGES</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">html</span><span class="p">):</span> <span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">photo</span><span class="p">(</span><span class="n">caption</span><span class="p">,</span> <span class="n">extra_style</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="photo" style="</span><span class="si">{</span><span class="n">extra_style</span><span class="si">}</span><span class="s1">"&gt;</span>
+<span class="s1">        &lt;div class="corner tl"&gt;&lt;/div&gt;&lt;div class="corner br"&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="cap"&gt;</span><span class="si">{</span><span class="n">caption</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">folio</span><span class="p">(</span><span class="n">chapter</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="folio"&gt;&lt;div class="thread"&gt;</span><span class="si">{</span><span class="n">chapter</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div&gt;</span><span class="si">{</span><span class="n">num</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">track_card</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">para</span><span class="p">,</span> <span class="n">bullets</span><span class="p">):</span>
+    <span class="n">bl</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;li&gt;</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&lt;/li&gt;'</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bullets</span><span class="p">])</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;div class="track-card" style="margin-bottom:0.2in;"&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Archivo'; font-weight:700; font-size:10.8pt; letter-spacing:0.13em; color:var(--gold);"&gt;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Playfair'; font-weight:700; font-size:13.5pt; color:var(--navy); margin:0.05in 0 0.1in;"&gt;</span><span class="si">{</span><span class="n">sub</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;p style="font-family:'Inter'; font-size:9.2pt; line-height:1.5; color:var(--ink);"&gt;</span><span class="si">{</span><span class="n">para</span><span class="si">}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">      &lt;ul class="track-list"&gt;</span><span class="si">{</span><span class="n">bl</span><span class="si">}</span><span class="s1">&lt;/ul&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span>
+
+<span class="c1"># PAGE 1 — COVER</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="photo" style="position:absolute; inset:0; border-radius:0;"&gt;</span>
+<span class="s1">    &lt;div class="cap" style="right:0.68in; bottom:0.5in; left:auto; text-align:right; font-size:6.8pt;"&gt;PHOTOGRAPHY — PASTOR IN STUDY, WARM LAMPLIGHT, MANUSCRIPT OPEN&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div style="position:absolute; inset:0; background:linear-gradient(190deg, rgba(16,30,56,0.4) 0%, rgba(16,30,56,0.88) 55%, rgba(16,30,56,0.98) 100%);"&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="frame" style="display:flex; flex-direction:column; justify-content:flex-end;"&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:600; font-size:9pt; letter-spacing:0.24em; color:#D9B876; margin-bottom:2.2in;"&gt;A GUIDE FOR SENIOR PASTORS &amp;amp; MINISTRY LEADERS&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:33pt; color:#FBF8F1;"&gt;The Church Formation System&lt;span style="font-size:16pt; vertical-align:super;"&gt;™&lt;/span&gt;&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.26in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p style="font-family:'Playfair'; font-style:italic; font-weight:500; font-size:13.5pt; color:#D9B876; line-height:1.5;"&gt;</span>
+<span class="s1">      Helping pastors turn sermons into curriculum &amp;mdash; curriculum into community &amp;mdash; and</span>
+<span class="s1">      community into movements.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.5in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; justify-content:space-between; align-items:flex-end; font-family:'Archivo'; font-weight:500; font-size:8pt; letter-spacing:0.12em; color:rgba(251,248,241,0.55);"&gt;</span>
+<span class="s1">      &lt;div&gt;LIFETOGETHER.COM&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="width:22px; height:2px; background:#B98D3E;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 2 — WELCOME / CONTENTS</span>
+<span class="n">chapters</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"The Problem"</span><span class="p">,</span> <span class="s2">"Why sermons alone don't form disciples"</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Opportunity"</span><span class="p">,</span> <span class="s2">"What becomes possible when a message keeps working"</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Formation Framework"</span><span class="p">,</span> <span class="s2">"Five environments, one continuous path"</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Formation Masterclass"</span><span class="p">,</span> <span class="s2">"Five tracks that train your team to build"</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Crawl, Walk, Run Model"</span><span class="p">,</span> <span class="s2">"How churches grow into the system at their own pace"</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"What We Help You Build"</span><span class="p">,</span> <span class="s2">"Every format a message can become"</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Three Ways We Help"</span><span class="p">,</span> <span class="s2">"Choose the level of partnership that fits your church"</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Your Message Matters"</span><span class="p">,</span> <span class="s2">"The legacy a system makes possible"</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;div style="display:flex; align-items:baseline; padding:0.11in 0; border-bottom:1px solid var(--line);"&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Playfair'; font-weight:700; font-size:12pt; color:var(--navy); flex:1;"&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Archivo'; font-weight:600; font-size:9pt; color:var(--gold); width:0.4in; text-align:right;"&gt;</span><span class="si">{</span><span class="n">pg</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Inter'; font-size:8.8pt; color:var(--gray); margin-top:-0.06in; margin-bottom:0.02in;"&gt;</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s1">&lt;/div&gt;'''</span> <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">pg</span> <span class="ow">in</span> <span class="n">chapters</span><span class="p">])</span>
+
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;WELCOME&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.24in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:22pt; color:var(--navy);"&gt;Every message deserves a longer life than one Sunday.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      Most churches pour weeks into a single message and then let it end when the service</span>
+<span class="s1">      does. This guide lays out a different way &amp;mdash; a system that carries what God says on</span>
+<span class="s1">      Sunday into groups, homes, and daily life, all week long, all year long. It is not a</span>
+<span class="s1">      curriculum. It is not an app. It is the formation system underneath both.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.24in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Welcome"</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 3 — THE PROBLEM (copy)</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER ONE &amp;mdash; THE PROBLEM&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.24in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:24pt; color:var(--navy);"&gt;Churches don&amp;rsquo;t lack sermons. They lack systems.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      Most sermons are preached once, and then forgotten. The study is done. The illustration</span>
+<span class="s1">      lands. The room responds. And by Tuesday, very little of it remains.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      Most churches build disconnected sermon series, disconnected ministries, disconnected</span>
+<span class="s1">      groups, and disconnected discipleship &amp;mdash; each one working hard, none of them working</span>
+<span class="s1">      together.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;The shift&lt;/span&gt;</span>
+<span class="s1">      There is a better way &amp;mdash; one message, carried through a system, instead of five ministries pulling in five directions.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.3in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">photo</span><span class="p">(</span><span class="s2">"PHOTOGRAPHY — SENIOR PASTOR PREACHING, CONGREGATION IN SOFT FOCUS"</span><span class="p">,</span><span class="w"> </span><span class="s2">"height:3in;"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Problem"</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 4 — THE PROBLEM (diagram)</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE PROBLEM &amp;mdash; CONTINUED&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.22in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:21pt; color:var(--navy);"&gt;From scattered effort to one connected system.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      Disconnected efforts pull in five directions at once: the weekend message, small</span>
+<span class="s1">      groups, daily habits, family life, and mission &amp;mdash; each working hard alone. A system</span>
+<span class="s1">      threads all five into one connected path.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="width:100%; height:4.6in;"&gt;</span><span class="si">{</span><span class="n">step_chain_vertical</span><span class="p">([</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"WEEKEND"</span><span class="p">,</span><span class="w"> </span><span class="s2">"The message is preached to the whole church."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"GROUPS"</span><span class="p">,</span><span class="w"> </span><span class="s2">"The same message is discussed in real relationship."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"DAILY"</span><span class="p">,</span><span class="w"> </span><span class="s2">"The message becomes a daily rhythm."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"FAMILY"</span><span class="p">,</span><span class="w"> </span><span class="s2">"The message shapes the home."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MISSION"</span><span class="p">,</span><span class="w"> </span><span class="s2">"The message moves outward into action."</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.3in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Takeaway&lt;/span&gt;</span>
+<span class="s1">      A system doesn&amp;rsquo;t replace the sermon &amp;mdash; it gives the sermon somewhere to go on Monday.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Problem"</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 5 — THE OPPORTUNITY (copy)</span>
+<span class="n">opp_items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Small Group Curriculum"</span><span class="p">,</span> <span class="s2">"Daily Devotionals"</span><span class="p">,</span> <span class="s2">"Family Conversations"</span><span class="p">,</span> <span class="s2">"Leadership Development"</span><span class="p">,</span> <span class="s2">"Ministry Training"</span><span class="p">,</span> <span class="s2">"Podcasts &amp;amp; Video"</span><span class="p">,</span> <span class="s2">"Published Books"</span><span class="p">,</span> <span class="s2">"Future Campaigns"</span><span class="p">]</span>
+<span class="n">opp_col1</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="opp-item"&gt;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">opp_items</span><span class="p">[:</span><span class="mi">4</span><span class="p">]])</span>
+<span class="n">opp_col2</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="opp-item"&gt;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">opp_items</span><span class="p">[</span><span class="mi">4</span><span class="p">:]])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER TWO &amp;mdash; THE OPPORTUNITY&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.22in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:23pt; color:var(--navy);"&gt;Imagine every sermon becoming a library.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      One message, prepared once, can quietly become the source material for an entire</span>
+<span class="s1">      season of discipleship &amp;mdash; without adding a single hour to a pastor&amp;rsquo;s week.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="pull-quote" style="font-size:13.5pt;"&gt;&lt;span class="mark"&gt;&amp;ldquo;&lt;/span&gt;One message. Many expressions. A single source of truth for the whole church.&lt;span class="mark"&gt;&amp;rdquo;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.3in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:600; font-size:8.6pt; letter-spacing:0.14em; color:var(--gold); margin-bottom:0.14in;"&gt;EVERY MESSAGE CAN BECOME&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.4in;"&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">opp_col1</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">opp_col2</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Opportunity"</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 6 — OPPORTUNITY ECOSYSTEM DIAGRAM</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE OPPORTUNITY &amp;mdash; CONTINUED&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:20pt; color:var(--navy);"&gt;The Pastor&amp;rsquo;s Content Ecosystem&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="width:100%; height:6.4in;"&gt;</span><span class="si">{</span><span class="n">ecosystem_diagram</span><span class="p">()</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Takeaway&lt;/span&gt;</span>
+<span class="s1">      Nine formats. One message. Nothing built twice.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Opportunity"</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 7 — FRAMEWORK INTRO</span>
+<span class="n">fw_items</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Weekend"</span><span class="p">,</span> <span class="s2">"The message is preached with clarity and conviction."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Groups"</span><span class="p">,</span> <span class="s2">"The message is discussed in circles of real relationship."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Daily"</span><span class="p">,</span> <span class="s2">"The message becomes a daily rhythm of reflection."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Family"</span><span class="p">,</span> <span class="s2">"The message shapes conversation around the table."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Mission"</span><span class="p">,</span> <span class="s2">"The message moves outward into action."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">fw_rows</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.18in; padding:0.1in 0; border-bottom:1px solid var(--line);"&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Playfair'; font-weight:700; font-size:11.5pt; color:var(--navy); width:1.1in;"&gt;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Inter'; font-size:9.2pt; color:var(--ink); flex:1;"&gt;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">fw_items</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER THREE &amp;mdash; THE FRAMEWORK&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.22in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:23pt; color:var(--navy);"&gt;Five environments. One formation path.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      People are formed in more than one place. The Church Formation Framework names the</span>
+<span class="s1">      five environments where a single message keeps doing its work &amp;mdash; long after the</span>
+<span class="s1">      sermon ends.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">fw_rows</span><span class="si">}</span>
+<span class="s1">    &lt;div style="height:0.24in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">photo</span><span class="p">(</span><span class="s2">"PHOTOGRAPHY — SMALL GROUP AROUND A LIVING ROOM TABLE, EVENING LIGHT"</span><span class="p">,</span><span class="w"> </span><span class="s2">"height:2.4in;"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Framework"</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 8 — FRAMEWORK WHEEL</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE FRAMEWORK &amp;mdash; CONTINUED&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:21pt; color:var(--navy);"&gt;The Church Formation Wheel&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="width:100%; height:6.9in;"&gt;</span><span class="si">{</span><span class="n">wheel_diagram</span><span class="p">()</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Takeaway&lt;/span&gt;</span>
+<span class="s1">      The wheel turns every week &amp;mdash; the message never stops moving through the life of the church.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Framework"</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 9 — MASTERCLASS INTRO</span>
+<span class="n">track_bar</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="track-chip"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"DISCERN"</span><span class="p">,</span><span class="s2">"DEVELOP"</span><span class="p">,</span><span class="s2">"PRODUCE"</span><span class="p">,</span><span class="s2">"PUBLISH"</span><span class="p">,</span><span class="s2">"MOBILIZE"</span><span class="p">]])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame" style="display:flex; flex-direction:column; justify-content:center;"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER FOUR &amp;mdash; THE CHURCH FORMATION MASTERCLASS&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.24in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:26pt; color:#FBF8F1;"&gt;Five tracks. One trained team.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      The Masterclass is how a church staff learns to build inside the system &amp;mdash; not just</span>
+<span class="s1">      use it. Each track hands your team a discipline they can return to with every future</span>
+<span class="s1">      message.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.34in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:grid; grid-template-columns:1fr 1fr; gap:0.14in;"&gt;</span><span class="si">{</span><span class="n">track_bar</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Masterclass"</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 10 — MASTERCLASS TRACKS 1-3</span>
+<span class="n">tracks_1_3</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"DISCERN"</span><span class="p">,</span> <span class="s2">"Hearing the message clearly"</span><span class="p">,</span> <span class="s2">"Before anything is built, a team learns to identify the single true center of a message &amp;mdash; the one idea everything else will serve."</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"Name the one idea worth building around"</span><span class="p">,</span> <span class="s2">"Separate the message from the moment"</span><span class="p">,</span> <span class="s2">"Identify the Scripture that carries it"</span><span class="p">,</span> <span class="s2">"Spot where it touches real daily life"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"DEVELOP"</span><span class="p">,</span> <span class="s2">"Shaping it into a path"</span><span class="p">,</span> <span class="s2">"A message becomes a multi-week arc with its own structure, pacing, and emotional and spiritual logic &amp;mdash; not just a topic."</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"Map the week-by-week arc"</span><span class="p">,</span> <span class="s2">"Set the pace between conviction and rest"</span><span class="p">,</span> <span class="s2">"Build in the turn toward application"</span><span class="p">,</span> <span class="s2">"Design the invitation at the end"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"PRODUCE"</span><span class="p">,</span> <span class="s2">"Building every format"</span><span class="p">,</span> <span class="s2">"The arc becomes curriculum, devotionals, and training &amp;mdash; each shaped for how it will actually be used."</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"Write small group discussion guides"</span><span class="p">,</span> <span class="s2">"Draft daily devotional content"</span><span class="p">,</span> <span class="s2">"Build a leader training kit"</span><span class="p">,</span> <span class="s2">"Prepare family conversation prompts"</span><span class="p">]),</span>
+<span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE MASTERCLASS &amp;mdash; TRACKS ONE THROUGH THREE&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">track_card</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">tracks_1_3</span><span class="p">])</span><span class="si">}</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Masterclass"</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 11 — MASTERCLASS TRACKS 4-5 + quote</span>
+<span class="n">tracks_4_5</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"PUBLISH"</span><span class="p">,</span> <span class="s2">"Packaging it with excellence"</span><span class="p">,</span> <span class="s2">"The finished campaign is designed, proofed, and formatted so it feels like a resource, not a handout."</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"Design a cover and visual identity"</span><span class="p">,</span> <span class="s2">"Typeset every printed and digital piece"</span><span class="p">,</span> <span class="s2">"Proof theology, tone, and Scripture"</span><span class="p">,</span> <span class="s2">"Prepare it for licensing or release"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"MOBILIZE"</span><span class="p">,</span> <span class="s2">"Getting it into hands"</span><span class="p">,</span> <span class="s2">"A campaign only forms people if it launches well &amp;mdash; so the track ends with a real activation plan, not just a finished file."</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"Build the launch and promotion plan"</span><span class="p">,</span> <span class="s2">"Train leaders to carry the content well"</span><span class="p">,</span> <span class="s2">"Prepare the pulpit announcement path"</span><span class="p">,</span> <span class="s2">"Plan the on-ramp to what comes next"</span><span class="p">]),</span>
+<span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE MASTERCLASS &amp;mdash; TRACKS FOUR AND FIVE&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">track_card</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">tracks_4_5</span><span class="p">])</span><span class="si">}</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="pull-quote" style="font-size:14pt;"&gt;Your team doesn&amp;rsquo;t just receive curriculum. &lt;span class="mark"&gt;They learn to build it.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Masterclass"</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 12 — CRAWL WALK RUN — vertical levels</span>
+<span class="n">crawl_levels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"Use Ours"</span><span class="p">,</span> <span class="s2">"Launch proven Lifetogether campaigns as they are."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span> <span class="s2">"Customize Ours"</span><span class="p">,</span> <span class="s2">"Adapt content and language to your church's voice."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span> <span class="s2">"Build Yours"</span><span class="p">,</span> <span class="s2">"Create original campaigns from your pastor's own messages."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span> <span class="s2">"Publish Yours"</span><span class="p">,</span> <span class="s2">"Package your campaigns for other churches to license."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span> <span class="s2">"Multiply Yours"</span><span class="p">,</span> <span class="s2">"Train other pastors to build within your formation system."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER FIVE &amp;mdash; THE CRAWL, WALK, RUN MODEL&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:21pt; color:var(--navy);"&gt;Every church starts where it is, and grows from there.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      No church is asked to arrive fully built. The model has five levels, and most churches</span>
+<span class="s1">      move through them over time &amp;mdash; at whatever pace fits their staff, calendar, and</span>
+<span class="s1">      capacity.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="width:100%; height:5.9in;"&gt;</span><span class="si">{</span><span class="n">vertical_levels</span><span class="p">(</span><span class="n">crawl_levels</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Crawl, Walk, Run"</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 13 — CRAWL WALK RUN — timeline + quote/takeaway</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE CRAWL, WALK, RUN MODEL &amp;mdash; CONTINUED&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:20pt; color:var(--navy);"&gt;A typical 18 to 24 month formation roadmap&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="width:100%; height:5.7in;"&gt;</span><span class="si">{</span><span class="n">step_chain_vertical</span><span class="p">([</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MO. 1&amp;ndash;3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Launch your first campaign with our library."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MO. 4&amp;ndash;9"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Customize campaigns to your church's voice."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MO. 10&amp;ndash;15"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Build original campaigns from your own messages."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MO. 16&amp;ndash;20"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Publish your campaigns for other churches."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MO. 21&amp;ndash;24"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Train other pastors inside your formation system."</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Practical takeaway&lt;/span&gt;</span>
+<span class="s1">      Most churches begin at Level One with a licensed campaign, and don&amp;rsquo;t build original content until their team has run the system at least once.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Crawl, Walk, Run"</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 14 — WHAT WE HELP CHURCHES BUILD</span>
+<span class="n">build_items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"21-Day Challenges"</span><span class="p">,</span> <span class="s2">"30-Day Journeys"</span><span class="p">,</span> <span class="s2">"40-Day Campaigns"</span><span class="p">,</span> <span class="s2">"Small Group Studies"</span><span class="p">,</span> <span class="s2">"Sermon Series"</span><span class="p">,</span> <span class="s2">"Leader Training"</span><span class="p">,</span> <span class="s2">"Devotionals"</span><span class="p">,</span> <span class="s2">"Family Resources"</span><span class="p">,</span> <span class="s2">"Books"</span><span class="p">,</span> <span class="s2">"Video Studies"</span><span class="p">,</span> <span class="s2">"Digital Experiences"</span><span class="p">,</span> <span class="s2">"Membership Courses"</span><span class="p">,</span> <span class="s2">"Ministry Systems"</span><span class="p">]</span>
+<span class="n">grid_cells</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="build-cell"&gt;</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">build_items</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">grid_cells</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;div class="build-cell wide"&gt;&lt;span class="rule"&gt;&lt;/span&gt;</span><span class="si">{</span><span class="n">build_items</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;span class="rule"&gt;&lt;/span&gt;&lt;/div&gt;'</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER SIX &amp;mdash; WHAT WE HELP YOU BUILD&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:22pt; color:var(--navy);"&gt;Every format a message can become.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;Everything here is built from one thing: the pastor&amp;rsquo;s own message.&lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.26in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="build-grid"&gt;</span><span class="si">{</span><span class="n">grid_cells</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"What We Help You Build"</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 15 — MESSAGE -&gt; MOVEMENT diagram + quote</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;WHAT WE HELP YOU BUILD &amp;mdash; CONTINUED&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:22pt; color:#FBF8F1;"&gt;Message &amp;rarr; Movement&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="width:100%; height:5.2in;"&gt;</span><span class="si">{</span><span class="n">step_chain_vertical</span><span class="p">([</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MESSAGE"</span><span class="p">,</span><span class="w"> </span><span class="s2">"One message, studied and preached with care."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"CURRICULUM"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Shaped into formats groups and families can use."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"COMMUNITY"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Lived out together, in real relationship."</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="s2">"MOVEMENT"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Carried into lasting, visible change."</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="pull-quote"&gt;Everything built from the pastor&amp;rsquo;s own message. &lt;span class="mark"&gt;Nothing built from scratch, twice.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"What We Help You Build"</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 16 — THREE WAYS WE HELP (intro cards)</span>
+<span class="n">offers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Campaign Builder Intensive"</span><span class="p">,</span> <span class="s2">"A six-week planning process"</span><span class="p">,</span> <span class="s2">"For a team ready to shape their first original campaign from a pastor&amp;rsquo;s existing message."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"90-Day Accelerator"</span><span class="p">,</span> <span class="s2">"From idea to launch"</span><span class="p">,</span> <span class="s2">"For a church ready to move quickly &amp;mdash; from a first conversation to a fully launched campaign in one season."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Church Formation Partnership"</span><span class="p">,</span> <span class="s2">"A twelve-month coaching relationship"</span><span class="p">,</span> <span class="s2">"For a church building toward Level Four or Five &amp;mdash; publishing and multiplying its own formation system."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">offer_cards</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;div class="offer-card" style="margin-bottom:0.2in;"&gt;</span>
+<span class="s1">      &lt;div style="width:30px; height:2px; background:var(--gold); margin-bottom:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Playfair'; font-weight:700; font-size:14.5pt; color:var(--navy); line-height:1.2;"&gt;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Archivo'; font-weight:600; font-size:8.3pt; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin:0.08in 0 0.14in;"&gt;</span><span class="si">{</span><span class="n">sub</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;p style="font-family:'Inter'; font-size:9.6pt; line-height:1.55; color:var(--ink);"&gt;</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">offers</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER SEVEN &amp;mdash; THREE WAYS WE HELP&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:22pt; color:var(--navy);"&gt;Choose the level of partnership that fits your church.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.26in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">offer_cards</span><span class="si">}</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Three Ways We Help"</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 17 — COMPARISON CHART</span>
+<span class="n">compare_rows</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Length"</span><span class="p">,</span> <span class="s2">"Six weeks"</span><span class="p">,</span> <span class="s2">"One season (about 90 days)"</span><span class="p">,</span> <span class="s2">"Twelve months"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Best for"</span><span class="p">,</span> <span class="s2">"A first original campaign"</span><span class="p">,</span> <span class="s2">"A fast, full launch"</span><span class="p">,</span> <span class="s2">"Building toward Level Four or Five"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Format"</span><span class="p">,</span> <span class="s2">"Guided planning workshops"</span><span class="p">,</span> <span class="s2">"Hands-on build &amp;amp; launch support"</span><span class="p">,</span> <span class="s2">"Ongoing coaching &amp;amp; team training"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"You leave with"</span><span class="p">,</span> <span class="s2">"One completed campaign outline"</span><span class="p">,</span> <span class="s2">"One fully launched campaign"</span><span class="p">,</span> <span class="s2">"A trained team and a repeatable system"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_row</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="bp">cls</span> <span class="o">=</span> <span class="s2">"cmp-head"</span> <span class="k">if</span> <span class="n">header</span> <span class="k">else</span> <span class="s2">"cmp-row"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="</span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">"&gt;&lt;div class="cmp-cell cmp-label"&gt;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="cmp-cell"&gt;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="cmp-cell"&gt;</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="cmp-cell"&gt;</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'''</span>
+<span class="n">header_row</span> <span class="o">=</span> <span class="n">compare_row</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"Intensive"</span><span class="p">,</span> <span class="s2">"Accelerator"</span><span class="p">,</span> <span class="s2">"Partnership"</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">body_rows</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">compare_row</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">compare_rows</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THREE WAYS WE HELP &amp;mdash; CONTINUED&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.22in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:21pt; color:var(--navy);"&gt;At a glance&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.26in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="cmp-table"&gt;</span><span class="si">{</span><span class="n">header_row</span><span class="si">}{</span><span class="n">body_rows</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Three Ways We Help"</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 18 — CLOSING: YOUR MESSAGE MATTERS</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="photo" style="position:absolute; inset:0; border-radius:0;"&gt;</span>
+<span class="s1">    &lt;div class="cap" style="right:0.68in; bottom:0.5in; left:auto; text-align:right; font-size:6.8pt;"&gt;PHOTOGRAPHY — PASTOR &amp;amp; FAMILY, GOLDEN HOUR, CHURCH LOBBY IN SOFT FOCUS&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div style="position:absolute; inset:0; background:linear-gradient(190deg, rgba(16,30,56,0.4) 0%, rgba(16,30,56,0.9) 55%, rgba(16,30,56,0.98) 100%);"&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="frame" style="display:flex; flex-direction:column; justify-content:flex-end;"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;CHAPTER EIGHT &amp;mdash; YOUR MESSAGE MATTERS&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.24in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:24pt; color:#FBF8F1;"&gt;Your greatest sermons deserve more than one Sunday.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      They deserve to become a pathway that forms disciples, strengthens families, equips</span>
+<span class="s1">      leaders, and leaves a legacy that outlives your ministry.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Your Message Matters"</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># PAGE 19 — BACK COVER</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame" style="display:flex; flex-direction:column; justify-content:space-between; align-items:center; text-align:center;"&gt;</span>
+<span class="s1">    &lt;div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Archivo'; font-weight:600; font-size:9.5pt; letter-spacing:0.28em; color:#D9B876;"&gt;LIFETOGETHER&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="height:0.26in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;h1 class="display" style="font-size:22pt; color:#FBF8F1;"&gt;Let&amp;rsquo;s build it together.&lt;/h1&gt;</span>
+<span class="s1">      &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;p class="lede" style="max-width:4in; margin:0 auto;"&gt;</span>
+<span class="s1">        You don&amp;rsquo;t have to build the system alone &amp;mdash; and you don&amp;rsquo;t have to build it all at once.</span>
+<span class="s1">      &lt;/p&gt;</span>
+<span class="s1">      &lt;div style="height:0.34in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="width:30px; height:2px; background:#B98D3E; margin:0 auto;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Archivo'; font-weight:500; font-size:9pt; letter-spacing:0.08em; color:rgba(251,248,241,0.75);"&gt;LIFETOGETHER.COM &amp;nbsp;&amp;middot;&amp;nbsp; BRETT@LIFETOGETHER.COM&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:500; font-size:7.6pt; letter-spacing:0.12em; color:rgba(251,248,241,0.4);"&gt;THE CHURCH FORMATION SYSTEM&amp;trade;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/build/portrait_style.css"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">base_css</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''&lt;!DOCTYPE html&gt;</span>
+<span class="s1">&lt;html&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s1">&lt;style&gt;</span><span class="si">{</span><span class="n">base_css</span><span class="si">}</span><span class="s1">&lt;/style&gt;&lt;/head&gt;</span>
+<span class="s1">&lt;body&gt;</span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PAGES</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/body&gt;&lt;/html&gt;'''</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/build/brochure_portrait.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Pages:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">PAGES</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build/make_html_portrait.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

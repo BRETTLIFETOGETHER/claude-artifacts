@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>render2.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Brochures with 100 campaigns and 40 days for each</div>
+<h1>render2.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">5 KB</span>
+<a class="btn" href="../../artifacts/Brochures%20with%20100%20campaigns%20and%2040%20days%20for%20each/render2.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Volume II renderer - reuses Vol I page builders, new cover/overview for campaigns 11-20</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Build Volume II (Campaigns 11-20) PDF, reusing Volume I page components."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">data2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">render</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">R</span>          <span class="c1"># reuse camp_detail, camp_map, closing components</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weasyprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span>
+
+<span class="n">C2</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">CATEGORY2</span>
+<span class="n">CAMPS</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">CAMPAIGNS2</span>
+<span class="n">BRAND</span> <span class="o">=</span> <span class="s2">"Lifetogether"</span>
+
+<span class="c1"># ---- Volume II cover ----</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cover</span><span class="p">():</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="page"&gt;</span>
+<span class="s2">  &lt;div class="hero"&gt;</span>
+<span class="s2">    &lt;div class="brandline"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;</span><span class="si">{</span><span class="n">C2</span><span class="p">[</span><span class="s1">'kicker'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;h1 class="cover-title" style="margin-top:.30in;"&gt;</span><span class="si">{</span><span class="n">C2</span><span class="p">[</span><span class="s1">'title_html'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">    &lt;hr class="rule"&gt;</span>
+<span class="s2">    &lt;div class="eyebrow" style="color:var(--gold2); margin:-.02in 0 .14in;"&gt;</span><span class="si">{</span><span class="n">C2</span><span class="p">[</span><span class="s1">'volline'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="lead" style="max-width:4.7in;"&gt;</span><span class="si">{</span><span class="n">C2</span><span class="p">[</span><span class="s1">'positioning'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+
+<span class="s2">    &lt;div style="position:absolute; left:0.8in; right:0.8in; bottom:1.95in;"&gt;</span>
+<span class="s2">      &lt;div class="covpanel"&gt;</span>
+<span class="s2">        &lt;div class="ql"&gt;The Conviction&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="qt"&gt;</span><span class="si">{</span><span class="n">C2</span><span class="p">[</span><span class="s1">'conviction'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;div style="position:absolute; left:0.8in; right:0.8in; bottom:0.95in;"&gt;</span>
+<span class="s2">      &lt;div class="statstrip"&gt;</span>
+<span class="s2">        &lt;div class="st"&gt;&lt;div class="sv"&gt;10&lt;/div&gt;&lt;div class="sl"&gt;New Campaigns&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="st"&gt;&lt;div class="sv"&gt;400&lt;/div&gt;&lt;div class="sl"&gt;Devotional Days&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="st"&gt;&lt;div class="sv"&gt;60&lt;/div&gt;&lt;div class="sl"&gt;Group Sessions&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="st"&gt;&lt;div class="sv"&gt;11&amp;ndash;20&lt;/div&gt;&lt;div class="sl"&gt;In the Library&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;div class="footer"&gt;</span>
+<span class="s2">      &lt;span&gt;Brett Eastman &amp;middot; Founder &amp;middot; brett@lifetogether.com&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="bk"&gt;</span><span class="si">{</span><span class="n">BRAND</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="c1"># ---- Volume II overview table ----</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">overview</span><span class="p">():</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CAMPS</span><span class="p">:</span>
+        <span class="n">rows</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">      &lt;tr&gt;</span>
+<span class="s2">        &lt;td class="rk"&gt;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'num'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">        &lt;td style="width:2.1in;"&gt;</span>
+<span class="s2">          &lt;div class="nm"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'title_plain'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="pos"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'positioning'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="meta"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'tier'</span><span class="p">]</span><span class="si">}</span><span class="s2"> &amp;middot; </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'audience'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;/td&gt;</span>
+<span class="s2">        &lt;td class="sum"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'description'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">      &lt;/tr&gt;"""</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="page"&gt;</span>
+<span class="s2">  &lt;div class="content"&gt;</span>
+<span class="s2">    &lt;div class="kicker gr"&gt;The Library Continues&lt;/div&gt;</span>
+<span class="s2">    &lt;h1 class="mtitle" style="margin:6px 0 2px;"&gt;Ten More &lt;span class="it"&gt;Finances Campaigns&lt;/span&gt;&lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="scrip" style="margin:1px 0 5px;"&gt;Campaigns eleven through twenty &amp;mdash; each a complete series with its own biblical backbone, from firstfruits giving to starting over after loss.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="divider" style="margin:8px 0;"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;table class="ovtable"&gt;</span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">&lt;/table&gt;</span>
+<span class="s2">    &lt;div class="lfooter"&gt;</span>
+<span class="s2">      &lt;span&gt;Finances Campaign Catalog &amp;middot; Volume II &amp;middot; Overview&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="bk"&gt;</span><span class="si">{</span><span class="n">BRAND</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="c1"># ---- Volume II closing index ----</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">closing</span><span class="p">():</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CAMPS</span><span class="p">:</span>
+        <span class="n">rows</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="idxrow"&gt;&lt;div class="in"&gt;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"num"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+                 <span class="sa">f</span><span class="s1">'&lt;div class="it2"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"title_plain"</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+                 <span class="sa">f</span><span class="s1">'&lt;div class="ip"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"positioning"</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+                 <span class="sa">f</span><span class="s1">'&lt;div class="im"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"tier"</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="page"&gt;</span>
+<span class="s2">  &lt;div class="hero"&gt;</span>
+<span class="s2">    &lt;div class="brandline"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;Volume II &amp;middot; The Library Continues&lt;/div&gt;</span>
+<span class="s2">    &lt;h1 style="color:#fff; font-size:27pt; margin:7px 0 4px;"&gt;Twenty Campaigns. &lt;span class="it"&gt;And Growing.&lt;/span&gt;&lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="lead" style="max-width:5in; margin-bottom:.16in;"&gt;With Volume II the Finances library reaches twenty flagship campaigns &amp;mdash; a full calendar of formation for every season and stage a congregation walks through.&lt;/p&gt;</span>
+<span class="s2">    &lt;div&gt;</span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+
+<span class="s2">    &lt;div style="position:absolute; left:0.8in; right:0.8in; bottom:1.5in;"&gt;</span>
+<span class="s2">      &lt;div class="covpanel"&gt;</span>
+<span class="s2">        &lt;div class="ql"&gt;Next Step&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="qt" style="font-size:12.5pt;"&gt;Choose your next campaign and season &amp;mdash; and we will keep building the library toward the full one hundred.&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;div class="footer"&gt;</span>
+<span class="s2">      &lt;span&gt;Brett Eastman &amp;middot; brett@lifetogether.com &amp;middot; Finances Campaign Catalog, Vol. II&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="bk"&gt;</span><span class="si">{</span><span class="n">BRAND</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">cover</span><span class="p">(),</span> <span class="n">overview</span><span class="p">()]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CAMPS</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">camp_detail</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">camp_map</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">closing</span><span class="p">())</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;link rel="stylesheet" href="style.css"&gt;&lt;/head&gt;&lt;body&gt;</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&lt;/body&gt;&lt;/html&gt;"""</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"catalog2.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+    <span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">html</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">"."</span><span class="p">)</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span><span class="s2">"Finances_Campaign_Catalog_Vol2.pdf"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Pages:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">),</span> <span class="s2">"PDF written."</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/tmp/build/render2.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_sg.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_sg.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">19 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_sg.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the small group curriculum platform</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sg_lib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">L</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"thesis"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">THESIS</span><span class="p">,</span><span class="s2">"sixwhy"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">SIX_WHY</span><span class="p">,</span><span class="s2">"aud"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">AUDIENCES</span><span class="p">,</span><span class="s2">"pack"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">PACK</span><span class="p">,</span>
+ <span class="s2">"wm"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">WORDMATH</span><span class="p">,</span><span class="s2">"aff"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">AFFINITY</span><span class="p">,</span><span class="s2">"cl"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">CLUSTERS</span><span class="p">,</span><span class="s2">"pipe"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">PIPELINE</span><span class="p">,</span>
+ <span class="s2">"pipenote"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">PIPELINE_NOTE</span><span class="p">,</span><span class="s2">"sevena"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">SEVEN_A</span><span class="p">,</span><span class="s2">"week"</span><span class="p">:</span><span class="n">L</span><span class="o">.</span><span class="n">WEEK_ANSWER</span><span class="p">}</span>
+<span class="n">NS</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"st"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">L</span><span class="o">.</span><span class="n">CLUSTERS</span><span class="p">)</span>
+<span class="n">NSESS</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"ss"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">L</span><span class="o">.</span><span class="n">CLUSTERS</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s2">"st"</span><span class="p">])</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""*{box-sizing:border-box;margin:0;padding:0}</span>
+<span class="s2">:root{--blue:#1d4ed8;--blue-d:#1e3a8a;--blue-l:#3b82f6;--blue-p:#eff6ff;--blue-b:#dbeafe;</span>
+<span class="s2">--ink:#0f172a;--body:#334155;--mute:#64748b;--faint:#94a3b8;</span>
+<span class="s2">--line:#e2e8f0;--bg:#f8fafc;--white:#fff;--max:1160px;</span>
+<span class="s2">--sh:0 1px 2px rgba(15,23,42,.04),0 4px 12px rgba(15,23,42,.05);</span>
+<span class="s2">--sh-l:0 2px 4px rgba(15,23,42,.04),0 12px 32px rgba(15,23,42,.08)}</span>
+<span class="s2">html{scroll-behavior:smooth}</span>
+<span class="s2">body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--body);</span>
+<span class="s2">line-height:1.62;font-size:16.5px;-webkit-font-smoothing:antialiased}</span>
+<span class="s2">.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}</span>
+<span class="s2">h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-.022em;font-weight:700}</span>
+<span class="s2">section{padding:72px 0}</span>
+<span class="s2">.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:13px}</span>
+<span class="s2">h2.sh{font-size:33px}</span>
+<span class="s2">p.lede{font-size:18px;color:var(--mute);margin-top:11px;max-width:68ch}</span>
+<span class="s2">header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);</span>
+<span class="s2">backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.nav{display:flex;align-items:center;gap:20px;height:62px}</span>
+<span class="s2">.brand{font-weight:800;font-size:15.5px;color:var(--ink);flex-shrink:0}</span>
+<span class="s2">.brand span{color:var(--blue)}</span>
+<span class="s2">.nav nav{display:flex;gap:18px;margin-left:auto;overflow-x:auto;scrollbar-width:none}</span>
+<span class="s2">.nav nav::-webkit-scrollbar{display:none}</span>
+<span class="s2">.nav a{color:var(--mute);text-decoration:none;font-size:13.5px;font-weight:500;white-space:nowrap;cursor:pointer}</span>
+<span class="s2">.nav a:hover{color:var(--blue)}</span>
+<span class="s2">.hero{background:var(--white);border-bottom:1px solid var(--line);padding:80px 0 60px}</span>
+<span class="s2">.hero h1{font-size:50px;font-weight:800;letter-spacing:-.035em;max-width:18ch}</span>
+<span class="s2">.hero h1 em{font-style:normal;color:var(--blue)}</span>
+<span class="s2">.hero .l2{font-size:20px;color:var(--mute);margin-top:20px;max-width:68ch}</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;margin-top:30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.stats&gt;div{flex:1 1 125px;padding:18px 15px 18px 0}</span>
+<span class="s2">.stats b{display:block;font-size:26px;color:var(--blue);font-weight:800;letter-spacing:-.03em}</span>
+<span class="s2">.stats span{font-size:12.5px;color:var(--mute);display:block;margin-top:2px}</span>
+<span class="s2">.wrow{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.wrow:last-child{border-bottom:0}</span>
+<span class="s2">.wrow .wk{font-size:16.5px;color:var(--ink);font-weight:600;min-width:265px;flex-shrink:0}</span>
+<span class="s2">.wrow .wv{flex:1;font-size:16px;color:var(--mute)}</span>
+<span class="s2">.four{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}</span>
+<span class="s2">.fc{border:1px solid var(--line);border-radius:12px;padding:22px 19px;background:var(--white)}</span>
+<span class="s2">.fc h4{font-size:19px}</span>
+<span class="s2">.fc .fs{font-size:14px;color:var(--blue);font-weight:600;margin-top:3px}</span>
+<span class="s2">.fc p{font-size:15px;color:var(--mute);margin-top:10px;line-height:1.55}</span>
+<span class="s2">.pk{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.pk:last-child{border-bottom:0}</span>
+<span class="s2">.pk .pn{font-size:16.5px;color:var(--ink);font-weight:600;min-width:200px;flex-shrink:0}</span>
+<span class="s2">.pk .pw{font-size:13px;color:var(--blue);font-weight:700;min-width:165px;flex-shrink:0}</span>
+<span class="s2">.pk .pd{flex:1;font-size:15.5px;color:var(--mute)}</span>
+<span class="s2">.pk .pt{font-size:13px;color:var(--faint);min-width:70px;text-align:right;flex-shrink:0}</span>
+<span class="s2">.wm{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.wm:last-child{border-bottom:0}</span>
+<span class="s2">.wm .wl{font-size:16.5px;color:var(--ink);font-weight:600;min-width:250px;flex-shrink:0}</span>
+<span class="s2">.wm .wn{font-size:19px;color:var(--blue);font-weight:800;letter-spacing:-.02em;min-width:170px;flex-shrink:0}</span>
+<span class="s2">.wm .wd{flex:1;font-size:15.5px;color:var(--mute)}</span>
+<span class="s2">.affg{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}</span>
+<span class="s2">.af{border:1px solid var(--line);background:var(--white);border-radius:8px;padding:9px 14px;</span>
+<span class="s2">font-family:inherit;font-size:14px;color:var(--body);cursor:pointer;font-weight:500}</span>
+<span class="s2">.af:hover{border-color:var(--blue-l);color:var(--blue)}</span>
+<span class="s2">.af.on{background:var(--blue);border-color:var(--blue);color:#fff}</span>
+<span class="s2">.afd{margin-top:14px;background:var(--blue-p);border:1px solid var(--blue-b);border-radius:11px;</span>
+<span class="s2">padding:16px 20px;font-size:16px;color:var(--blue-d)}</span>
+<span class="s2">.afd b{color:var(--blue)}</span>
+<span class="s2">.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}</span>
+<span class="s2">.cc{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px 18px;</span>
+<span class="s2">cursor:pointer;text-align:left;font-family:inherit;transition:all .18s}</span>
+<span class="s2">.cc:hover{border-color:var(--blue-l);box-shadow:var(--sh-l);transform:translateY(-2px)}</span>
+<span class="s2">.cc .cn{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}</span>
+<span class="s2">.cc h4{font-size:18px;margin-top:5px}</span>
+<span class="s2">.cc .cs{font-size:14px;color:var(--blue);font-weight:600;margin-top:3px}</span>
+<span class="s2">.cc p{font-size:14.5px;color:var(--mute);margin-top:8px;line-height:1.5}</span>
+<span class="s2">.back{background:none;border:0;color:var(--blue);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0;margin-bottom:16px}</span>
+<span class="s2">.det{background:var(--white);border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:var(--sh)}</span>
+<span class="s2">.dh{padding:26px 30px;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.dh h3{font-size:27px}</span>
+<span class="s2">.dh .ds{font-size:17px;color:var(--blue);font-weight:600;margin-top:4px}</span>
+<span class="s2">.dh p{font-size:16.5px;color:var(--mute);margin-top:10px;max-width:70ch}</span>
+<span class="s2">.sr{display:flex;gap:14px;padding:16px 30px;border-bottom:1px solid var(--line);cursor:pointer;</span>
+<span class="s2">align-items:baseline;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font-family:inherit;color:inherit}</span>
+<span class="s2">.sr:last-child{border-bottom:0}</span>
+<span class="s2">.sr:hover .st2{color:var(--blue)}</span>
+<span class="s2">.sr .sn{font-size:11.5px;font-weight:700;color:var(--blue);min-width:22px;flex-shrink:0}</span>
+<span class="s2">.sr .sb</span><span class="si">{flex:1}</span>
+<span class="s2">.sr .st2{font-size:18px;color:var(--ink);font-weight:600;display:block}</span>
+<span class="s2">.sr .ss2{font-size:15px;color:var(--mute);margin-top:2px;display:block}</span>
+<span class="s2">.sr .sx{font-size:12.5px;color:var(--faint);flex-shrink:0}</span>
+<span class="s2">.sess{padding:8px 30px 22px}</span>
+<span class="s2">.sess .sl{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin:16px 0 8px}</span>
+<span class="s2">.sess ol{margin-left:18px}</span>
+<span class="s2">.sess li{font-size:17px;color:var(--body);margin-bottom:8px}</span>
+<span class="s2">.pill{display:inline-block;font-size:14px;background:var(--blue-p);color:var(--blue-d);</span>
+<span class="s2">border:1px solid var(--blue-b);padding:6px 12px;border-radius:7px;margin:3px 4px 3px 0}</span>
+<span class="s2">.pipe{border:1px solid var(--line);border-radius:12px;background:var(--white);margin-bottom:10px;overflow:hidden}</span>
+<span class="s2">.ph2{padding:18px 22px;background:var(--bg);border-bottom:1px solid var(--line);cursor:pointer;</span>
+<span class="s2">display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}</span>
+<span class="s2">.ph2 .pnum{font-size:13px;font-weight:800;color:var(--blue);min-width:26px}</span>
+<span class="s2">.ph2 h4{font-size:19px;flex:1;min-width:170px}</span>
+<span class="s2">.ph2 .pdd{font-size:15px;color:var(--mute);width:100%;padding-left:40px}</span>
+<span class="s2">.pb2{padding:8px 22px 16px 62px;display:none}</span>
+<span class="s2">.pipe.on .pb2{display:block}</span>
+<span class="s2">.pb2 ul{list-style:none}</span>
+<span class="s2">.pb2 li{font-size:15.5px;color:var(--body);padding:5px 0 5px 18px;position:relative}</span>
+<span class="s2">.pb2 li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:99px;background:var(--blue-b)}</span>
+<span class="s2">.aa{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.aa:last-child{border-bottom:0}</span>
+<span class="s2">.aa .al{font-size:17px;color:var(--blue);font-weight:800;min-width:120px;flex-shrink:0}</span>
+<span class="s2">.aa .ad{flex:1;font-size:16px;color:var(--mute)}</span>
+<span class="s2">.big{background:var(--white);border-left:3px solid var(--blue);padding:20px 25px;margin-top:22px;</span>
+<span class="s2">font-size:20px;color:var(--ink);font-weight:600;letter-spacing:-.02em;border-radius:0 11px 11px 0}</span>
+<span class="s2">.cta{background:var(--blue-d);color:#fff;text-align:center;padding:68px 0}</span>
+<span class="s2">.cta h2{color:#fff;font-size:33px;letter-spacing:-.03em}</span>
+<span class="s2">.cta p{color:#bfdbfe;font-size:18px;margin-top:13px;max-width:62ch;margin-left:auto;margin-right:auto}</span>
+<span class="s2">footer{background:var(--ink);color:var(--faint);padding:26px 0;font-size:13.5px}</span>
+<span class="s2">@media(max-width:1000px){.cgrid{grid-template-columns:repeat(2,1fr)}.four{grid-template-columns:repeat(2,1fr)}</span>
+<span class="s2">.hero h1{font-size:37px}}</span>
+<span class="s2">@media(max-width:640px){section{padding:48px 0}.hero{padding:48px 0 40px}.hero h1{font-size:28px}</span>
+<span class="s2">.hero .l2{font-size:17px}h2.sh{font-size:24px}.cgrid,.four{grid-template-columns:1fr}</span>
+<span class="s2">.dh,.sr,.sess{padding-left:20px;padding-right:20px}</span>
+<span class="s2">.wrow,.pk,.wm,.aa{flex-direction:column;gap:4px}</span>
+<span class="s2">.wrow .wk,.pk .pn,.pk .pw,.wm .wl,.wm .wn,.aa .al{min-width:0}</span>
+<span class="s2">.pk .pt{text-align:left}.pb2{padding-left:24px}.cta h2{font-size:24px}}</span>
+<span class="s2">@media(prefers-reduced-motion:reduce){*{transition:none!important}}"""</span>
+
+<span class="n">BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;header&gt;&lt;div class="wrap nav"&gt;&lt;div class="brand"&gt;Small Group &lt;span&gt;Curriculum&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;nav&gt;&lt;a data-j="week"&gt;This Week&lt;/a&gt;&lt;a data-j="six"&gt;Why Six&lt;/a&gt;&lt;a data-j="find"&gt;The Library&lt;/a&gt;</span>
+<span class="s2">&lt;a data-j="pack"&gt;What Ships&lt;/a&gt;&lt;a data-j="who"&gt;Four Audiences&lt;/a&gt;&lt;a data-j="pastor"&gt;Pastor&amp;rsquo;s Library&lt;/a&gt;&lt;/nav&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;</span>
+
+<span class="s2">&lt;div class="hero"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Finder &amp;amp; Builder&lt;/div&gt;</span>
+<span class="s2">&lt;h1&gt;What are we studying &lt;em&gt;this week&lt;/em&gt;?&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="l2" id="thesis"&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;div class="stats"&gt;&lt;div&gt;&lt;b&gt;15&lt;/b&gt;&lt;span&gt;clusters&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;120&lt;/b&gt;&lt;span&gt;studies&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;720&lt;/b&gt;&lt;span&gt;sessions&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;20&lt;/b&gt;&lt;span&gt;affinity editions&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;2,400&lt;/b&gt;&lt;span&gt;combinations&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;6&lt;/b&gt;&lt;span&gt;sessions, always&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;section id="week"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Question&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Five inputs, ninety seconds, one answer.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Most groups answer this by asking around, buying whatever is on the shelf and starting three weeks late.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="week2" style="margin-top:20px"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="big"&gt;A group that cannot answer this question in one meeting will drift for a month, and some of them will not come back.&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="six" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"&gt;</span>
+<span class="s2">&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Constraint&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Every study is six sessions. No exceptions.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;One length means one format, one leader training, one print template, and a group that never has to relearn anything.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="six2" style="margin-top:20px"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="find"&gt;&lt;div class="wrap"&gt;&lt;div id="fh"&gt;&lt;div class="eyebrow"&gt;The Library&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Fifteen clusters. One hundred and twenty studies.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Choose the room first, then the topic. The affinity edition changes the examples, the pace and the questions &amp;mdash; never the theology or the structure.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="eyebrow" style="margin-top:26px"&gt;Who is in the room&lt;/div&gt;</span>
+<span class="s2">&lt;div class="affg" id="affg"&gt;&lt;/div&gt;&lt;div class="afd" id="afd"&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cgrid" id="cg"&gt;&lt;/div&gt;&lt;div id="detail"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="pack" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"&gt;</span>
+<span class="s2">&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;What Ships&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Six components with every study.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Including a ten-minute teaching script, written out, for a pastor or a host who would rather read than improvise.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="pack2" style="margin-top:20px"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="eyebrow" style="margin-top:44px"&gt;The Word Math&lt;/div&gt;</span>
+<span class="s2">&lt;h3 style="font-size:22px"&gt;How much writing this actually is.&lt;/h3&gt;</span>
+<span class="s2">&lt;div id="wm2" style="margin-top:14px"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="big"&gt;Fifty-eight million words across all editions. That number is the entire argument for generating from a source rather than commissioning writers.&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="who"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;One Subscription&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Four audiences, one library.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Included in the church platform subscription rather than sold separately, because the value is that everybody uses the same thing.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="four" id="aud2"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="pastor" style="background:var(--white);border-top:1px solid var(--line)"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;The Pastor&amp;rsquo;s Library Project&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;How a pastor loads thirty years of preaching.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede" id="pipenote"&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;div id="pipe2" style="margin-top:22px"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="eyebrow" style="margin-top:44px"&gt;The Standard&lt;/div&gt;</span>
+<span class="s2">&lt;h3 style="font-size:22px"&gt;Straight A&amp;rsquo;s &amp;mdash; all seven, not five.&lt;/h3&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;An archive that is authentic but never analyzed is still a folder. One that is analyzed but never approved is not his.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="sevena" style="margin-top:16px"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;div class="cta"&gt;&lt;div class="wrap"&gt;&lt;h2&gt;Never ask what we are studying next again.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;One hundred and twenty studies, twenty editions, six sessions every time &amp;mdash; and the pastor&amp;rsquo;s own archive underneath all of it.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;Small Group Curriculum &amp;middot; 120 studies &amp;middot; 720 sessions &amp;middot; 20 editions &amp;middot; 2,400 combinations&lt;/div&gt;&lt;/footer&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">var D=__DATA__;var st={aff:0,cl:null,s:null};</span>
+<span class="s2">function el(i){return document.getElementById(i);}</span>
+<span class="s2">el("thesis").innerHTML=D.thesis;</span>
+<span class="s2">el("pipenote").innerHTML=D.pipenote;</span>
+
+<span class="s2">function rows(id,arr){var h="",i;for(i=0;i&lt;arr.length;i++){</span>
+<span class="s2">h+='&lt;div class="wrow"&gt;&lt;span class="wk"&gt;'+arr[i][0]+'&lt;/span&gt;&lt;span class="wv"&gt;'+arr[i][1]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el(id).innerHTML=h;}</span>
+
+<span class="s2">function rAff(){var h="",i;for(i=0;i&lt;D.aff.length;i++){</span>
+<span class="s2">h+='&lt;button class="af'+(st.aff===i?" on":"")+'" data-a="'+i+'"&gt;'+D.aff[i][0]+'&lt;/button&gt;';}</span>
+<span class="s2">el("affg").innerHTML=h;</span>
+<span class="s2">el("afd").innerHTML='&lt;b&gt;'+D.aff[st.aff][0]+' edition.&lt;/b&gt; '+D.aff[st.aff][1];</span>
+<span class="s2">var b=document.querySelectorAll(".af");for(i=0;i&lt;b.length;i++){b[i].onclick=function(){</span>
+<span class="s2">st.aff=parseInt(this.getAttribute("data-a"),10);rAff();rDet();};}}</span>
+
+<span class="s2">function rCl(){</span>
+<span class="s2">if(st.cl!==null){el("cg").innerHTML="";el("fh").style.display="none";return;}</span>
+<span class="s2">el("fh").style.display="block";</span>
+<span class="s2">var h="",i;for(i=0;i&lt;D.cl.length;i++){var c=D.cl[i];</span>
+<span class="s2">h+='&lt;button class="cc" data-c="'+i+'"&gt;&lt;div class="cn"&gt;'+c.st.length+' studies&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;h4&gt;'+c.n+'&lt;/h4&gt;&lt;div class="cs"&gt;'+c.sub+'&lt;/div&gt;&lt;p&gt;'+c.why+'&lt;/p&gt;&lt;/button&gt;';}</span>
+<span class="s2">el("cg").innerHTML=h;</span>
+<span class="s2">var b=document.querySelectorAll(".cc");for(i=0;i&lt;b.length;i++){b[i].onclick=function(){</span>
+<span class="s2">st.cl=parseInt(this.getAttribute("data-c"),10);st.s=null;rAll();};}}</span>
+
+<span class="s2">function rDet(){var box=el("detail");</span>
+<span class="s2">if(st.cl===null){box.innerHTML="";return;}</span>
+<span class="s2">var c=D.cl[st.cl],i,A=D.aff[st.aff][0];</span>
+<span class="s2">var h='&lt;button class="back" id="bk"&gt;&amp;larr; '+(st.s===null?"All fifteen clusters":c.n)+'&lt;/button&gt;';</span>
+<span class="s2">if(st.s===null){</span>
+<span class="s2"> h+='&lt;div class="det"&gt;&lt;div class="dh"&gt;&lt;h3&gt;'+c.n+'&lt;/h3&gt;&lt;div class="ds"&gt;'+c.sub+'&lt;/div&gt;&lt;p&gt;'+c.why+'&lt;/p&gt;';</span>
+<span class="s2"> h+='&lt;p style="font-size:15px;color:var(--faint);margin-top:8px"&gt;Showing the &lt;strong&gt;'+A+'&lt;/strong&gt; edition. Every study is six sessions.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2"> for(i=0;i&lt;c.st.length;i++){var s=c.st[i];</span>
+<span class="s2">  h+='&lt;button class="sr" data-s="'+i+'"&gt;&lt;span class="sn"&gt;'+(i+1)+'&lt;/span&gt;&lt;span class="sb"&gt;';</span>
+<span class="s2">  h+='&lt;span class="st2"&gt;'+s.t+'&lt;/span&gt;&lt;span class="ss2"&gt;'+s.sub+'&lt;/span&gt;&lt;/span&gt;';</span>
+<span class="s2">  h+='&lt;span class="sx"&gt;6 sessions &amp;rsaquo;&lt;/span&gt;&lt;/button&gt;';}</span>
+<span class="s2"> h+='&lt;/div&gt;';</span>
+<span class="s2">}else{</span>
+<span class="s2"> var s=c.st[st.s];</span>
+<span class="s2"> h+='&lt;div class="det"&gt;&lt;div class="dh"&gt;&lt;h3&gt;'+s.t+'&lt;/h3&gt;&lt;div class="ds"&gt;'+s.sub+'&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;p style="font-size:15px;color:var(--faint);margin-top:8px"&gt;'+c.n+' &amp;middot; &lt;strong&gt;'+A+'&lt;/strong&gt; edition &amp;middot; 6 sessions &amp;middot; 24,480 words&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="sess"&gt;&lt;div class="sl"&gt;The six sessions&lt;/div&gt;&lt;ol&gt;';</span>
+<span class="s2"> for(i=0;i&lt;s.ss.length;i++){h+='&lt;li&gt;'+s.ss[i]+'&lt;/li&gt;';}</span>
+<span class="s2"> h+='&lt;/ol&gt;';</span>
+<span class="s2"> h+='&lt;div class="sl"&gt;What ships with it&lt;/div&gt;&lt;div&gt;';</span>
+<span class="s2"> for(i=0;i&lt;D.pack.length;i++){h+='&lt;span class="pill"&gt;'+D.pack[i][0]+'&lt;/span&gt;';}</span>
+<span class="s2"> h+='&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="sl"&gt;Available in every edition&lt;/div&gt;&lt;div&gt;';</span>
+<span class="s2"> for(i=0;i&lt;D.aff.length;i++){h+='&lt;span class="pill" style="'+(i===st.aff?"background:var(--blue);color:#fff;border-color:var(--blue)":"background:var(--bg);color:var(--body);border-color:var(--line)")+'"&gt;'+D.aff[i][0]+'&lt;/span&gt;';}</span>
+<span class="s2"> h+='&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">}</span>
+<span class="s2">box.innerHTML=h;</span>
+<span class="s2">el("bk").onclick=function(){if(st.s!==null){st.s=null;}else{st.cl=null;}rAll();};</span>
+<span class="s2">var b=document.querySelectorAll(".sr");</span>
+<span class="s2">for(i=0;i&lt;b.length;i++){b[i].onclick=function(){st.s=parseInt(this.getAttribute("data-s"),10);rAll();};}}</span>
+
+<span class="s2">function rPack(){var h="",i;for(i=0;i&lt;D.pack.length;i++){var p=D.pack[i];</span>
+<span class="s2">h+='&lt;div class="pk"&gt;&lt;span class="pn"&gt;'+p[0]+'&lt;/span&gt;&lt;span class="pw"&gt;'+p[1]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="pd"&gt;'+p[2]+'&lt;/span&gt;&lt;span class="pt"&gt;'+p[3]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("pack2").innerHTML=h;</span>
+<span class="s2">h="";for(i=0;i&lt;D.wm.length;i++){var w=D.wm[i];</span>
+<span class="s2">h+='&lt;div class="wm"&gt;&lt;span class="wl"&gt;'+w[0]+'&lt;/span&gt;&lt;span class="wn"&gt;'+w[1]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="wd"&gt;'+w[2]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("wm2").innerHTML=h;}</span>
+
+<span class="s2">function rAud(){var h="",i;for(i=0;i&lt;D.aud.length;i++){</span>
+<span class="s2">h+='&lt;div class="fc"&gt;&lt;h4&gt;'+D.aud[i][0]+'&lt;/h4&gt;&lt;div class="fs"&gt;'+D.aud[i][1]+'&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;p&gt;'+D.aud[i][2]+'&lt;/p&gt;&lt;/div&gt;';}el("aud2").innerHTML=h;}</span>
+
+<span class="s2">function rPipe(){var h="",i,j;for(i=0;i&lt;D.pipe.length;i++){var p=D.pipe[i];</span>
+<span class="s2">h+='&lt;div class="pipe'+(i===0?" on":"")+'"&gt;&lt;div class="ph2" data-p="'+i+'"&gt;&lt;span class="pnum"&gt;'+p[0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;h4&gt;'+p[1]+'&lt;/h4&gt;&lt;div class="pdd"&gt;'+p[2]+'&lt;/div&gt;&lt;/div&gt;&lt;div class="pb2"&gt;&lt;ul&gt;';</span>
+<span class="s2">for(j=0;j&lt;p[3].length;j++){h+='&lt;li&gt;'+p[3][j]+'&lt;/li&gt;';}</span>
+<span class="s2">h+='&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("pipe2").innerHTML=h;</span>
+<span class="s2">var b=document.querySelectorAll(".ph2");for(i=0;i&lt;b.length;i++){b[i].onclick=function(){</span>
+<span class="s2">this.parentNode.classList.toggle("on");};}</span>
+<span class="s2">h="";for(i=0;i&lt;D.sevena.length;i++){</span>
+<span class="s2">h+='&lt;div class="aa"&gt;&lt;span class="al"&gt;'+D.sevena[i][0]+'&lt;/span&gt;&lt;span class="ad"&gt;'+D.sevena[i][1]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("sevena").innerHTML=h;}</span>
+
+<span class="s2">function rAll(){rCl();rDet();}</span>
+<span class="s2">rows("week2",D.week);rows("six2",D.sixwhy);rAff();rAll();rPack();rAud();rPipe();</span>
+<span class="s2">var jl=document.querySelectorAll("[data-j]");for(var z=0;z&lt;jl.length;z++){jl[z].onclick=function(){</span>
+<span class="s2">var t=this.getAttribute("data-j");if(t==="find"){st.cl=null;st.s=null;rAll();}</span>
+<span class="s2">el(t).scrollIntoView({block:"start"});};}</span>
+<span class="s2">"""</span>
+
+<span class="n">SHELL</span> <span class="o">=</span> <span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;Small Group Curriculum &amp;mdash; Finder, Builder and the Pastor's Library&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;__CSS__&lt;/style&gt;&lt;/head&gt;&lt;body&gt;__BODY__&lt;script&gt;__JS__&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"""</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">SHELL</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__CSS__"</span><span class="p">,</span> <span class="n">CSS</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__BODY__"</span><span class="p">,</span> <span class="n">BODY</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__JS__"</span><span class="p">,</span> <span class="n">JS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__DATA__"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">","</span><span class="p">,</span> <span class="s2">":"</span><span class="p">))))</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/small-group-curriculum.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"studies:"</span><span class="p">,</span> <span class="n">NS</span><span class="p">,</span> <span class="s2">"| sessions:"</span><span class="p">,</span> <span class="n">NSESS</span><span class="p">,</span> <span class="s2">"| KB:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_sg.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

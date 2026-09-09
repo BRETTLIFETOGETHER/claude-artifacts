@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>patch_functional.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Building a 100 master themes content system</div>
+<h1>patch_functional.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">11 KB</span>
+<a class="btn" href="../../artifacts/Building%20a%20100%20master%20themes%20content%20system/patch_functional.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Full functional patch: signin fix, index real-campaign rows, add-to-cart everywhere, working Canva/doc exports</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">O</span><span class="o">=</span><span class="s1">'/home/claude/site/out/'</span>
+
+<span class="c1"># ---------- 1. signin: fix literal \u2014 ----------</span>
+<span class="n">h</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'signin.html'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;/a&gt; </span><span class="se">\\</span><span class="s1">u2014 it takes'</span><span class="p">,</span><span class="s1">'&lt;/a&gt; </span><span class="se">\u2014</span><span class="s1"> it takes'</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'signin.html'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+<span class="c1"># ---------- 2. index: real campaigns everywhere ----------</span>
+<span class="n">h</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'index.html'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">if</span> <span class="s1">'data.js'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">h</span><span class="p">:</span>
+    <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;script src="cart.js"&gt;&lt;/script&gt;'</span><span class="p">,</span><span class="s1">'&lt;script src="data.js"&gt;&lt;/script&gt;</span><span class="se">\n</span><span class="s1">&lt;script src="cart.js"&gt;&lt;/script&gt;'</span><span class="p">)</span>
+<span class="c1"># clickable cover CSS</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;/style&gt;'</span><span class="p">,</span><span class="s1">'a.cov{color:inherit;text-decoration:none;display:block;}</span><span class="se">\n</span><span class="s1">.cov .canvas{cursor:pointer;}</span><span class="se">\n</span><span class="s1">&lt;/style&gt;'</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># cover() -&gt; anchor with id</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'''function cover(title, sub, ch, fmt){</span>
+<span class="s1">  const [a,b]=HUE[ch];</span>
+<span class="s1">  return `&lt;div class="cov" style="--ca:$</span><span class="si">{a}</span><span class="s1">;--cb:$</span><span class="si">{b}</span><span class="s1">"&gt;'''</span><span class="p">,</span>
+<span class="sd">'''function cover(title, sub, ch, fmt, id){</span>
+<span class="sd">  const [a,b]=HUE[ch];</span>
+<span class="sd">  return `&lt;a class="cov" href="${id?('campaign.html?id='+id):'browse.html'}" style="--ca:${a};--cb:${b}"&gt;'''</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'''      ${fmt?`&lt;span class="fmt"&gt;$</span><span class="si">{fmt}</span><span class="s1">&lt;/span&gt;`:''}</span>
+<span class="s1">    &lt;/div&gt;&lt;/div&gt;`;</span>
+<span class="s1">}'''</span><span class="p">,</span><span class="s1">'''      ${fmt?`&lt;span class="fmt"&gt;$</span><span class="si">{fmt}</span><span class="s1">&lt;/span&gt;`:''}</span>
+<span class="s1">    &lt;/div&gt;&lt;/a&gt;`;</span>
+<span class="s1">}</span>
+<span class="s1">function findC(title,theme){const D=window.CAMPAIGNS;</span>
+<span class="s1">  return D.find(r=&gt;r[0]===title)||D.find(r=&gt;r[10]===(theme||title)&amp;&amp;r[8]===1)||D.find(r=&gt;r[10]===(theme||title));}'''</span><span class="p">)</span>
+
+<span class="c1"># hero cluster -&gt; real linked covers</span>
+<span class="n">old_cluster</span><span class="o">=</span><span class="n">h</span><span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'/* hero cluster */'</span><span class="p">):</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'/* originals row */'</span><span class="p">)]</span>
+<span class="n">new_cluster</span><span class="o">=</span><span class="s1">'''/* hero cluster */</span>
+<span class="s1">const HC=[['God Owns It All','God Owns It All'],['40 Days of Peace','Peace'],['Life Together','Life Together'],['The Generous Life','Generous Life'],['Rooted','Rooted']];</span>
+<span class="s1">const cl=document.getElementById('cluster');</span>
+<span class="s1">const cls=['c-a','c-b','c-c','c-d','c-e'];</span>
+<span class="s1">HC.forEach((hx,i)=&gt;{const r=findC(hx[0],hx[1]); if(!r)return;</span>
+<span class="s1">  const d=document.createElement('a');d.className='cov '+cls[i];d.href='campaign.html?id='+r[9];</span>
+<span class="s1">  const [ca,cb]=HUE[r[2]];</span>
+<span class="s1">  d.innerHTML=`&lt;div class="canvas" style="--ca:$</span><span class="si">{ca}</span><span class="s1">;--cb:$</span><span class="si">{cb}</span><span class="s1">"&gt;</span>
+<span class="s1">    &lt;div class="tab"&gt;&lt;b&gt;40 DAY&lt;/b&gt;&lt;span&gt;CAMPAIGNS&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="ttl"&gt;&lt;div class="nm"&gt;$</span><span class="si">{r[0]}</span><span class="s1">&lt;/div&gt;&lt;div class="sb"&gt;${window.CATS[r[2]]}&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`;</span>
+<span class="s1">  cl.appendChild(d);});</span>
+
+<span class="s1">'''</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old_cluster</span><span class="p">,</span><span class="n">new_cluster</span><span class="p">)</span>
+
+<span class="c1"># originals row -&gt; top flagship by popularity (dedup theme)</span>
+<span class="n">old_orig</span><span class="o">=</span><span class="n">h</span><span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'/* originals row */'</span><span class="p">):</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'/* audience category covers */'</span><span class="p">)]</span>
+<span class="n">new_orig</span><span class="o">=</span><span class="s1">'''/* most popular this season: real flagships */</span>
+<span class="s1">const seenTh=new Set();</span>
+<span class="s1">const TOPPOP=window.CAMPAIGNS.filter(r=&gt;r[8]===1).sort((a,b)=&gt;b[6]-a[6])</span>
+<span class="s1">  .filter(r=&gt;{if(seenTh.has(r[10]))return false;seenTh.add(r[10]);return true;}).slice(0,12);</span>
+<span class="s1">const rowA=document.getElementById('rowA');</span>
+<span class="s1">TOPPOP.forEach(r=&gt;rowA.insertAdjacentHTML('beforeend',cover(r[0],r[1],r[2],r[3],r[9])));</span>
+
+<span class="s1">'''</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old_orig</span><span class="p">,</span><span class="n">new_orig</span><span class="p">)</span>
+
+<span class="c1"># audience rows -&gt; real theme flagships</span>
+<span class="n">old_cats</span><span class="o">=</span><span class="n">h</span><span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'/* audience category covers */'</span><span class="p">):</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">"renderCats('groups');"</span><span class="p">)]</span>
+<span class="n">new_cats</span><span class="o">=</span><span class="s1">'''/* audience category covers: real theme flagships */</span>
+<span class="s1">const AUDSETS={</span>
+<span class="s1"> groups:['Group Up','Belong','One Another','Never Alone','Life Together'],</span>
+<span class="s1"> families:['Family Legacy','Passing Down Faith','Parenting on Purpose','Grandparent Legacy','Family Mission'],</span>
+<span class="s1"> leaders:['Calling','Serving','Mentoring','Following Jesus','Stewarding Time']};</span>
+<span class="s1">const CATLAB={groups:['New Groups','Belonging','One Another','Connection','Community'],</span>
+<span class="s1"> families:['Legacy','Faith at Home','Parenting','Grandparents','Mission'],</span>
+<span class="s1"> leaders:['Calling','Serving','Mentoring','Discipleship','Time']};</span>
+<span class="s1">const catRow=document.getElementById('catRow');</span>
+<span class="s1">function renderCats(k){</span>
+<span class="s1">  catRow.innerHTML='';</span>
+<span class="s1">  AUDSETS[k].forEach((th,i)=&gt;{const r=findC(th,th); if(!r)return;</span>
+<span class="s1">    const wrap=document.createElement('div');wrap.className='cat';</span>
+<span class="s1">    wrap.innerHTML=`&lt;div class="lab"&gt;$</span><span class="si">{CATLAB[k][i]}</span><span class="s1">&lt;/div&gt;${cover(r[0],r[1],r[2],'',r[9])}`;</span>
+<span class="s1">    catRow.appendChild(wrap);</span>
+<span class="s1">  });</span>
+<span class="s1">}</span>
+<span class="s1">'''</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old_cats</span><span class="p">,</span><span class="n">new_cats</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'index.html'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+<span class="c1"># ---------- 3. campaign.html: Add to cart replaces Add to my plan; working Canva &amp; editable export ----------</span>
+<span class="n">h</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'campaign.html'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;a class="btn btn-white" href="get-access.html"&gt;Add to my plan&lt;/a&gt;'</span><span class="p">,</span>
+            <span class="s1">'&lt;a class="btn btn-white" href="#" id="addbtn"&gt;Add to cart&lt;/a&gt;'</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'href="how-it-works.html#exports" style="font-size:13px;padding:9px 15px;"&gt;Open in Canva'</span><span class="p">,</span>
+            <span class="s1">'href="#" id="canvabtn" style="font-size:13px;padding:9px 15px;"&gt;Open in Canva'</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;div class="xnote"&gt;Import the PDF into Canva today · one-click integration in development&lt;/div&gt;'</span><span class="p">,</span>
+            <span class="s1">'&lt;div class="xnote"&gt;Downloads your editable file and opens Canva in a new tab — drop the file straight in. One-click integration in development.&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'href="how-it-works.html#exports" style="font-size:13px;padding:9px 15px;"&gt;Export editable copy&lt;/a&gt;'</span><span class="p">,</span>
+            <span class="s1">'href="#" id="docbtn" style="font-size:13px;padding:9px 15px;"&gt;Export editable copy (.doc)&lt;/a&gt;'</span><span class="p">)</span>
+
+<span class="c1"># driver additions</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"document.getElementById('startbtn').addEventListener('click',function(e){e.preventDefault();"</span><span class="p">,</span>
+<span class="sd">"""function selFmt(){const on=document.querySelector('#fmts .fmt.on');</span>
+<span class="sd"> return on?on.textContent.replace(' Campaign','').replace(' Group',''):FMT;}</span>
+<span class="sd">document.getElementById('addbtn').addEventListener('click',function(e){e.preventDefault();</span>
+<span class="sd"> LT.add(ID,selFmt());LT.badge();</span>
+<span class="sd"> this.textContent='Added to cart \\u2713';this.style.borderColor='var(--orange)';this.style.color='var(--orange)';});</span>
+<span class="sd">function curriculumHTML(){</span>
+<span class="sd"> const dev=Engine.devotional(C,'40-Day'), g=Engine.groupStudy(C), m=Engine.meta(C);</span>
+<span class="sd"> let s='&lt;h1&gt;'+T+'&lt;/h1&gt;&lt;p&gt;&lt;i&gt;'+S+'&lt;/i&gt;&lt;/p&gt;&lt;p&gt;'+window.CATS[CH]+' \\u00b7 '+THEME+' \\u00b7 Anchored in '+SCR+' (NIV)&lt;/p&gt;&lt;hr&gt;';</span>
+<span class="sd"> dev.days.forEach(d=&gt;{s+='&lt;h2&gt;'+d.dn+' \\u2014 '+d.title+'&lt;/h2&gt;'</span>
+<span class="sd">  +'&lt;p&gt;&lt;b&gt;This week\\u2019s memory verse ('+d.mem.v+', KJV):&lt;/b&gt; \\u201C'+d.mem.t+'\\u201D&lt;/p&gt;'</span>
+<span class="sd">  +'&lt;p&gt;&lt;b&gt;Today\\u2019s reading:&lt;/b&gt; '+d.scr+'&lt;/p&gt;'+d.body</span>
+<span class="sd">  +'&lt;p&gt;&lt;b&gt;Pray:&lt;/b&gt; &lt;i&gt;'+d.pray+'&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Reflect &amp;amp; respond:&lt;/b&gt; '+d.q+'&lt;/p&gt;&lt;p&gt;&lt;b&gt;One step today:&lt;/b&gt; '+d.step+'&lt;/p&gt;&lt;hr&gt;';});</span>
+<span class="sd"> s+='&lt;h1&gt;6-Week Group Series&lt;/h1&gt;';</span>
+<span class="sd"> g.sessions.forEach(x=&gt;{s+='&lt;h2&gt;'+x.title+'&lt;/h2&gt;&lt;p&gt;'+x.focus+'&lt;/p&gt;&lt;p&gt;&lt;b&gt;Open:&lt;/b&gt; '+x.opener+'&lt;/p&gt;&lt;p&gt;&lt;b&gt;Read together:&lt;/b&gt; '+x.refs.join(' \\u00b7 ')+'&lt;/p&gt;&lt;ol&gt;'+x.qs.map(q=&gt;'&lt;li&gt;'+q+'&lt;/li&gt;').join('')+'&lt;/ol&gt;&lt;p&gt;&lt;b&gt;Pray:&lt;/b&gt; &lt;i&gt;'+x.pray+'&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;This week\\u2019s practice:&lt;/b&gt; '+x.practice+'&lt;/p&gt;&lt;hr&gt;';});</span>
+<span class="sd"> s+='&lt;p style="font-size:10pt;color:#666;"&gt;Memory verses KJV (public domain) \\u00b7 daily reading references NIV \\u2014 NIV text ships under the Biblica license at launch \\u00b7 40daycampaigns.com&lt;/p&gt;';</span>
+<span class="sd"> return s;</span>
+<span class="sd">}</span>
+<span class="sd">function downloadDoc(){</span>
+<span class="sd"> const html='&lt;html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;'+T+'&lt;/title&gt;&lt;/head&gt;&lt;body style="font-family:Georgia,serif;"&gt;'+curriculumHTML()+'&lt;/body&gt;&lt;/html&gt;';</span>
+<span class="sd"> const blob=new Blob(['\\ufeff'+html],{type:'application/msword'});</span>
+<span class="sd"> const a=document.createElement('a');a.href=URL.createObjectURL(blob);</span>
+<span class="sd"> a.download=T.replace(/[^\\w \\-&amp;]/g,'')+' - Editable Curriculum.doc';</span>
+<span class="sd"> document.body.appendChild(a);a.click();a.remove();</span>
+<span class="sd">}</span>
+<span class="sd">document.getElementById('docbtn').addEventListener('click',function(e){e.preventDefault();downloadDoc();</span>
+<span class="sd"> this.textContent='Downloaded \\u2713';});</span>
+<span class="sd">document.getElementById('canvabtn').addEventListener('click',function(e){e.preventDefault();</span>
+<span class="sd"> downloadDoc();window.open('https://www.canva.com','_blank');});</span>
+<span class="sd">document.getElementById('startbtn').addEventListener('click',function(e){e.preventDefault();"""</span><span class="p">)</span>
+<span class="c1"># startbtn now uses selFmt</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">""" const on=document.querySelector('#fmts .fmt.on');</span>
+<span class="s2"> const fmt=on?on.textContent.replace(' Campaign','').replace(' Group',''):FMT;</span>
+<span class="s2"> LT.add(ID,fmt);location.href='cart.html';});"""</span><span class="p">,</span>
+<span class="s2">" LT.add(ID,selFmt());location.href='cart.html';});"</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'campaign.html'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+<span class="c1"># ---------- 4. browse cards: Add to cart mini button ----------</span>
+<span class="n">h</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'browse.html'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;/style&gt;'</span><span class="p">,</span><span class="s1">'''.addmini{position:absolute;right:10px;top:10px;z-index:3;font-family:'Hanken Grotesk';font-weight:800;font-size:11px;letter-spacing:.04em;background:rgba(255,255,255,.94);border:none;border-radius:999px;padding:7px 11px;cursor:pointer;color:var(--ink);opacity:0;transition:opacity .15s;box-shadow:0 6px 16px -8px rgba(0,0,0,.4);}</span>
+<span class="s1">.cov:hover .addmini{opacity:1;}</span>
+<span class="s1">.addmini:hover{background:var(--orange);color:#fff;}</span>
+<span class="s1">.cov .canvas{position:relative;}</span>
+<span class="s1">&lt;/style&gt;'''</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'''      &lt;div class="tab"&gt;&lt;b&gt;${fmt.replace('-',' ').toUpperCase()}&lt;/b&gt;&lt;/div&gt;&lt;div class="nm"&gt;$</span><span class="si">{t}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      ${flag?'&lt;span class="flag"&gt;Flagship&lt;/span&gt;':''}&lt;span class="fmt"&gt;$</span><span class="si">{fmt}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'''</span><span class="p">,</span>
+<span class="sd">'''      &lt;div class="tab"&gt;&lt;b&gt;${fmt.replace('-',' ').toUpperCase()}&lt;/b&gt;&lt;/div&gt;&lt;div class="nm"&gt;${t}&lt;/div&gt;</span>
+<span class="sd">      ${flag?'&lt;span class="flag"&gt;Flagship&lt;/span&gt;':''}&lt;span class="fmt"&gt;${fmt}&lt;/span&gt;</span>
+<span class="sd">      &lt;button class="addmini" data-id="${id}" data-fmt="${fmt}"&gt;+ Add to cart&lt;/button&gt;&lt;/div&gt;'''</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"document.getElementById('more').addEventListener('click'"</span><span class="p">,</span>
+<span class="sd">'''grid.addEventListener('click',function(e){</span>
+<span class="sd">  const b=e.target.closest('.addmini');if(!b)return;</span>
+<span class="sd">  e.preventDefault();e.stopPropagation();</span>
+<span class="sd">  LT.add(b.dataset.id,b.dataset.fmt);LT.badge();</span>
+<span class="sd">  b.textContent='Added \\u2713';b.style.opacity=1;setTimeout(()=&gt;{b.textContent='+ Add to cart';},1400);</span>
+<span class="sd">});</span>
+<span class="sd">document.getElementById('more').addEventListener('click' '''</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'browse.html'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+<span class="c1"># ---------- 5. finder: Add to cart beside Preview ----------</span>
+<span class="n">h</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'finder.html'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'''&lt;a class="btn btn-white" href="campaign.html?id=$</span><span class="si">{o.r[9]}</span><span class="s1">" style="font-size:13px;padding:9px 15px;"&gt;Preview&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;`;'''</span><span class="p">,</span>
+<span class="sd">'''&lt;a class="btn btn-white" href="campaign.html?id=${o.r[9]}" style="font-size:13px;padding:9px 15px;"&gt;Preview&lt;/a&gt;</span>
+<span class="sd">       &lt;a class="btn btn-white addcart" data-id="${o.r[9]}" data-fmt="${o.r[3]}" href="#" style="font-size:13px;padding:9px 15px;"&gt;+ Add to cart&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;`;'''</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'''&lt;a class="btn btn-dark" href="campaign.html?id=$</span><span class="si">{top.r[9]}</span><span class="s1">"&gt;Preview campaign &lt;svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M7 17 17 7M8 7h9v9"/&gt;&lt;/svg&gt;&lt;/a&gt;'''</span><span class="p">,</span>
+<span class="sd">'''&lt;a class="btn btn-dark" href="campaign.html?id=${top.r[9]}"&gt;Preview campaign &lt;svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M7 17 17 7M8 7h9v9"/&gt;&lt;/svg&gt;&lt;/a&gt;</span>
+<span class="sd">          &lt;a class="btn btn-white addcart" data-id="${top.r[9]}" data-fmt="${top.r[3]}" href="#"&gt;+ Add to cart&lt;/a&gt;'''</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'''&lt;a class="btn btn-dark" href="campaign.html?id=$</span><span class="si">{r[9]}</span><span class="s1">"&gt;Preview $</span><span class="si">{r[0]}</span><span class="s1">&lt;/a&gt;'''</span><span class="p">,</span>
+<span class="sd">'''&lt;a class="btn btn-dark" href="campaign.html?id=${r[9]}"&gt;Preview ${r[0]}&lt;/a&gt;</span>
+<span class="sd">      &lt;a class="btn btn-white addcart" data-id="${r[9]}" data-fmt="${r[3]}" href="#"&gt;+ Add to cart&lt;/a&gt;'''</span><span class="p">)</span>
+<span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;/body&gt;'</span><span class="p">,</span><span class="s1">'''&lt;script&gt;</span>
+<span class="s1">document.addEventListener('click',function(e){</span>
+<span class="s1"> const b=e.target.closest('.addcart');if(!b)return;</span>
+<span class="s1"> e.preventDefault();LT.add(b.dataset.id,b.dataset.fmt);LT.badge();</span>
+<span class="s1"> b.textContent='Added </span><span class="se">\\</span><span class="s1">u2713';setTimeout(()=&gt;{b.textContent='+ Add to cart';},1400);</span>
+<span class="s1">});</span>
+<span class="s1">&lt;/script&gt;</span>
+<span class="s1">&lt;/body&gt;'''</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">O</span><span class="o">+</span><span class="s1">'finder.html'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'all patches applied'</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/site/patch_functional.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

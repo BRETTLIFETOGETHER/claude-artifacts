@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>board_extract.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; John - Biblica ministry and board contact information</div>
+<h1>board_extract.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b ok" title="This file was delivered to you in the conversation">delivered</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">15 KB</span>
+<a class="btn" href="../../artifacts/John%20-%20Biblica%20ministry%20and%20board%20contact%20information/board_extract.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Board roster extraction pipeline — resolves EINs, pulls 990 XML, extracts Part VII rosters, computes departures and cross-org interlocks</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""</span>
+<span class="sd">board_extract.py</span>
+<span class="sd">================</span>
+<span class="sd">Reconstruct board rosters across many nonprofits from IRS Form 990 / 990-PF data.</span>
+
+<span class="sd">Solves the problem that manual research cannot: ~25 organizations x ~10 years of</span>
+<span class="sd">filings x ~15 officers per filing = several thousand rows. This pulls them all,</span>
+<span class="sd">then derives (a) who is current, (b) who departed and when, and (c) which people</span>
+<span class="sd">sit on more than one board in your set.</span>
+
+<span class="sd">DATA SOURCE</span>
+<span class="sd">-----------</span>
+<span class="sd">ProPublica Nonprofit Explorer API (free, public, no key required), which mirrors</span>
+<span class="sd">the IRS e-file XML release. Filings are the authoritative record: Part VII of the</span>
+<span class="sd">990 and Part VIII of the 990-PF list every officer, director, and trustee.</span>
+
+<span class="sd">KNOWN LIMITS -- read these before trusting output</span>
+<span class="sd">-------------------------------------------------</span>
+<span class="sd">1. Organizations the IRS designates as churches or associations of churches file</span>
+<span class="sd">   NOTHING. They will come back empty. That is a real finding, not a bug -- see</span>
+<span class="sd">   CHURCH_STATUS_LIKELY below. For those, check the org's own website for a</span>
+<span class="sd">   voluntary "public disclosure copy."</span>
+<span class="sd">2. Only e-filed returns have XML. Paper filings before ~2018 may be image-only</span>
+<span class="sd">   and will not parse. Coverage is strong 2018+, patchy before.</span>
+<span class="sd">3. Filings lag 12-24 months. The most recent roster on file is not necessarily</span>
+<span class="sd">   today's board. Always confirm current members against the org's own site.</span>
+<span class="sd">4. Name matching for interlocks is fuzzy. "ROBERT H MACLELLAN" and</span>
+<span class="sd">   "BOB MACLELLAN" will not match; "JOHN SMITH" at two orgs may be two people.</span>
+<span class="sd">   Treat interlocks.csv as a lead list requiring human confirmation.</span>
+<span class="sd">5. 990 Part VII mixes trustees with paid staff. Filter on the title column.</span>
+
+<span class="sd">USAGE</span>
+<span class="sd">-----</span>
+<span class="sd">    pip install requests</span>
+<span class="sd">    python board_extract.py                    # uses ORGS below</span>
+<span class="sd">    python board_extract.py --orgs my.txt      # one org name (or EIN) per line</span>
+<span class="sd">    python board_extract.py --out ./results</span>
+
+<span class="sd">OUTPUT</span>
+<span class="sd">------</span>
+<span class="sd">    rosters_long.csv    one row per person per filing year</span>
+<span class="sd">    roster_summary.csv  one row per person per org, with first/last year + status</span>
+<span class="sd">    interlocks.csv      people appearing at 2+ organizations</span>
+<span class="sd">    coverage.csv        what was found per org -- CHECK THIS FIRST</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib.parse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xml.etree.ElementTree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">"Missing dependency. Run:  pip install requests"</span><span class="p">)</span>
+
+<span class="n">API</span> <span class="o">=</span> <span class="s2">"https://projects.propublica.org/nonprofits/api/v2"</span>
+<span class="n">XML_URL</span> <span class="o">=</span> <span class="s2">"https://projects.propublica.org/nonprofits/download-xml?object_id=</span><span class="si">{}</span><span class="s2">"</span>
+<span class="n">NS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"irs"</span><span class="p">:</span> <span class="s2">"http://www.irs.gov/efile"</span><span class="p">}</span>
+<span class="n">PAUSE</span> <span class="o">=</span> <span class="mf">0.6</span>  <span class="c1"># be polite to a free public API</span>
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Target organizations.</span>
+<span class="c1">#</span>
+<span class="c1"># EINs below were verified during research. Anything without a verified EIN is</span>
+<span class="c1"># resolved by name search -- ALWAYS check coverage.csv to confirm the matched</span>
+<span class="c1"># entity is the one you meant. Common-name orgs match the wrong entity often.</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="n">VERIFIED_EINS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Maclellan Family Foundations"</span><span class="p">:</span> <span class="s2">"626041468"</span><span class="p">,</span>
+    <span class="s2">"Givers Legacy Foundation"</span><span class="p">:</span> <span class="s2">"593498416"</span><span class="p">,</span>   <span class="c1"># see note below</span>
+    <span class="s2">"Servant Foundation (The Signatry)"</span><span class="p">:</span> <span class="s2">"431890105"</span><span class="p">,</span>
+    <span class="s2">"Biblica"</span><span class="p">:</span> <span class="s2">"841194554"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># NOTE ON GIVERS LEGACY: EIN 59-3498416 is filed under BOTH names in different</span>
+<span class="c1"># databases -- Charity Navigator's FY2024 record shows "Givers Legacy Foundation</span>
+<span class="c1"># Inc." (giverslegacy.com, Clearwater FL) while Cause IQ and Instrumentl label</span>
+<span class="c1"># the same EIN "Trustbridge Global Foundation USA Inc." This is almost certainly</span>
+<span class="c1"># a rename, direction unconfirmed. Resolve before treating them as two entities.</span>
+
+<span class="n">ORGS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># --- verified / already researched ---</span>
+    <span class="s2">"Maclellan Family Foundations"</span><span class="p">,</span>
+    <span class="s2">"Givers Legacy Foundation"</span><span class="p">,</span>
+    <span class="s2">"Servant Foundation (The Signatry)"</span><span class="p">,</span>
+    <span class="c1"># --- Chattanooga cluster: expect trustee overlap with Maclellan ---</span>
+    <span class="s2">"The Generosity Trust"</span><span class="p">,</span>
+    <span class="c1"># --- giving infrastructure ---</span>
+    <span class="s2">"Barnabas Foundation"</span><span class="p">,</span>
+    <span class="s2">"WaterStone"</span><span class="p">,</span>
+    <span class="s2">"Christian Community Foundation of South Florida"</span><span class="p">,</span>
+    <span class="s2">"In His Steps Foundation"</span><span class="p">,</span>
+    <span class="c1"># --- large operating ministries ---</span>
+    <span class="s2">"Prison Fellowship Ministries"</span><span class="p">,</span>
+    <span class="s2">"Awana Clubs International"</span><span class="p">,</span>
+    <span class="s2">"Samaritans Purse"</span><span class="p">,</span>
+    <span class="s2">"Compassion International"</span><span class="p">,</span>
+    <span class="s2">"Focus on the Family"</span><span class="p">,</span>
+    <span class="s2">"Christian Broadcasting Network"</span><span class="p">,</span>
+    <span class="s2">"CRISTA Ministries"</span><span class="p">,</span>
+    <span class="s2">"American Bible Society"</span><span class="p">,</span>
+    <span class="s2">"Museum of the Bible"</span><span class="p">,</span>
+    <span class="s2">"Educational Media Foundation"</span><span class="p">,</span>
+    <span class="c1"># --- publishing / media ---</span>
+    <span class="s2">"David C Cook"</span><span class="p">,</span>
+    <span class="s2">"RightNow Media"</span><span class="p">,</span>
+    <span class="s2">"Living Stream Ministry"</span><span class="p">,</span>
+    <span class="c1"># --- outliers: different sector, will not interlock with the above ---</span>
+    <span class="s2">"Lilly Endowment"</span><span class="p">,</span>
+    <span class="s2">"Thrivent Financial for Lutherans"</span><span class="p">,</span>
+    <span class="s2">"Stand Together Trust"</span><span class="p">,</span>
+    <span class="s2">"Lynda and Stewart Resnick Foundation"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Orgs that plausibly claim church / association-of-churches status and may file</span>
+<span class="c1"># nothing at all. Biblica is the proven case: ProPublica's record stops at FY2021</span>
+<span class="c1"># with the note that the IRS designates it a church -- yet Biblica voluntarily</span>
+<span class="c1"># posts 990s on its own site. Expect the same pattern here. Empty != nonexistent.</span>
+<span class="n">CHURCH_STATUS_LIKELY</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Focus on the Family"</span><span class="p">,</span>
+    <span class="s2">"Christian Broadcasting Network"</span><span class="p">,</span>
+    <span class="s2">"Living Stream Ministry"</span><span class="p">,</span>
+    <span class="s2">"RightNow Media"</span><span class="p">,</span>
+    <span class="s2">"Samaritans Purse"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Title strings that indicate governance rather than paid staff.</span>
+<span class="n">BOARD_TITLE_PAT</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">"\b(TRUSTEE|DIRECTOR|CHAIR|CHAIRMAN|CHAIRWOMAN|CHAIRPERSON|BOARD|"</span>
+    <span class="sa">r</span><span class="s2">"SECRETARY|TREASURER|PRESIDENT|VICE\s*CHAIR|GOVERNOR|OVERSEER|MEMBER)\b"</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Titles that look like governance but are really staff roles.</span>
+<span class="n">STAFF_OVERRIDE_PAT</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">"\b(DIRECTOR OF|SENIOR DIRECTOR|MANAGING DIRECTOR|EXECUTIVE DIRECTOR|"</span>
+    <span class="sa">r</span><span class="s2">"DEVELOPMENT DIRECTOR|STRATEGY DIRECTOR|PROGRAM DIRECTOR|ART DIRECTOR)\b"</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">looks_like_board</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">STAFF_OVERRIDE_PAT</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">BOARD_TITLE_PAT</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_name</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Aggressive normalization for cross-org matching. Deliberately lossy."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\b(DR|MR|MRS|MS|REV|HON|PROF|SIR)\.?\b"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\b(JR|SR|II|III|IV|PHD|MD|CPA|ESQ|CFP|JD)\.?\b"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^A-Z\s]"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># drop middle initials</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>  <span class="c1"># first + last only</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_json</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tries</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tries</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                             <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"User-Agent"</span><span class="p">:</span> <span class="s2">"board-research/1.0"</span><span class="p">})</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attempt</span> <span class="o">==</span> <span class="n">tries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    ! request failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">attempt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">resolve_ein</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return (ein, matched_name, confidence). Confidence is advisory only."""</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">VERIFIED_EINS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">VERIFIED_EINS</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"verified"</span>
+    <span class="n">digits</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\D"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">digits</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"supplied-ein"</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">get_json</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">API</span><span class="si">}</span><span class="s2">/search.json"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"q"</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">PAUSE</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"organizations"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"not-found"</span>
+
+    <span class="n">orgs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"organizations"</span><span class="p">]</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">normalize_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">orgs</span><span class="p">:</span>  <span class="c1"># prefer an exact-ish name hit</span>
+        <span class="k">if</span> <span class="n">normalize_name</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="s2">"ein"</span><span class="p">]),</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">),</span> <span class="s2">"name-exact"</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">orgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">top</span><span class="p">[</span><span class="s2">"ein"</span><span class="p">]),</span> <span class="n">top</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">),</span> <span class="s2">"name-fuzzy-VERIFY"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_people</span><span class="p">(</span><span class="n">xml_bytes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Extract (person, title, hours, comp) from any 990 variant."""</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml_bytes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">ET</span><span class="o">.</span><span class="n">ParseError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="c1"># Group elements across 990, 990-EZ, and 990-PF schema variants.</span>
+    <span class="n">group_tags</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"Form990PartVIISectionAGrp"</span><span class="p">,</span>       <span class="c1"># 990</span>
+        <span class="s2">"OfficerDirectorTrusteeEmplGrp"</span><span class="p">,</span>   <span class="c1"># 990-EZ</span>
+        <span class="s2">"OfficerDirTrstKeyEmplInfoGrp"</span><span class="p">,</span>    <span class="c1"># 990-PF</span>
+        <span class="s2">"OfficerDirTrstKeyEmplGrp"</span><span class="p">,</span>        <span class="c1"># 990-PF variant</span>
+        <span class="s2">"CompensationHighestPaidEmplGrp"</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">name_tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"PersonNm"</span><span class="p">,</span> <span class="s2">"PersonNamePart1Txt"</span><span class="p">,</span> <span class="s2">"BusinessNameLine1Txt"</span><span class="p">,</span>
+                 <span class="s2">"BusinessNameLine1"</span><span class="p">,</span> <span class="s2">"NamePerson"</span><span class="p">]</span>
+    <span class="n">title_tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"TitleTxt"</span><span class="p">,</span> <span class="s2">"Title"</span><span class="p">]</span>
+    <span class="n">hour_tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AverageHoursPerWeekRt"</span><span class="p">,</span> <span class="s2">"AvgHrsPerWkDevotedToPosRt"</span><span class="p">,</span>
+                 <span class="s2">"AverageHrsPerWkDevotedToPosRt"</span><span class="p">]</span>
+    <span class="n">comp_tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ReportableCompFromOrgAmt"</span><span class="p">,</span> <span class="s2">"CompensationAmt"</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">first_text</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">f</span><span class="s2">".//irs:</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">f</span><span class="s2">".//</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># namespace-less fallback</span>
+            <span class="k">if</span> <span class="n">el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s2">""</span>
+
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">group_tags</span><span class="p">:</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">f</span><span class="s2">".//irs:</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">NS</span><span class="p">)</span> <span class="ow">or</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">f</span><span class="s2">".//</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">person</span> <span class="o">=</span> <span class="n">first_text</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">name_tags</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">person</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">"person"</span><span class="p">:</span> <span class="n">person</span><span class="p">,</span>
+                <span class="s2">"title"</span><span class="p">:</span> <span class="n">first_text</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">title_tags</span><span class="p">),</span>
+                <span class="s2">"hours"</span><span class="p">:</span> <span class="n">first_text</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">hour_tags</span><span class="p">),</span>
+                <span class="s2">"comp"</span><span class="p">:</span> <span class="n">first_text</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">comp_tags</span><span class="p">),</span>
+            <span class="p">})</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_org</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">ein</span><span class="p">,</span> <span class="n">matched</span><span class="p">,</span> <span class="n">conf</span> <span class="o">=</span> <span class="n">resolve_ein</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"org"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"ein"</span><span class="p">:</span> <span class="n">ein</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"matched_name"</span><span class="p">:</span> <span class="n">matched</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+              <span class="s2">"confidence"</span><span class="p">:</span> <span class="n">conf</span><span class="p">,</span> <span class="s2">"filings"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"rows"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">:</span> <span class="s2">""</span><span class="p">}</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ein</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"no EIN found"</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">CHURCH_STATUS_LIKELY</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">" | church status likely -- check org website"</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">rows</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">get_json</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">API</span><span class="si">}</span><span class="s2">/organizations/</span><span class="si">{</span><span class="n">ein</span><span class="si">}</span><span class="s2">.json"</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">PAUSE</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"org lookup failed"</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">rows</span>
+
+    <span class="n">filings</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"filings_with_data"</span><span class="p">,</span> <span class="p">[])</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">"filings"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filings</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filings</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"no machine-readable filings"</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">CHURCH_STATUS_LIKELY</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">" | church status likely -- check org website"</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">rows</span>
+
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filings</span><span class="p">:</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"object_id"</span><span class="p">)</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tax_prd_yr"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tax_prd"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))[:</span><span class="mi">4</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">XML_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span>
+                             <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"User-Agent"</span><span class="p">:</span> <span class="s2">"board-research/1.0"</span><span class="p">})</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">PAUSE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parse_people</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">):</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">"org"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"ein"</span><span class="p">:</span> <span class="n">ein</span><span class="p">,</span> <span class="s2">"year"</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span>
+                    <span class="s2">"person"</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="s2">"person"</span><span class="p">],</span> <span class="s2">"title"</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="s2">"title"</span><span class="p">],</span>
+                    <span class="s2">"hours"</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="s2">"hours"</span><span class="p">],</span> <span class="s2">"comp"</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="s2">"comp"</span><span class="p">],</span>
+                    <span class="s2">"is_board"</span><span class="p">:</span> <span class="s2">"Y"</span> <span class="k">if</span> <span class="n">looks_like_board</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span> <span class="k">else</span> <span class="s2">"N"</span><span class="p">,</span>
+                    <span class="s2">"norm"</span><span class="p">:</span> <span class="n">normalize_name</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s2">"person"</span><span class="p">]),</span>
+                <span class="p">})</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    ! </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+
+    <span class="n">result</span><span class="p">[</span><span class="s2">"rows"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">conf</span> <span class="o">==</span> <span class="s2">"name-fuzzy-VERIFY"</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"FUZZY MATCH -- confirm this is the right entity"</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">rows</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">ap</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--orgs"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"file with one org name or EIN per line"</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--out"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">"./results"</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--board-only"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">"restrict summary/interlocks to governance titles"</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">ORGS</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">orgs</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">orgs</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">fh</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                       <span class="ow">and</span> <span class="ow">not</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)]</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">all_rows</span><span class="p">,</span> <span class="n">coverage</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">cov</span><span class="p">,</span> <span class="n">rows</span> <span class="o">=</span> <span class="n">fetch_org</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">coverage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span>
+        <span class="n">all_rows</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    ein=</span><span class="si">{</span><span class="n">cov</span><span class="p">[</span><span class="s1">'ein'</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'-'</span><span class="si">}</span><span class="s2">  filings=</span><span class="si">{</span><span class="n">cov</span><span class="p">[</span><span class="s1">'filings'</span><span class="p">]</span><span class="si">}</span><span class="s2">  "</span>
+              <span class="sa">f</span><span class="s2">"rows=</span><span class="si">{</span><span class="n">cov</span><span class="p">[</span><span class="s1">'rows'</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">cov</span><span class="p">[</span><span class="s1">'note'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># --- rosters_long.csv ---</span>
+    <span class="n">long_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">,</span> <span class="s2">"rosters_long.csv"</span><span class="p">)</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"org"</span><span class="p">,</span> <span class="s2">"ein"</span><span class="p">,</span> <span class="s2">"year"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">"hours"</span><span class="p">,</span> <span class="s2">"comp"</span><span class="p">,</span>
+            <span class="s2">"is_board"</span><span class="p">,</span> <span class="s2">"norm"</span><span class="p">]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">long_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">all_rows</span><span class="p">)</span>
+
+    <span class="c1"># --- roster_summary.csv: first/last year seen, current vs departed ---</span>
+    <span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">all_rows</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"is_board"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"Y"</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">board_only</span> \
+        <span class="k">else</span> <span class="n">all_rows</span>
+    <span class="n">latest_year</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">scope</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">latest_year</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">"org"</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">latest_year</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">"org"</span><span class="p">]],</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"year"</span><span class="p">]))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="n">agg</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s2">"years"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"titles"</span><span class="p">:</span> <span class="nb">set</span><span class="p">()})</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">scope</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"org"</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s2">"norm"</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s2">"person"</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">agg</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">"years"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"year"</span><span class="p">]))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]:</span>
+            <span class="n">agg</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">"titles"</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span>
+
+    <span class="n">sum_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">,</span> <span class="s2">"roster_summary.csv"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sum_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">"org"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="s2">"norm"</span><span class="p">,</span> <span class="s2">"first_year"</span><span class="p">,</span> <span class="s2">"last_year"</span><span class="p">,</span>
+                    <span class="s2">"years_served"</span><span class="p">,</span> <span class="s2">"status"</span><span class="p">,</span> <span class="s2">"titles_held"</span><span class="p">])</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">org</span><span class="p">,</span> <span class="n">norm</span><span class="p">,</span> <span class="n">person</span><span class="p">),</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">agg</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">[</span><span class="s2">"years"</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"years"</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"years"</span><span class="p">])</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s2">"current"</span> <span class="k">if</span> <span class="n">hi</span> <span class="o">&gt;=</span> <span class="n">latest_year</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">org</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"DEPARTED"</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="n">org</span><span class="p">,</span> <span class="n">person</span><span class="p">,</span> <span class="n">norm</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"years"</span><span class="p">])),</span>
+                        <span class="n">status</span><span class="p">,</span> <span class="s2">" | "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]))])</span>
+
+    <span class="c1"># --- interlocks.csv: same normalized name at 2+ organizations ---</span>
+    <span class="n">by_person</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">scope</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"norm"</span><span class="p">]:</span>
+            <span class="n">by_person</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">"norm"</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"org"</span><span class="p">])</span>
+    <span class="n">inter_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">,</span> <span class="s2">"interlocks.csv"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inter_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">"normalized_name"</span><span class="p">,</span> <span class="s2">"org_count"</span><span class="p">,</span> <span class="s2">"organizations"</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">norm</span><span class="p">,</span> <span class="n">orgs</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">by_person</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+                                 <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">kv</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orgs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="n">norm</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">orgs</span><span class="p">),</span> <span class="s2">" | "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">orgs</span><span class="p">))])</span>
+
+    <span class="c1"># --- coverage.csv ---</span>
+    <span class="n">cov_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">,</span> <span class="s2">"coverage.csv"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cov_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span><span class="s2">"org"</span><span class="p">,</span> <span class="s2">"ein"</span><span class="p">,</span> <span class="s2">"matched_name"</span><span class="p">,</span>
+                                           <span class="s2">"confidence"</span><span class="p">,</span> <span class="s2">"filings"</span><span class="p">,</span> <span class="s2">"rows"</span><span class="p">,</span>
+                                           <span class="s2">"note"</span><span class="p">])</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">coverage</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Wrote </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_rows</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows across </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span><span class="si">}</span><span class="s2"> organizations."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">cov_path</span><span class="si">}</span><span class="s2">   &lt;- READ THIS FIRST"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">long_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">sum_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">inter_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Reminder: filings lag 12-24 months. Confirm 'current' members "</span>
+          <span class="s2">"against each organization's own board page before relying on them."</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/board_extract.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

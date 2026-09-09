@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Church-based seminary framework design</div>
+<h1>build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">30 KB</span>
+<a class="btn" href="../../artifacts/Church-based%20seminary%20framework%20design/build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build script rendering the Small Group Seminary framework + 400-course catalog into an HTML brochure in the LifeTogether design system</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"/home/claude"</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data1</span><span class="w"> </span><span class="kn">import</span> <span class="n">D1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data2</span><span class="w"> </span><span class="kn">import</span> <span class="n">D2</span>
+
+<span class="n">DISC</span> <span class="o">=</span> <span class="n">D1</span> <span class="o">+</span> <span class="n">D2</span>
+<span class="n">TIERS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"100"</span><span class="p">,</span> <span class="s2">"Foundations"</span><span class="p">,</span> <span class="s2">"Read and discuss. Open to anyone at a table."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"200"</span><span class="p">,</span> <span class="s2">"Core"</span><span class="p">,</span> <span class="s2">"Written response each week, mentor reviewed."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"300"</span><span class="p">,</span> <span class="s2">"Advanced"</span><span class="p">,</span> <span class="s2">"Research paper per course, oral review."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"400"</span><span class="p">,</span> <span class="s2">"Capstone and Teaching"</span><span class="p">,</span> <span class="s2">"You build it, teach it, and are assessed on it."</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">e</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DISC</span><span class="p">)</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{</span>
+<span class="s2">  --navy:#101a33; --navy-2:#16223f; --navy-3:#1d2c4f;</span>
+<span class="s2">  --gold:#b8934e; --gold-lt:#d9bc82; --cream:#f7f3ea;</span>
+<span class="s2">  --line:rgba(217,188,130,.22);</span>
+<span class="s2">}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">html{scroll-behavior:smooth}</span>
+<span class="s2">body{</span>
+<span class="s2">  margin:0; background:var(--navy); color:var(--cream);</span>
+<span class="s2">  font-family:'Cormorant Garamond',Georgia,serif; font-size:19px; line-height:1.62;</span>
+<span class="s2">  -webkit-font-smoothing:antialiased;</span>
+<span class="s2">}</span>
+<span class="s2">.wrap{max-width:1080px;margin:0 auto;padding:0 26px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:600;line-height:1.16;margin:0}</span>
+<span class="s2">.eyebrow{</span>
+<span class="s2">  font-family:'Lato',system-ui,sans-serif;font-size:11px;letter-spacing:.22em;</span>
+<span class="s2">  text-transform:uppercase;color:var(--gold-lt);opacity:.85;font-weight:700</span>
+<span class="s2">}</span>
+<span class="s2">.lead{font-size:22px;color:rgba(247,243,234,.86)}</span>
+<span class="s2">p{margin:0 0 16px}</span>
+<span class="s2">.muted{color:rgba(247,243,234,.72)}</span>
+<span class="s2">.dim{color:rgba(247,243,234,.60)}</span>
+<span class="s2">a{color:var(--gold-lt)}</span>
+
+<span class="s2">/* hero */</span>
+<span class="s2">header.hero{</span>
+<span class="s2">  padding:74px 0 56px;border-bottom:1px solid var(--line);</span>
+<span class="s2">  background:</span>
+<span class="s2">    radial-gradient(1100px 420px at 12</span><span class="si">% -10%</span><span class="s2">,rgba(184,147,78,.20),transparent 62%),</span>
+<span class="s2">    linear-gradient(180deg,#0c1428,var(--navy));</span>
+<span class="s2">}</span>
+<span class="s2">.hero h1{font-size:clamp(42px,7vw,78px);letter-spacing:-.02em;margin:14px 0 6px}</span>
+<span class="s2">.hero .dom{font-family:'Lato',sans-serif;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);opacity:.9}</span>
+<span class="s2">.hero .thesis{max-width:660px;margin-top:22px;font-size:23px;color:rgba(247,243,234,.88)}</span>
+<span class="s2">.rule{height:1px;background:var(--line);margin:0}</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;gap:40px;margin-top:38px}</span>
+<span class="s2">.stat .n{font-family:'Playfair Display',serif;font-size:40px;color:var(--gold-lt);line-height:1}</span>
+<span class="s2">.stat .l{font-family:'Lato',sans-serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(247,243,234,.6);margin-top:7px}</span>
+
+<span class="s2">section{padding:62px 0;border-bottom:1px solid var(--line)}</span>
+<span class="s2">section h2{font-size:clamp(28px,4vw,40px);margin:12px 0 18px}</span>
+<span class="s2">section h3{font-size:23px;margin:30px 0 10px;color:var(--gold-lt)}</span>
+
+<span class="s2">/* verdict */</span>
+<span class="s2">.verdict{</span>
+<span class="s2">  border-left:3px solid var(--gold);background:rgba(184,147,78,.08);</span>
+<span class="s2">  padding:22px 26px;margin:22px 0 0</span>
+<span class="s2">}</span>
+<span class="s2">.verdict strong{color:var(--gold-lt)}</span>
+
+<span class="s2">/* doors */</span>
+<span class="s2">.doors{display:grid;gap:14px;margin-top:26px}</span>
+<span class="s2">.door{</span>
+<span class="s2">  display:grid;grid-template-columns:52px 1fr;gap:20px;align-items:start;</span>
+<span class="s2">  border:1px solid var(--line);background:rgba(255,255,255,.022);padding:20px 22px</span>
+<span class="s2">}</span>
+<span class="s2">.door .num{font-family:'Playfair Display',serif;font-size:30px;color:var(--gold);opacity:.75;line-height:1}</span>
+<span class="s2">.door h4{font-size:20px;margin-bottom:5px}</span>
+<span class="s2">.door .tag{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border:1px solid var(--line);color:var(--gold-lt);margin-left:10px;white-space:nowrap}</span>
+
+<span class="s2">/* ladder: the signature element */</span>
+<span class="s2">.ladder{margin-top:34px;border-top:1px solid var(--line)}</span>
+<span class="s2">.rung{</span>
+<span class="s2">  display:grid;grid-template-columns:66px 1fr 210px;gap:22px;align-items:start;</span>
+<span class="s2">  padding:24px 0;border-bottom:1px solid var(--line);position:relative</span>
+<span class="s2">}</span>
+<span class="s2">.rung .step{</span>
+<span class="s2">  font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">  color:var(--gold);padding-top:6px</span>
+<span class="s2">}</span>
+<span class="s2">.rung h4{font-size:24px}</span>
+<span class="s2">.rung .req{font-family:'Lato',sans-serif;font-size:12.5px;line-height:1.75;color:rgba(247,243,234,.66)}</span>
+<span class="s2">.rung .bar{position:absolute;left:0;bottom:-1px;height:2px;background:var(--gold);opacity:.55}</span>
+<span class="s2">.rung .who{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-lt);opacity:.8;margin-top:8px}</span>
+
+<span class="s2">/* table */</span>
+<span class="s2">table{width:100%;border-collapse:collapse;margin-top:24px;font-size:16px}</span>
+<span class="s2">th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}</span>
+<span class="s2">th{font-family:'Lato',sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);font-weight:700}</span>
+<span class="s2">td.k{font-family:'Lato',sans-serif;font-size:13px;color:var(--gold-lt);white-space:nowrap}</span>
+
+<span class="s2">/* modes */</span>
+<span class="s2">.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(224px,1fr));gap:14px;margin-top:26px}</span>
+<span class="s2">.mode{border:1px solid var(--line);padding:20px;background:rgba(255,255,255,.022)}</span>
+<span class="s2">.mode .size{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}</span>
+<span class="s2">.mode h4{font-size:19px;margin:8px 0 7px}</span>
+<span class="s2">.mode p{font-size:16px;margin:0;color:rgba(247,243,234,.72)}</span>
+
+<span class="s2">/* catalog */</span>
+<span class="s2">.discipline{border:1px solid var(--line);margin-top:22px;background:rgba(255,255,255,.02)}</span>
+<span class="s2">.dhead{display:grid;grid-template-columns:74px 1fr;gap:18px;padding:22px 24px 18px;border-bottom:1px solid var(--line);align-items:start}</span>
+<span class="s2">.dhead .dn{font-family:'Playfair Display',serif;font-size:40px;color:var(--gold);opacity:.62;line-height:.9}</span>
+<span class="s2">.dhead h3{margin:0;color:var(--cream);font-size:26px}</span>
+<span class="s2">.dhead .sub{font-size:17px;color:rgba(247,243,234,.66);margin-top:4px}</span>
+<span class="s2">.tier{padding:18px 24px 6px;border-bottom:1px solid rgba(217,188,130,.10)}</span>
+<span class="s2">.tier:last-child{border-bottom:none}</span>
+<span class="s2">.tierhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}</span>
+<span class="s2">.tierhead .lvl{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold)}</span>
+<span class="s2">.tierhead .nm{font-family:'Lato',sans-serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt)}</span>
+<span class="s2">.tierhead .rig{font-family:'Lato',sans-serif;font-size:11px;color:rgba(247,243,234,.5)}</span>
+<span class="s2">ol.courses{margin:0 0 12px;padding-left:26px}</span>
+<span class="s2">ol.courses li{margin-bottom:7px}</span>
+<span class="s2">ol.courses .t{color:var(--cream)}</span>
+<span class="s2">ol.courses .s{color:rgba(247,243,234,.6);font-size:16.5px}</span>
+
+<span class="s2">.note{border:1px dashed var(--line);padding:18px 20px;margin-top:26px;font-size:17px;color:rgba(247,243,234,.75)}</span>
+<span class="s2">.note b{color:var(--gold-lt)}</span>
+<span class="s2">ul.tight{margin:0 0 16px;padding-left:22px}</span>
+<span class="s2">ul.tight li{margin-bottom:8px}</span>
+<span class="s2">footer{padding:52px 0 66px;text-align:center}</span>
+<span class="s2">footer .f1{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(247,243,234,.5)}</span>
+<span class="s2">@media(max-width:720px){</span>
+<span class="s2">  body{font-size:18px}</span>
+<span class="s2">  .rung{grid-template-columns:1fr;gap:8px}</span>
+<span class="s2">  .rung .step{padding-top:0}</span>
+<span class="s2">  .door{grid-template-columns:1fr;gap:8px}</span>
+<span class="s2">  .dhead{grid-template-columns:1fr;gap:6px}</span>
+<span class="s2">  table{font-size:15px}</span>
+<span class="s2">  th,td{padding:10px 8px}</span>
+<span class="s2">}</span>
+<span class="s2">@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</span>
+<span class="s2">"""</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">hero</span><span class="p">():</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;header class="hero"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;LifeTogether &amp;middot; Feasibility Study and Curriculum Map&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;Small Group&lt;br&gt;Seminary&lt;/h1&gt;</span>
+<span class="s2">  &lt;div class="dom"&gt;smallgroupseminary.com&lt;/div&gt;</span>
+<span class="s2">  &lt;p class="thesis"&gt;Seminary-depth theological training, delivered at a table in a local church,</span>
+<span class="s2">  with real coursework, real supervision, and a credential that means something.</span>
+<span class="s2">  Not a shortcut. A longer road, walked in company.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="stats"&gt;</span>
+<span class="s2">    &lt;div class="stat"&gt;&lt;div class="n"&gt;20&lt;/div&gt;&lt;div class="l"&gt;Disciplines&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="stat"&gt;&lt;div class="n"&gt;</span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;div class="l"&gt;Courses&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="stat"&gt;&lt;div class="n"&gt;5&lt;/div&gt;&lt;div class="l"&gt;Credential rungs&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="stat"&gt;&lt;div class="n"&gt;4&lt;/div&gt;&lt;div class="l"&gt;Rigor levels&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="stat"&gt;&lt;div class="n"&gt;5&lt;/div&gt;&lt;div class="l"&gt;Delivery modes&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;"""</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">verdict</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">"""</span>
+<span class="s2">&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;The Question&lt;/div&gt;</span>
+<span class="s2">  &lt;h2&gt;Is this plausible, and can it scale?&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Yes on both, with one hard boundary. The idea is not speculative, because a</span>
+<span class="s2">  church-based, competency-based theological school already exists and is accredited: the</span>
+<span class="s2">  Antioch School of Church Planting and Leadership Development, the credentialing arm of</span>
+<span class="s2">  BILD International. It is accredited by the Distance Education Accrediting Commission,</span>
+<span class="s2">  a federally recognized agency, and it grants ministry credentials from certificate</span>
+<span class="s2">  through doctorate to students who do their work inside a local church under local</span>
+<span class="s2">  mentors. Students enroll either through a partner church or as individuals whose church</span>
+<span class="s2">  commits to mentoring them. That is a working proof that your instinct is not naive.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;div class="verdict"&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;The boundary:&lt;/strong&gt; you can build the curriculum, the cohorts, the homework,</span>
+<span class="s2">    the supervision, and the certificate immediately, with nobody's permission. What you cannot</span>
+<span class="s2">    do without an accredited institution is grant a degree, or call the thing a degree, or imply</span>
+<span class="s2">    one. That single line determines the entire architecture below. Everything else is design.&lt;/p&gt;</span>
+<span class="s2">    &lt;p style="margin:0"&gt;&lt;strong&gt;The trade you already named:&lt;/strong&gt; drop the biblical languages</span>
+<span class="s2">    and the credential stops being an M.Div. Extend the timeline and the volume of work, and it</span>
+<span class="s2">    can honestly approach M.Div depth in every other respect. Say that out loud in the marketing</span>
+<span class="s2">    rather than hiding it, and the product becomes more credible, not less.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">doors</span><span class="p">():</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"Church-issued certificate"</span><span class="p">,</span> <span class="s2">"Available now"</span><span class="p">,</span>
+         <span class="s2">"Your nonprofit issues it, the local church signs it, the transcript is yours. No approval "</span>
+         <span class="s2">"needed from anyone. Zero portability into higher education, which is fine for the large "</span>
+         <span class="s2">"majority of laypeople who will never enroll in a degree program."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span> <span class="s2">"Third-party credit recommendation"</span><span class="p">,</span> <span class="s2">"12 to 24 months"</span><span class="p">,</span>
+         <span class="s2">"The American Council on Education evaluates individual courses through its Learning "</span>
+         <span class="s2">"Evaluations program and recommends a specific number of credit hours at a specific level. "</span>
+         <span class="s2">"This is how Sophia and StraighterLine make non-accredited coursework transferable at "</span>
+         <span class="s2">"hundreds of institutions without themselves being schools. It is the single highest-leverage "</span>
+         <span class="s2">"move available to you, because it converts a certificate into currency without changing "</span>
+         <span class="s2">"what you are."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span> <span class="s2">"Articulation agreements"</span><span class="p">,</span> <span class="s2">"Rolling, one school at a time"</span><span class="p">,</span>
+         <span class="s2">"A written agreement with a specific seminary or Bible college specifying exactly which of "</span>
+         <span class="s2">"your courses count for what credit in their program. Negotiated individually, and easiest "</span>
+         <span class="s2">"with schools that already want adult and non-traditional students. With 500 church "</span>
+         <span class="s2">"relationships you have unusual leverage here, because you bring them enrollment."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span> <span class="s2">"Partner-institution degree"</span><span class="p">,</span> <span class="s2">"12 to 36 months to structure"</span><span class="p">,</span>
+         <span class="s2">"The Antioch School model, inverted for your benefit. An already accredited school grants "</span>
+         <span class="s2">"the degree; your church network delivers the formation and the supervision. The student "</span>
+         <span class="s2">"gets a real M.Min or M.A. in Ministry. You get to stay a publisher and a platform instead "</span>
+         <span class="s2">"of becoming a university."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span> <span class="s2">"Your own accreditation"</span><span class="p">,</span> <span class="s2">"Five to eight years, do not start here"</span><span class="p">,</span>
+         <span class="s2">"Institutional accreditation requires governance separation, credentialed faculty, financial "</span>
+         <span class="s2">"audits, library resources, student services, and a multi-year self-study and site visit. "</span>
+         <span class="s2">"It is a legitimate destination and a terrible starting point. Revisit it only after doors "</span>
+         <span class="s2">"two through four have proven the demand."</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;Credentialing&lt;/div&gt;'</span><span class="p">,</span>
+           <span class="s2">"&lt;h2&gt;Five doors, and only one of them is closed to you today&lt;/h2&gt;"</span><span class="p">,</span>
+           <span class="s1">'&lt;p class="muted"&gt;These are not alternatives to choose between. They are a sequence. '</span>
+           <span class="s1">'Ship through door one, pursue door two in parallel, and use doors three and four to '</span>
+           <span class="s1">'give your strongest students somewhere to go.&lt;/p&gt;'</span><span class="p">,</span>
+           <span class="s1">'&lt;div class="doors"&gt;'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="door"&gt;&lt;div class="num"&gt;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div&gt;'</span>
+                   <span class="sa">f</span><span class="s1">'&lt;h4&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;span class="tag"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/h4&gt;'</span>
+                   <span class="sa">f</span><span class="s1">'&lt;p class="muted" style="margin:0"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">body</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ladder</span><span class="p">():</span>
+    <span class="n">rungs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Rung 1"</span><span class="p">,</span> <span class="s2">"Certificate of Completion"</span><span class="p">,</span> <span class="s2">"Any layperson, any table"</span><span class="p">,</span>
+         <span class="s2">"5 courses in one discipline &amp;middot; Level 100 &amp;middot; Rigor L1&lt;br&gt;"</span>
+         <span class="s2">"Attendance and participation &amp;middot; no written work required&lt;br&gt;"</span>
+         <span class="s2">"About 10 months at one course per two months&lt;br&gt;"</span>
+         <span class="s2">"Signed by the pastor, issued by the church"</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Rung 2"</span><span class="p">,</span> <span class="s2">"Certificate in Biblical Studies"</span><span class="p">,</span> <span class="s2">"The serious lay student"</span><span class="p">,</span>
+         <span class="s2">"15 courses &amp;middot; Old Testament, New Testament, Hermeneutics &amp;middot; Rigor L2&lt;br&gt;"</span>
+         <span class="s2">"500-word written response per session, mentor graded to rubric&lt;br&gt;"</span>
+         <span class="s2">"About 2.5 years &amp;middot; one Certified Mentor required&lt;br&gt;"</span>
+         <span class="s2">"Transcript with hours and rubric scores"</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Rung 3"</span><span class="p">,</span> <span class="s2">"Diploma in Ministry"</span><span class="p">,</span> <span class="s2">"Lay pastors, elders, staff without training"</span><span class="p">,</span>
+         <span class="s2">"30 courses across 10 disciplines &amp;middot; Rigor L2 with two L3 disciplines&lt;br&gt;"</span>
+         <span class="s2">"Supervised ministry practicum, 150 logged hours&lt;br&gt;"</span>
+         <span class="s2">"Oral review before a three-person panel &amp;middot; about 4 years&lt;br&gt;"</span>
+         <span class="s2">"This is the tier most Bible college certificates actually match"</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Rung 4"</span><span class="p">,</span> <span class="s2">"Fellowship of the Small Group Seminary"</span><span class="p">,</span> <span class="s2">"The M.Div-shaped tier, honestly labeled"</span><span class="p">,</span>
+         <span class="s2">"60 courses across all 20 disciplines &amp;middot; Rigor L3&lt;br&gt;"</span>
+         <span class="s2">"Research paper per course &amp;middot; capstone project &amp;middot; 2 years supervised ministry&lt;br&gt;"</span>
+         <span class="s2">"Pastor attestation of character and fruit &amp;middot; 6 to 9 years part-time&lt;br&gt;"</span>
+         <span class="s2">"Comparable to an M.Div in seat time and written volume, minus languages and academic research method"</span><span class="p">,</span> <span class="mi">84</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Rung 5"</span><span class="p">,</span> <span class="s2">"Degree Bridge"</span><span class="p">,</span> <span class="s2">"Granted by the partner school, not by you"</span><span class="p">,</span>
+         <span class="s2">"Fellowship transcript submitted for block credit&lt;br&gt;"</span>
+         <span class="s2">"Residual coursework, languages, and thesis completed with the partner&lt;br&gt;"</span>
+         <span class="s2">"Degree conferred: M.Min, M.A. in Ministry, or M.Div&lt;br&gt;"</span>
+         <span class="s2">"Your name appears as the training partner, never as the grantor"</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Signature Structure&lt;/div&gt;'</span><span class="p">,</span>
+           <span class="s2">"&lt;h2&gt;The credential ladder&lt;/h2&gt;"</span><span class="p">,</span>
+           <span class="s1">'&lt;p class="muted"&gt;One library of courses. Five places to stop. A person can enter at a '</span>
+           <span class="s1">'Tuesday night table with no ambition beyond understanding Genesis, and the same system '</span>
+           <span class="s1">'will carry them, if they want it, to a degree granted by an accredited school. Nobody '</span>
+           <span class="s1">'has to commit to the top to start at the bottom.&lt;/p&gt;'</span><span class="p">,</span>
+           <span class="s1">'&lt;div class="ladder"&gt;'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">who</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">pct</span> <span class="ow">in</span> <span class="n">rungs</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="rung"&gt;&lt;div class="step"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">step</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+                   <span class="sa">f</span><span class="s1">'&lt;div&gt;&lt;h4&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/h4&gt;&lt;div class="who"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">who</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span>
+                   <span class="sa">f</span><span class="s1">'&lt;div class="req"&gt;</span><span class="si">{</span><span class="n">req</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+                   <span class="sa">f</span><span class="s1">'&lt;div class="bar" style="width:</span><span class="si">{</span><span class="n">pct</span><span class="si">}</span><span class="s1">%"&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/div&gt;"</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="note"&gt;&lt;b&gt;Read the timeline as a feature.&lt;/b&gt; You said you would accept '</span>
+               <span class="s1">'a longer road in exchange for dropping the languages. Here is the actual arithmetic: '</span>
+               <span class="s1">'one eight-week course every two months puts the Fellowship at roughly nine years, and '</span>
+               <span class="s1">'two concurrent courses puts it at four and a half. A traditional M.Div is three to four '</span>
+               <span class="s1">'years full-time and unavailable to almost everyone who would enroll in this. The honest '</span>
+               <span class="s1">'pitch is not faster. It is reachable.&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">rigor</span><span class="p">():</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"L1"</span><span class="p">,</span> <span class="s2">"Read and Discuss"</span><span class="p">,</span> <span class="s2">"None"</span><span class="p">,</span> <span class="s2">"Attendance and participation"</span><span class="p">,</span>
+         <span class="s2">"Table leader"</span><span class="p">,</span> <span class="s2">"Certificate of Completion"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"L2"</span><span class="p">,</span> <span class="s2">"Write and Respond"</span><span class="p">,</span> <span class="s2">"500 words per session"</span><span class="p">,</span> <span class="s2">"Rubric score by a Certified Mentor"</span><span class="p">,</span>
+         <span class="s2">"Certified Mentor"</span><span class="p">,</span> <span class="s2">"Certificate in Biblical Studies, Diploma"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"L3"</span><span class="p">,</span> <span class="s2">"Research and Defend"</span><span class="p">,</span> <span class="s2">"2,500-word paper per course"</span><span class="p">,</span> <span class="s2">"Paid reader plus oral review"</span><span class="p">,</span>
+         <span class="s2">"Reader Pool"</span><span class="p">,</span> <span class="s2">"Fellowship"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"L4"</span><span class="p">,</span> <span class="s2">"Teach and Supervise"</span><span class="p">,</span> <span class="s2">"Teach the material to a live group"</span><span class="p">,</span> <span class="s2">"Recorded session assessed against a teaching rubric"</span><span class="p">,</span>
+         <span class="s2">"Supervisor"</span><span class="p">,</span> <span class="s2">"Certified Mentor and Table Leader credentials"</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Scaling Mechanism&lt;/div&gt;'</span><span class="p">,</span>
+           <span class="s2">"&lt;h2&gt;One content library, four rigor overlays&lt;/h2&gt;"</span><span class="p">,</span>
+           <span class="s1">'&lt;p class="muted"&gt;This is the part that makes the whole thing buildable. You do not write '</span>
+           <span class="s1">'four curricula for four credential levels. You write one course and attach four assessment '</span>
+           <span class="s1">'overlays to it. A retired welder and a future church planter sit at the same table, read '</span>
+           <span class="s1">'the same material, and earn different credentials because they elected different rigor. '</span>
+           <span class="s1">'It is the same create-once, configure-many-ways architecture already running underneath '</span>
+           <span class="s1">'the publishing platform.&lt;/p&gt;'</span><span class="p">,</span>
+           <span class="s2">"&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Level&lt;/th&gt;&lt;th&gt;Mode&lt;/th&gt;&lt;th&gt;Weekly output&lt;/th&gt;"</span>
+           <span class="s2">"&lt;th&gt;How it is assessed&lt;/th&gt;&lt;th&gt;Who assesses&lt;/th&gt;&lt;th&gt;Unlocks&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;"</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;tr&gt;&lt;td class='k'&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/td&gt;"</span>
+                   <span class="sa">f</span><span class="s2">"&lt;td&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;"</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/tbody&gt;&lt;/table&gt;"</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="note"&gt;&lt;b&gt;The real constraint is not content. It is grading.&lt;/b&gt; '</span>
+               <span class="s1">'Four hundred courses is a fixed cost, and producing large libraries is already what '</span>
+               <span class="s1">'you do. Assessment is a marginal cost that rises with every student, and it is the '</span>
+               <span class="s1">'thing that quietly kills programs like this. Three defenses: keep L1 entirely '</span>
+               <span class="s1">'peer-and-leader assessed with no central grading; use rubric-driven structured peer '</span>
+               <span class="s1">'review plus a mentor sign-off at L2; and pay readers only at L3 and L4, where students '</span>
+               <span class="s1">'are few and tuition can carry the cost. Price the tiers so that grading is funded by '</span>
+               <span class="s1">'the tier that requires it.&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">():</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"3 to 12"</span><span class="p">,</span> <span class="s2">"The Table"</span><span class="p">,</span> <span class="s2">"The default. Weekly, ninety minutes, one Certified Table Leader, discussion-driven. Everything is written for this room first."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span> <span class="s2">"The Pair"</span><span class="p">,</span> <span class="s2">"Paul and Timothy. Fastest progress and highest accountability. Ideal for a pastor training an intern or two elders working through doctrine together."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"Solo with Mentor"</span><span class="p">,</span> <span class="s2">"Self-paced with a monthly mentor call. For rural churches, shift workers, and anyone without a cohort within driving distance."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"15 to 40"</span><span class="p">,</span> <span class="s2">"The Class"</span><span class="p">,</span> <span class="s2">"A church-wide cohort taught by staff on a semester rhythm. This is the on-ramp that fills the tables."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Cross-church"</span><span class="p">,</span> <span class="s2">"The Network Cohort"</span><span class="p">,</span> <span class="s2">"Online, mixed-church, denominationally sponsored. Where the platform economics get interesting and where a partner school will want to plug in."</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;Delivery&lt;/div&gt;'</span><span class="p">,</span>
+           <span class="s2">"&lt;h2&gt;The same course, five rooms&lt;/h2&gt;"</span><span class="p">,</span>
+           <span class="s1">'&lt;p class="muted"&gt;You asked whether this could run in a small group, in pairs, individually, '</span>
+           <span class="s1">'or in cohorts. All four, plus a fifth. The content is authored once for the table, and each '</span>
+           <span class="s1">'other mode is a facilitation variant of it rather than a separate product.&lt;/p&gt;'</span><span class="p">,</span>
+           <span class="s1">'&lt;div class="modes"&gt;'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">size</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">ms</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="mode"&gt;&lt;div class="size"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">size</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+                   <span class="sa">f</span><span class="s1">'&lt;h4&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">body</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">languages</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">"""</span>
+<span class="s2">&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;The Hardest Design Decision&lt;/div&gt;</span>
+<span class="s2">  &lt;h2&gt;What to do about Greek and Hebrew&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="muted"&gt;Languages are the single clearest line between a seminary degree and everything</span>
+<span class="s2">  below it. Three honest options, and a recommendation.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;h3&gt;Option A &amp;middot; Drop them and say so&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="muted"&gt;Call it an English-Bible ministry track, plainly, in the marketing. This is what</span>
+<span class="s2">  most non-M.Div tracks at Bible colleges functionally are. The cost is that no serious school will</span>
+<span class="s2">  treat the credential as M.Div equivalent, and no honest person should claim it is.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;h3&gt;Option B &amp;middot; Languages as an optional elective spine&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="muted"&gt;Two years of tutored, self-paced Greek and Hebrew, gated by a proctored exam,</span>
+<span class="s2">  required only for the top rung. Realistic completion rates for self-paced language study without</span>
+<span class="s2">  daily class accountability are low, so plan for most students to skip it, and design the credential</span>
+<span class="s2">  so that skipping it is not a failure.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;h3&gt;Option C &amp;middot; Language literacy as a required discipline&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="muted"&gt;A required twenty-course discipline that teaches students to use the fruits of the</span>
+<span class="s2">  languages responsibly: lexicons without the word fallacies, interlinears for their actual purpose,</span>
+<span class="s2">  translation comparison, discourse structure visible in English, and a unit on what you may never</span>
+<span class="s2">  claim without the languages. It produces students who know the boundary of their own competence,</span>
+<span class="s2">  which is more than many language-trained graduates can say.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;div class="verdict"&gt;&lt;p style="margin:0"&gt;&lt;strong&gt;Recommendation: C as required, B as optional,</span>
+<span class="s2">  and A as the honest label.&lt;/strong&gt; Discipline 12 in the catalog below is built this way. It is</span>
+<span class="s2">  also, incidentally, the most defensible and most distinctive thing in the entire curriculum, because</span>
+<span class="s2">  no seminary teaches a student the shape of their own limits.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">benchmark</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">"""</span>
+<span class="s2">&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Curriculum Validation&lt;/div&gt;</span>
+<span class="s2">  &lt;h2&gt;How to prove the map is right&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="muted"&gt;The twenty disciplines below are built to the standard shape of an accredited</span>
+<span class="s2">  Master of Divinity: biblical studies, exegetical method, theology, church history, practical</span>
+<span class="s2">  theology, spiritual formation, and supervised field work, typically distributed across roughly</span>
+<span class="s2">  seventy-two to ninety graduate credit hours. That shape is well established and the map reflects</span>
+<span class="s2">  it. What has &lt;em&gt;not&lt;/em&gt; been done is a line-by-line audit against real syllabi, and that is the</span>
+<span class="s2">  next discrete piece of work rather than something to assume.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;h3&gt;The audit set, seminary side&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="muted"&gt;Dallas, Gordon-Conwell, Trinity Evangelical, Southern, Southeastern, Reformed</span>
+<span class="s2">  Theological, Westminster, Fuller, Talbot, and Denver. Add Beeson, Covenant, and Phoenix if you</span>
+<span class="s2">  want a thirteen-school spread across traditions.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;h3&gt;The audit set, Bible college and certificate side&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="muted"&gt;Moody, Columbia International, Multnomah, Lancaster Bible, Grace, Cedarville</span>
+<span class="s2">  graduate studies, Liberty, and Johnson. These matter more than the seminaries for your purpose,</span>
+<span class="s2">  because their non-M.Div tracks are the credential shape you are actually competing with, and their</span>
+<span class="s2">  registrars are the ones most likely to sign an articulation agreement.&lt;/p&gt;</span>
+
+<span class="s2">  &lt;div class="note"&gt;&lt;b&gt;What the audit produces:&lt;/b&gt; a matrix of every required course at all</span>
+<span class="s2">  twenty-one schools, mapped against these twenty disciplines, showing coverage gaps, over-built</span>
+<span class="s2">  areas, and the exact courses a partner school would need to see before granting block credit.</span>
+<span class="s2">  That document is what you put in front of a registrar. It is a bounded, deliverable piece of</span>
+<span class="s2">  research and it should happen before any of these courses are written.&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">caution</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">"""</span>
+<span class="s2">&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Before You Buy the Domain Signage&lt;/div&gt;</span>
+<span class="s2">  &lt;h2&gt;Two cautions worth paying a lawyer about&lt;/h2&gt;</span>
+<span class="s2">  &lt;ul class="tight muted"&gt;</span>
+<span class="s2">    &lt;li&gt;&lt;b style="color:var(--gold-lt)"&gt;The words themselves are regulated.&lt;/b&gt; Many states restrict</span>
+<span class="s2">    who may use terms like seminary, college, and degree, and who may issue anything that implies a</span>
+<span class="s2">    degree. Religious exemptions exist in a good number of states, but they vary widely in scope and</span>
+<span class="s2">    several require registration or an affidavit. Which state your entity registers in materially</span>
+<span class="s2">    changes what you may print on a certificate. This is a specific question for education counsel</span>
+<span class="s2">    in your state, not something to resolve from a template.&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;&lt;b style="color:var(--gold-lt)"&gt;Keep the grantor and the trainer separate from day one.&lt;/b&gt;</span>
+<span class="s2">    Structure it so the certificate is issued by your institute and any degree flows only through the</span>
+<span class="s2">    accredited partner. That separation protects the brand if a state regulator ever asks, and it</span>
+<span class="s2">    makes door four dramatically easier to negotiate, because the partner school is not being asked</span>
+<span class="s2">    to share its degree-granting authority, only to recognize your coursework.&lt;/li&gt;</span>
+<span class="s2">  &lt;/ul&gt;</span>
+<span class="s2">  &lt;p class="muted" style="margin-top:18px"&gt;Neither of these is a reason not to build it. Both are</span>
+<span class="s2">  reasons to have the conversation before the first certificate is printed rather than after.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">catalog</span><span class="p">():</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Curriculum&lt;/div&gt;'</span><span class="p">,</span>
+           <span class="sa">f</span><span class="s2">"&lt;h2&gt;20 disciplines &amp;middot; </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2"> courses&lt;/h2&gt;"</span><span class="p">,</span>
+           <span class="s1">'&lt;p class="muted"&gt;Your original ten disciplines, each expanded from ten courses to twenty '</span>
+           <span class="s1">'and restructured into four ascending levels, plus ten new disciplines built to the same '</span>
+           <span class="s1">'shape. Every course is eight sessions. The level determines the depth of the content; the '</span>
+           <span class="s1">'rigor overlay determines the depth of the work. A credential is a path through this '</span>
+           <span class="s1">'library, not a separate product.&lt;/p&gt;'</span><span class="p">,</span>
+           <span class="s1">'&lt;div class="note" style="margin-bottom:6px"&gt;&lt;b&gt;One thing to correct.&lt;/b&gt; The names of your '</span>
+           <span class="s1">'original ten disciplines were not in front of me, so disciplines 01 through 10 are the '</span>
+           <span class="s1">'standard ten reconstructed from the M.Div distribution. Send me your actual ten and I will '</span>
+           <span class="s1">'re-map without losing any of the four hundred courses.&lt;/div&gt;'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="ow">in</span> <span class="n">DISC</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="discipline"&gt;'</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="dhead"&gt;&lt;div class="dn"&gt;</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div&gt;'</span>
+                   <span class="sa">f</span><span class="s2">"&lt;h3&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h3&gt;&lt;div class='sub'&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">lvl</span><span class="p">,</span> <span class="n">tname</span><span class="p">,</span> <span class="n">rig</span><span class="p">),</span> <span class="n">courses</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">TIERS</span><span class="p">,</span> <span class="p">[</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span><span class="p">]):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="tier"&gt;'</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="tierhead"&gt;&lt;span class="lvl"&gt;</span><span class="si">{</span><span class="n">lvl</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+                       <span class="sa">f</span><span class="s1">'&lt;span class="nm"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">tname</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+                       <span class="sa">f</span><span class="s1">'&lt;span class="rig"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">rig</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;ol class="courses"&gt;'</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">courses</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;li&gt;&lt;span class="t"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt; '</span>
+                           <span class="sa">f</span><span class="s1">'&lt;span class="s"&gt;&amp;mdash; </span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/li&gt;'</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/ol&gt;&lt;/div&gt;"</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/div&gt;"</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">nextmoves</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">"""</span>
+<span class="s2">&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;If You Want to Move&lt;/div&gt;</span>
+<span class="s2">  &lt;h2&gt;The first four things, in order&lt;/h2&gt;</span>
+<span class="s2">  &lt;ul class="tight muted"&gt;</span>
+<span class="s2">    &lt;li&gt;&lt;b style="color:var(--gold-lt)"&gt;Run the syllabus audit.&lt;/b&gt; Twenty-one schools mapped against</span>
+<span class="s2">    these twenty disciplines. It validates or corrects everything above and it is the document a</span>
+<span class="s2">    registrar needs. Nothing should be written before it.&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;&lt;b style="color:var(--gold-lt)"&gt;Build one discipline all the way down.&lt;/b&gt; Not a sampler.</span>
+<span class="s2">    Discipline 03, Hermeneutics, all twenty courses, all four rigor overlays, one complete rubric set,</span>
+<span class="s2">    one Certified Mentor guide. If that one discipline works in three pilot churches, the other</span>
+<span class="s2">    nineteen are a production problem you already know how to solve.&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;&lt;b style="color:var(--gold-lt)"&gt;Open a conversation about door four now.&lt;/b&gt; A school that</span>
+<span class="s2">    already serves non-traditional adults, already grants an M.Min, and already wants enrollment. You</span>
+<span class="s2">    bring five hundred churches. That is a real offer and it takes twelve to thirty-six months, so it</span>
+<span class="s2">    should start while the curriculum is being built, not after.&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;&lt;b style="color:var(--gold-lt)"&gt;Design the Certified Mentor credential before the student</span>
+<span class="s2">    credential.&lt;/b&gt; The program lives or dies on whether there are enough qualified people to assess</span>
+<span class="s2">    the work. Mentors are made at level L4 by graduates of the program, which means the first cohort</span>
+<span class="s2">    has to be mentored by outside seminary graduates and pastors. Recruit them first.&lt;/li&gt;</span>
+<span class="s2">  &lt;/ul&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span>
+
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;Small Group Seminary &amp;middot; Feasibility and Curriculum Map&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Lato:wght@400;700;900&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;&lt;body&gt;</span>
+<span class="si">{</span><span class="n">hero</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">verdict</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">doors</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">ladder</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">rigor</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">modes</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">languages</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">benchmark</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">caution</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">catalog</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">nextmoves</span><span class="p">()</span><span class="si">}</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="f1"&gt;LifeTogether &amp;middot; Small Group Seminary &amp;middot; 20 Disciplines &amp;middot; </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2"> Courses&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/footer&gt;</span>
+<span class="s2">&lt;/body&gt;&lt;/html&gt;"""</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/small-group-seminary.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">HTML</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"courses:"</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"disciplines:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DISC</span><span class="p">))</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DISC</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"per-discipline:"</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">counts</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/small-group-seminary.html"</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_illus.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_illus.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">21 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_illus.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the clickable Master Illustration Library with tabs, drill-down, devotional studio, and build-your-own engine</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">illus_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">THEMES</span><span class="p">,</span> <span class="n">BOOKS</span><span class="p">,</span> <span class="n">PASSAGES</span>
+
+<span class="n">NSETS</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">THEMES</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">BOOKS</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">PASSAGES</span><span class="p">)</span>
+<span class="n">NIDEAS</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s2">"o"</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s2">"c"</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s2">"h"</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]))</span>
+             <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">THEMES</span> <span class="o">+</span> <span class="n">BOOKS</span> <span class="o">+</span> <span class="n">PASSAGES</span><span class="p">)</span>
+<span class="n">NPROMPT</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s2">"p"</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">THEMES</span> <span class="o">+</span> <span class="n">BOOKS</span> <span class="o">+</span> <span class="n">PASSAGES</span><span class="p">)</span>
+
+<span class="c1"># ---- Devotional studio: 7 shootable scripts derived from the Resurrection kit ----</span>
+<span class="n">STUDIO</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s2">"title"</span><span class="p">:</span><span class="s2">"He's Not Where You Left Him"</span><span class="p">,</span>
+<span class="s2">"cat"</span><span class="p">:</span><span class="s2">"Resurrection Sunday"</span><span class="p">,</span>
+<span class="s2">"days"</span><span class="p">:[</span>
+<span class="p">{</span><span class="s2">"d"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s2">"t"</span><span class="p">:</span><span class="s2">"Spices in Your Hands"</span><span class="p">,</span><span class="s2">"v"</span><span class="p">:</span><span class="s2">"Luke 24:1"</span><span class="p">,</span>
+ <span class="s2">"story"</span><span class="p">:</span><span class="s2">"Tell about a time you prepared carefully for an outcome that had already changed. Keep it under thirty seconds."</span><span class="p">,</span>
+ <span class="s2">"teach"</span><span class="p">:</span><span class="s2">"They brought burial spices to a tomb that was already empty. Grief organizes. It makes arrangements, sets alarms, and shows up on time &amp;mdash; all of it aimed at a version of the story God had already moved past."</span><span class="p">,</span>
+ <span class="s2">"app"</span><span class="p">:</span><span class="s2">"You are probably carrying something you have quietly decided is finished."</span><span class="p">,</span>
+ <span class="s2">"next"</span><span class="p">:</span><span class="s2">"Write down the one outcome you have accepted as settled. Do not solve it. Just name it."</span><span class="p">,</span>
+ <span class="s2">"pray"</span><span class="p">:</span><span class="s2">"Father, show me where I have stopped expecting you to move. Amen."</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">"d"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">"t"</span><span class="p">:</span><span class="s2">"Very Early in the Morning"</span><span class="p">,</span><span class="s2">"v"</span><span class="p">:</span><span class="s2">"Luke 24:1"</span><span class="p">,</span>
+ <span class="s2">"story"</span><span class="p">:</span><span class="s2">"Describe a season when you did the right thing without feeling anything at all."</span><span class="p">,</span>
+ <span class="s2">"teach"</span><span class="p">:</span><span class="s2">"Luke tells us twice that it was dark. Nobody was watching. There was no crowd to perform for and no reason to go except love."</span><span class="p">,</span>
+ <span class="s2">"app"</span><span class="p">:</span><span class="s2">"There is a kind of faithfulness that only happens early, and it rarely feels like faith while you are doing it."</span><span class="p">,</span>
+ <span class="s2">"next"</span><span class="p">:</span><span class="s2">"Do one faithful thing today that nobody will see or thank you for."</span><span class="p">,</span>
+ <span class="s2">"pray"</span><span class="p">:</span><span class="s2">"Lord, meet me in the part of this that nobody sees. Amen."</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">"d"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s2">"t"</span><span class="p">:</span><span class="s2">"The Stone Was Already Moved"</span><span class="p">,</span><span class="s2">"v"</span><span class="p">:</span><span class="s2">"Luke 24:2"</span><span class="p">,</span>
+ <span class="s2">"story"</span><span class="p">:</span><span class="s2">"Tell about a problem you rehearsed the whole way there that turned out to be handled."</span><span class="p">,</span>
+ <span class="s2">"teach"</span><span class="p">:</span><span class="s2">"They worried about the stone the entire walk. It was far too heavy for them and they knew it. They went anyway. And Scripture gives us no scene of the stone moving &amp;mdash; God did it before they arrived and did not feel the need to let them watch."</span><span class="p">,</span>
+ <span class="s2">"app"</span><span class="p">:</span><span class="s2">"Some of what you are dreading has already been dealt with. You will not know until you get there."</span><span class="p">,</span>
+ <span class="s2">"next"</span><span class="p">:</span><span class="s2">"Make the call, send the message, or ask the question you have been avoiding."</span><span class="p">,</span>
+ <span class="s2">"pray"</span><span class="p">:</span><span class="s2">"God, I am tired of carrying what you have already moved. Amen."</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">"d"</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="s2">"t"</span><span class="p">:</span><span class="s2">"They Did Not Find the Body"</span><span class="p">,</span><span class="s2">"v"</span><span class="p">:</span><span class="s2">"Luke 24:3"</span><span class="p">,</span>
+ <span class="s2">"story"</span><span class="p">:</span><span class="s2">"Name something that is gone from your life that you did not recognize as grace at the time."</span><span class="p">,</span>
+ <span class="s2">"teach"</span><span class="p">:</span><span class="s2">"The turning point of human history is described as an absence. Good news does not always arrive as an addition. Sometimes it arrives as a subtraction."</span><span class="p">,</span>
+ <span class="s2">"app"</span><span class="p">:</span><span class="s2">"We are trained to look for God in what appears. It is worth learning to look for him in what disappears."</span><span class="p">,</span>
+ <span class="s2">"next"</span><span class="p">:</span><span class="s2">"Name one thing you no longer carry that you carried five years ago. Thank God for the absence."</span><span class="p">,</span>
+ <span class="s2">"pray"</span><span class="p">:</span><span class="s2">"Thank you for what you have taken away. Amen."</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">"d"</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s2">"t"</span><span class="p">:</span><span class="s2">"Why Look Among the Dead?"</span><span class="p">,</span><span class="s2">"v"</span><span class="p">:</span><span class="s2">"Luke 24:5"</span><span class="p">,</span>
+ <span class="s2">"story"</span><span class="p">:</span><span class="s2">"Describe a place you kept returning to hoping to feel something you used to feel there."</span><span class="p">,</span>
+ <span class="s2">"teach"</span><span class="p">:</span><span class="s2">"The angels are not scolding these women. They are pointing out that the search is aimed at the wrong location."</span><span class="p">,</span>
+ <span class="s2">"app"</span><span class="p">:</span><span class="s2">"Everyone has a tomb they revisit. An old version of yourself. A season when you felt closest to God, which you now visit the way people visit a grave."</span><span class="p">,</span>
+ <span class="s2">"next"</span><span class="p">:</span><span class="s2">"Say out loud where you have been looking. Then ask God where he actually is."</span><span class="p">,</span>
+ <span class="s2">"pray"</span><span class="p">:</span><span class="s2">"Jesus, I have been looking in the wrong place. Show me where you are. Amen."</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">"d"</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span><span class="s2">"t"</span><span class="p">:</span><span class="s2">"Remember How He Told You"</span><span class="p">,</span><span class="s2">"v"</span><span class="p">:</span><span class="s2">"Luke 24:6-7"</span><span class="p">,</span>
+ <span class="s2">"story"</span><span class="p">:</span><span class="s2">"Share a promise from Scripture you have known for years and never actually leaned on."</span><span class="p">,</span>
+ <span class="s2">"teach"</span><span class="p">:</span><span class="s2">"Jesus had told them. Plainly, more than once, before it happened. The resurrection was not new information on Sunday morning. It was old information nobody could hold."</span><span class="p">,</span>
+ <span class="s2">"app"</span><span class="p">:</span><span class="s2">"The cure for standing in front of the wrong tomb is usually not new revelation. It is remembering what he already said."</span><span class="p">,</span>
+ <span class="s2">"next"</span><span class="p">:</span><span class="s2">"Find that promise, write it out by hand, and put it where you will see it tomorrow."</span><span class="p">,</span>
+ <span class="s2">"pray"</span><span class="p">:</span><span class="s2">"Lord, help me believe what you have already told me. Amen."</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">"d"</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span><span class="s2">"t"</span><span class="p">:</span><span class="s2">"Then They Remembered"</span><span class="p">,</span><span class="s2">"v"</span><span class="p">:</span><span class="s2">"Luke 24:8-9"</span><span class="p">,</span>
+ <span class="s2">"story"</span><span class="p">:</span><span class="s2">"Tell about someone who told you something true that you did not receive well at first."</span><span class="p">,</span>
+ <span class="s2">"teach"</span><span class="p">:</span><span class="s2">"Remembering gets its own sentence, and then Luke immediately says they went and told. They were not believed &amp;mdash; the apostles thought it was nonsense &amp;mdash; and they told it anyway."</span><span class="p">,</span>
+ <span class="s2">"app"</span><span class="p">:</span><span class="s2">"Something is true, we remember it, and remembering moves us toward people. That is the whole shape of the Christian life."</span><span class="p">,</span>
+ <span class="s2">"next"</span><span class="p">:</span><span class="s2">"Tell one person one true thing about what God has done. Today."</span><span class="p">,</span>
+ <span class="s2">"pray"</span><span class="p">:</span><span class="s2">"Give me the words and the nerve. Amen."</span><span class="p">},</span>
+<span class="p">]}</span>
+
+<span class="n">DATA</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"themes"</span><span class="p">:</span><span class="n">THEMES</span><span class="p">,</span> <span class="s2">"books"</span><span class="p">:</span><span class="n">BOOKS</span><span class="p">,</span> <span class="s2">"passages"</span><span class="p">:</span><span class="n">PASSAGES</span><span class="p">,</span> <span class="s2">"studio"</span><span class="p">:</span><span class="n">STUDIO</span><span class="p">}</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--navy:#101a33;--navy-2:#16213d;--navy-3:#1c2a4a;--gold:#b8934e;</span>
+<span class="s2">--gold-lt:#d9bc82;--cream:#f7f3ea;--rule:rgba(184,147,78,.28)}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--navy);color:var(--cream);</span>
+<span class="s2">font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.65;</span>
+<span class="s2">-webkit-text-size-adjust:100%}</span>
+<span class="s2">.wrap{max-width:860px;margin:0 auto;padding:0 22px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:600;line-height:1.15;margin:0}</span>
+<span class="s2">.label{font-family:'Lato',system-ui,sans-serif;font-size:11px;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);font-weight:700}</span>
+<span class="s2">.cover{padding:62px 0 46px;text-align:center;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.cover .label{display:block;margin-bottom:20px}</span>
+<span class="s2">.cover h1{font-size:46px}</span>
+<span class="s2">.cover h1 em{display:block;font-style:italic;font-size:24px;color:var(--gold-lt);</span>
+<span class="s2">margin-top:10px;font-weight:400}</span>
+<span class="s2">.cover .dek{font-size:19px;color:#e6dfd0;margin:20px auto 0;max-width:600px}</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--rule);border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.stat{flex:1 1 22%;min-width:110px;background:var(--navy);padding:20px 8px;text-align:center}</span>
+<span class="s2">.stat b{display:block;font-family:'Playfair Display',serif;font-size:30px;color:var(--gold-lt)}</span>
+<span class="s2">.stat span{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.14em;</span>
+<span class="s2">text-transform:uppercase;color:#b9b0a0}</span>
+<span class="s2">.tabs{position:sticky;top:0;z-index:30;background:var(--navy-3);</span>
+<span class="s2">border-bottom:1px solid var(--rule);overflow-x:auto;-webkit-overflow-scrolling:touch}</span>
+<span class="s2">.tabs .inner{display:flex;max-width:860px;margin:0 auto;padding:0 12px}</span>
+<span class="s2">.tab{flex:0 0 auto;background:none;border:0;color:#b9b0a0;</span>
+<span class="s2">font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">padding:17px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-weight:700}</span>
+<span class="s2">.tab.on{color:var(--gold-lt);border-bottom-color:var(--gold)}</span>
+<span class="s2">#view{padding:34px 0 70px}</span>
+<span class="s2">.lead{color:#e6dfd0;margin:0 0 22px;font-size:19px}</span>
+<span class="s2">.grid{border-top:1px solid var(--rule)}</span>
+<span class="s2">.item{display:flex;gap:14px;align-items:baseline;padding:16px 2px;</span>
+<span class="s2">border-bottom:1px solid rgba(184,147,78,.14);cursor:pointer}</span>
+<span class="s2">.item:hover .iname{color:var(--gold-lt)}</span>
+<span class="s2">.item .inum{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.14em;</span>
+<span class="s2">color:var(--gold);min-width:28px;flex-shrink:0}</span>
+<span class="s2">.item .ibody</span><span class="si">{flex:1}</span>
+<span class="s2">.item .iname{font-family:'Playfair Display',serif;font-size:22px;line-height:1.25}</span>
+<span class="s2">.item .iframe{color:#a9a094;font-size:17px;margin-top:4px;line-height:1.45}</span>
+<span class="s2">.item .arrow{color:var(--gold);font-size:20px;flex-shrink:0}</span>
+<span class="s2">.back{background:none;border:1px solid var(--rule);color:var(--gold-lt);</span>
+<span class="s2">font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;</span>
+<span class="s2">padding:9px 16px;cursor:pointer;margin-bottom:24px;font-weight:700}</span>
+<span class="s2">.dh h2{font-size:34px}</span>
+<span class="s2">.dh .df{font-style:italic;color:#c8c0b2;font-size:19px;margin-top:8px}</span>
+<span class="s2">.sec{margin-top:32px}</span>
+<span class="s2">.sec .sh{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--rule);</span>
+<span class="s2">padding-bottom:9px;margin-bottom:8px;font-weight:700}</span>
+<span class="s2">.idea{padding:14px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.idea .it{font-family:'Playfair Display',serif;font-size:20px;color:var(--cream)}</span>
+<span class="s2">.idea .id{color:#c3bbad;font-size:17px;margin-top:4px;line-height:1.5}</span>
+<span class="s2">.xr{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.xr .xk{font-family:'Lato',sans-serif;font-size:12px;letter-spacing:.06em;</span>
+<span class="s2">color:var(--gold-lt);min-width:126px;flex-shrink:0;padding-top:3px}</span>
+<span class="s2">.xr .xv{flex:1;color:#ded6c6;font-size:17px}</span>
+<span class="s2">.own{margin-top:32px;border:2px solid var(--gold);background:var(--navy-2);padding:22px}</span>
+<span class="s2">.own .oh{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold-lt)}</span>
+<span class="s2">.own .os{color:#c3bbad;font-size:17px;margin-top:6px}</span>
+<span class="s2">.own ol{margin:16px 0 0;padding-left:20px;color:#e9e2d4}</span>
+<span class="s2">.own li{margin-bottom:11px;font-size:18px}</span>
+<span class="s2">.card{border:1px solid var(--rule);background:var(--navy-2);padding:22px;margin-top:22px}</span>
+<span class="s2">.card h3{font-size:23px;color:var(--gold-lt)}</span>
+<span class="s2">.card p{margin-top:10px;color:#ded6c6;font-size:18px}</span>
+<span class="s2">.card ul,.card ol{margin:14px 0 0;padding-left:20px;color:#ded6c6}</span>
+<span class="s2">.card li{margin-bottom:8px;font-size:18px}</span>
+<span class="s2">.script{border-top:1px solid var(--rule);padding:24px 0}</span>
+<span class="s2">.script .sd{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.2em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);margin-bottom:5px}</span>
+<span class="s2">.script h4{font-size:23px}</span>
+<span class="s2">.script .sv{font-family:'Lato',sans-serif;font-size:12px;color:var(--gold-lt);margin-top:4px}</span>
+<span class="s2">.beat{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid rgba(184,147,78,.1)}</span>
+<span class="s2">.beat .bk{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);min-width:86px;flex-shrink:0;padding-top:4px}</span>
+<span class="s2">.beat .bv{flex:1;color:#e6dfd0;font-size:18px}</span>
+<span class="s2">footer{padding:34px 0 56px;text-align:center;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8d8579;</span>
+<span class="s2">border-top:1px solid var(--rule)}</span>
+<span class="s2">@media(max-width:620px){</span>
+<span class="s2">body{font-size:18px}.cover h1{font-size:31px}.cover h1 em{font-size:19px}</span>
+<span class="s2">.dh h2{font-size:27px}.item .iname{font-size:20px}.stat b{font-size:25px}</span>
+<span class="s2">.xr{flex-direction:column;gap:3px}.xr .xk{min-width:0}</span>
+<span class="s2">.beat{flex-direction:column;gap:3px}.beat .bk{min-width:0}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="n">JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">var D = window.__LIB__;</span>
+<span class="s2">var state = {tab:'themes', item:null};</span>
+
+<span class="s2">function esc(s){return String(s);}</span>
+
+<span class="s2">function listView(key, lead){</span>
+<span class="s2">  var arr = D[key], h = '&lt;p class="lead"&gt;' + lead + '&lt;/p&gt;&lt;div class="grid"&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; arr.length; i++){</span>
+<span class="s2">    h += '&lt;div class="item" data-k="' + key + '" data-i="' + i + '"&gt;';</span>
+<span class="s2">    h += '&lt;span class="inum"&gt;' + (i &lt; 9 ? '0' : '') + (i + 1) + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="ibody"&gt;&lt;span class="iname"&gt;' + arr[i].n + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="iframe"&gt;' + arr[i].f + '&lt;/span&gt;&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="arrow"&gt;&amp;rsaquo;&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function ideaBlock(title, items){</span>
+<span class="s2">  var h = '&lt;div class="sec"&gt;&lt;div class="sh"&gt;' + title + '&lt;/div&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; items.length; i++){</span>
+<span class="s2">    h += '&lt;div class="idea"&gt;&lt;div class="it"&gt;' + items[i][0] + '&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="id"&gt;' + items[i][1] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function detailView(key, idx){</span>
+<span class="s2">  var e = D[key][idx];</span>
+<span class="s2">  var h = '&lt;button class="back" id="bk"&gt;&amp;larr; Back&lt;/button&gt;';</span>
+<span class="s2">  h += '&lt;div class="dh"&gt;&lt;h2&gt;' + e.n + '&lt;/h2&gt;&lt;p class="df"&gt;' + e.f + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="own"&gt;&lt;div class="oh"&gt;Make it yours first&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="os"&gt;Answer these before you read a single idea below. The story that comes out of these questions will beat anything written for you, because it happened to you.&lt;/div&gt;&lt;ol&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; e.p.length; i++){ h += '&lt;li&gt;' + e.p[i] + '&lt;/li&gt;'; }</span>
+<span class="s2">  h += '&lt;/ol&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += ideaBlock('Opening ideas', e.o);</span>
+<span class="s2">  h += ideaBlock('Closing ideas', e.c);</span>
+<span class="s2">  h += ideaBlock('Lighter ideas', e.h);</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;Cross-purpose Scripture&lt;/div&gt;';</span>
+<span class="s2">  for (var j = 0; j &lt; e.x.length; j++){</span>
+<span class="s2">    h += '&lt;div class="xr"&gt;&lt;div class="xk"&gt;' + e.x[j][0] + '&lt;/div&gt;&lt;div class="xv"&gt;' + e.x[j][1] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function studioView(){</span>
+<span class="s2">  var s = D.studio;</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Seven daily videos, shot in one sitting in under an hour, on the phone already in your pocket. The written seven-day devotional and this shooting script are the same asset in two formats &amp;mdash; write once, ship twice.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The one-hour shoot&lt;/h3&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;One location, one camera position, phone horizontal on anything stable. Window light to your left or right, never behind you.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Change your shirt between each day. Two minutes of wardrobe is what makes seven videos shot in an hour look like seven days.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Ninety seconds each. If a take runs past two minutes, stop and restart rather than fixing it in the edit.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Do not memorize. Know the six beats and talk. The stumbles are what make it feel like a person.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Record all seven, then watch none of them until you are finished. Reviewing between takes is what turns an hour into four.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The six beats&lt;/h3&gt;&lt;ol&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Verse&lt;/strong&gt; &amp;mdash; read it, do not paraphrase it. Ten seconds.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Story&lt;/strong&gt; &amp;mdash; yours, thirty seconds, one scene only.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Teaching&lt;/strong&gt; &amp;mdash; what the passage actually says. Twenty-five seconds.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Application&lt;/strong&gt; &amp;mdash; the sentence that makes it theirs. Ten seconds.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Next step&lt;/strong&gt; &amp;mdash; something done today, not considered. Ten seconds.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Prayer&lt;/strong&gt; &amp;mdash; one or two sentences. Short enough to pray along with.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;/ol&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Worked example&lt;/h3&gt;&lt;p&gt;Seven scripts drawn from &lt;em&gt;' + s.title + '&lt;/em&gt; &amp;mdash; ' + s.cat + '. The story beat is left as a prompt on purpose. That is the one part nobody can write for you.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; s.days.length; i++){</span>
+<span class="s2">    var d = s.days[i];</span>
+<span class="s2">    h += '&lt;div class="script"&gt;&lt;div class="sd"&gt;Day ' + d.d + '&lt;/div&gt;&lt;h4&gt;' + d.t + '&lt;/h4&gt;';</span>
+<span class="s2">    h += '&lt;div class="sv"&gt;' + d.v + ' (NIV)&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="beat"&gt;&lt;div class="bk"&gt;Verse&lt;/div&gt;&lt;div class="bv"&gt;Read ' + d.v + ' aloud.&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="beat"&gt;&lt;div class="bk"&gt;Story&lt;/div&gt;&lt;div class="bv"&gt;' + d.story + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="beat"&gt;&lt;div class="bk"&gt;Teaching&lt;/div&gt;&lt;div class="bv"&gt;' + d.teach + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="beat"&gt;&lt;div class="bk"&gt;Application&lt;/div&gt;&lt;div class="bv"&gt;' + d.app + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="beat"&gt;&lt;div class="bk"&gt;Next step&lt;/div&gt;&lt;div class="bv"&gt;' + d.next + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="beat"&gt;&lt;div class="bk"&gt;Prayer&lt;/div&gt;&lt;div class="bv"&gt;' + d.pray + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function buildView(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Every illustration set in this library opens with the same four questions, because the goal was never to hand a pastor a story. It was to get his own out of him. A borrowed illustration is the fastest way for a congregation to sense that the person in front of them is preaching somebody else</span><span class="se">\\</span><span class="s2">'s sermon.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The excavation method&lt;/h3&gt;&lt;ol&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Name the emotion, not the topic.&lt;/strong&gt; Do not search your memory for a story about grace. Search it for a time you were relieved. The emotion is indexed; the doctrine is not.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Find the room.&lt;/strong&gt; Where were you standing? What were you holding? Specificity is what makes a story land, and it is the first thing that gets lost in retelling.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Locate the turn.&lt;/strong&gt; Every usable story has one moment where it changed. Find it and build the whole thing toward it.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Cut the ending you want.&lt;/strong&gt; Most preachers over-resolve. If the real story did not end tidily, do not tidy it. The room can tell.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Get permission.&lt;/strong&gt; If anyone else is in it, read it to them first. This is not a courtesy, it is a rule.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;/ol&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Four rules for using someone else</span><span class="se">\\</span><span class="s2">'s illustration&lt;/h3&gt;&lt;ol&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Attribute it. Out loud, in the moment. "I heard a story about..." costs you nothing and buys you everything.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Never tell it in first person. Not once, not to make it flow better.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Use it as a seed, not a script. Take the structure, replace the details with something you have actually seen.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;One per message. A sermon made of other people</span><span class="se">\\</span><span class="s2">'s stories has no author.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;/ol&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Where to look when you have nothing&lt;/h3&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Your own last seven days. The best illustration in most sermons happened on Tuesday.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;The counseling conversation you cannot use. Change everything, get permission, or write the emotion without the case.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;What your children said. Reliable, universal, and requires their permission by about age eight.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;The thing you were wrong about. Congregations trust a preacher who has publicly changed his mind.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;The Scripture itself. The cross-purpose passages in every set exist because the best illustration of a biblical idea is usually another biblical story.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function render(){</span>
+<span class="s2">  var v = document.getElementById('view');</span>
+<span class="s2">  var h = '';</span>
+<span class="s2">  if (state.item !== null){</span>
+<span class="s2">    h = detailView(state.item[0], state.item[1]);</span>
+<span class="s2">  } else if (state.tab === 'themes'){</span>
+<span class="s2">    h = listView('themes', 'Twelve themes, each with opening, closing, and lighter ideas, four cross-purpose passages, and the questions that pull your own story out.');</span>
+<span class="s2">  } else if (state.tab === 'books'){</span>
+<span class="s2">    h = listView('books', 'Ten books of the Bible, each framed by what it is actually about before the ideas begin.');</span>
+<span class="s2">  } else if (state.tab === 'passages'){</span>
+<span class="s2">    h = listView('passages', 'Four passages preached so often they have gone invisible. Each one opened back up.');</span>
+<span class="s2">  } else if (state.tab === 'studio'){</span>
+<span class="s2">    h = studioView();</span>
+<span class="s2">  } else {</span>
+<span class="s2">    h = buildView();</span>
+<span class="s2">  }</span>
+<span class="s2">  v.innerHTML = '&lt;div class="wrap"&gt;' + h + '&lt;/div&gt;';</span>
+<span class="s2">  window.scrollTo(0, 0);</span>
+<span class="s2">  var items = v.querySelectorAll('.item');</span>
+<span class="s2">  for (var i = 0; i &lt; items.length; i++){</span>
+<span class="s2">    items[i].onclick = function(){</span>
+<span class="s2">      state.item = [this.getAttribute('data-k'), parseInt(this.getAttribute('data-i'), 10)];</span>
+<span class="s2">      render();</span>
+<span class="s2">    };</span>
+<span class="s2">  }</span>
+<span class="s2">  var bk = document.getElementById('bk');</span>
+<span class="s2">  if (bk){ bk.onclick = function(){ state.item = null; render(); }; }</span>
+<span class="s2">}</span>
+
+<span class="s2">var tabs = document.querySelectorAll('.tab');</span>
+<span class="s2">for (var t = 0; t &lt; tabs.length; t++){</span>
+<span class="s2">  tabs[t].onclick = function(){</span>
+<span class="s2">    for (var k = 0; k &lt; tabs.length; k++){ tabs[k].classList.remove('on'); }</span>
+<span class="s2">    this.classList.add('on');</span>
+<span class="s2">    state.tab = this.getAttribute('data-t');</span>
+<span class="s2">    state.item = null;</span>
+<span class="s2">    render();</span>
+<span class="s2">  };</span>
+<span class="s2">}</span>
+<span class="s2">render();</span>
+<span class="s2">"""</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;title&gt;The Master Illustration Library | LifeTogether&lt;/title&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;style&gt;'</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s1">'&lt;/style&gt;&lt;/head&gt;&lt;body&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap cover"&gt;&lt;span class="label"&gt;LifeTogether &amp;middot; Preaching Resources&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h1&gt;The Master Illustration Library&lt;em&gt;Find one. Or better, find yours.&lt;/em&gt;&lt;/h1&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="dek"&gt;Opening, closing, and lighter ideas by theme, by book, and by passage &amp;mdash; each set built to surface the pastor&amp;rsquo;s own story before it offers anyone else&amp;rsquo;s.&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stats"&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">NSETS</span><span class="p">,</span> <span class="s2">"Illustration Sets"</span><span class="p">),</span> <span class="p">(</span><span class="n">NIDEAS</span><span class="p">,</span> <span class="s2">"Ideas &amp;amp; Cross-Refs"</span><span class="p">),</span>
+             <span class="p">(</span><span class="n">NPROMPT</span><span class="p">,</span> <span class="s2">"Excavation Prompts"</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s2">"Video Scripts"</span><span class="p">)]:</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stat"&gt;&lt;b&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;&lt;span&gt;'</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="tabs"&gt;&lt;div class="inner"&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">lbl</span><span class="p">,</span> <span class="n">on</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"themes"</span><span class="p">,</span> <span class="s2">"By Theme"</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="p">(</span><span class="s2">"books"</span><span class="p">,</span> <span class="s2">"By Book"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">"passages"</span><span class="p">,</span> <span class="s2">"By Passage"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="p">(</span><span class="s2">"studio"</span><span class="p">,</span> <span class="s2">"Devotional Studio"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">"build"</span><span class="p">,</span> <span class="s2">"Build Your Own"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]:</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;button class="tab'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">' on'</span> <span class="k">if</span> <span class="n">on</span> <span class="k">else</span> <span class="s1">''</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'" data-t="'</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">'"&gt;'</span> <span class="o">+</span> <span class="n">lbl</span> <span class="o">+</span> <span class="s1">'&lt;/button&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div id="view"&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; The Master Illustration Library &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NSETS</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Sets &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NIDEAS</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Ideas&lt;/div&gt;&lt;/footer&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;script&gt;window.__LIB__ = '</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">DATA</span><span class="p">)</span> <span class="o">+</span> <span class="s1">';&lt;/script&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;script&gt;'</span> <span class="o">+</span> <span class="n">JS</span> <span class="o">+</span> <span class="s1">'&lt;/script&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/body&gt;&lt;/html&gt;'</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/master-illustration-library.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sets:"</span><span class="p">,</span> <span class="n">NSETS</span><span class="p">,</span> <span class="s2">"ideas+refs:"</span><span class="p">,</span> <span class="n">NIDEAS</span><span class="p">,</span> <span class="s2">"prompts:"</span><span class="p">,</span> <span class="n">NPROMPT</span><span class="p">,</span> <span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_illus.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

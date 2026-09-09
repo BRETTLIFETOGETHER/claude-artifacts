@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_brochure.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Brochures for 40 Day Campaigns</div>
+<h1>build_brochure.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">1 edit</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">31 KB</span>
+<a class="btn" href="../../artifacts/Brochures%20for%2040%20Day%20Campaigns/build_brochure.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Python generator that builds the self-contained Finances brochure HTML</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span>
+
+<span class="n">FONTS</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/fonts_embed.css"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+
+<span class="c1"># ---------------------------------------------------------------- DATA</span>
+<span class="n">campaigns</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"01"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#b3892f"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#f0e4c8"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Faith &amp;"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Finances"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"Bringing your faith into every financial decision"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"For many of us, faith and money live in two different rooms. We worship on Sunday and worry on Monday, never letting what we believe touch what we spend. Money quietly becomes the one corner of life God is asked to stay out of."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Faith &amp;amp; Finances tears down the wall between belief and bank account. Over forty days your people learn to make every decision </span><span class="se">\u2014</span><span class="s2"> saving, spending, giving, owing </span><span class="se">\u2014</span><span class="s2"> an act of worship, until their money finally tells the truth about what they love."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"For where your treasure is, there your heart will be also."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"Matthew 6:21 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Your bank statement is a spiritual document. How you handle money reveals </span><span class="se">\u2014</span><span class="s2"> and reshapes </span><span class="se">\u2014</span><span class="s2"> what your heart actually trusts."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Faith Integration"</span><span class="p">,</span><span class="s2">"Worship"</span><span class="p">,</span><span class="s2">"Trust"</span><span class="p">,</span><span class="s2">"Money &amp;amp; the Heart"</span><span class="p">,</span><span class="s2">"Discipleship"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"Matthew 6:19</span><span class="se">\u2013</span><span class="s2">24"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"Treasure &amp;amp; the Heart"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Money stress, simplicity, integrating faith"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"Two Masters"</span><span class="p">,</span><span class="s2">"Why you cannot serve both God and money </span><span class="se">\u2014</span><span class="s2"> and why pretending you can leaves you exhausted."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"Follow the Treasure"</span><span class="p">,</span><span class="s2">"Tracing what your spending quietly reveals about what you truly worship."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Worship with Your Wallet"</span><span class="p">,</span><span class="s2">"Turning ordinary transactions into deliberate acts of trust."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"The Anxiety Antidote"</span><span class="p">,</span><span class="s2">"How faith dismantles the fear that drives so many money decisions."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"Open Hands"</span><span class="p">,</span><span class="s2">"Moving from gripping to giving as the natural overflow of trust."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"A Whole Life"</span><span class="p">,</span><span class="s2">"Carrying Sunday faith into Monday</span><span class="se">\u2019</span><span class="s2">s budget </span><span class="se">\u2014</span><span class="s2"> for good."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each of the 40 days offers a short reading, one practical money step, a spiritual-partner check-in, and a written prayer </span><span class="se">\u2014</span><span class="s2"> a daily rhythm that slowly rewires how your people see all they own."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"Nothing exposes the real condition of our faith faster than how we handle a dollar </span><span class="se">\u2014</span><span class="s2"> and nothing transforms a life faster than surrendering it."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Faith &amp;amp; Finances and help your people stop living divided."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"02"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#245a45"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#d8e7df"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Financial"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Wisdom"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"The learnable skill of making consistently wise money decisions"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"Plenty of capable, well-meaning people make poor money decisions </span><span class="se">\u2014</span><span class="s2"> not for lack of income, but for lack of a plan. We react instead of prepare, guess instead of know, and mistake good intentions for good outcomes."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Financial Wisdom hands your people the practical, time-tested skill of deciding well. Over forty days they trade impulse for foresight, learning the proverbs and habits that turn scattered money into a stable, well-built life."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"The plans of the diligent lead to profit as surely as haste leads to poverty."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"Proverbs 21:5 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Wisdom is the bridge between good intentions and good outcomes. You don</span><span class="se">\u2019</span><span class="s2">t drift into financial health </span><span class="se">\u2014</span><span class="s2"> you build it, one wise decision at a time."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Proverbs"</span><span class="p">,</span><span class="s2">"Planning"</span><span class="p">,</span><span class="s2">"Decision-Making"</span><span class="p">,</span><span class="s2">"Diligence"</span><span class="p">,</span><span class="s2">"Foresight"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"Proverbs 21:5; 6:6</span><span class="se">\u2013</span><span class="s2">8"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"The Wise Builder"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Budgeting, debt, money decisions"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"The House Wisdom Builds"</span><span class="p">,</span><span class="s2">"Why the skill of deciding well is the foundation everything else rests on."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"Learn from the Ant"</span><span class="p">,</span><span class="s2">"The quiet power of foresight, preparation, and small consistent steps."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Plans, Not Panic"</span><span class="p">,</span><span class="s2">"Replacing reactive money habits with a simple, written plan."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"The Counsel of Many"</span><span class="p">,</span><span class="s2">"How wise people borrow wisdom from others before they decide."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"The Trap of Haste"</span><span class="p">,</span><span class="s2">"Recognizing the impulse decisions that quietly drain a life."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"Built to Last"</span><span class="p">,</span><span class="s2">"Turning forty days of good decisions into lifelong habits."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Forty daily entries pair a proverb with one concrete decision to practice </span><span class="se">\u2014</span><span class="s2"> a small, repeatable act of wisdom that compounds over six weeks into a noticeably different financial life."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"The gap between the life people want and the life they have is almost always a gap in wisdom </span><span class="se">\u2014</span><span class="s2"> and wisdom can be learned."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Financial Wisdom and give your people the skill no one taught them."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"03"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#1f6b6b"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#d3e7e7"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Money Made"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Simple"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"Cutting through the complexity to find real peace"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"Money has never felt more complicated. Endless accounts, apps, subscriptions, and statements pile up until the whole thing feels too overwhelming to even look at </span><span class="se">\u2014</span><span class="s2"> so we avoid it, and the chaos quietly grows."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Money Made Simple clears the clutter. Over forty days your people build one plan they can actually follow, discover the freedom of living with margin, and learn the ancient secret no complexity can buy: enough really is enough."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"But godliness with contentment is great gain."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"1 Timothy 6:6 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Simplicity isn</span><span class="se">\u2019</span><span class="s2">t deprivation </span><span class="se">\u2014</span><span class="s2"> it</span><span class="se">\u2019</span><span class="s2">s freedom. When you stop chasing more and start managing what you have, money finally gets quiet."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Simplicity"</span><span class="p">,</span><span class="s2">"Contentment"</span><span class="p">,</span><span class="s2">"Budgeting"</span><span class="p">,</span><span class="s2">"Margin"</span><span class="p">,</span><span class="s2">"Clarity"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"1 Timothy 6:6</span><span class="se">\u2013</span><span class="s2">10"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"Margin &amp;amp; the Cleared Table"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Overwhelm, budgeting, simplicity"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"The Cost of Complicated"</span><span class="p">,</span><span class="s2">"Why financial chaos quietly drains your energy and your joy."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"Enough"</span><span class="p">,</span><span class="s2">"Rediscovering contentment in a culture that always whispers </span><span class="se">\u201c</span><span class="s2">more.</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"One Simple Plan"</span><span class="p">,</span><span class="s2">"Building a budget so clear your people will actually use it."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"The Power of Margin"</span><span class="p">,</span><span class="s2">"Creating the breathing room that turns stress into peace."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"Cutting the Clutter"</span><span class="p">,</span><span class="s2">"Simplifying accounts, subscriptions, and the noise that hides the numbers."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"Free to Live"</span><span class="p">,</span><span class="s2">"What becomes possible when money stops shouting."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each day removes one source of financial noise and adds one simple step toward clarity </span><span class="se">\u2014</span><span class="s2"> so by day forty, your people aren</span><span class="se">\u2019</span><span class="s2">t merely more disciplined, they</span><span class="se">\u2019</span><span class="s2">re more free."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"Most people don</span><span class="se">\u2019</span><span class="s2">t need a more complicated system. They need a simpler one they</span><span class="se">\u2019</span><span class="s2">ll actually keep."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Money Made Simple and trade your people</span><span class="se">\u2019</span><span class="s2">s overwhelm for margin."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"04"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#345f8e"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#d7e2ee"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Financial"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Peace"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"Releasing the fear and finding rest with money"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"For millions, money is the last thing they think about at night and the first thing they dread in the morning. It isn</span><span class="se">\u2019</span><span class="s2">t always about the amount </span><span class="se">\u2014</span><span class="s2"> it</span><span class="se">\u2019</span><span class="s2">s the low, constant hum of worry that no balance ever seems to silence."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Financial Peace addresses the fear beneath the figures. Over forty days your people learn to break the worry cycle, anchor their security in something steadier than a balance, and build a calm relationship with money that doesn</span><span class="se">\u2019</span><span class="s2">t rise and fall with the markets."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"Philippians 4:7 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Peace isn</span><span class="se">\u2019</span><span class="s2">t the absence of bills </span><span class="se">\u2014</span><span class="s2"> it</span><span class="se">\u2019</span><span class="s2">s the presence of trust. You can have little and rest deeply, or have plenty and never sleep."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Peace"</span><span class="p">,</span><span class="s2">"Anxiety"</span><span class="p">,</span><span class="s2">"Trust"</span><span class="p">,</span><span class="s2">"Rest"</span><span class="p">,</span><span class="s2">"Security"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"Matthew 6:25</span><span class="se">\u2013</span><span class="s2">34"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"Stilled Waters"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Money stress, anxiety, fear"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"The Weight We Carry"</span><span class="p">,</span><span class="s2">"Naming the quiet dread money creates </span><span class="se">\u2014</span><span class="s2"> without shame."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"Consider the Birds"</span><span class="p">,</span><span class="s2">"What Jesus</span><span class="se">\u2019</span><span class="s2"> words about worry mean for your bank account."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Breaking the Cycle"</span><span class="p">,</span><span class="s2">"Practical steps to interrupt anxious money thinking."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"A Steadier Security"</span><span class="p">,</span><span class="s2">"Anchoring your peace in something the markets can</span><span class="se">\u2019</span><span class="s2">t move."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"One Day at a Time"</span><span class="p">,</span><span class="s2">"Trading tomorrow</span><span class="se">\u2019</span><span class="s2">s </span><span class="se">\u201c</span><span class="s2">what ifs</span><span class="se">\u201d</span><span class="s2"> for today</span><span class="se">\u2019</span><span class="s2">s faithfulness."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"Rest"</span><span class="p">,</span><span class="s2">"Building a calm relationship with money that outlasts forty days."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Every day offers a short reading, a calming practice, and a prayer crafted to quiet the mind and steady the heart </span><span class="se">\u2014</span><span class="s2"> small daily deposits of peace over six unhurried weeks."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"Financial worry steals more sleep, joy, and presence than almost anything else </span><span class="se">\u2014</span><span class="s2"> and your people were never meant to carry it alone."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Financial Peace and help your people finally exhale."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="s2">"A gentle note: This campaign offers spiritual and practical encouragement and is not a substitute for professional financial or mental-health advice. Anyone in acute distress is warmly encouraged to reach out to a trusted counselor or advisor."</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"05"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#a5632f"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#efddca"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Wise with"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Money"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"Becoming a faithful manager of all you</span><span class="se">\u2019</span><span class="s2">ve been given"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"Most of us live as owners </span><span class="se">\u2014</span><span class="s2"> as if our money is ours to spend however we please, with no one to answer to and no larger plan. But ownership is a heavy, anxious posture, and it rarely leads anywhere generous."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Wise with Money reframes the whole relationship: you are not an owner but a manager, entrusted with resources for a purpose bigger than yourself. Over forty days your people learn to steward what they have with confidence </span><span class="se">\u2014</span><span class="s2"> and to taste the deep joy of giving it away."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"Whoever can be trusted with very little can also be trusted with much."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"Luke 16:10 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"It was never yours to own </span><span class="se">\u2014</span><span class="s2"> only yours to steward. And the faithful manager, not the anxious owner, is the one who finally gets to enjoy it."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Stewardship"</span><span class="p">,</span><span class="s2">"Generosity"</span><span class="p">,</span><span class="s2">"Faithfulness"</span><span class="p">,</span><span class="s2">"The Long Game"</span><span class="p">,</span><span class="s2">"Giving"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"Matthew 25:14</span><span class="se">\u2013</span><span class="s2">30"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"The Faithful Steward"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Stewardship, generosity, purpose"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"Owner or Manager?"</span><span class="p">,</span><span class="s2">"The single shift that changes everything about money."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"Faithful with Little"</span><span class="p">,</span><span class="s2">"Why how you handle small amounts decides what you</span><span class="se">\u2019</span><span class="s2">re trusted with."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Investing the Talents"</span><span class="p">,</span><span class="s2">"Putting what you</span><span class="se">\u2019</span><span class="s2">ve been given to work </span><span class="se">\u2014</span><span class="s2"> not burying it in fear."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"The Long Game"</span><span class="p">,</span><span class="s2">"Thinking past this month toward a life and legacy that lasts."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"The Joy of Generosity"</span><span class="p">,</span><span class="s2">"Discovering that giving is the steward</span><span class="se">\u2019</span><span class="s2">s greatest reward."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"Well Done"</span><span class="p">,</span><span class="s2">"Living for the words every faithful manager longs to hear."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each of the forty days pairs a stewardship principle with one act of faithful management or generosity </span><span class="se">\u2014</span><span class="s2"> turning a six-week campaign into a lifelong identity."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"The goal was never simply to have more, but to hear </span><span class="se">\u201c</span><span class="s2">well done</span><span class="se">\u201d</span><span class="s2"> </span><span class="se">\u2014</span><span class="s2"> and to become the kind of person money can flow through, not just to."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Wise with Money and trade ownership</span><span class="se">\u2019</span><span class="s2">s anxiety for the steward</span><span class="se">\u2019</span><span class="s2">s joy."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">]</span>
+
+<span class="c1"># ---------------------------------------------------------------- CSS</span>
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}</span>
+<span class="s2">:root{</span>
+<span class="s2"> --navy:#11243f; --navy2:#0b1a30; --cream:#f7f3ea; --cream2:#efe7d6;</span>
+<span class="s2"> --ink:#22303f; --gold:#c19a4b; --gold-d:#a87f33; --line:#d9cfb8;</span>
+<span class="s2">}</span>
+<span class="s2">@page{ size:A4; margin:0; }</span>
+<span class="s2">html,body{ background:#2a2f38; font-family:'Spectral',serif; color:var(--ink); }</span>
+<span class="s2">.page{ position:relative; width:210mm; height:297mm; overflow:hidden;</span>
+<span class="s2"> page-break-after:always; background:var(--cream); }</span>
+<span class="s2">.page:last-child{ page-break-after:auto; }</span>
+
+<span class="s2">/* frame */</span>
+<span class="s2">.frame{ position:absolute; inset:10mm; border:1px solid var(--line);</span>
+<span class="s2"> outline:3px solid var(--line); outline-offset:3px; pointer-events:none; }</span>
+<span class="s2">.frame.gold{ border-color:rgba(193,154,75,.55); outline-color:rgba(193,154,75,.35); }</span>
+
+<span class="s2">.kicker{ font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.34em;</span>
+<span class="s2"> text-transform:uppercase; font-size:8.2pt; }</span>
+<span class="s2">.serif{ font-family:'Playfair Display',serif; }</span>
+
+<span class="s2">/* ============ COVER ============ */</span>
+<span class="s2">.cover{ background:radial-gradient(120</span><span class="si">% 90%</span><span class="s2"> at 50</span><span class="si">% 0%</span><span class="s2">, #1c3357 0%, transparent 60%),</span>
+<span class="s2"> linear-gradient(155deg,#15294a 0%,#0c1c34 55%,#0a1727 100%); color:#f3ecdb; }</span>
+<span class="s2">.cover .frame{ inset:9mm; border-color:rgba(193,154,75,.5); outline-color:rgba(193,154,75,.3); }</span>
+<span class="s2">.cover-inner{ position:absolute; inset:9mm; display:flex; flex-direction:column;</span>
+<span class="s2"> align-items:center; text-align:center; padding:24mm 20mm; }</span>
+<span class="s2">.cover .kicker{ color:var(--gold); margin-top:6mm; }</span>
+<span class="s2">.cover-rule{ width:54px; height:2px; background:var(--gold); margin:9mm auto; opacity:.9; }</span>
+<span class="s2">.cover h1{ font-family:'Playfair Display',serif; font-weight:800; font-size:50pt;</span>
+<span class="s2"> line-height:1.02; letter-spacing:-.01em; margin:2mm 0; }</span>
+<span class="s2">.cover h1 em{ font-style:italic; color:var(--gold); }</span>
+<span class="s2">.cover .sub{ font-family:'Spectral',serif; font-style:italic; font-size:14.5pt;</span>
+<span class="s2"> line-height:1.55; color:#d9d0bd; max-width:135mm; margin:10mm auto 0; }</span>
+<span class="s2">.cover-foot{ margin-top:auto; width:100%; }</span>
+<span class="s2">.stats{ display:flex; justify-content:center; gap:0; align-items:stretch;</span>
+<span class="s2"> border-top:1px solid rgba(193,154,75,.35); border-bottom:1px solid rgba(193,154,75,.35);</span>
+<span class="s2"> padding:6mm 0; margin-bottom:8mm; }</span>
+<span class="s2">.stat{ flex:1; padding:0 4mm; border-right:1px solid rgba(193,154,75,.22); }</span>
+<span class="s2">.stat:last-child{ border-right:none; }</span>
+<span class="s2">.stat .n{ font-family:'Playfair Display',serif; font-size:24pt; color:var(--gold); line-height:1; }</span>
+<span class="s2">.stat .l{ font-family:'Archivo',sans-serif; font-size:6.6pt; letter-spacing:.22em;</span>
+<span class="s2"> text-transform:uppercase; color:#c8bfa9; margin-top:3mm; }</span>
+<span class="s2">.cover .tier{ font-family:'Archivo',sans-serif; font-size:7.6pt; letter-spacing:.3em;</span>
+<span class="s2"> text-transform:uppercase; color:#b7ac93; }</span>
+<span class="s2">.brandmark{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.42em;</span>
+<span class="s2"> text-transform:uppercase; font-size:8.5pt; color:var(--gold); }</span>
+
+<span class="s2">/* ============ INTRO ============ */</span>
+<span class="s2">.intro-inner{ position:absolute; inset:10mm; padding:20mm 20mm; display:flex; flex-direction:column; }</span>
+<span class="s2">.intro .kicker{ color:var(--gold-d); }</span>
+<span class="s2">.intro h2{ font-family:'Playfair Display',serif; font-weight:800; font-size:33pt;</span>
+<span class="s2"> line-height:1.06; margin:7mm 0 0; color:var(--navy); }</span>
+<span class="s2">.intro h2 em{ font-style:italic; color:var(--gold-d); }</span>
+<span class="s2">.lead{ font-size:12.5pt; line-height:1.7; color:#3c4654; margin-top:8mm; max-width:150mm; }</span>
+<span class="s2">.lead strong{ color:var(--navy); font-weight:600; }</span>
+<span class="s2">.howrow{ display:flex; gap:7mm; margin-top:11mm; }</span>
+<span class="s2">.howcard{ flex:1; background:#fff; border:1px solid var(--line); padding:7mm 6mm; position:relative; }</span>
+<span class="s2">.howcard .hn{ font-family:'Playfair Display',serif; font-size:20pt; color:var(--gold-d); line-height:1; }</span>
+<span class="s2">.howcard h4{ font-family:'Archivo',sans-serif; font-weight:700; font-size:9pt; letter-spacing:.06em;</span>
+<span class="s2"> text-transform:uppercase; color:var(--navy); margin:4mm 0 3mm; }</span>
+<span class="s2">.howcard p{ font-size:9.6pt; line-height:1.55; color:#56606d; }</span>
+<span class="s2">.contents{ margin-top:auto; border-top:2px solid var(--navy); padding-top:6mm; }</span>
+<span class="s2">.contents .ct{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.24em;</span>
+<span class="s2"> text-transform:uppercase; font-size:8pt; color:var(--gold-d); margin-bottom:5mm; }</span>
+<span class="s2">.clist{ display:grid; grid-template-columns:1fr 1fr; gap:3.5mm 12mm; }</span>
+<span class="s2">.cli{ display:flex; gap:5mm; align-items:baseline; }</span>
+<span class="s2">.cli .cnum{ font-family:'Playfair Display',serif; font-size:12pt; color:var(--gold-d); width:9mm; }</span>
+<span class="s2">.cli .cnm{ font-family:'Playfair Display',serif; font-weight:700; font-size:12pt; color:var(--navy); }</span>
+<span class="s2">.cli .cds{ font-style:italic; font-size:9.4pt; color:#6a7480; }</span>
+
+<span class="s2">/* ============ CAMPAIGN SPREAD ============ */</span>
+<span class="s2">.camp-inner{ position:absolute; inset:10mm; padding:13mm 13mm 11mm; display:flex; flex-direction:column; }</span>
+<span class="s2">.bignum{ position:absolute; top:6mm; right:12mm; font-family:'Playfair Display',serif;</span>
+<span class="s2"> font-weight:900; font-size:150pt; line-height:.8; color:var(--accent); opacity:.085; z-index:0; }</span>
+<span class="s2">.camp-head{ position:relative; z-index:1; }</span>
+<span class="s2">.camp-kicker{ color:var(--accent); }</span>
+<span class="s2">.camp-title{ font-family:'Playfair Display',serif; font-weight:800; font-size:40pt;</span>
+<span class="s2"> line-height:.98; letter-spacing:-.01em; color:var(--navy); margin-top:4mm; }</span>
+<span class="s2">.camp-title em{ font-style:italic; color:var(--accent); }</span>
+<span class="s2">.camp-sub{ font-style:italic; font-size:12.5pt; color:#5c6672; margin-top:3.5mm; }</span>
+<span class="s2">.accent-rule{ width:46px; height:3px; background:var(--accent); margin:6mm 0 0; }</span>
+
+<span class="s2">.body-grid{ display:flex; gap:9mm; margin-top:8mm; position:relative; z-index:1; }</span>
+<span class="s2">.main-col{ flex:1.85; min-width:0; }</span>
+<span class="s2">.side-col{ flex:1; min-width:0; }</span>
+
+<span class="s2">.section-label{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.2em;</span>
+<span class="s2"> text-transform:uppercase; font-size:8pt; color:var(--accent); margin-bottom:2.5mm; }</span>
+<span class="s2">.section-body{ font-size:10.4pt; line-height:1.62; color:#3f4956; }</span>
+<span class="s2">.pp-block{ margin-bottom:6mm; }</span>
+
+<span class="s2">.scripture{ background:var(--navy); color:#f1ead9; padding:7mm 7mm 6mm; margin:1mm 0 6mm;</span>
+<span class="s2"> position:relative; }</span>
+<span class="s2">.scripture::before{ content:"</span><span class="se">\\</span><span class="s2">201C"; font-family:'Playfair Display',serif; font-size:46pt;</span>
+<span class="s2"> color:var(--gold); position:absolute; top:-2mm; left:4mm; opacity:.5; }</span>
+<span class="s2">.scripture .v{ font-family:'Playfair Display',serif; font-style:italic; font-size:13pt;</span>
+<span class="s2"> line-height:1.5; padding-left:9mm; }</span>
+<span class="s2">.scripture .r{ font-family:'Archivo',sans-serif; font-size:7.4pt; letter-spacing:.22em;</span>
+<span class="s2"> text-transform:uppercase; color:var(--gold); margin-top:4mm; padding-left:9mm; }</span>
+
+<span class="s2">.bigidea{ border-left:3px solid var(--accent); background:var(--accent-soft);</span>
+<span class="s2"> padding:5mm 6mm; margin-bottom:6mm; }</span>
+<span class="s2">.bigidea .bl{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.2em;</span>
+<span class="s2"> text-transform:uppercase; font-size:7.4pt; color:var(--accent); margin-bottom:2.5mm; }</span>
+<span class="s2">.bigidea p{ font-family:'Playfair Display',serif; font-size:12pt; line-height:1.45; color:var(--navy); }</span>
+
+<span class="s2">.tags{ display:flex; flex-wrap:wrap; gap:2.5mm; }</span>
+<span class="s2">.tag{ font-family:'Archivo',sans-serif; font-size:7.4pt; font-weight:500; letter-spacing:.08em;</span>
+<span class="s2"> text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);</span>
+<span class="s2"> border-radius:20px; padding:1.6mm 3.5mm; }</span>
+
+<span class="s2">/* sidebar card */</span>
+<span class="s2">.infocard{ background:#fff; border:1px solid var(--line); }</span>
+<span class="s2">.infocard .ih{ background:var(--navy); color:#f1ead9; padding:4.5mm 6mm;</span>
+<span class="s2"> font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.2em; text-transform:uppercase; font-size:8pt; }</span>
+<span class="s2">.inforow{ padding:4mm 6mm; border-bottom:1px solid var(--cream2); }</span>
+<span class="s2">.inforow:last-child{ border-bottom:none; }</span>
+<span class="s2">.inforow .il{ font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.14em;</span>
+<span class="s2"> text-transform:uppercase; font-size:6.8pt; color:#9aa3ad; margin-bottom:1.5mm; }</span>
+<span class="s2">.inforow .iv{ font-family:'Playfair Display',serif; font-size:11pt; color:var(--navy); line-height:1.25; }</span>
+<span class="s2">.inforow .iv.sm{ font-family:'Spectral',serif; font-size:9.6pt; font-style:italic; color:#54606c; }</span>
+
+<span class="s2">.note{ margin-top:5mm; background:var(--accent-soft); border:1px solid var(--accent);</span>
+<span class="s2"> padding:4mm 5mm; font-size:8.4pt; line-height:1.5; color:#4a5360; font-style:italic; }</span>
+<span class="s2">.note b{ font-style:normal; font-family:'Archivo',sans-serif; font-weight:700;</span>
+<span class="s2"> letter-spacing:.04em; color:var(--accent); }</span>
+
+<span class="s2">/* sessions */</span>
+<span class="s2">.curric{ margin-top:7mm; position:relative; z-index:1; }</span>
+<span class="s2">.curric-head{ display:flex; align-items:baseline; justify-content:space-between;</span>
+<span class="s2"> border-top:2px solid var(--navy); padding-top:4mm; margin-bottom:4.5mm; }</span>
+<span class="s2">.curric-head .ch{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.2em;</span>
+<span class="s2"> text-transform:uppercase; font-size:8.5pt; color:var(--navy); }</span>
+<span class="s2">.curric-head .cmeta{ font-family:'Archivo',sans-serif; font-size:7.2pt; letter-spacing:.18em;</span>
+<span class="s2"> text-transform:uppercase; color:var(--accent); }</span>
+<span class="s2">.sgrid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:4mm; }</span>
+<span class="s2">.scard{ border:1px solid var(--line); background:#fff; padding:4.5mm 4.5mm; position:relative; }</span>
+<span class="s2">.scard .sn{ font-family:'Playfair Display',serif; font-weight:800; font-size:13pt; color:var(--accent); }</span>
+<span class="s2">.scard .st{ font-family:'Playfair Display',serif; font-weight:700; font-size:10.6pt;</span>
+<span class="s2"> color:var(--navy); line-height:1.15; margin:1.5mm 0 2mm; }</span>
+<span class="s2">.scard .sd{ font-size:8.4pt; line-height:1.45; color:#5d6772; }</span>
+
+<span class="s2">/* footer band */</span>
+<span class="s2">.foot-band{ margin-top:auto; display:flex; gap:7mm; align-items:flex-end;</span>
+<span class="s2"> border-top:1px solid var(--line); padding-top:5mm; position:relative; z-index:1; }</span>
+<span class="s2">.foot-why{ flex:1.6; }</span>
+<span class="s2">.foot-why .fl{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.2em;</span>
+<span class="s2"> text-transform:uppercase; font-size:7.2pt; color:var(--accent); margin-bottom:2mm; }</span>
+<span class="s2">.foot-why p{ font-size:9.6pt; line-height:1.55; color:#4a5360; font-style:italic; }</span>
+<span class="s2">.foot-cta{ flex:1; text-align:right; }</span>
+<span class="s2">.foot-cta .ct{ display:inline-block; background:var(--accent); color:#fff;</span>
+<span class="s2"> font-family:'Archivo',sans-serif; font-weight:600; font-size:8.4pt; letter-spacing:.05em;</span>
+<span class="s2"> padding:3.5mm 6mm; line-height:1.35; text-align:left; }</span>
+
+<span class="s2">/* ============ CLOSING ============ */</span>
+<span class="s2">.close{ background:linear-gradient(160deg,#15294a 0%,#0b1a30 100%); color:#f3ecdb; }</span>
+<span class="s2">.close .frame{ border-color:rgba(193,154,75,.5); outline-color:rgba(193,154,75,.3); }</span>
+<span class="s2">.close-inner{ position:absolute; inset:10mm; padding:26mm 22mm; display:flex;</span>
+<span class="s2"> flex-direction:column; text-align:center; align-items:center; }</span>
+<span class="s2">.close .kicker{ color:var(--gold); }</span>
+<span class="s2">.close h2{ font-family:'Playfair Display',serif; font-weight:800; font-size:40pt;</span>
+<span class="s2"> line-height:1.04; margin:8mm 0 0; }</span>
+<span class="s2">.close h2 em{ font-style:italic; color:var(--gold); }</span>
+<span class="s2">.close .cp{ font-family:'Spectral',serif; font-size:13pt; font-style:italic; line-height:1.65;</span>
+<span class="s2"> color:#d8cfbc; max-width:140mm; margin:9mm auto 0; }</span>
+<span class="s2">.close-list{ margin:12mm auto 0; width:100%; max-width:150mm; }</span>
+<span class="s2">.cl-row{ display:flex; align-items:baseline; gap:6mm; padding:3.5mm 0;</span>
+<span class="s2"> border-bottom:1px solid rgba(193,154,75,.25); text-align:left; }</span>
+<span class="s2">.cl-row .cln{ font-family:'Playfair Display',serif; font-size:14pt; color:var(--gold); width:9mm; }</span>
+<span class="s2">.cl-row .clt{ font-family:'Playfair Display',serif; font-weight:700; font-size:14pt; color:#f3ecdb; flex:1; }</span>
+<span class="s2">.cl-row .cld{ font-style:italic; font-size:9.6pt; color:#b9b09b; }</span>
+<span class="s2">.close-cta{ margin-top:13mm; }</span>
+<span class="s2">.close-cta .btn{ display:inline-block; background:var(--gold); color:#11243f;</span>
+<span class="s2"> font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.12em; text-transform:uppercase;</span>
+<span class="s2"> font-size:9.5pt; padding:4.5mm 12mm; }</span>
+<span class="s2">.close-foot{ margin-top:auto; padding-top:10mm; }</span>
+<span class="s2">.close-foot .niv{ font-family:'Archivo',sans-serif; font-size:7pt; letter-spacing:.24em;</span>
+<span class="s2"> text-transform:uppercase; color:#a89e87; margin-bottom:4mm; }</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tag_html</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="tag"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sessions_html</span><span class="p">(</span><span class="n">ss</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;div class="scard"&gt;&lt;div class="sn"&gt;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="st"&gt;</span><span class="si">{</span><span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="sd"&gt;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ss</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">campaign_page</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="n">note</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;div class="note"&gt;&lt;b&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">:&lt;/b&gt; </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s2">"note"</span><span class="p">]</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="page" style="--accent:</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'accent'</span><span class="p">]</span><span class="si">}</span><span class="s2">;--accent-soft:</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'accent_soft'</span><span class="p">]</span><span class="si">}</span><span class="s2">;"&gt;</span>
+<span class="s2">  &lt;div class="frame"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="camp-inner"&gt;</span>
+<span class="s2">    &lt;div class="bignum"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'num'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="camp-head"&gt;</span>
+<span class="s2">      &lt;div class="kicker camp-kicker"&gt;Finances &amp;nbsp;&amp;middot;&amp;nbsp; Tier 1 &amp;nbsp;&amp;middot;&amp;nbsp; Church + Company&lt;/div&gt;</span>
+<span class="s2">      &lt;h1 class="camp-title"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'title_a'</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt;em&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'title_b'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">      &lt;div class="camp-sub"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'subtitle'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="accent-rule"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="body-grid"&gt;</span>
+<span class="s2">      &lt;div class="main-col"&gt;</span>
+<span class="s2">        &lt;div class="pp-block"&gt;</span>
+<span class="s2">          &lt;div class="section-label"&gt;The Problem&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="section-body"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'problem'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div class="pp-block"&gt;</span>
+<span class="s2">          &lt;div class="section-label"&gt;The Promise&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="section-body"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'promise'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div class="scripture"&gt;</span>
+<span class="s2">          &lt;div class="v"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'verse'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="r"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'ref'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div class="bigidea"&gt;</span>
+<span class="s2">          &lt;div class="bl"&gt;The Big Idea&lt;/div&gt;</span>
+<span class="s2">          &lt;p&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'bigidea'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div class="tags"&gt;</span><span class="si">{</span><span class="n">tag_html</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="side-col"&gt;</span>
+<span class="s2">        &lt;div class="infocard"&gt;</span>
+<span class="s2">          &lt;div class="ih"&gt;Campaign Details&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="inforow"&gt;&lt;div class="il"&gt;Best For&lt;/div&gt;&lt;div class="iv"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'best_for'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="inforow"&gt;&lt;div class="il"&gt;Format&lt;/div&gt;&lt;div class="iv"&gt;40 Days &amp;middot; 6 Sessions&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="inforow"&gt;&lt;div class="il"&gt;Scripture Backbone&lt;/div&gt;&lt;div class="iv"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'backbone'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="inforow"&gt;&lt;div class="il"&gt;Guiding Metaphor&lt;/div&gt;&lt;div class="iv"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'metaphor'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="inforow"&gt;&lt;div class="il"&gt;Felt Need&lt;/div&gt;&lt;div class="iv sm"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'felt'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">note</span><span class="si">}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="curric"&gt;</span>
+<span class="s2">      &lt;div class="curric-head"&gt;</span>
+<span class="s2">        &lt;div class="ch"&gt;The Six-Session Journey&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cmeta"&gt;One session per week &amp;middot; six weeks&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="sgrid"&gt;</span><span class="si">{</span><span class="n">sessions_html</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'sessions'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="foot-band"&gt;</span>
+<span class="s2">      &lt;div class="foot-why"&gt;</span>
+<span class="s2">        &lt;div class="fl"&gt;Why It Matters&lt;/div&gt;</span>
+<span class="s2">        &lt;p&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'why'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="foot-cta"&gt;&lt;span class="ct"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'cta'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="c1"># cover</span>
+<span class="n">cover</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="page cover"&gt;</span>
+<span class="s2">  &lt;div class="frame gold"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="cover-inner"&gt;</span>
+<span class="s2">    &lt;div class="brandmark"&gt;Lifetogether&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;The Campaign Library &amp;nbsp;&amp;middot;&amp;nbsp; Finances Collection&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-rule"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;h1&gt;The &lt;em&gt;Finances&lt;/em&gt;&lt;br&gt;Collection&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class="sub"&gt;Five forty-day campaigns to help your people overcome debt, budgeting stress, and money anxiety &amp;mdash; and find wisdom, peace, simplicity, and freedom.&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-foot"&gt;</span>
+<span class="s2">      &lt;div class="stats"&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;5&lt;/div&gt;&lt;div class="l"&gt;Campaigns&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;40&lt;/div&gt;&lt;div class="l"&gt;Day Journey&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;6&lt;/div&gt;&lt;div class="l"&gt;Sessions Each&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;NIV&lt;/div&gt;&lt;div class="l"&gt;Scripture&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="tier"&gt;Tier 1 &amp;nbsp;&amp;middot;&amp;nbsp; For Churches &amp;amp; Companies&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="c1"># intro</span>
+<span class="n">intro</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="page intro"&gt;</span>
+<span class="s2">  &lt;div class="frame"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="intro-inner"&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;Before You Begin&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;Money is the conversation&lt;br&gt;most people are &lt;em&gt;afraid&lt;/em&gt; to have.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="lead"&gt;It quietly shapes our marriages, our sleep, our sense of security, and our walk with God &amp;mdash; yet it remains the one area many of us never bring into the light. &lt;strong&gt;The Finances Collection changes that.&lt;/strong&gt; Each campaign takes a single, honest struggle &amp;mdash; fear, complexity, foolish habits, a divided heart, an ownership mindset &amp;mdash; and walks your people through forty unhurried days toward a genuinely different relationship with money.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="howrow"&gt;</span>
+<span class="s2">      &lt;div class="howcard"&gt;&lt;div class="hn"&gt;40&lt;/div&gt;&lt;h4&gt;A Daily Rhythm&lt;/h4&gt;&lt;p&gt;Every day offers a short reading, one practical step, a spiritual-partner check-in, and a written prayer &amp;mdash; small, repeatable, and easy to keep.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="howcard"&gt;&lt;div class="hn"&gt;6&lt;/div&gt;&lt;h4&gt;A Weekly Gathering&lt;/h4&gt;&lt;p&gt;Six group sessions give the journey its backbone, turning private change into shared momentum across your church or team.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="howcard"&gt;&lt;div class="hn"&gt;1&lt;/div&gt;&lt;h4&gt;A Clear Outcome&lt;/h4&gt;&lt;p&gt;Each campaign is built around one transformation &amp;mdash; so your people don</span><span class="se">\u2019</span><span class="s2">t just learn about money, they actually change how they live with it.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="contents"&gt;</span>
+<span class="s2">      &lt;div class="ct"&gt;Inside This Collection&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="clist"&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;01&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Faith &amp;amp; Finances&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Bring faith into every money decision&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;02&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Financial Wisdom&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;The learnable skill of deciding well&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;03&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Money Made Simple&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Trade complexity for clarity and margin&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;04&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Financial Peace&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Release the fear, find rest with money&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;05&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Wise with Money&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Steward all you</span><span class="se">\u2019</span><span class="s2">ve been given, generously&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="c1"># closing</span>
+<span class="n">closing</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="page close"&gt;</span>
+<span class="s2">  &lt;div class="frame"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="close-inner"&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;Ready When You Are&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;Help your people find&lt;br&gt;&lt;em&gt;freedom&lt;/em&gt; with money.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="cp"&gt;Pick the campaign that meets your church or team where they are today &amp;mdash; or run all five across a season. However you begin, you</span><span class="se">\u2019</span><span class="s2">ll be giving your people something they rarely receive: an honest, hope-filled, forty-day path to a healthier relationship with money.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="close-list"&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;01&lt;/span&gt;&lt;span class="clt"&gt;Faith &amp;amp; Finances&lt;/span&gt;&lt;span class="cld"&gt;Money &amp;amp; the heart&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;02&lt;/span&gt;&lt;span class="clt"&gt;Financial Wisdom&lt;/span&gt;&lt;span class="cld"&gt;Deciding well&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;03&lt;/span&gt;&lt;span class="clt"&gt;Money Made Simple&lt;/span&gt;&lt;span class="cld"&gt;Clarity &amp;amp; margin&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;04&lt;/span&gt;&lt;span class="clt"&gt;Financial Peace&lt;/span&gt;&lt;span class="cld"&gt;Rest &amp;amp; trust&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;05&lt;/span&gt;&lt;span class="clt"&gt;Wise with Money&lt;/span&gt;&lt;span class="cld"&gt;Steward &amp;amp; give&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="close-cta"&gt;&lt;span class="btn"&gt;Start Your Campaign&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="close-foot"&gt;</span>
+<span class="s2">      &lt;div class="niv"&gt;All Scripture taken from the New International Version (NIV)&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="brandmark"&gt;Lifetogether&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="n">pages</span> <span class="o">=</span> <span class="n">cover</span> <span class="o">+</span> <span class="n">intro</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">campaign_page</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">campaigns</span><span class="p">)</span> <span class="o">+</span> <span class="n">closing</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;title&gt;The Finances Collection </span><span class="se">\u2014</span><span class="s2"> Lifetogether&lt;/title&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">FONTS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;&lt;body&gt;</span><span class="si">{</span><span class="n">pages</span><span class="si">}</span><span class="s2">&lt;/body&gt;&lt;/html&gt;"""</span>
+
+<span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/finances_brochure.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="c1"># also a clean copy for outputs (same file)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"HTML written:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">),</span> <span class="s2">"chars"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/tmp/build_brochure.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

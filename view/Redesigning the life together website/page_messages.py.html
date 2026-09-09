@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>page_messages.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>page_messages.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">8 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/page_messages.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the Sermon Library page from the master data</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">shell</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+
+<span class="n">HEAD</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="s2">.ms-hero{padding:76px 0 56px;text-align:center}</span>
+<span class="s2">.ms-hero .wrap{max-width:900px}</span>
+<span class="s2">.proof{display:flex;justify-content:center;gap:54px;flex-wrap:wrap;margin-top:36px;border-top:2px dotted #C9C9BE;padding-top:28px}</span>
+<span class="s2">.proof b{font-family:var(--display);font-size:40px;color:var(--ink);display:block;line-height:1}</span>
+<span class="s2">.proof span{font-family:var(--display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}</span>
+<span class="s2">.msearch{max-width:560px;margin:30px auto 0;position:relative}</span>
+<span class="s2">.msearch input{width:100%;font-family:var(--ui);font-size:16px;padding:16px 22px;border:2px solid var(--line);border-radius:3px;background:#fff}</span>
+<span class="s2">.msearch input:focus{outline:none;border-color:var(--lt-green)}</span>
+<span class="s2">.built{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}</span>
+<span class="s2">.bm{background:#fff;border:1px solid var(--line);border-top:6px solid var(--lt-orange);border-radius:3px;padding:24px;display:flex;flex-direction:column;text-align:left}</span>
+<span class="s2">.bm .bcat{font-family:var(--display);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}</span>
+<span class="s2">.bm b{font-size:18px;color:var(--ink);margin:8px 0 5px;line-height:1.25}</span>
+<span class="s2">.bm .bs{font-size:13.5px;color:var(--body);line-height:1.5}</span>
+<span class="s2">.bm .bx{font-family:var(--display);font-size:11px;letter-spacing:.14em;color:var(--lt-green-deep);margin:12px 0 4px}</span>
+<span class="s2">.bm .bb{font-size:13px;color:var(--body);font-style:italic;font-family:var(--wordmark)}</span>
+<span class="s2">.bm .btn{margin-top:auto;justify-content:center;margin-top:16px}</span>
+<span class="s2">.vchips{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 26px}</span>
+<span class="s2">.catgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}</span>
+<span class="s2">.catcard{background:#fff;border:1px solid var(--line);border-radius:3px;overflow:hidden}</span>
+<span class="s2">.catcard summary{list-style:none;cursor:pointer;padding:20px 24px}</span>
+<span class="s2">.catcard summary::-webkit-details-marker{display:none}</span>
+<span class="s2">.catcard .cn{display:flex;justify-content:space-between;align-items:center;gap:12px}</span>
+<span class="s2">.catcard .cn b{font-size:17px;color:var(--ink)}</span>
+<span class="s2">.catcard .cn .cnt{font-family:var(--display);font-size:11px;letter-spacing:.14em;color:var(--mute);white-space:nowrap}</span>
+<span class="s2">.catcard .ce{font-size:13.5px;color:var(--body);line-height:1.55;margin-top:6px}</span>
+<span class="s2">.catcard .cx{font-size:13px;color:var(--lt-green-deep);margin-top:10px;padding-left:12px;border-left:3px solid var(--lt-green)}</span>
+<span class="s2">.catcard .titles{border-top:2px dotted #DDDDD5;padding:14px 24px 20px;max-height:340px;overflow:auto}</span>
+<span class="s2">.trow{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid #F0F0EA}</span>
+<span class="s2">.trow div b{font-size:14.5px;color:var(--ink);font-weight:600}</span>
+<span class="s2">.trow div span{display:block;font-size:12.5px;color:var(--mute)}</span>
+<span class="s2">.trow a{font-size:12px;font-weight:700;color:var(--lt-orange);white-space:nowrap}</span>
+<span class="s2">.subhead{font-family:var(--display);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin:12px 0 4px}</span>
+<span class="s2">.noRes{display:none;text-align:center;color:var(--mute);padding:30px 0}</span>
+<span class="s2">@media(max-width:1080px){.built{grid-template-columns:repeat(2,1fr)}.catgrid{grid-template-columns:1fr}}</span>
+<span class="s2">@media(max-width:560px){.built{grid-template-columns:1fr}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;section class="ms-hero"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;span class="eyebrow bare"&gt;The Sermon Library · Catalytic Sundays&lt;/span&gt;</span>
+<span class="s2">    &lt;h1 class="mt16"&gt;They come for a sermon.&lt;br&gt;They leave with a &lt;em&gt;strategy.&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="lede mt24" style="margin:24px auto 0"&gt;A sermon is one hour. A Sunday is a season. Browse the message library free — every title, every angle — then let one message become the whole week: the service, the dailies, the group room, the students, and the household, pointed at the same next step.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="proof" id="proofRow"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="msearch"&gt;&lt;input id="mq" type="search" placeholder="Search 5,155 message titles — try &amp;ldquo;prodigal&amp;rdquo;, &amp;ldquo;anxiety&amp;rdquo;, &amp;ldquo;money&amp;rdquo;…" autocomplete="off"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-white tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head" style="margin-bottom:32px"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow" style="color:var(--lt-orange)"&gt;Built and ready&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;Eight messages, fully &lt;em&gt;finished.&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="lede"&gt;Complete builds — outline, draft, devotional week, family edition, service kit. Open one in the studio and this Sunday&amp;rsquo;s whole kit is minutes away.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="built" id="builtGrid"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head" style="margin-bottom:24px"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow"&gt;Browse the library&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;Seventy-three categories.&lt;br&gt;Every Sunday &lt;em&gt;covered.&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="vchips pills" id="vchips"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="catgrid" id="catGrid"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="noRes" id="mNoRes"&gt;No titles match — try a broader word.&lt;/p&gt;</span>
+<span class="s2">    &lt;p class="small mt24"&gt;Every title and outline is free to browse. The kit around it — the twenty-five pieces — is what the platform builds.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-green tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap"&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h2 style="font-size:clamp(24px,3vw,34px);color:#fff"&gt;Have this week&amp;rsquo;s message already?&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="lede" style="color:#E4EFD8"&gt;Drop it in the studio and the kit builds around your words instead.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;a class="btn btn-primary btn-lg" href="create.html"&gt;Open the studio &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">SCRIPTS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;script src="assets/msglib.js"&gt;&lt;/script&gt;</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">document.addEventListener('DOMContentLoaded',()=&gt;{</span>
+<span class="s2">  const L=window.MSGLIB;</span>
+<span class="s2">  document.getElementById('proofRow').innerHTML=L.proof.map(p=&gt;`&lt;div&gt;&lt;b&gt;$</span><span class="si">{p[0]}</span><span class="s2">&lt;/b&gt;&lt;span&gt;$</span><span class="si">{p[1]}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;`).join('');</span>
+<span class="s2">  // eight built messages</span>
+<span class="s2">  document.getElementById('builtGrid').innerHTML=L.sermons.map((s,i)=&gt;`</span>
+<span class="s2">    &lt;div class="bm"&gt;</span>
+<span class="s2">      &lt;span class="bcat"&gt;$</span><span class="si">{s.cat}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">      &lt;b&gt;$</span><span class="si">{s.t}</span><span class="s2">&lt;/b&gt;</span>
+<span class="s2">      &lt;span class="bs"&gt;$</span><span class="si">{s.s}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="bx"&gt;$</span><span class="si">{s.x}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="bb"&gt;&amp;ldquo;$</span><span class="si">{s.b}</span><span class="s2">&amp;rdquo;&lt;/span&gt;</span>
+<span class="s2">      &lt;a class="btn btn-primary btn-sm" href="create.html?msg=$</span><span class="si">{i}</span><span class="s2">"&gt;Build this week&amp;rsquo;s kit →&lt;/a&gt;</span>
+<span class="s2">    &lt;/div&gt;`).join('');</span>
+<span class="s2">  // verticals + categories</span>
+<span class="s2">  const verts=[...new Set(L.cats.map(c=&gt;c.v))];</span>
+<span class="s2">  let curV=verts[0];</span>
+<span class="s2">  const vc=document.getElementById('vchips');</span>
+<span class="s2">  vc.innerHTML=verts.map(v=&gt;`&lt;button class="pill ${v===curV?'sel':''}" data-v="$</span><span class="si">{v}</span><span class="s2">"&gt;$</span><span class="si">{v}</span><span class="s2">&lt;/button&gt;`).join('');</span>
+<span class="s2">  vc.querySelectorAll('.pill').forEach(b=&gt;b.addEventListener('click',()=&gt;{</span>
+<span class="s2">    curV=b.dataset.v;vc.querySelectorAll('.pill').forEach(x=&gt;x.classList.remove('sel'));b.classList.add('sel');</span>
+<span class="s2">    document.getElementById('mq').value='';renderCats();</span>
+<span class="s2">  }));</span>
+<span class="s2">  function count(c){return c.t.reduce((a,g)=&gt;a+g.i.length,0)}</span>
+<span class="s2">  function catCard(c,ci,openAll,filter){</span>
+<span class="s2">    const groups=c.t.map(g=&gt;{</span>
+<span class="s2">      let rows=g.i.map((m,mi)=&gt;({t:m[0],s:m[1],g:g.n,mi}));</span>
+<span class="s2">      if(filter)rows=rows.filter(r=&gt;(r.t+' '+r.s).toLowerCase().includes(filter));</span>
+<span class="s2">      if(!rows.length)return '';</span>
+<span class="s2">      return (g.n?`&lt;p class="subhead"&gt;$</span><span class="si">{g.n}</span><span class="s2">&lt;/p&gt;`:'')+rows.map(r=&gt;`</span>
+<span class="s2">        &lt;div class="trow"&gt;&lt;div&gt;&lt;b&gt;$</span><span class="si">{r.t}</span><span class="s2">&lt;/b&gt;&lt;span&gt;$</span><span class="si">{r.s}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;a href="create.html?seed=${encodeURIComponent(c.n+'|'+r.t+'|'+r.s)}"&gt;Use this →&lt;/a&gt;&lt;/div&gt;`).join('');</span>
+<span class="s2">    }).join('');</span>
+<span class="s2">    if(filter&amp;&amp;!groups)return '';</span>
+<span class="s2">    return `&lt;details class="catcard" ${openAll?'open':''}&gt;</span>
+<span class="s2">      &lt;summary&gt;&lt;div class="cn"&gt;&lt;b&gt;$</span><span class="si">{c.n}</span><span class="s2">&lt;/b&gt;&lt;span class="cnt"&gt;${count(c)} titles&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p class="ce"&gt;$</span><span class="si">{c.e}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;p class="cx"&gt;&lt;b&gt;The catalytic move:&lt;/b&gt; $</span><span class="si">{c.x}</span><span class="s2">&lt;/p&gt;&lt;/summary&gt;</span>
+<span class="s2">      &lt;div class="titles"&gt;${groups||''}&lt;/div&gt;</span>
+<span class="s2">    &lt;/details&gt;`;</span>
+<span class="s2">  }</span>
+<span class="s2">  function renderCats(filter){</span>
+<span class="s2">    const host=document.getElementById('catGrid');</span>
+<span class="s2">    let cats=filter?L.cats:L.cats.filter(c=&gt;c.v===curV);</span>
+<span class="s2">    const html=cats.map((c,ci)=&gt;catCard(c,ci,!!filter,filter)).filter(Boolean).join('');</span>
+<span class="s2">    host.innerHTML=html;</span>
+<span class="s2">    document.getElementById('mNoRes').style.display=html?'none':'block';</span>
+<span class="s2">  }</span>
+<span class="s2">  renderCats();</span>
+<span class="s2">  document.getElementById('mq').addEventListener('input',e=&gt;{</span>
+<span class="s2">    const t=e.target.value.trim().toLowerCase();</span>
+<span class="s2">    renderCats(t||undefined);</span>
+<span class="s2">  });</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">write</span><span class="p">(</span><span class="s2">"messages.html"</span><span class="p">,</span> <span class="s2">"The Sermon Library — 5,155 Catalytic Messages | Lifetogether"</span><span class="p">,</span> <span class="n">BODY</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">"messages"</span><span class="p">,</span> <span class="n">head</span><span class="o">=</span><span class="n">HEAD</span><span class="p">,</span> <span class="n">scripts</span><span class="o">=</span><span class="n">SCRIPTS</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/page_messages.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

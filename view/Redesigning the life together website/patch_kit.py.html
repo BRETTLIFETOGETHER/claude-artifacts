@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>patch_kit.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>patch_kit.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">23 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/patch_kit.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the Weekly Kit engine: video scripts, leader coaching, memory verse, youth and kids editions, kit editor, compiled exports, and the library roll-up</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">s</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">'page_create.py'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># ================= 1. LANDING: the Any Given Sunday pitch =================</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""          &lt;button class="btn btn-gold btn-lg" onclick="go('upload')"&gt;Start with one sermon &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="btn btn-outline btn-lg" onclick="loadSample();go('upload')"&gt;Try it with a sample&lt;/button&gt;"""</span><span class="p">,</span>
+<span class="sd">"""          &lt;button class="btn btn-gold btn-lg" onclick="go('upload')"&gt;Start with one sermon &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="sd">          &lt;button class="btn btn-outline btn-lg" onclick="loadSample();go('upload')"&gt;Try it with a sample&lt;/button&gt;</span>
+<span class="sd">        &lt;/div&gt;</span>
+<span class="sd">        &lt;div class="mt32" style="background:#F4F4EF;border:1px solid var(--line);border-left:6px solid var(--lt-orange);border-radius:3px;padding:18px 22px;max-width:560px"&gt;</span>
+<span class="sd">          &lt;b style="color:var(--ink);font-size:15.5px"&gt;The Any-Given-Sunday promise.&lt;/b&gt;</span>
+<span class="sd">          &lt;p style="font-size:14px;color:var(--body);line-height:1.6;margin-top:6px"&gt;Finish preaching Saturday night, drop the message in, and your groups have a session &lt;b&gt;this week&lt;/b&gt; — digital tonight. Give us &lt;b&gt;30 minutes a week&lt;/b&gt; — 10&amp;ndash;15 minutes of teaching plus seven 90-second daily videos (we write the scripts) — and every week becomes a complete kit. Week by week they stand alone; at week six, roll them up into a study your groups can run any Tuesday night.&lt;/p&gt;"""</span><span class="p">)</span>
+
+<span class="c1"># ================= 2. OUTPUTS: Weekly Kit as the flagship choice =================</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""    &lt;div class="outs"&gt;</span>
+<span class="s2">      &lt;button class="out avail" onclick="selectOut('cur')"&gt;"""</span><span class="p">,</span>
+<span class="sd">"""    &lt;div class="outs"&gt;</span>
+<span class="sd">      &lt;button class="out avail" onclick="selectOut('kit')" style="grid-column:1/-1;border-color:var(--lt-orange);border-width:2px"&gt;</span>
+<span class="sd">        &lt;span class="otag lbl-bar orange" style="padding:5px 12px"&gt;This week&amp;rsquo;s kit — everything below&lt;/span&gt;</span>
+<span class="sd">        &lt;b&gt;The Weekly Kit · Any Given Sunday&lt;/b&gt;</span>
+<span class="sd">        &lt;span&gt;One message in → the whole week out: the small group session, seven daily devotions, seven 90-second video scripts for you to record, leader coaching, the memory verse, and youth &amp;amp; children&amp;rsquo;s notes. Standalone this week; rolls up into a study later.&lt;/span&gt;</span>
+<span class="sd">      &lt;/button&gt;</span>
+<span class="sd">      &lt;button class="out avail" onclick="selectOut('cur')"&gt;"""</span><span class="p">)</span>
+
+<span class="c1"># ================= 3. PREFS: kit note =================</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      &lt;div id="devoLen" style="display:none"&gt;</span>
+<span class="s2">        &lt;label class="lbl"&gt;Length&lt;/label&gt;</span>
+<span class="s2">        &lt;p style="font-size:15px;color:var(--body)"&gt;&lt;span class="chip gold"&gt;Week One · 7 days&lt;/span&gt;&amp;nbsp; The preview engine builds your first week; the full platform extends it to 21, 30, or 40 days.&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;"""</span><span class="p">,</span>
+<span class="sd">"""      &lt;div id="devoLen" style="display:none"&gt;</span>
+<span class="sd">        &lt;label class="lbl"&gt;Length&lt;/label&gt;</span>
+<span class="sd">        &lt;p style="font-size:15px;color:var(--body)"&gt;&lt;span class="chip gold"&gt;Week One · 7 days&lt;/span&gt;&amp;nbsp; The preview engine builds your first week; the full platform extends it to 21, 30, or 40 days.&lt;/p&gt;</span>
+<span class="sd">      &lt;/div&gt;</span>
+<span class="sd">      &lt;div id="kitNote" style="display:none"&gt;</span>
+<span class="sd">        &lt;label class="lbl"&gt;This week&amp;rsquo;s kit&lt;/label&gt;</span>
+<span class="sd">        &lt;p style="font-size:15px;color:var(--body)"&gt;&lt;span class="chip gold"&gt;Standalone week&lt;/span&gt;&amp;nbsp; Session + 7 dailies + 7 video scripts + leader, memory, youth &amp;amp; kids. Works best when you give it 10&amp;ndash;15 minutes of your recorded teaching — minimum ten, never more than fifteen. We guard your time.&lt;/p&gt;</span>
+<span class="sd">      &lt;/div&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""function selectOut(m){window.outMode=m;</span>
+<span class="s2">  document.getElementById('sessBlock').style.display=m==='devo'?'none':'block';</span>
+<span class="s2">  document.getElementById('devoLen').style.display=m==='devo'?'block':'none';</span>
+<span class="s2">  go('prefs');}"""</span><span class="p">,</span>
+<span class="sd">"""function selectOut(m){window.outMode=m;</span>
+<span class="sd">  document.getElementById('sessBlock').style.display=(m==='devo'||m==='kit')?'none':'block';</span>
+<span class="sd">  document.getElementById('devoLen').style.display=m==='devo'?'block':'none';</span>
+<span class="sd">  document.getElementById('kitNote').style.display=m==='kit'?'block':'none';</span>
+<span class="sd">  go('prefs');}"""</span><span class="p">)</span>
+
+<span class="c1"># ================= 4. KIT DERIVATION ENGINE =================</span>
+<span class="n">KIT</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">/* ---------- weekly kit parts ---------- */</span>
+<span class="s2">function deriveScripts(a){</span>
+<span class="s2">  const th=THEMES[a.theme]||THEMES.generic;</span>
+<span class="s2">  const spine=spineFor(7,a); const qs=a.quotes.filter(Boolean);</span>
+<span class="s2">  const hooks=[</span>
+<span class="s2">   'Hey church \u2014 before this day gets loud, give me ninety seconds.',</span>
+<span class="s2">   'Good morning. One text, one thought, and you\u2019re on your way.',</span>
+<span class="s2">   'Wherever this finds you \u2014 the car, the kitchen, the break room \u2014 pause with me.',</span>
+<span class="s2">   'Day '+' '+'\u2014 you made it back. That matters more than you think.',</span>
+<span class="s2">   'Ninety seconds. That\u2019s all. But God can do a lot with ninety seconds.',</span>
+<span class="s2">   'Before you check anything else this morning, check this.',</span>
+<span class="s2">   'Last one of the week \u2014 and I saved something for you.'];</span>
+<span class="s2">  return spine.map((ref,i)=&gt;{</span>
+<span class="s2">    const quote=qs[i%qs.length]||a.big;</span>
+<span class="s2">    return {d:i+1, ref,</span>
+<span class="s2">      body:`${i===3?'Day four \u2014 you made it back. That matters more than you think.':hooks[i]}\n\nToday we\u2019re in $</span><span class="si">{ref}</span><span class="s2">. Open it later if you can \u2014 for now, just hear this: $</span><span class="si">{quote}</span><span class="s2">\n\nHere\u2019s the one thought I want you to carry: ${th.aim(ref,'let this be more than information today').replace(/\u2014.*$/,'').trim()}. Not someday \u2014 today, in the middle of your actual schedule.\n\nSo here\u2019s your question for the day: where will this meet you before dinner? Name the moment. Watch for it.\n\nLord, walk this into our ${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][i%7]}. Amen. \u2014 See you tomorrow.`};</span>
+<span class="s2">  });</span>
+<span class="s2">}</span>
+<span class="s2">function deriveLeader(a,sess){</span>
+<span class="s2">  const th=THEMES[a.theme]||THEMES.generic;</span>
+<span class="s2">  return {</span>
+<span class="s2">    prep:`Before your group meets: read $</span><span class="si">{sess.v}</span><span class="s2"> once through, unhurried. Then pray through your roster by name \u2014 thirty seconds each. That\u2019s the whole prep. You are a host, not a professor; the material below does the heavy lifting.`,</span>
+<span class="s2">    run:`Run order (75 min): Connect 10 \u00b7 Watch/recap the teaching 10\u201315 \u00b7 Discuss 35 \u00b7 Practice hand-off 5 \u00b7 Pray 10. If discussion catches fire on question two, let questions three through five go \u2014 depth beats coverage every single week.`,</span>
+<span class="s2">    tip:`This week\u2019s facilitation key: the theme is $</span><span class="si">{th.name}</span><span class="s2">. When someone shares something real, resist the urge to fix or teach. Say \u201cthank you for trusting us with that\u201d \u2014 and let silence do its work before moving on.`,</span>
+<span class="s2">    care:`Care prompt: one person in your group had a harder week than they\u2019ll volunteer. Text two members before Thursday: \u201cThinking of you \u2014 how can I pray?\u201d You\u2019re not checking a box; you\u2019re building the net.`</span>
+<span class="s2">  };</span>
+<span class="s2">}</span>
+<span class="s2">function deriveMemory(a){</span>
+<span class="s2">  const spine=spineFor(1,a);</span>
+<span class="s2">  return {ref:spine[0],</span>
+<span class="s2">    plan:`Say $</span><span class="si">{spine[0]}</span><span class="s2"> aloud once after each daily devotional \u2014 seven repetitions by Sunday. Write it on one card: bathroom mirror or dashboard. Families: say it together at one meal; youngest goes first.`};</span>
+<span class="s2">}</span>
+<span class="s2">function deriveYouth(a,sess){</span>
+<span class="s2">  const th=THEMES[a.theme]||THEMES.generic;</span>
+<span class="s2">  return {</span>
+<span class="s2">    connect:[`Phones face-down in the middle. First one to grab theirs owes the group snacks next week. Now \u2014 everybody answer: what\u2019s one thing from this week you\u2019d actually want prayer for?`,</span>
+<span class="s2">             `Two truths and a lie \u2014 about your week. Group guesses the lie. (Leader goes first and goes honest.)`],</span>
+<span class="s2">    teach:`Same text as the adults \u2014 $</span><span class="si">{sess.v}</span><span class="s2"> \u2014 because students don\u2019t need a junior gospel. Read it out loud in two voices. Then one sentence from your pastor to put on the table: \u201C${(a.quotes[0]||a.big)}\u201D`,</span>
+<span class="s2">    discuss:[`Real talk: does $</span><span class="si">{sess.v}</span><span class="s2"> sound like good news or pressure to you today? Why?`,</span>
+<span class="s2">             `Where does this collide with what school, your feed, or your friend group says this week?`,</span>
+<span class="s2">             `What\u2019s one thing you could actually do about this before Friday \u2014 small counts?`],</span>
+<span class="s2">    send:`Close standing up. One-sentence prayers only \u2014 popcorn style. Leader ends with the memory verse over the room.`</span>
+<span class="s2">  };</span>
+<span class="s2">}</span>
+<span class="s2">function deriveKids(a,sess){</span>
+<span class="s2">  return {</span>
+<span class="s2">    table:`Table Talk (5 min at dinner): \u201cTonight\u2019s Bible spot is $</span><span class="si">{sess.v}</span><span class="s2">.\u201d Read one or two verses in a kids\u2019 translation. Ask: \u201cWhat do you think God is like in this part?\u201d There are no wrong answers at this table.`,</span>
+<span class="s2">    activity:`Do Together: draw the story \u2014 one page, stick figures welcome. Stick it on the fridge; that\u2019s this week\u2019s gallery. Bonus: act it out in sixty seconds with stuffed-animal casting.`,</span>
+<span class="s2">    blessing:`Blessing to say over your child at bedtime: \u201cGod made you, God sees you, and God is not letting go of you \u2014 not tonight, not ever.\u201D Same words every night this week; repetition is the point.`</span>
+<span class="s2">  };</span>
+<span class="s2">}</span>
+<span class="s2">function deriveKit(a){</span>
+<span class="s2">  const session=deriveSeries(a,1)[0];</span>
+<span class="s2">  return {session, days:deriveDevoWeek(a), scripts:deriveScripts(a),</span>
+<span class="s2">          leader:deriveLeader(a,session), memory:deriveMemory(a),</span>
+<span class="s2">          youth:deriveYouth(a,session), kids:deriveKids(a,session)};</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+<span class="n">i</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"function deriveKit"</span><span class="p">)</span> 
+<span class="n">anchor</span><span class="o">=</span><span class="s2">"function deriveDevoWeek(a){"</span>
+<span class="n">j</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span>
+<span class="c1"># insert KIT after deriveDevoWeek's closing — find the end of that function block: next "\n}\n" after j</span>
+<span class="n">end</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"return spine.map"</span><span class="p">,</span><span class="n">j</span><span class="p">))</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[:</span><span class="n">end</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="n">KIT</span><span class="o">+</span><span class="n">s</span><span class="p">[</span><span class="n">end</span><span class="o">+</span><span class="mi">3</span><span class="p">:]</span>
+
+<span class="c1"># ================= 5. KIT EDITOR =================</span>
+<span class="c1"># kit part tabs UI injected above session tabs; renderKit routes parts</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""  } else {</span>
+<span class="s2">    sessions=deriveSeries(analysis,+prefs.sess);"""</span><span class="p">,</span>
+<span class="sd">"""  } else if(window.outMode==='kit'){</span>
+<span class="sd">    window.kit = isSample</span>
+<span class="sd">      ? deriveKit({...analysis,refs:parseRefs('Ephesians 2:10 Colossians 3:23 Genesis 2:15 Matthew 5:16 Colossians 3:17 Galatians 6:9 Matthew 28:19'),theme:'work',book:null,seriesTitle:'More Than a Job'})</span>
+<span class="sd">      : deriveKit(analysis);</span>
+<span class="sd">    window.kitPart='session';</span>
+<span class="sd">    sessions=[window.kit.session];cur=0;</span>
+<span class="sd">    document.getElementById('edTitle').textContent=(isSample?'More Than a Job':analysis.seriesTitle)+' \\u2014 This Week\\u2019s Kit';</span>
+<span class="sd">    document.getElementById('edMeta').innerHTML=`Any Given Sunday \\u00b7 ${prefs.aud} \\u00b7 ${prefs.church} \\u00b7 from the teaching of ${prefs.pastor} &amp;nbsp;&lt;span class="chip gold"&gt;Standalone week \\u00b7 rolls up into a study&lt;/span&gt;`;</span>
+<span class="sd">    renderKitBar();renderKitPart();show('st-editor');return;</span>
+<span class="sd">  } else {</span>
+<span class="sd">    sessions=deriveSeries(analysis,+prefs.sess);"""</span><span class="p">)</span>
+
+<span class="n">KITUI</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">/* ---------- kit editor ---------- */</span>
+<span class="s2">const KITPARTS=[['session','Group Session'],['days','Daily Devotions'],['scripts','Video Scripts'],['leader','Leader Coaching'],['memory','Memory Verse'],['youth','Youth'],['kids','Children &amp; Family']];</span>
+<span class="s2">function renderKitBar(){</span>
+<span class="s2">  let bar=document.getElementById('kitBar');</span>
+<span class="s2">  if(!bar){</span>
+<span class="s2">    bar=document.createElement('div');bar.id='kitBar';</span>
+<span class="s2">    bar.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px';</span>
+<span class="s2">    const pane=document.getElementById('docPane');</span>
+<span class="s2">    pane.parentElement.insertBefore(bar,pane);</span>
+<span class="s2">  }</span>
+<span class="s2">  bar.style.display='flex';</span>
+<span class="s2">  bar.innerHTML=KITPARTS.map(([k,n])=&gt;`&lt;button class="pill ${window.kitPart===k?'sel':''}" onclick="window.kitPart='$</span><span class="si">{k}</span><span class="s2">';renderKitBar();renderKitPart()"&gt;$</span><span class="si">{n}</span><span class="s2">&lt;/button&gt;`).join('');</span>
+<span class="s2">}</span>
+<span class="s2">function hideKitBar(){const b=document.getElementById('kitBar');if(b)b.style.display='none';}</span>
+<span class="s2">function renderKitPart(){</span>
+<span class="s2">  const K=window.kit,p=window.kitPart,pane=document.getElementById('docPane');</span>
+<span class="s2">  document.querySelector('.sess-tabs')?.style.setProperty('display', (p==='session'||p==='days')?'':'none');</span>
+<span class="s2">  if(p==='session'){sessions=[K.session];cur=0;renderTabs();renderSession();return;}</span>
+<span class="s2">  if(p==='days'){sessions=K.days;cur=Math.min(cur,6);renderTabs();renderSession();return;}</span>
+<span class="s2">  const head=(t,sub)=&gt;`&lt;div class="doc-head"&gt;&lt;span class="chip gold"&gt;$</span><span class="si">{t}</span><span class="s2">&lt;/span&gt;&lt;h3&gt;$</span><span class="si">{sub}</span><span class="s2">&lt;/h3&gt;&lt;p class="dsub"&gt;$</span><span class="si">{prefs.church}</span><span class="s2"> \u00b7 from the teaching of $</span><span class="si">{prefs.pastor}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s2">  const blk=(l,body,path)=&gt;`&lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;$</span><span class="si">{l}</span><span class="s2">&lt;/label&gt;&lt;/div&gt;&lt;p contenteditable="true" onblur="$</span><span class="si">{path}</span><span class="s2">=this.innerText"&gt;${body.replace(/\n/g,'&lt;br&gt;')}&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s2">  if(p==='scripts'){</span>
+<span class="s2">    pane.innerHTML=head('7 \u00d7 90-second daily videos','Your scripts \u2014 record on a phone')+</span>
+<span class="s2">      `&lt;div class="doc-body"&gt;&lt;p style="font-size:13.5px;color:var(--mute);margin-bottom:14px"&gt;Teleprompter-ready. Each runs \u2248 90 seconds at a natural pace. Record all seven in one sitting \u2014 about fifteen minutes \u2014 and you\u2019ve fed your church for a week.&lt;/p&gt;`+</span>
+<span class="s2">      K.scripts.map((sc,i)=&gt;blk(`Day $</span><span class="si">{sc.d}</span><span class="s2"> \u00b7 $</span><span class="si">{sc.ref}</span><span class="s2"> \u00b7 \u224890 sec`,sc.body,`window.kit.scripts[$</span><span class="si">{i}</span><span class="s2">].body`)).join('')+`&lt;/div&gt;`;</span>
+<span class="s2">  }</span>
+<span class="s2">  if(p==='leader'){</span>
+<span class="s2">    const L=K.leader;</span>
+<span class="s2">    pane.innerHTML=head('Leader coaching','One page for your hosts')+</span>
+<span class="s2">      `&lt;div class="doc-body"&gt;`+blk('Before the group',L.prep,'window.kit.leader.prep')+blk('Run order',L.run,'window.kit.leader.run')+blk('This week\u2019s facilitation key',L.tip,'window.kit.leader.tip')+blk('Care prompt',L.care,'window.kit.leader.care')+`&lt;/div&gt;`;</span>
+<span class="s2">  }</span>
+<span class="s2">  if(p==='memory'){</span>
+<span class="s2">    const M=K.memory;</span>
+<span class="s2">    pane.innerHTML=head('Memory verse','The week\u2019s anchor text')+</span>
+<span class="s2">      `&lt;div class="doc-body"&gt;`+blk('This week\u2019s verse',M.ref+' (NIV) \u2014 print the full text from your Bible software; verse text ships licensed in the full platform.','window.kit.memory.ref')+blk('The seven-day plan',M.plan,'window.kit.memory.plan')+`&lt;/div&gt;`;</span>
+<span class="s2">  }</span>
+<span class="s2">  if(p==='youth'){</span>
+<span class="s2">    const Y=K.youth;</span>
+<span class="s2">    pane.innerHTML=head('Youth edition','Same text \u00b7 re-aimed, not watered down')+</span>
+<span class="s2">      `&lt;div class="doc-body"&gt;`+blk('Connect',Y.connect.join('\n\n'),'window.kit.youth._c')+blk('The text on the table',Y.teach,'window.kit.youth.teach')+blk('Real talk',Y.discuss.map((q,i)=&gt;(i+1)+'. '+q).join('\n\n'),'window.kit.youth._d')+blk('Send',Y.send,'window.kit.youth.send')+`&lt;/div&gt;`;</span>
+<span class="s2">  }</span>
+<span class="s2">  if(p==='kids'){</span>
+<span class="s2">    const C=K.kids;</span>
+<span class="s2">    pane.innerHTML=head('Children &amp; Family','For the table and the bedside')+</span>
+<span class="s2">      `&lt;div class="doc-body"&gt;`+blk('Table talk',C.table,'window.kit.kids.table')+blk('Do together',C.activity,'window.kit.kids.activity')+blk('Bedtime blessing',C.blessing,'window.kit.kids.blessing')+`&lt;/div&gt;`;</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+<span class="s2">function kitDocHTML(){</span>
+<span class="s2">  const K=window.kit;const h4=t=&gt;`&lt;h4 style="color:#2E4C97"&gt;$</span><span class="si">{t}</span><span class="s2">&lt;/h4&gt;`;</span>
+<span class="s2">  const part=(t)=&gt;`&lt;div style="page-break-before:always"&gt;&lt;/div&gt;&lt;h2 style="color:#1C1C1C;border-bottom:3px solid #7CA457;padding-bottom:6px"&gt;$</span><span class="si">{t}</span><span class="s2">&lt;/h2&gt;`;</span>
+<span class="s2">  const savedSessions=sessions; sessions=[K.session]; const sess=docHTML(); sessions=K.days; const days=docHTML(); sessions=savedSessions;</span>
+<span class="s2">  return sess</span>
+<span class="s2">   + part('Daily Video Scripts \u2014 7 \u00d7 90 seconds')+K.scripts.map(sc=&gt;`${h4('Day '+sc.d+' \u00b7 '+sc.ref+' \u00b7 \u224890 sec')}&lt;p&gt;${sc.body.replace(/\n/g,'&lt;br&gt;')}&lt;/p&gt;`).join('')</span>
+<span class="s2">   + part('Daily Devotions \u2014 Week One')+days</span>
+<span class="s2">   + part('Leader Coaching')+h4('Before the group')+`&lt;p&gt;$</span><span class="si">{K.leader.prep}</span><span class="s2">&lt;/p&gt;`+h4('Run order')+`&lt;p&gt;$</span><span class="si">{K.leader.run}</span><span class="s2">&lt;/p&gt;`+h4('Facilitation key')+`&lt;p&gt;$</span><span class="si">{K.leader.tip}</span><span class="s2">&lt;/p&gt;`+h4('Care prompt')+`&lt;p&gt;$</span><span class="si">{K.leader.care}</span><span class="s2">&lt;/p&gt;`</span>
+<span class="s2">   + part('Memory Verse')+h4(K.memory.ref)+`&lt;p&gt;$</span><span class="si">{K.memory.plan}</span><span class="s2">&lt;/p&gt;`</span>
+<span class="s2">   + part('Youth Edition')+h4('Connect')+`&lt;p&gt;${K.youth.connect.join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;`+h4('The text on the table')+`&lt;p&gt;$</span><span class="si">{K.youth.teach}</span><span class="s2">&lt;/p&gt;`+h4('Real talk')+`&lt;p&gt;${K.youth.discuss.map((q,i)=&gt;`&lt;b&gt;${i+1}.&lt;/b&gt; $</span><span class="si">{q}</span><span class="s2">`).join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;`+h4('Send')+`&lt;p&gt;$</span><span class="si">{K.youth.send}</span><span class="s2">&lt;/p&gt;`</span>
+<span class="s2">   + part('Children &amp; Family')+h4('Table talk')+`&lt;p&gt;$</span><span class="si">{K.kids.table}</span><span class="s2">&lt;/p&gt;`+h4('Do together')+`&lt;p&gt;$</span><span class="si">{K.kids.activity}</span><span class="s2">&lt;/p&gt;`+h4('Bedtime blessing')+`&lt;p&gt;$</span><span class="si">{K.kids.blessing}</span><span class="s2">&lt;/p&gt;`;</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/* ---------- weekly kit parts ---------- */"</span><span class="p">,</span> <span class="s2">"/* ---------- weekly kit parts ---------- */"</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"function renderKitBar();"</span><span class="p">,</span> <span class="s2">"function renderKitBar();"</span><span class="p">)</span>
+<span class="c1"># insert KITUI before renderSession definition</span>
+<span class="n">k</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"function renderSession(){"</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="n">KITUI</span><span class="o">+</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">+</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span>
+
+<span class="c1"># renderSession/back-compat: when leaving kit mode via non-kit generations, hide bar</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""    renderTabs();renderSession();"""</span><span class="p">,</span><span class="s2">"""    hideKitBar();renderTabs();renderSession();"""</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># session/day tab clicks inside kit keep part context: renderTabs uses sessions already — fine.</span>
+
+<span class="c1"># fullDocHTML uses kit compile when in kit mode</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""    &lt;/head&gt;&lt;body&gt;</span>
+<span class="s2">    &lt;div style="text-align:center;margin-bottom:34px"&gt;</span>
+<span class="s2">      &lt;p style="font-size:11px;letter-spacing:3px;color:#5F8540;font-weight:bold"&gt;LIFETOGETHER </span><span class="se">\\</span><span class="s2">u00b7 ${prefs.church.toUpperCase()}&lt;/p&gt;</span>
+<span class="s2">      &lt;h1 style="color:#1C1C1C;font-size:30px;margin:4px 0"&gt;$</span><span class="si">{title}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">      &lt;p style="color:#777;font-size:13px"&gt;From the teaching of $</span><span class="si">{prefs.pastor}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;${docHTML()}&lt;/body&gt;&lt;/html&gt;`;"""</span><span class="p">,</span>
+<span class="sd">"""    &lt;/head&gt;&lt;body&gt;</span>
+<span class="sd">    &lt;div style="text-align:center;margin-bottom:34px"&gt;</span>
+<span class="sd">      &lt;p style="font-size:11px;letter-spacing:3px;color:#5F8540;font-weight:bold"&gt;LIFETOGETHER \\u00b7 ${prefs.church.toUpperCase()}&lt;/p&gt;</span>
+<span class="sd">      &lt;h1 style="color:#1C1C1C;font-size:30px;margin:4px 0"&gt;${title}&lt;/h1&gt;</span>
+<span class="sd">      &lt;p style="color:#777;font-size:13px"&gt;From the teaching of ${prefs.pastor}&lt;/p&gt;</span>
+<span class="sd">    &lt;/div&gt;${window.outMode==='kit'&amp;&amp;window.kit?kitDocHTML():docHTML()}&lt;/body&gt;&lt;/html&gt;`;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"a.download=(window.outMode==='devo'?'Daily-Devotional-Week-One.doc':'Small-Group-Curriculum.doc');"</span><span class="p">,</span>
+            <span class="s2">"a.download=(window.outMode==='kit'?'Weekly-Kit.doc':window.outMode==='devo'?'Daily-Devotional-Week-One.doc':'Small-Group-Curriculum.doc');"</span><span class="p">)</span>
+
+<span class="c1"># export lede mentions kit; savedChip logic already generic via finishEdit; save kit with series info</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""function finishEdit(){</span>
+<span class="s2">  try{</span>
+<span class="s2">    ltPush('lt_curricula',{id:ltId(),title:document.getElementById('edTitle').textContent,</span>
+<span class="s2">      sessions:sessions.length,church:prefs.church,date:new Date().toISOString(),</span>
+<span class="s2">      data:{sessions,prefs,analysis,isSample}});</span>
+<span class="s2">  }catch(e)</span><span class="si">{}</span><span class="s2">"""</span><span class="p">,</span>
+<span class="sd">"""function finishEdit(){</span>
+<span class="sd">  try{</span>
+<span class="sd">    const isKit=window.outMode==='kit'&amp;&amp;window.kit;</span>
+<span class="sd">    const seriesKey=(isSample?'More Than a Job':(analysis.seriesTitle||'Your Series'));</span>
+<span class="sd">    const weekN=isKit?(ltGet('lt_curricula').filter(c=&gt;c.type==='kit'&amp;&amp;c.seriesKey===seriesKey).length+1):null;</span>
+<span class="sd">    ltPush('lt_curricula',{id:ltId(),title:document.getElementById('edTitle').textContent+(isKit?` \\u00b7 Week ${weekN}`:''),</span>
+<span class="sd">      type:isKit?'kit':(window.outMode==='devo'?'devo':'series'),seriesKey,week:weekN,</span>
+<span class="sd">      sessions:sessions.length,church:prefs.church,date:new Date().toISOString(),</span>
+<span class="sd">      data:isKit?{kit:window.kit,session:window.kit.session,prefs,analysis,isSample}:{sessions,prefs,analysis,isSample}});</span>
+<span class="sd">  }catch(e){}"""</span><span class="p">)</span>
+
+<span class="c1"># rollup loader: ?rollup=id1,id2</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""    if(q.get('cur')){"""</span><span class="p">,</span>
+<span class="sd">"""    if(q.get('rollup')){</span>
+<span class="sd">      const ids=q.get('rollup').split(',');</span>
+<span class="sd">      const items=ids.map(id=&gt;ltFind('lt_curricula',id)).filter(Boolean);</span>
+<span class="sd">      if(items.length){</span>
+<span class="sd">        const first=items[0];</span>
+<span class="sd">        Object.assign(prefs,first.data.prefs);analysis=first.data.analysis||{};isSample=false;window.outMode='cur';</span>
+<span class="sd">        sessions=items.map((it,i)=&gt;{</span>
+<span class="sd">          const base=it.data.session||((it.data.sessions||[])[0]);</span>
+<span class="sd">          const cp=JSON.parse(JSON.stringify(base));</span>
+<span class="sd">          cp.t=`Week ${it.week||i+1}: ${cp.t}`;return cp;</span>
+<span class="sd">        });</span>
+<span class="sd">        cur=0;</span>
+<span class="sd">        document.getElementById('edTitle').textContent=(first.seriesKey||'Your Series')+' \\u2014 The Complete Study';</span>
+<span class="sd">        document.getElementById('edMeta').innerHTML=`${sessions.length} weeks rolled up \\u00b7 ${prefs.aud} \\u00b7 ${prefs.church} &amp;nbsp;&lt;span class="chip gold"&gt;Ready for any Tuesday night&lt;/span&gt;`;</span>
+<span class="sd">        hideKitBar();renderTabs();renderSession();show('st-editor');</span>
+<span class="sd">      }</span>
+<span class="sd">    }</span>
+<span class="sd">    if(q.get('cur')){"""</span><span class="p">)</span>
+<span class="c1"># cur loader for kit items reopens kit</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      const c=ltFind('lt_curricula',q.get('cur'));</span>
+<span class="s2">      if(c&amp;&amp;c.data){</span>
+<span class="s2">        Object.assign(prefs,c.data.prefs);analysis=c.data.analysis;isSample=c.data.isSample;</span>
+<span class="s2">        sessions=c.data.sessions;cur=0;"""</span><span class="p">,</span>
+<span class="sd">"""      const c=ltFind('lt_curricula',q.get('cur'));</span>
+<span class="sd">      if(c&amp;&amp;c.data&amp;&amp;c.type==='kit'){</span>
+<span class="sd">        Object.assign(prefs,c.data.prefs);analysis=c.data.analysis;isSample=c.data.isSample;</span>
+<span class="sd">        window.outMode='kit';window.kit=c.data.kit;window.kitPart='session';</span>
+<span class="sd">        sessions=[window.kit.session];cur=0;</span>
+<span class="sd">        document.getElementById('edTitle').textContent=c.title.replace(/ \\u00b7 Week \\d+$/,'');</span>
+<span class="sd">        document.getElementById('edMeta').textContent=`Any Given Sunday \\u00b7 ${prefs.aud} \\u00b7 ${prefs.church}`;</span>
+<span class="sd">        renderKitBar();renderKitPart();show('st-editor');</span>
+<span class="sd">      }</span>
+<span class="sd">      else if(c&amp;&amp;c.data){</span>
+<span class="sd">        Object.assign(prefs,c.data.prefs);analysis=c.data.analysis;isSample=c.data.isSample;</span>
+<span class="sd">        sessions=c.data.sessions;cur=0;"""</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="s1">'page_create.py'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"kit engine + editor + rollup loader installed"</span><span class="p">)</span>
+
+<span class="c1"># ================= 6. LIBRARY: series grouping + roll-up button =================</span>
+<span class="n">s</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">'page_account.py'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""  // curricula</span>
+<span class="s2">  const curs=ltGet('lt_curricula');</span>
+<span class="s2">  document.getElementById('curList').innerHTML = curs.length ? curs.map(c=&gt;`</span>
+<span class="s2">    &lt;div class="itm cur"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;$</span><span class="si">{c.title}</span><span class="s2">&lt;/b&gt;&lt;span class="meta"&gt;$</span><span class="si">{c.sessions}</span><span class="s2"> sessions · $</span><span class="si">{c.church}</span><span class="s2"> · saved ${new Date(c.date).toLocaleDateString()}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="acts"&gt;</span>
+<span class="s2">        &lt;a class="btn btn-primary btn-sm" href="create.html?cur=$</span><span class="si">{c.id}</span><span class="s2">"&gt;Reopen in the studio&lt;/a&gt;</span>
+<span class="s2">        &lt;button class="btn btn-outline btn-sm" onclick="ltDel('lt_curricula','$</span><span class="si">{c.id}</span><span class="s2">');location.reload()"&gt;Remove&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;`).join('') :</span>
+<span class="s2">    `&lt;div class="empty"&gt;Nothing generated yet. Build a curriculum from any uploaded sermon and it will live here.&lt;/div&gt;`;"""</span><span class="p">,</span>
+<span class="sd">"""  // curricula — grouped, with weekly-kit roll-up</span>
+<span class="sd">  const curs=ltGet('lt_curricula');</span>
+<span class="sd">  const kitGroups={};</span>
+<span class="sd">  curs.filter(c=&gt;c.type==='kit').forEach(c=&gt;{(kitGroups[c.seriesKey]=kitGroups[c.seriesKey]||[]).push(c);});</span>
+<span class="sd">  const rollups=Object.entries(kitGroups).filter(([k,v])=&gt;v.length&gt;=2).map(([k,v])=&gt;{</span>
+<span class="sd">    const ids=v.sort((a,b)=&gt;(a.week||0)-(b.week||0)).map(x=&gt;x.id).join(',');</span>
+<span class="sd">    return `&lt;div class="itm" style="border-left-color:var(--lt-lime);background:#FBFBEF"&gt;</span>
+<span class="sd">      &lt;div&gt;&lt;b&gt;Roll up &amp;ldquo;${k}&amp;rdquo; — ${v.length} weeks → one study&lt;/b&gt;&lt;span class="meta"&gt;Week by week they stood alone. Compiled, they become a study your groups can run any Tuesday night — and send to print.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="sd">      &lt;div class="acts"&gt;&lt;a class="btn btn-primary btn-sm" href="create.html?rollup=${ids}"&gt;Roll up ${v.length} weeks&lt;/a&gt;&lt;/div&gt;</span>
+<span class="sd">    &lt;/div&gt;`;}).join('');</span>
+<span class="sd">  const tag=c=&gt;c.type==='kit'?'&lt;span class="chip lime" style="margin-right:8px"&gt;Weekly kit&lt;/span&gt;':(c.type==='devo'?'&lt;span class="chip" style="margin-right:8px"&gt;Devotional&lt;/span&gt;':'');</span>
+<span class="sd">  document.getElementById('curList').innerHTML = curs.length ? rollups + curs.map(c=&gt;`</span>
+<span class="sd">    &lt;div class="itm cur"&gt;</span>
+<span class="sd">      &lt;div&gt;&lt;b&gt;${tag(c)}${c.title}&lt;/b&gt;&lt;span class="meta"&gt;${c.sessions} session${c.sessions&gt;1?'s':''} · ${c.church} · saved ${new Date(c.date).toLocaleDateString()}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="sd">      &lt;div class="acts"&gt;</span>
+<span class="sd">        &lt;a class="btn btn-primary btn-sm" href="create.html?cur=${c.id}"&gt;Reopen in the studio&lt;/a&gt;</span>
+<span class="sd">        &lt;button class="btn btn-outline btn-sm" onclick="ltDel('lt_curricula','${c.id}');location.reload()"&gt;Remove&lt;/button&gt;</span>
+<span class="sd">      &lt;/div&gt;</span>
+<span class="sd">    &lt;/div&gt;`).join('') :</span>
+<span class="sd">    `&lt;div class="empty"&gt;Nothing generated yet. Build a weekly kit from any sermon and it will live here — two weeks in the same series unlock the roll-up.&lt;/div&gt;`;"""</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s1">'page_account.py'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"library roll-up installed"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/patch_kit.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

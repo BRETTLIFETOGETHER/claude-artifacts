@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>six_day.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>six_day.py</h1>
+<div class="meta"><span class="ext e-py">py</span>
+<span class="b">11 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/six_day.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Six-day devotional engine and the story library system</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">CAPACITY</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"headline"</span><span class="p">:</span><span class="s2">"How many standalone sermons are actually in here"</span><span class="p">,</span>
+ <span class="s2">"intro"</span><span class="p">:(</span><span class="s2">"Two different numbers matter, and conflating them is how catalogue claims stop being believed. "</span>
+  <span class="s2">"One is how many standalone sermons the library can produce. The other is how many genuinely distinct "</span>
+  <span class="s2">"ideas sit underneath them. Both are worth saying out loud."</span><span class="p">),</span>
+ <span class="s2">"rows"</span><span class="p">:[</span>
+  <span class="p">[</span><span class="s2">"Sermon titles already standalone"</span><span class="p">,</span><span class="s2">"5,155"</span><span class="p">,</span><span class="s2">"Every message in the sermon library is written to stand alone. These need no conversion &amp;mdash; they are already the product."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Campaigns that can produce an overview sermon"</span><span class="p">,</span><span class="s2">"16,379"</span><span class="p">,</span><span class="s2">"Every campaign in the platform compresses to one message. The engine already writes the build deterministically."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Total standalone sermons available"</span><span class="p">,</span><span class="s2">"21,534"</span><span class="p">,</span><span class="s2">"The honest ceiling, and every one of them can carry six days, a group guide and a ladder."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Distinct underlying ideas"</span><span class="p">,</span><span class="s2">"1,742"</span><span class="p">,</span><span class="s2">"The campaign platform's own theme count. This is the number that matters for a preaching calendar."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Verified Scripture backbones"</span><span class="p">,</span><span class="s2">"461"</span><span class="p">,</span><span class="s2">"Every reference checked against a canonical verse-count table at build time."</span><span class="p">],</span>
+ <span class="p">],</span>
+ <span class="s2">"honest"</span><span class="p">:(</span><span class="s2">"Twenty-one thousand is real but it is not twenty-one thousand different ideas. Seventeen thousand campaigns "</span>
+  <span class="s2">"run on 1,742 themes, which means the same idea appears at different lengths, for different audiences and in "</span>
+  <span class="s2">"different seasons. That is a feature rather than a defect &amp;mdash; a pastor does not need twenty-one thousand "</span>
+  <span class="s2">"distinct thoughts, he needs the right one for the Sunday in front of him, at the length he can actually run. "</span>
+  <span class="s2">"But say 1,742 when someone asks how many ideas, and 21,534 when someone asks how many sermons, and never blur them."</span><span class="p">),</span>
+ <span class="s2">"math"</span><span class="p">:[</span>
+  <span class="p">[</span><span class="s2">"Every sermon becomes six days"</span><span class="p">,</span><span class="s2">"5,155 x 6"</span><span class="p">,</span><span class="s2">"30,930 daily devotionals from the sermon library alone"</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Every campaign overview becomes six days"</span><span class="p">,</span><span class="s2">"16,379 x 6"</span><span class="p">,</span><span class="s2">"98,274 more"</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Total daily devotional slots"</span><span class="p">,</span><span class="s2">""</span><span class="p">,</span><span class="s2">"129,204 &amp;mdash; which is why these are generated from the message rather than written by hand"</span><span class="p">],</span>
+ <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">SIX_WHY</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"line"</span><span class="p">:</span><span class="s2">"Six days, not seven. Sunday is the sermon."</span><span class="p">,</span>
+ <span class="s2">"body"</span><span class="p">:(</span><span class="s2">"Monday through Saturday belong to the message that was preached, and Sunday is when it comes back. "</span>
+  <span class="s2">"A seven-day devotional starting on Sunday competes with the sermon it came from. Six days finishes the week "</span>
+  <span class="s2">"on Saturday and hands the congregation back to the room."</span><span class="p">),</span>
+ <span class="s2">"rules"</span><span class="p">:[</span>
+  <span class="p">[</span><span class="s2">"Recorded on or before Sunday"</span><span class="p">,</span><span class="s2">"One sitting, six videos or six written pieces. If the pastor has to produce something on Tuesday, it will not survive March."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"From the pastor, not from the church"</span><span class="p">,</span><span class="s2">"It arrives as him. Same voice they heard Sunday, same face, in their inbox at six in the morning."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Under two minutes, or under 200 words"</span><span class="p">,</span><span class="s2">"Whichever format. The constraint is what makes it repeatable."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"One idea, six angles"</span><span class="p">,</span><span class="s2">"Never six new ideas. The message is the idea; the week is the angles."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Every day ends with the same question"</span><span class="p">,</span><span class="s2">"Different wording, same job &amp;mdash; get a story back."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"The reply goes to a human"</span><span class="p">,</span><span class="s2">"Not a form, not a no-reply address. Somebody reads them, and that somebody is named."</span><span class="p">],</span>
+ <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">TWO_SCRIPTS</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Sliced"</span><span class="p">,</span><span class="s2">"The sermon cut into six"</span><span class="p">,</span>
+  <span class="s2">"The message itself, divided at its natural seams and re-recorded as six short pieces. His words, his examples, his phrasing &amp;mdash; a congregation hears Sunday again in miniature."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Highest recognition &amp;mdash; they know they heard this"</span><span class="p">,</span><span class="s2">"Zero additional writing; it is already written"</span><span class="p">,</span>
+   <span class="s2">"Reinforces the exact language of the message"</span><span class="p">,</span><span class="s2">"Best when the sermon had strong distinct movements"</span><span class="p">],</span>
+  <span class="s2">"Just-in-time. Only usable the week of that sermon."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Summary"</span><span class="p">,</span><span class="s2">"Six clean standalone pieces"</span><span class="p">,</span>
+  <span class="s2">"Six short devotionals that carry the message's idea without depending on having heard it. Anyone can start on Wednesday and it still works."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Works for people who missed Sunday"</span><span class="p">,</span><span class="s2">"Reusable in a year, or on another campus, or in a rerun"</span><span class="p">,</span>
+   <span class="s2">"Easier for a guest teacher to record"</span><span class="p">,</span><span class="s2">"Best when the sermon was one idea rather than four points"</span><span class="p">],</span>
+  <span class="s2">"Evergreen. Recordable months ahead and stockpiled."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">SIX_ARC</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Monday"</span><span class="p">,</span><span class="s2">"The hook, again"</span><span class="p">,</span><span class="s2">"Reopen the thing that opened the message. Not a recap &amp;mdash; the same door, one day later."</span><span class="p">,</span>
+  <span class="s2">"What did Sunday put a finger on for you?"</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Tuesday"</span><span class="p">,</span><span class="s2">"The text"</span><span class="p">,</span><span class="s2">"Slow down on the passage itself. Read it, then say one thing about what it actually says."</span><span class="p">,</span>
+  <span class="s2">"What do you notice in the passage that you missed on Sunday?"</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Wednesday"</span><span class="p">,</span><span class="s2">"The honest part"</span><span class="p">,</span><span class="s2">"The line in the message that was uncomfortable. Say it again, more personally."</span><span class="p">,</span>
+  <span class="s2">"Where is this true about you right now?"</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Thursday"</span><span class="p">,</span><span class="s2">"The practice"</span><span class="p">,</span><span class="s2">"One concrete thing, today, small enough that it actually happens."</span><span class="p">,</span>
+  <span class="s2">"What did you do, and what happened?"</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Friday"</span><span class="p">,</span><span class="s2">"The person"</span><span class="p">,</span><span class="s2">"Somebody else in it. The idea leaves the head and reaches a name."</span><span class="p">,</span>
+  <span class="s2">"Who came to mind, and did you reach out?"</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Saturday"</span><span class="p">,</span><span class="s2">"Bring it back"</span><span class="p">,</span><span class="s2">"Point at tomorrow. What are we walking into, and what are you carrying in?"</span><span class="p">,</span>
+  <span class="s2">"What is one sentence you would say out loud about this week?"</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">STORY_ENGINE</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"line"</span><span class="p">:</span><span class="s2">"The question at the bottom is the whole product."</span><span class="p">,</span>
+ <span class="s2">"intro"</span><span class="p">:(</span><span class="s2">"Every daily devotional ends with one question and a reply box. Those replies are not feedback. "</span>
+  <span class="s2">"They are the raw material of a story culture, and within about eight weeks a church that has never had "</span>
+  <span class="s2">"usable testimony has more than it can use."</span><span class="p">),</span>
+ <span class="s2">"flow"</span><span class="p">:[</span>
+  <span class="p">[</span><span class="s2">"01"</span><span class="p">,</span><span class="s2">"The question goes out"</span><span class="p">,</span><span class="s2">"Six questions a week, one per devotional, each written to produce a specific kind of answer rather than a general one."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"02"</span><span class="p">,</span><span class="s2">"People reply to a human"</span><span class="p">,</span><span class="s2">"A named staff member or volunteer, not a form. Replies land in one inbox and nowhere else."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"03"</span><span class="p">,</span><span class="s2">"One person curates on Thursday"</span><span class="p">,</span><span class="s2">"Fifteen minutes. Read, tag, and move anything usable into the library. Most of it will not be usable and that is fine."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"04"</span><span class="p">,</span><span class="s2">"Permission is asked separately"</span><span class="p">,</span><span class="s2">"Never assume a reply is publishable. A short, specific, easy-to-decline ask, and a no costs nothing."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"05"</span><span class="p">,</span><span class="s2">"Three are used on Sunday"</span><span class="p">,</span><span class="s2">"Read from the platform, shown on screen, or told by the person. The congregation hears itself."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"06"</span><span class="p">,</span><span class="s2">"The rest goes in the library"</span><span class="p">,</span><span class="s2">"Tagged by theme, passage and campaign. Next year's Sunday on the same text already has stories attached to it."</span><span class="p">],</span>
+ <span class="p">],</span>
+ <span class="s2">"two_questions"</span><span class="p">:[</span>
+  <span class="p">[</span><span class="s2">"Looking back"</span><span class="p">,</span><span class="s2">"How did you live out last week's message?"</span><span class="p">,</span><span class="s2">"Produces application stories &amp;mdash; what somebody actually did. These are the ones that move a congregation, because they are recent and specific."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Looking forward"</span><span class="p">,</span><span class="s2">"Have you ever lived this out before?"</span><span class="p">,</span><span class="s2">"Produces history stories &amp;mdash; something from years ago that fits the message coming Sunday. These can be gathered in advance and are the reason a pastor never has to hunt for an illustration again."</span><span class="p">],</span>
+ <span class="p">],</span>
+ <span class="s2">"forward_note"</span><span class="p">:(</span><span class="s2">"The forward-looking question is the innovation. Ask it three weeks before the message and the "</span>
+  <span class="s2">"congregation supplies the illustrations for a sermon that has not been preached yet. The pastor opens Sunday "</span>
+  <span class="s2">"with a story from row twelve about the exact thing he is about to teach, and nobody in the building can "</span>
+  <span class="s2">"work out how he did it."</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">Q_BANK</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Application"</span><span class="p">,</span><span class="s2">"What did you actually do this week because of Sunday?"</span><span class="p">,</span><span class="s2">"The workhorse question. Specific verb, recent timeframe."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Application"</span><span class="p">,</span><span class="s2">"What was hard about this one?"</span><span class="p">,</span><span class="s2">"Produces honest answers rather than victory reports, and honest answers are more usable."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Application"</span><span class="p">,</span><span class="s2">"Who did you talk to about this?"</span><span class="p">,</span><span class="s2">"Surfaces the relational ripple, which is invisible otherwise."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"History"</span><span class="p">,</span><span class="s2">"Have you ever been through something like this?"</span><span class="p">,</span><span class="s2">"The forward-looking gather. Ask three weeks ahead."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"History"</span><span class="p">,</span><span class="s2">"When has God done this in your life before?"</span><span class="p">,</span><span class="s2">"Produces testimony rather than anecdote."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"History"</span><span class="p">,</span><span class="s2">"What would you tell somebody sitting where you were five years ago?"</span><span class="p">,</span><span class="s2">"Produces the most quotable single sentences of any question in the bank."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Diagnostic"</span><span class="p">,</span><span class="s2">"Where are you stuck on this?"</span><span class="p">,</span><span class="s2">"Not for publication. This one tells the pastor what to preach next."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Diagnostic"</span><span class="p">,</span><span class="s2">"What did you not understand?"</span><span class="p">,</span><span class="s2">"The most valuable and least-asked question in preaching."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Invitation"</span><span class="p">,</span><span class="s2">"Who should hear this?"</span><span class="p">,</span><span class="s2">"Turns a reply into an invitation without a campaign."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">PERMISSION</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"rule"</span><span class="p">:</span><span class="s2">"Never publish a reply without asking, and never make the ask hard to decline."</span><span class="p">,</span>
+ <span class="s2">"script"</span><span class="p">:(</span><span class="s2">"Thank you for sending that &amp;mdash; it stayed with me. Would you be willing for me to share it on Sunday? "</span>
+  <span class="s2">"I can use your name, use your first name only, or tell it without any name at all. And if you would rather I "</span>
+  <span class="s2">"did not, just say so and it changes nothing."</span><span class="p">),</span>
+ <span class="s2">"rules"</span><span class="p">:[</span>
+  <span class="p">[</span><span class="s2">"Three options, always"</span><span class="p">,</span><span class="s2">"Full name, first name only, or anonymous. Offering all three roughly doubles the yes rate."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Explicit permission to decline"</span><span class="p">,</span><span class="s2">"The sentence that makes it safe is the one that says no costs nothing."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Ask once"</span><span class="p">,</span><span class="s2">"A second ask is pressure, regardless of how it is worded."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Show them the version you will use"</span><span class="p">,</span><span class="s2">"Especially if you have shortened it. People say yes to their story and then hear a different one."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Never use a reply from someone in crisis"</span><span class="p">,</span><span class="s2">"Not for a year, and not without a separate conversation. The devotional inbox is not a source."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Written permission for anything published online"</span><span class="p">,</span><span class="s2">"Verbal is fine for a Sunday mention. Social and video need it in writing."</span><span class="p">],</span>
+ <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">LIBRARY_SPEC</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Tagged by theme"</span><span class="p">,</span><span class="s2">"Matches the campaign platform's 1,742 themes, so a story attaches to every future message on that idea."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Tagged by passage"</span><span class="p">,</span><span class="s2">"Search by text. Next year's sermon on Luke 15 already has four stories waiting."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Tagged by campaign"</span><span class="p">,</span><span class="s2">"Every campaign accumulates its own stories, which makes the second run of it far stronger than the first."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Tagged by permission level"</span><span class="p">,</span><span class="s2">"Full name, first name, anonymous, or do-not-use. Never guess this."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Tagged by date"</span><span class="p">,</span><span class="s2">"Stories age. A two-year-old story about a job loss may be a very different story now."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Tagged by usability"</span><span class="p">,</span><span class="s2">"Most replies are not stories. Marking the ten percent that are is the whole curation job."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">CULTURE</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"line"</span><span class="p">:</span><span class="s2">"Eight weeks in, the church changes shape."</span><span class="p">,</span>
+ <span class="s2">"stages"</span><span class="p">:[</span>
+  <span class="p">[</span><span class="s2">"Weeks 1-2"</span><span class="p">,</span><span class="s2">"Almost nobody replies"</span><span class="p">,</span><span class="s2">"Expect a handful. This is normal and it is not a failure of the idea. Read one aloud anyway."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Weeks 3-4"</span><span class="p">,</span><span class="s2">"The first real story arrives"</span><span class="p">,</span><span class="s2">"Usually from someone nobody expected. Use it. That single use produces the next twenty replies."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Weeks 5-8"</span><span class="p">,</span><span class="s2">"People start writing before they are asked"</span><span class="p">,</span><span class="s2">"The congregation works out that somebody is actually reading, and the volume changes."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Months 3-6"</span><span class="p">,</span><span class="s2">"The library becomes usable"</span><span class="p">,</span><span class="s2">"Enough tagged stories that the pastor stops hunting and starts choosing."</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"Year 2"</span><span class="p">,</span><span class="s2">"The culture is self-sustaining"</span><span class="p">,</span><span class="s2">"People arrive at church expecting to be asked what happened, which is a different congregation than the one you started with."</span><span class="p">],</span>
+ <span class="p">],</span>
+ <span class="s2">"warning"</span><span class="p">:(</span><span class="s2">"The single failure mode is nobody reading the replies. If a person writes something real and hears "</span>
+  <span class="s2">"nothing back, they will not write again and they will tell their group. Reading the inbox is not optional, "</span>
+  <span class="s2">"and it should be assigned to a named person with fifteen minutes a week rather than to whoever gets to it."</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/six_day.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

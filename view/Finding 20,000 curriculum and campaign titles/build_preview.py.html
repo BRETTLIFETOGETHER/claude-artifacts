@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_preview.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_preview.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">28 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_preview.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the clickable sermon preview with drill-down, jumpstart, friends day, church at home, journal spec, and invitations</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">preview_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">SERMONS</span><span class="p">,</span> <span class="n">JUMPSTART</span><span class="p">,</span> <span class="n">JOHN10</span><span class="p">,</span> <span class="n">FRIENDS_DAY</span><span class="p">,</span> <span class="n">FRIENDS_MOTIVATE</span>
+
+<span class="n">DATA</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"sermons"</span><span class="p">:</span><span class="n">SERMONS</span><span class="p">,</span> <span class="s2">"jump"</span><span class="p">:</span><span class="n">JUMPSTART</span><span class="p">,</span> <span class="s2">"john"</span><span class="p">:</span><span class="n">JOHN10</span><span class="p">,</span>
+        <span class="s2">"fday"</span><span class="p">:</span><span class="n">FRIENDS_DAY</span><span class="p">,</span> <span class="s2">"fmot"</span><span class="p">:</span><span class="n">FRIENDS_MOTIVATE</span><span class="p">}</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--navy:#101a33;--navy-2:#16213d;--navy-3:#1c2a4a;--gold:#b8934e;</span>
+<span class="s2">--gold-lt:#d9bc82;--cream:#f7f3ea;--rule:rgba(184,147,78,.28)}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--navy);color:var(--cream);</span>
+<span class="s2">font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.65;</span>
+<span class="s2">-webkit-text-size-adjust:100%}</span>
+<span class="s2">.wrap{max-width:860px;margin:0 auto;padding:0 22px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:600;line-height:1.15;margin:0}</span>
+<span class="s2">.label{font-family:'Lato',system-ui,sans-serif;font-size:11px;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);font-weight:700}</span>
+<span class="s2">.cover{padding:58px 0 42px;text-align:center;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.cover .label{display:block;margin-bottom:18px}</span>
+<span class="s2">.cover h1{font-size:44px}</span>
+<span class="s2">.cover h1 em{display:block;font-style:italic;font-size:23px;color:var(--gold-lt);margin-top:10px;font-weight:400}</span>
+<span class="s2">.cover .dek{font-size:19px;color:#e6dfd0;margin:18px auto 0;max-width:600px}</span>
+<span class="s2">.tabs{position:sticky;top:0;z-index:30;background:var(--navy-3);</span>
+<span class="s2">border-bottom:1px solid var(--rule);overflow-x:auto;-webkit-overflow-scrolling:touch}</span>
+<span class="s2">.tabs .inner{display:flex;max-width:860px;margin:0 auto;padding:0 12px}</span>
+<span class="s2">.tab{flex:0 0 auto;background:none;border:0;color:#b9b0a0;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:16px 14px;cursor:pointer;</span>
+<span class="s2">border-bottom:2px solid transparent;white-space:nowrap;font-weight:700}</span>
+<span class="s2">.tab.on{color:var(--gold-lt);border-bottom-color:var(--gold)}</span>
+<span class="s2">#view{padding:32px 0 70px}</span>
+<span class="s2">.lead{color:#e6dfd0;margin:0 0 22px;font-size:19px}</span>
+<span class="s2">.grid{border-top:1px solid var(--rule)}</span>
+<span class="s2">.item{display:flex;gap:14px;align-items:baseline;padding:16px 2px;</span>
+<span class="s2">border-bottom:1px solid rgba(184,147,78,.14);cursor:pointer}</span>
+<span class="s2">.item:hover .iname{color:var(--gold-lt)}</span>
+<span class="s2">.item .icat{font-family:'Lato',sans-serif;font-size:9px;letter-spacing:.16em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);min-width:96px;flex-shrink:0;padding-top:6px}</span>
+<span class="s2">.item .ibody</span><span class="si">{flex:1}</span>
+<span class="s2">.item .iname{font-family:'Playfair Display',serif;font-size:22px;line-height:1.25}</span>
+<span class="s2">.item .isub{color:#a9a094;font-size:17px;margin-top:3px;line-height:1.4}</span>
+<span class="s2">.item .arrow{color:var(--gold);font-size:20px;flex-shrink:0}</span>
+<span class="s2">.back{background:none;border:1px solid var(--rule);color:var(--gold-lt);</span>
+<span class="s2">font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;</span>
+<span class="s2">padding:9px 16px;cursor:pointer;margin-bottom:22px;font-weight:700}</span>
+<span class="s2">.dh .dc{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.2em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);margin-bottom:6px}</span>
+<span class="s2">.dh h2{font-size:33px}</span>
+<span class="s2">.dh .df{font-style:italic;color:#c8c0b2;font-size:19px;margin-top:7px}</span>
+<span class="s2">.meta{margin-top:20px;border-top:1px solid rgba(184,147,78,.18);</span>
+<span class="s2">border-bottom:1px solid rgba(184,147,78,.18);padding:14px 0}</span>
+<span class="s2">.row{display:flex;gap:14px;padding:6px 0;align-items:baseline}</span>
+<span class="s2">.row .k{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);min-width:78px;flex-shrink:0}</span>
+<span class="s2">.row .v{flex:1;color:#efe9dc}</span>
+<span class="s2">.row .v.idea{font-family:'Playfair Display',serif;font-size:20px;line-height:1.35;</span>
+<span class="s2">color:var(--gold-lt);font-style:italic}</span>
+<span class="s2">.sec{margin-top:30px}</span>
+<span class="s2">.sec .sh{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--rule);</span>
+<span class="s2">padding-bottom:9px;margin-bottom:6px;font-weight:700}</span>
+<span class="s2">.mov{display:flex;gap:13px;padding:10px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.mov .mn{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);min-width:22px;flex-shrink:0}</span>
+<span class="s2">.mov .mt{flex:1;color:#e6dfd0;font-size:18px}</span>
+<span class="s2">.day{display:flex;gap:13px;padding:12px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.day .dn{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.14em;color:var(--gold);</span>
+<span class="s2">min-width:52px;flex-shrink:0;padding-top:5px}</span>
+<span class="s2">.day .dt{font-family:'Playfair Display',serif;font-size:19px}</span>
+<span class="s2">.day .ds{color:#b6ac9d;font-size:17px;margin-top:2px;line-height:1.4}</span>
+<span class="s2">.xp{padding:12px 0;border-bottom:1px solid rgba(184,147,78,.12);color:#ded6c6;font-size:18px}</span>
+<span class="s2">.xp b{color:var(--gold-lt);font-weight:600}</span>
+<span class="s2">.ships{margin-top:32px;border:2px solid var(--gold);background:var(--navy-2)}</span>
+<span class="s2">.ships .sht{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold-lt);</span>
+<span class="s2">padding:20px 22px 6px}</span>
+<span class="s2">.ships .shs{padding:0 22px 16px;color:#c3bbad;font-size:17px}</span>
+<span class="s2">.ships .tier{border-top:1px solid var(--rule);padding:16px 22px}</span>
+<span class="s2">.ships .tn{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.18em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px}</span>
+<span class="s2">.ships ul{margin:0;padding-left:18px;color:#ded6c6}</span>
+<span class="s2">.ships li{margin-bottom:6px;font-size:17px}</span>
+<span class="s2">.card{border:1px solid var(--rule);background:var(--navy-2);padding:22px;margin-top:22px}</span>
+<span class="s2">.card h3{font-size:23px;color:var(--gold-lt)}</span>
+<span class="s2">.card p{margin-top:10px;color:#ded6c6;font-size:18px}</span>
+<span class="s2">.card ul,.card ol{margin:14px 0 0;padding-left:20px;color:#ded6c6}</span>
+<span class="s2">.card li{margin-bottom:8px;font-size:18px}</span>
+<span class="s2">.tbl{margin-top:16px;border-top:1px solid var(--rule)}</span>
+<span class="s2">.trow{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(184,147,78,.13)}</span>
+<span class="s2">.trow .tk{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.1em;</span>
+<span class="s2">color:var(--gold-lt);min-width:132px;flex-shrink:0;padding-top:3px}</span>
+<span class="s2">.trow .tv{flex:1;color:#ded6c6;font-size:17px}</span>
+<span class="s2">.quote{border-left:2px solid var(--gold);padding:10px 0 10px 18px;margin-top:16px;</span>
+<span class="s2">color:#e9e2d4;font-style:italic;font-size:18px}</span>
+<span class="s2">.flag{margin-top:20px;background:var(--navy-3);border-left:2px solid var(--gold);padding:14px 18px;</span>
+<span class="s2">color:#c3bbad;font-size:17px}</span>
+<span class="s2">footer{padding:34px 0 56px;text-align:center;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8d8579;border-top:1px solid var(--rule)}</span>
+<span class="s2">@media(max-width:620px){</span>
+<span class="s2">body{font-size:18px}.cover h1{font-size:30px}.cover h1 em{font-size:19px}</span>
+<span class="s2">.dh h2{font-size:26px}.item .iname{font-size:20px}</span>
+<span class="s2">.item{flex-wrap:wrap}.item .icat{min-width:0;width:100%;padding-top:0;margin-bottom:3px}</span>
+<span class="s2">.row{flex-direction:column;gap:2px}.row .k{min-width:0}</span>
+<span class="s2">.trow{flex-direction:column;gap:3px}.trow .tk{min-width:0}</span>
+<span class="s2">.day{flex-direction:column;gap:2px}.day .dn{min-width:0}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="n">JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">var D = window.__PV__;</span>
+<span class="s2">var state = {tab:'browse', item:null};</span>
+
+<span class="s2">function listSermons(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Six messages, fully built. Tap any one to see the outline, the seven devotional day titles underneath it, and exactly what ships in the kit.&lt;/p&gt;&lt;div class="grid"&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; D.sermons.length; i++){</span>
+<span class="s2">    var s = D.sermons[i];</span>
+<span class="s2">    h += '&lt;div class="item" data-i="' + i + '"&gt;&lt;span class="icat"&gt;' + s.cat + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="ibody"&gt;&lt;span class="iname"&gt;' + s.t + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="isub"&gt;' + s.s + '&lt;/span&gt;&lt;/span&gt;&lt;span class="arrow"&gt;&amp;rsaquo;&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function shipsBlock(exp){</span>
+<span class="s2">  var h = '&lt;div class="ships"&gt;&lt;div class="sht"&gt;What ships with this message&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="shs"&gt;Twenty-five components in five tiers, plus the experiential ideas written for this message specifically.&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The message&lt;/div&gt;&lt;ul&gt;&lt;li&gt;Full outline &amp;mdash; text, big idea, movements, the turn, the close&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Landing lines written out: opening, transitions, and the last sentence&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Three to five illustration slots, plus the excavation prompts that surface your own&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Cross-purpose Scripture &amp;mdash; four passages that illustrate the same idea&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Deeper study: exegetical notes and the commentary you did not have time for&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The experience &amp;mdash; written for this message&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; exp.length; i++){ h += '&lt;li&gt;' + exp[i] + '&lt;/li&gt;'; }</span>
+<span class="s2">  h += '&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The service&lt;/div&gt;&lt;ul&gt;&lt;li&gt;Run sheet &amp;mdash; minute by minute, with timings and handoffs&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;PowerPoint and Keynote decks, plus title and lower-third graphics&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Cold open script, sixty seconds&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Worship set suggestions keyed to the big idea, in singable keys&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Prayer guide for the service and for the household&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The response&lt;/div&gt;&lt;ul&gt;&lt;li&gt;Bulletin insert, print-ready&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Commitment card, signed and collected in the room&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Invitation card and the three invite scripts &amp;mdash; text, in person, and social&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Follow-up sequence: four texts or emails across the week&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;What to count &amp;mdash; the two or three numbers that tell you it worked&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The week&lt;/div&gt;&lt;ul&gt;&lt;li&gt;Seven-day devotional, print and digital&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Seven iPhone video scripts &amp;mdash; the same content, shot in under an hour&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Printable participant journal, ready for a local printer&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Small group session with next steps for the person, the family, and the group&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Kids and student versions of the same big idea&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function sermonDetail(i){</span>
+<span class="s2">  var s = D.sermons[i];</span>
+<span class="s2">  var h = '&lt;button class="back" id="bk"&gt;&amp;larr; All messages&lt;/button&gt;';</span>
+<span class="s2">  h += '&lt;div class="dh"&gt;&lt;div class="dc"&gt;' + s.cat + '&lt;/div&gt;&lt;h2&gt;' + s.t + '&lt;/h2&gt;';</span>
+<span class="s2">  h += '&lt;p class="df"&gt;' + s.s + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="meta"&gt;&lt;div class="row"&gt;&lt;div class="k"&gt;Text&lt;/div&gt;&lt;div class="v"&gt;' + s.x + ' (NIV)&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="row"&gt;&lt;div class="k"&gt;Big idea&lt;/div&gt;&lt;div class="v idea"&gt;' + s.b + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;The outline&lt;/div&gt;';</span>
+<span class="s2">  for (var m = 0; m &lt; s.m.length; m++){</span>
+<span class="s2">    h += '&lt;div class="mov"&gt;&lt;div class="mn"&gt;' + (m + 1) + '&lt;/div&gt;&lt;div class="mt"&gt;' + s.m[m] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;Where the week goes &amp;mdash; the seven daily devotions&lt;/div&gt;';</span>
+<span class="s2">  for (var d = 0; d &lt; s.dev.length; d++){</span>
+<span class="s2">    h += '&lt;div class="day"&gt;&lt;div class="dn"&gt;Day ' + (d + 1) + '&lt;/div&gt;&lt;div&gt;';</span>
+<span class="s2">    h += '&lt;div class="dt"&gt;' + s.dev[d][0] + '&lt;/div&gt;&lt;div class="ds"&gt;' + s.dev[d][1] + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  h += shipsBlock(s.exp);</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function jumpView(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Ten weekdays. Monday through Friday, twice, with the weekends left alone &amp;mdash; because Sunday is the gathering and Saturday belongs to the family. A person who has never finished a devotional finishes this one.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Why ten weekdays beats fourteen days&lt;/h3&gt;&lt;p&gt;Every daily plan dies on the weekend. Saturday scatters people and Sunday already has a spiritual obligation attached to it, so a plan that requires seven consecutive days is really asking for two acts of obedience it never named. Ten weekdays asks for the commute, the lunch break, or the ten minutes before the house wakes up &amp;mdash; the slots that already exist.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;p&gt;The format also gives a church a clean two-week runway between a launch Sunday and a Celebration Sunday, which is exactly the interval where momentum is still live.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The flagship: Ten Days Through John&lt;/h3&gt;&lt;p&gt;The Gospel of John in ten weekday readings, built around the I Am statements and the two bookend invitations. Written so a person who has never opened a Bible can start on a Monday and finish knowing why the book was written.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tbl"&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; D.john.length; i++){</span>
+<span class="s2">    var j = D.john[i];</span>
+<span class="s2">    h += '&lt;div class="trow"&gt;&lt;div class="tk"&gt;Day ' + j[0] + ' &amp;middot; ' + j[2] + '&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="tv"&gt;&lt;strong&gt;' + j[1] + '&lt;/strong&gt;&lt;br&gt;' + j[3] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;Twenty jumpstart editions&lt;/div&gt;';</span>
+<span class="s2">  for (var k = 0; k &lt; D.jump.length; k++){</span>
+<span class="s2">    h += '&lt;div class="day"&gt;&lt;div class="dn"&gt;' + (k &lt; 9 ? '0' : '') + (k + 1) + '&lt;/div&gt;&lt;div&gt;';</span>
+<span class="s2">    h += '&lt;div class="dt"&gt;' + D.jump[k][0] + '&lt;/div&gt;&lt;div class="ds"&gt;' + D.jump[k][1] + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function friendsView(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Friends Day is two categories, not one. There are the messages you preach &lt;em&gt;on&lt;/em&gt; the day, written for the guest &amp;mdash; and the messages you preach in the three weeks before it, written to move a congregation to actually ask someone. Most churches build the first and skip the second, then wonder why the room looks the same.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The three-week runway&lt;/h3&gt;&lt;ol&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Three weeks out.&lt;/strong&gt; Map the circles. The 5F insert goes in every bulletin and people write names during the service, not after.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Two weeks out.&lt;/strong&gt; Pray for the name. One person, every morning, and say so from the platform each week.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;One week out.&lt;/strong&gt; Make the ask. Invite cards handed out, texts sent during the service, phones out on purpose.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Friends Day.&lt;/strong&gt; The guest-facing message. Nothing assumed, nothing insider, and a next step that is coffee rather than an aisle.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;/ol&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The 5F bulletin insert&lt;/h3&gt;&lt;p&gt;A half-sheet with five boxes, one per circle, and room for two names in each. People fill it in during the service while the pastor waits. Ten names on paper beats a sincere intention every time.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="tbl"&gt;';</span>
+<span class="s2">  var circles = [["Circle one","The household &amp;mdash; who lives under your roof or shares your table"],</span>
+<span class="s2">    ["Circle two","Friends &amp;mdash; the people you would call on a Saturday"],</span>
+<span class="s2">    ["Circle three","Work &amp;mdash; the person two desks over you have never invited to anything"],</span>
+<span class="s2">    ["Circle four","Recreation &amp;mdash; the gym, the team, the hobby, the group chat"],</span>
+<span class="s2">    ["Circle five","Where you live &amp;mdash; the neighbors whose names you do or do not know"]];</span>
+<span class="s2">  for (var c = 0; c &lt; circles.length; c++){</span>
+<span class="s2">    h += '&lt;div class="trow"&gt;&lt;div class="tk"&gt;' + circles[c][0] + '&lt;/div&gt;&lt;div class="tv"&gt;' + circles[c][1] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="flag"&gt;The five headings above are functional placeholders. Drop your own five F words in over them &amp;mdash; I have not been given your master version and would rather leave the slot labelled than guess at it.&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;On the day &amp;mdash; twenty guest-facing messages&lt;/div&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; D.fday.length; i++){</span>
+<span class="s2">    h += '&lt;div class="day"&gt;&lt;div class="dn"&gt;' + (i &lt; 9 ? '0' : '') + (i + 1) + '&lt;/div&gt;&lt;div&gt;';</span>
+<span class="s2">    h += '&lt;div class="dt"&gt;' + D.fday[i][0] + '&lt;/div&gt;&lt;div class="ds"&gt;' + D.fday[i][1] + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;&lt;div class="sec"&gt;&lt;div class="sh"&gt;Before the day &amp;mdash; twenty messages that motivate the ask&lt;/div&gt;';</span>
+<span class="s2">  for (var m = 0; m &lt; D.fmot.length; m++){</span>
+<span class="s2">    h += '&lt;div class="day"&gt;&lt;div class="dn"&gt;' + (m &lt; 9 ? '0' : '') + (m + 1) + '&lt;/div&gt;&lt;div&gt;';</span>
+<span class="s2">    h += '&lt;div class="dt"&gt;' + D.fmot[m][0] + '&lt;/div&gt;&lt;div class="ds"&gt;' + D.fmot[m][1] + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function homeView(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Not a livestream. A Sunday where the building stays closed on purpose, every household hosts, and the people who would never walk into a sanctuary walk into a living room instead.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Why the building closes&lt;/h3&gt;&lt;p&gt;A streamed service asks a family to sit in rows on a couch. Church at Home asks them to do something a sanctuary cannot: eat together, talk, pray for each other by name, and invite two people who were never going to come to a building. The strategic point is the guest list, not the convenience.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;p&gt;Run it once a year. Announce it six weeks out, because the invitations are the whole work.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The home service order &amp;mdash; about seventy minutes&lt;/h3&gt;&lt;div class="tbl"&gt;';</span>
+<span class="s2">  var order = [</span>
+<span class="s2">   ["Before, all week","Deliver the invitations by hand. Set the table the night before so Sunday morning is not a scramble."],</span>
+<span class="s2">   ["Gather &amp;mdash; 10 min","Everyone arrives, nobody sits in rows. Host says one sentence about why they wanted these particular people here."],</span>
+<span class="s2">   ["Sing &amp;mdash; 5 min","One song, played from a phone or sung badly by everyone. Badly is fine. Badly is better."],</span>
+<span class="s2">   ["Read &amp;mdash; 3 min","The youngest person who can read reads the passage aloud. Then someone reads it again."],</span>
+<span class="s2">   ["Teach &amp;mdash; 12 min","The pastor's video message, or the read-aloud script for households that would rather not use a screen."],</span>
+<span class="s2">   ["Talk &amp;mdash; 20 min","Three questions, supplied. The host asks and then does not answer first."],</span>
+<span class="s2">   ["Eat &amp;mdash; 20 min","The meal is not after the service. It is the service. Do not rush this part."],</span>
+<span class="s2">   ["Pray &amp;mdash; 8 min","Around the table, each person by name, out loud. Guests are prayed for too, and told in advance so nobody is ambushed."],</span>
+<span class="s2">   ["Bless &amp;mdash; 2 min","The host speaks a supplied blessing over the room and over the guests specifically."],</span>
+<span class="s2">   ["After","One photo sent back to the church. The wall of photos the following Sunday is the whole payoff."]];</span>
+<span class="s2">  for (var i = 0; i &lt; order.length; i++){</span>
+<span class="s2">    h += '&lt;div class="trow"&gt;&lt;div class="tk"&gt;' + order[i][0] + '&lt;/div&gt;&lt;div class="tv"&gt;' + order[i][1] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;What the church supplies&lt;/h3&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Printed invitations, four per household, delivered two Sundays before&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;The host guide &amp;mdash; the order above, on one folded card&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;The teaching video, twelve minutes, plus a read-aloud script&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Three discussion questions and one blessing, printed large enough to read across a table&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;A table card with the passage and one question for the meal itself&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;A song list with a QR code, three songs, nothing that needs a band&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;A follow-up text to every host the next morning asking one question: who came?&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function journalView(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Every challenge should end with something a person can hold. A journal turns seven days of reading into an object that sits on a nightstand and gets finished, and it is the cheapest print piece a church will ever produce.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The page math&lt;/h3&gt;&lt;p&gt;Saddle-stitch booklets print in multiples of four. Design to the multiple or pay for blank pages.&lt;/p&gt;&lt;div class="tbl"&gt;';</span>
+<span class="s2">  var math = [["7-day journal","20 pages &amp;mdash; 4 front matter, 14 daily (two per day), 2 back"],</span>
+<span class="s2">   ["10-day jumpstart","28 pages &amp;mdash; 4 front matter, 20 daily, 4 notes, plus back cover"],</span>
+<span class="s2">   ["21-day challenge","52 pages &amp;mdash; 6 front matter, 42 daily, 4 notes or tracker"],</span>
+<span class="s2">   ["Trim size","5.5 x 8.5 inches, half of a letter sheet. Fits a bag, a glovebox, and a Bible."],</span>
+<span class="s2">   ["Pocket alternative","4 x 6 inches for the 7-day. Cheaper, and people actually carry it."],</span>
+<span class="s2">   ["Paper","70lb uncoated text. People are writing in it, so coated stock is a mistake."]];</span>
+<span class="s2">  for (var i = 0; i &lt; math.length; i++){</span>
+<span class="s2">    h += '&lt;div class="trow"&gt;&lt;div class="tk"&gt;' + math[i][0] + '&lt;/div&gt;&lt;div class="tv"&gt;' + math[i][1] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;What goes on a daily spread&lt;/h3&gt;&lt;ol&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Left page.&lt;/strong&gt; Day number, title, the passage printed in full, and the reading. Roughly a hundred and fifty words &amp;mdash; short enough to finish standing up.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Right page.&lt;/strong&gt; One reflection question with six ruled lines under it, then the day</span><span class="se">\\</span><span class="s2">'s action in a box, then a checkbox. The checkbox matters more than it looks like it should.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Never&lt;/strong&gt; put two days on one spread. The finish line has to be visible from the start of each day.&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Front and back matter&lt;/h3&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Page 1.&lt;/strong&gt; How to use this, in under a hundred words.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Page 2.&lt;/strong&gt; The commitment page &amp;mdash; name, date, and the name of one person who will ask about it. Signed in the service.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Page 3.&lt;/strong&gt; A calendar grid with the days to check off, so progress is visible without flipping.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Back, minus two.&lt;/strong&gt; Two blank notes pages. People use them and it makes the book feel like theirs.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Back page.&lt;/strong&gt; The next step. Group signup, the QR code, the date of the Celebration Sunday. Never leave this blank.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;How to actually print it&lt;/h3&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;In house.&lt;/strong&gt; Under two hundred copies, print double-sided on a decent copier, fold and staple with a long-reach stapler. It looks homemade because it is, and nobody minds.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Local printer.&lt;/strong&gt; Two hundred to two thousand. Ask for saddle-stitch, 70lb text, 100lb cover. Get quotes at 250, 500 and 1000 &amp;mdash; the per-unit price falls off a cliff somewhere in there and it is different at every shop.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Print on demand.&lt;/strong&gt; Above two thousand, or when other churches want to buy it from you. This is also the point at which the journal stops being a cost and starts being a product.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Digital.&lt;/strong&gt; Always ship a fillable PDF alongside the print run. It costs nothing and it catches the people who lost the physical one by Wednesday.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="quote"&gt;The journal is the artifact that outlives the series. Six months later nobody remembers the sermon title, and the booklet is still in the drawer with handwriting in it.&lt;/div&gt;';</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function inviteView(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Every next-step Sunday needs an invitation, and most churches supply a graphic and hope. An invitation is three things: a physical card, a script for the person doing the asking, and a specific thing to invite someone to.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The one rule&lt;/h3&gt;&lt;p&gt;Do not invite someone to church. Invite them to &lt;em&gt;this&lt;/em&gt; &amp;mdash; a named message, on a named date, about a named thing they are actually dealing with. "Come to my church sometime" is not an invitation. "There is a message on anxiety on the fifteenth and I thought of you" is.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The card&lt;/h3&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Business-card size or half-sheet. Anything larger gets folded, forgotten, and left in a car.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Front: the message title, the date, the time. Nothing else. No mission statement.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Back: address, what to expect in one line, and where to park. Parking is the single most common reason a first-time guest turns around.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;A blank line for a handwritten name. Handwriting is what converts a flyer into an invitation.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Printed in the hundreds and handed out during the service, not stacked on a table in the lobby.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Three scripts&lt;/h3&gt;&lt;div class="tbl"&gt;';</span>
+<span class="s2">  var scripts = [</span>
+<span class="s2">   ["The text","Hey &amp;mdash; there is a message at my church on the fifteenth about [the thing]. I thought of you when I heard about it. Want to come with me? I will save you a seat and we can get coffee after."],</span>
+<span class="s2">   ["In person","Can I ask you something? There is a thing at my church on the fifteenth and it is about [the thing]. No pressure at all, and I am not going to be weird about it. Would you come with me?"],</span>
+<span class="s2">   ["The follow-up","No worries at all &amp;mdash; the offer stands whenever. And if you ever want to talk about [the thing] without any of the church attached, I am around."]];</span>
+<span class="s2">  for (var i = 0; i &lt; scripts.length; i++){</span>
+<span class="s2">    h += '&lt;div class="trow"&gt;&lt;div class="tk"&gt;' + scripts[i][0] + '&lt;/div&gt;&lt;div class="tv"&gt;' + scripts[i][1] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="flag"&gt;Every script names a specific topic, offers to go together, and gives an exit. The offer to attend together is the variable that moves acceptance most, and it is the one most churches leave off the card.&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;Which Sundays get invitations&lt;/h3&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Friends Day and every series launch.&lt;/strong&gt; The whole point.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Church at Home.&lt;/strong&gt; Four per household, delivered by hand two Sundays out.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Baptism Sunday.&lt;/strong&gt; The person being baptized invites &amp;mdash; it is the highest-converting invitation a church has, and nobody has to be trained to make it.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Baby dedication and graduation.&lt;/strong&gt; The family is already inviting. Give them cards so they invite well.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Easter, Christmas Eve, Mother</span><span class="se">\\</span><span class="s2">'s Day.&lt;/strong&gt; Obvious, and still frequently missed.&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;&lt;strong&gt;Every ministry launch.&lt;/strong&gt; The invitation is to the ministry, not the service, and it goes to the person who needs it rather than the whole room.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function render(){</span>
+<span class="s2">  var v = document.getElementById('view'), h = '';</span>
+<span class="s2">  if (state.tab === 'browse'){</span>
+<span class="s2">    h = (state.item === null) ? listSermons() : sermonDetail(state.item);</span>
+<span class="s2">  } else if (state.tab === 'jump'){ h = jumpView(); }</span>
+<span class="s2">  else if (state.tab === 'friends'){ h = friendsView(); }</span>
+<span class="s2">  else if (state.tab === 'home'){ h = homeView(); }</span>
+<span class="s2">  else if (state.tab === 'journal'){ h = journalView(); }</span>
+<span class="s2">  else { h = inviteView(); }</span>
+<span class="s2">  v.innerHTML = '&lt;div class="wrap"&gt;' + h + '&lt;/div&gt;';</span>
+<span class="s2">  window.scrollTo(0, 0);</span>
+<span class="s2">  var items = v.querySelectorAll('.item');</span>
+<span class="s2">  for (var i = 0; i &lt; items.length; i++){</span>
+<span class="s2">    items[i].onclick = function(){ state.item = parseInt(this.getAttribute('data-i'), 10); render(); };</span>
+<span class="s2">  }</span>
+<span class="s2">  var bk = document.getElementById('bk');</span>
+<span class="s2">  if (bk){ bk.onclick = function(){ state.item = null; render(); }; }</span>
+<span class="s2">}</span>
+
+<span class="s2">var tabs = document.querySelectorAll('.tab');</span>
+<span class="s2">for (var t = 0; t &lt; tabs.length; t++){</span>
+<span class="s2">  tabs[t].onclick = function(){</span>
+<span class="s2">    for (var k = 0; k &lt; tabs.length; k++){ tabs[k].classList.remove('on'); }</span>
+<span class="s2">    this.classList.add('on');</span>
+<span class="s2">    state.tab = this.getAttribute('data-t');</span>
+<span class="s2">    state.item = null;</span>
+<span class="s2">    render();</span>
+<span class="s2">  };</span>
+<span class="s2">}</span>
+<span class="s2">render();</span>
+<span class="s2">"""</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;title&gt;Catalytic Sundays &amp;mdash; The Clickable Preview | LifeTogether&lt;/title&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;style&gt;'</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s1">'&lt;/style&gt;&lt;/head&gt;&lt;body&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap cover"&gt;&lt;span class="label"&gt;LifeTogether &amp;middot; Clickable Preview&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h1&gt;See Where It Goes&lt;em&gt;One Sunday, opened all the way up&lt;/em&gt;&lt;/h1&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="dek"&gt;Tap a message. See the outline, the seven daily devotions underneath it, and exactly what arrives when a church orders one.&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="tabs"&gt;&lt;div class="inner"&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">lbl</span><span class="p">,</span> <span class="n">on</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"browse"</span><span class="p">,</span><span class="s2">"Browse Messages"</span><span class="p">,</span><span class="kc">True</span><span class="p">),(</span><span class="s2">"jump"</span><span class="p">,</span><span class="s2">"10-Day Jumpstart"</span><span class="p">,</span><span class="kc">False</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">"friends"</span><span class="p">,</span><span class="s2">"Friends Day"</span><span class="p">,</span><span class="kc">False</span><span class="p">),(</span><span class="s2">"home"</span><span class="p">,</span><span class="s2">"Church at Home"</span><span class="p">,</span><span class="kc">False</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">"journal"</span><span class="p">,</span><span class="s2">"The Journal"</span><span class="p">,</span><span class="kc">False</span><span class="p">),(</span><span class="s2">"invite"</span><span class="p">,</span><span class="s2">"Invitations"</span><span class="p">,</span><span class="kc">False</span><span class="p">)]:</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;button class="tab'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">' on'</span> <span class="k">if</span> <span class="n">on</span> <span class="k">else</span> <span class="s1">''</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'" data-t="'</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">'"&gt;'</span> <span class="o">+</span> <span class="n">lbl</span> <span class="o">+</span> <span class="s1">'&lt;/button&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;&lt;div id="view"&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; Catalytic Sundays &amp;middot; The Clickable Preview&lt;/div&gt;&lt;/footer&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;script&gt;window.__PV__ = '</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">DATA</span><span class="p">)</span> <span class="o">+</span> <span class="s1">';&lt;/script&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;script&gt;'</span> <span class="o">+</span> <span class="n">JS</span> <span class="o">+</span> <span class="s1">'&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;'</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/catalytic-sundays-preview.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sermons:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">SERMONS</span><span class="p">),</span> <span class="s2">"jumpstart:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">JUMPSTART</span><span class="p">),</span> <span class="s2">"john days:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">JOHN10</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"friends day:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">FRIENDS_DAY</span><span class="p">),</span> <span class="s2">"friends motivate:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">FRIENDS_MOTIVATE</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_preview.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

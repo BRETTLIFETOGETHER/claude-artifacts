@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_index.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Export all project chats as linked pages</div>
+<h1>build_index.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">14 KB</span>
+<a class="btn" href="../../artifacts/Export%20all%20project%20chats%20as%20linked%20pages/build_index.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build script for the fully linked master index with real page counts, search, and brand fonts</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""Build the LifeTogether Complete Archive master index with verified links."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pypdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">PdfReader</span>
+
+<span class="n">BUILD</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/archive_build"</span><span class="p">)</span>
+<span class="n">FONTS</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/fonts"</span><span class="p">)</span>
+
+<span class="c1"># ---- Curated catalog: every one of the 23 project PDFs, organized ----</span>
+<span class="n">CATALOG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Campaign Catalogs &amp; Libraries"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"40Day_Campaign_Title_Catalog___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"40 Day Campaign Title Catalog"</span><span class="p">,</span>
+         <span class="s2">"The master title catalog for the platform — campaign titles organized across categories and themes."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"The_Complete_Campaign_Catalog___Ten_Themes___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"The Complete Campaign Catalog — Ten Themes"</span><span class="p">,</span>
+         <span class="s2">"The full catalog organized around the ten foundational campaign themes."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Extended_Campaign_Library___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Extended Campaign Library"</span><span class="p">,</span>
+         <span class="s2">"Expansion of the core library with additional campaigns across the category set."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Seasonal_Campaign_Catalog___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Seasonal Campaign Catalog"</span><span class="p">,</span>
+         <span class="s2">"Calendar-anchored campaigns organized by church seasons and yearly rhythms."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"18_More_Campaigns___Lifetogether_Complete_Library.pdf"</span><span class="p">,</span> <span class="s2">"18 More Campaigns — Complete Library"</span><span class="p">,</span>
+         <span class="s2">"Eighteen additional campaigns extending the complete library."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Nine_More_Campaigns___Lifetogether_Platform_Library.pdf"</span><span class="p">,</span> <span class="s2">"Nine More Campaigns — Platform Library"</span><span class="p">,</span>
+         <span class="s2">"Nine additional campaigns added to the platform library."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Campaign_Packages.pdf"</span><span class="p">,</span> <span class="s2">"Lifetogether Campaign Packages"</span><span class="p">,</span>
+         <span class="s2">"Pre-configured campaign packages organized by ministry need and audience."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"The Seven Day Experience"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"The_Seven_Day_Experience___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"The Seven Day Experience"</span><span class="p">,</span>
+         <span class="s2">"The foundational seven-day on-ramp experience for churches and participants."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Nobody_Does_This_Alone___The_Seven_Day_Experience.pdf"</span><span class="p">,</span> <span class="s2">"Nobody Does This Alone"</span><span class="p">,</span>
+         <span class="s2">"The Seven Day Experience framed around community and small-group connection."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"The_Story_Engine___Lifetogether_Seven_Day_Experience.pdf"</span><span class="p">,</span> <span class="s2">"The Story Engine"</span><span class="p">,</span>
+         <span class="s2">"The story-driven architecture behind the Seven Day Experience."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Seven_Days_of_Prayer___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Seven Days of Prayer"</span><span class="p">,</span>
+         <span class="s2">"A prayer-focused seven-day devotional journey edition."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Sales &amp; Launch Playbooks"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Why_This_Changes_Everything___Lifetogether_Campaign_Platform.pdf"</span><span class="p">,</span> <span class="s2">"Why This Changes Everything"</span><span class="p">,</span>
+         <span class="s2">"The core value story for the campaign platform and why it transforms church launches."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Do_Not_Launch_Your_Next_Series_Cold___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Do Not Launch Your Next Series Cold"</span><span class="p">,</span>
+         <span class="s2">"The launch playbook: why every series needs a campaign runway, and how to build one."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Every_Objection__Every_Answer____Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Every Objection, Every Answer"</span><span class="p">,</span>
+         <span class="s2">"Complete objection-handling guide for pastor and church-leader conversations."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Each_One_Ask_One___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Each One Ask One"</span><span class="p">,</span>
+         <span class="s2">"The grassroots invitation strategy for growing campaign participation person by person."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Pastor Resources"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Lifetogether___For_Senior_Pastors.pdf"</span><span class="p">,</span> <span class="s2">"For Senior Pastors"</span><span class="p">,</span>
+         <span class="s2">"Positioning and resources built specifically for the senior pastor audience."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"The_First_100_Pastors_Webinar___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"The First 100 Pastors Webinar"</span><span class="p">,</span>
+         <span class="s2">"Webinar content and framing for the first one hundred pastor adopters."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Investor &amp; Partner Documents"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Kingdom_Investor_OnePager.pdf"</span><span class="p">,</span> <span class="s2">"Kingdom Investor One-Pager"</span><span class="p">,</span>
+         <span class="s2">"One-page investment opportunity for kingdom-minded investors."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Kingdom_Investor_OnePager_md.pdf"</span><span class="p">,</span> <span class="s2">"Kingdom Investor One-Pager (Edition 2)"</span><span class="p">,</span>
+         <span class="s2">"Companion edition of the Kingdom Investor one-pager."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Donor_Edition_OnePager_md.pdf"</span><span class="p">,</span> <span class="s2">"Donor Edition One-Pager"</span><span class="p">,</span>
+         <span class="s2">"Donor-facing one-pager with the impact story and giving pathway."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Gloo_Partnership_Proposal_md.pdf"</span><span class="p">,</span> <span class="s2">"Gloo Partnership Proposal"</span><span class="p">,</span>
+         <span class="s2">"Strategic partnership proposal for the Gloo platform."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Research &amp; Working Notes"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Chat_Search-40_Day_pastor_needs___emails_____pastor_advisor_.pdf"</span><span class="p">,</span> <span class="s2">"Pastor Needs, Emails &amp; Advisor Research"</span><span class="p">,</span>
+         <span class="s2">"Research capture on pastor needs, outreach emails, and the pastor–advisor channel."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Claude_Search_-_40-day_campaign_structure_options_.pdf"</span><span class="p">,</span> <span class="s2">"40-Day Campaign Structure Options"</span><span class="p">,</span>
+         <span class="s2">"Analysis of campaign structure options and format recommendations."</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="c1"># ---- Verify complete coverage: no file skipped, no phantom links ----</span>
+<span class="n">actual</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">BUILD</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.pdf"</span><span class="p">))</span>
+<span class="n">listed</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CATALOG</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span>
+<span class="n">missing_from_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">actual</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">listed</span><span class="p">]</span>
+<span class="n">phantom</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listed</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">actual</span><span class="p">]</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">missing_from_index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Files not in index: </span><span class="si">{</span><span class="n">missing_from_index</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">phantom</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Index links to missing files: </span><span class="si">{</span><span class="n">phantom</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coverage check passed: all </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span><span class="si">}</span><span class="s2"> PDFs indexed, zero phantom links"</span><span class="p">)</span>
+
+<span class="c1"># ---- Real metadata per file ----</span>
+<span class="n">meta</span><span class="p">,</span> <span class="n">total_pages</span> <span class="o">=</span> <span class="p">{},</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">actual</span><span class="p">:</span>
+    <span class="n">pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">PdfReader</span><span class="p">(</span><span class="n">BUILD</span> <span class="o">/</span> <span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">pages</span><span class="p">)</span>
+    <span class="n">mb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">BUILD</span> <span class="o">/</span> <span class="n">f</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
+    <span class="n">meta</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pages</span><span class="p">,</span> <span class="n">mb</span><span class="p">)</span>
+    <span class="n">total_pages</span> <span class="o">+=</span> <span class="n">pages</span>
+<span class="n">total_mb</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Metadata: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span><span class="si">}</span><span class="s2"> documents, </span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2"> pages, </span><span class="si">{</span><span class="n">total_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+
+<span class="c1"># ---- Embed brand fonts ----</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">b64font</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">FONTS</span> <span class="o">/</span> <span class="n">name</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+
+<span class="n">pf</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">ar</span> <span class="o">=</span> <span class="n">b64font</span><span class="p">(</span><span class="s2">"Playfair.ttf"</span><span class="p">),</span> <span class="n">b64font</span><span class="p">(</span><span class="s2">"Spectral.ttf"</span><span class="p">),</span> <span class="n">b64font</span><span class="p">(</span><span class="s2">"Archivo.ttf"</span><span class="p">)</span>
+<span class="n">font_css</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">if</span> <span class="n">pf</span><span class="p">:</span> <span class="n">font_css</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"@font-face</span><span class="se">{{</span><span class="s2">font-family:'Playfair Display';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">pf</span><span class="si">}</span><span class="s2">);font-weight:400 900;</span><span class="se">}}\n</span><span class="s2">"</span>
+<span class="k">if</span> <span class="n">sp</span><span class="p">:</span> <span class="n">font_css</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"@font-face</span><span class="se">{{</span><span class="s2">font-family:'Spectral';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">sp</span><span class="si">}</span><span class="s2">);font-weight:400;</span><span class="se">}}\n</span><span class="s2">"</span>
+<span class="k">if</span> <span class="n">ar</span><span class="p">:</span> <span class="n">font_css</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"@font-face</span><span class="se">{{</span><span class="s2">font-family:'Archivo';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">ar</span><span class="si">}</span><span class="s2">);font-weight:100 900;font-stretch:62.5% 125%;</span><span class="se">}}\n</span><span class="s2">"</span>
+
+<span class="c1"># ---- Build index.html ----</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">anchor</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^a-z0-9]+"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)</span>
+
+<span class="n">toc</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;a class="toc-link" href="#</span><span class="si">{</span><span class="n">anchor</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">cat</span><span class="si">}</span><span class="s1">&lt;span class="toc-count"&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/a&gt;'</span>
+    <span class="k">for</span> <span class="n">cat</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CATALOG</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">sections</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">cat</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CATALOG</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+        <span class="n">pages</span><span class="p">,</span> <span class="n">mb</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+        <span class="n">cards</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">        &lt;a class="card" href="</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">          &lt;div class="card-eyebrow"&gt;</span><span class="si">{</span><span class="n">cat</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">          &lt;h3&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&lt;/h3&gt;</span>
+<span class="s2">          &lt;p&gt;</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">          &lt;div class="card-meta"&gt;&lt;span class="chip"&gt;</span><span class="si">{</span><span class="n">pages</span><span class="si">}</span><span class="s2"> pages&lt;/span&gt;&lt;span class="chip"&gt;</span><span class="si">{</span><span class="n">mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB&lt;/span&gt;&lt;span class="open"&gt;Open PDF &amp;rarr;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;/a&gt;"""</span>
+    <span class="n">sections</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">    &lt;section class="section" id="</span><span class="si">{</span><span class="n">anchor</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">      &lt;div class="section-head"&gt;&lt;h2&gt;</span><span class="si">{</span><span class="n">cat</span><span class="si">}</span><span class="s2">&lt;/h2&gt;&lt;span class="rule"&gt;&lt;/span&gt;&lt;span class="count"&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="si">}</span><span class="s2"> documents&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="grid"&gt;</span><span class="si">{</span><span class="n">cards</span><span class="si">}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/section&gt;"""</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="UTF-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">&lt;title&gt;Lifetogether &amp;mdash; Complete Project Archive&lt;/title&gt;</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="si">{</span><span class="n">font_css</span><span class="si">}</span>
+<span class="s2">:root </span><span class="se">{{</span><span class="s2"> --navy:#101E38; --navy2:#1a2d4d; --cream:#FBF8F1; --gold:#B98D3E; --gold-lt:#D9B876; --ink:#2b2b2b; </span><span class="se">}}</span>
+<span class="s2">* </span><span class="se">{{</span><span class="s2"> margin:0; padding:0; box-sizing:border-box; </span><span class="se">}}</span>
+<span class="s2">body </span><span class="se">{{</span><span class="s2"> font-family:'Spectral', Georgia, serif; background:var(--cream); color:var(--ink); line-height:1.6; </span><span class="se">}}</span>
+<span class="s2">.header </span><span class="se">{{</span><span class="s2"> background:linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%); color:var(--cream); padding:64px 24px 48px; text-align:center; border-bottom:3px solid var(--gold); </span><span class="se">}}</span>
+<span class="s2">.header .eyebrow </span><span class="se">{{</span><span class="s2"> font-family:'Archivo', sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-lt); margin-bottom:14px; </span><span class="se">}}</span>
+<span class="s2">.header h1 </span><span class="se">{{</span><span class="s2"> font-family:'Playfair Display', Georgia, serif; font-size:44px; font-weight:700; letter-spacing:-0.5px; margin-bottom:12px; </span><span class="se">}}</span>
+<span class="s2">.header p </span><span class="se">{{</span><span class="s2"> max-width:640px; margin:0 auto 26px; opacity:.92; font-size:17px; </span><span class="se">}}</span>
+<span class="s2">.stats </span><span class="se">{{</span><span class="s2"> display:flex; gap:12px; justify-content:center; flex-wrap:wrap; </span><span class="se">}}</span>
+<span class="s2">.stat </span><span class="se">{{</span><span class="s2"> font-family:'Archivo', sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; border:1px solid rgba(217,184,118,.5); border-radius:999px; padding:8px 18px; color:var(--gold-lt); </span><span class="se">}}</span>
+<span class="s2">.container </span><span class="se">{{</span><span class="s2"> max-width:1180px; margin:0 auto; padding:36px 20px 20px; </span><span class="se">}}</span>
+<span class="s2">.searchbar </span><span class="se">{{</span><span class="s2"> position:sticky; top:0; z-index:5; background:var(--cream); padding:18px 0 14px; </span><span class="se">}}</span>
+<span class="s2">.searchbar input </span><span class="se">{{</span><span class="s2"> width:100%; font-family:'Spectral', Georgia, serif; font-size:17px; padding:14px 20px; border:1px solid #d8d2c4; border-left:4px solid var(--gold); border-radius:6px; background:#fff; color:var(--ink); outline:none; </span><span class="se">}}</span>
+<span class="s2">.searchbar input:focus </span><span class="se">{{</span><span class="s2"> border-color:var(--gold); box-shadow:0 2px 10px rgba(185,141,62,.18); </span><span class="se">}}</span>
+<span class="s2">.toc </span><span class="se">{{</span><span class="s2"> display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px; </span><span class="se">}}</span>
+<span class="s2">.toc-link </span><span class="se">{{</span><span class="s2"> font-family:'Archivo', sans-serif; font-size:13px; letter-spacing:.5px; text-decoration:none; color:var(--navy); background:#fff; border:1px solid #e2dccd; border-radius:999px; padding:8px 16px; transition:all .2s; </span><span class="se">}}</span>
+<span class="s2">.toc-link:hover </span><span class="se">{{</span><span class="s2"> border-color:var(--gold); color:var(--gold); </span><span class="se">}}</span>
+<span class="s2">.toc-count </span><span class="se">{{</span><span class="s2"> margin-left:8px; color:var(--gold); font-weight:600; </span><span class="se">}}</span>
+<span class="s2">.section </span><span class="se">{{</span><span class="s2"> margin:34px 0 6px; </span><span class="se">}}</span>
+<span class="s2">.section-head </span><span class="se">{{</span><span class="s2"> display:flex; align-items:baseline; gap:16px; margin-bottom:18px; </span><span class="se">}}</span>
+<span class="s2">.section-head h2 </span><span class="se">{{</span><span class="s2"> font-family:'Playfair Display', Georgia, serif; font-size:27px; color:var(--navy); white-space:nowrap; </span><span class="se">}}</span>
+<span class="s2">.section-head .rule </span><span class="se">{{</span><span class="s2"> flex:1; height:1px; background:linear-gradient(90deg, var(--gold), transparent); </span><span class="se">}}</span>
+<span class="s2">.section-head .count </span><span class="se">{{</span><span class="s2"> font-family:'Archivo', sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:#9a9384; white-space:nowrap; </span><span class="se">}}</span>
+<span class="s2">.grid </span><span class="se">{{</span><span class="s2"> display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:18px; </span><span class="se">}}</span>
+<span class="s2">.card </span><span class="se">{{</span><span class="s2"> display:flex; flex-direction:column; background:#fff; border-radius:8px; padding:22px 22px 18px; text-decoration:none; color:inherit; border-left:4px solid var(--gold); box-shadow:0 2px 8px rgba(16,30,56,.08); transition:transform .22s, box-shadow .22s; </span><span class="se">}}</span>
+<span class="s2">.card:hover </span><span class="se">{{</span><span class="s2"> transform:translateY(-4px); box-shadow:0 10px 22px rgba(16,30,56,.16); </span><span class="se">}}</span>
+<span class="s2">.card-eyebrow </span><span class="se">{{</span><span class="s2"> font-family:'Archivo', sans-serif; font-size:10.5px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; </span><span class="se">}}</span>
+<span class="s2">.card h3 </span><span class="se">{{</span><span class="s2"> font-family:'Playfair Display', Georgia, serif; font-size:19px; line-height:1.3; color:var(--navy); margin-bottom:8px; </span><span class="se">}}</span>
+<span class="s2">.card p </span><span class="se">{{</span><span class="s2"> font-size:14.5px; color:#5c5a54; flex:1; margin-bottom:14px; </span><span class="se">}}</span>
+<span class="s2">.card-meta </span><span class="se">{{</span><span class="s2"> display:flex; align-items:center; gap:8px; </span><span class="se">}}</span>
+<span class="s2">.chip </span><span class="se">{{</span><span class="s2"> font-family:'Archivo', sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; background:var(--cream); border:1px solid #e2dccd; border-radius:999px; padding:4px 10px; color:#7a7365; </span><span class="se">}}</span>
+<span class="s2">.open </span><span class="se">{{</span><span class="s2"> margin-left:auto; font-family:'Archivo', sans-serif; font-size:12.5px; letter-spacing:.5px; color:var(--navy); font-weight:600; </span><span class="se">}}</span>
+<span class="s2">.card:hover .open </span><span class="se">{{</span><span class="s2"> color:var(--gold); </span><span class="se">}}</span>
+<span class="s2">.companion </span><span class="se">{{</span><span class="s2"> margin:44px 0 10px; background:#fff; border:1px solid #e2dccd; border-left:4px solid var(--navy); border-radius:8px; padding:24px 26px; </span><span class="se">}}</span>
+<span class="s2">.companion h2 </span><span class="se">{{</span><span class="s2"> font-family:'Playfair Display', Georgia, serif; font-size:20px; color:var(--navy); margin-bottom:10px; </span><span class="se">}}</span>
+<span class="s2">.companion p </span><span class="se">{{</span><span class="s2"> font-size:14.5px; color:#5c5a54; </span><span class="se">}}</span>
+<span class="s2">.footer </span><span class="se">{{</span><span class="s2"> background:var(--navy); color:var(--cream); text-align:center; padding:34px 20px; margin-top:48px; border-top:3px solid var(--gold); </span><span class="se">}}</span>
+<span class="s2">.footer .fm </span><span class="se">{{</span><span class="s2"> font-family:'Playfair Display', Georgia, serif; font-size:19px; margin-bottom:6px; </span><span class="se">}}</span>
+<span class="s2">.footer p </span><span class="se">{{</span><span class="s2"> font-size:13.5px; opacity:.85; </span><span class="se">}}</span>
+<span class="s2">.hidden </span><span class="se">{{</span><span class="s2"> display:none !important; </span><span class="se">}}</span>
+<span class="s2">.noresults </span><span class="se">{{</span><span class="s2"> display:none; text-align:center; font-style:italic; color:#8a8375; padding:40px 0; </span><span class="se">}}</span>
+<span class="s2">@media (max-width:700px) </span><span class="se">{{</span><span class="s2"> .header h1 </span><span class="se">{{</span><span class="s2"> font-size:30px; </span><span class="se">}}</span><span class="s2"> .section-head h2 </span><span class="se">{{</span><span class="s2"> font-size:22px; white-space:normal; </span><span class="se">}}</span><span class="s2"> </span><span class="se">}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">&lt;div class="header"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Lifetogether &amp;middot; 40 Day Campaigns&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;Complete Project Archive&lt;/h1&gt;</span>
+<span class="s2">  &lt;p&gt;Every document in the project, in one linked library. Click any card to open the full PDF &amp;mdash; all files travel inside this archive.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="stats"&gt;&lt;span class="stat"&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span><span class="si">}</span><span class="s2"> Documents&lt;/span&gt;&lt;span class="stat"&gt;</span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2"> Pages&lt;/span&gt;&lt;span class="stat"&gt;</span><span class="si">{</span><span class="n">total_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB&lt;/span&gt;&lt;span class="stat"&gt;6 Collections&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="container"&gt;</span>
+<span class="s2">  &lt;div class="searchbar"&gt;&lt;input id="q" type="search" placeholder="Search the library &amp;mdash; title, topic, or keyword&amp;hellip;" aria-label="Search documents"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="toc"&gt;</span><span class="si">{</span><span class="n">toc</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">sections</span><span class="si">}</span>
+<span class="s2">  &lt;div class="noresults" id="noresults"&gt;No documents match that search.&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="companion"&gt;</span>
+<span class="s2">    &lt;h2&gt;Companion Deliverables From This Project&lt;/h2&gt;</span>
+<span class="s2">    &lt;p&gt;Delivered separately in their original working sessions and not stored in the project files: the full 40daycampaigns.com website build (37+ linked HTML pages &amp;mdash; &lt;em&gt;40daycampaigns_platform_10k.zip&lt;/em&gt;), the Spanish and Portuguese site editions, the twelve-page Family Legacy by Design site, and the 76-page &lt;em&gt;10,000 Campaigns &amp;mdash; Master Strategy, Part&amp;nbsp;1&lt;/em&gt; PDF. Add any of those files to the project and they can be folded into this archive.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="footer"&gt;</span>
+<span class="s2">  &lt;div class="fm"&gt;Lifetogether&lt;/div&gt;</span>
+<span class="s2">  &lt;p&gt;brett@lifetogether.com &amp;middot; 40daycampaigns.com&lt;/p&gt;</span>
+<span class="s2">  &lt;p style="margin-top:10px; opacity:.65;"&gt;Archive generated July 2026 &amp;middot; Every link verified against archive contents&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">(function() </span><span class="se">{{</span>
+<span class="s2">  var q = document.getElementById('q');</span>
+<span class="s2">  q.addEventListener('input', function() </span><span class="se">{{</span>
+<span class="s2">    var t = q.value.trim().toLowerCase(), any = false;</span>
+<span class="s2">    document.querySelectorAll('.card').forEach(function(c) </span><span class="se">{{</span>
+<span class="s2">      var hit = !t || c.textContent.toLowerCase().indexOf(t) !== -1;</span>
+<span class="s2">      c.classList.toggle('hidden', !hit);</span>
+<span class="s2">      if (hit) any = true;</span>
+<span class="s2">    </span><span class="se">}}</span><span class="s2">);</span>
+<span class="s2">    document.querySelectorAll('.section').forEach(function(s) </span><span class="se">{{</span>
+<span class="s2">      s.classList.toggle('hidden', s.querySelectorAll('.card:not(.hidden)').length === 0);</span>
+<span class="s2">    </span><span class="se">}}</span><span class="s2">);</span>
+<span class="s2">    document.getElementById('noresults').style.display = any ? 'none' : 'block';</span>
+<span class="s2">  </span><span class="se">}}</span><span class="s2">);</span>
+<span class="se">}}</span><span class="s2">)();</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">"""</span>
+
+<span class="p">(</span><span class="n">BUILD</span> <span class="o">/</span> <span class="s2">"index.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"index.html written: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> KB (fonts embedded: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">(</span><span class="n">pf</span><span class="p">,</span><span class="n">sp</span><span class="p">,</span><span class="n">ar</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">/3)"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_index.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

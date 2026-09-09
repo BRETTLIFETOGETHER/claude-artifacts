@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>make_combined.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Monster Advisor, family and Church Formation brochure design</div>
+<h1>make_combined.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">6 KB</span>
+<a class="btn" href="../../artifacts/Monster%20Advisor%2C%20family%20and%20Church%20Formation%20brochure%20design/make_combined.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build a single combined mobile HTML with in-page anchor navigation between all libraries</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">pickle</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"/home/claude/build/mobile"</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">components</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_css</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/build/mobile/_extracted_bodies.pkl"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">extracted</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"formation-system"</span><span class="p">,</span> <span class="s2">"The Church Formation System"</span><span class="p">,</span> <span class="s2">"19-page brochure"</span><span class="p">,</span> <span class="s2">"The complete story: from the problem, through the framework, masterclass, and crawl-walk-run model, to the three ways we help."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"overview"</span><span class="p">,</span> <span class="s2">"Executive Overview"</span><span class="p">,</span> <span class="s2">"8-page brochure"</span><span class="p">,</span> <span class="s2">"A concise leave-behind covering the challenge, the five-step process, and how we can help."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"flagship"</span><span class="p">,</span> <span class="s2">"Flagship Guidebook"</span><span class="p">,</span> <span class="s2">"23-page brochure"</span><span class="p">,</span> <span class="s2">"Every chapter, every diagram, every detail of the Church Formation System, from vision to next steps."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"intensive"</span><span class="p">,</span> <span class="s2">"Campaign Builder Intensive"</span><span class="p">,</span> <span class="s2">"15-page brochure"</span><span class="p">,</span> <span class="s2">"What happens if we work together — the six-week process, deliverables, and investment overview."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"purpose-library"</span><span class="p">,</span> <span class="s2">"Biblical Purpose Library"</span><span class="p">,</span> <span class="s2">"13-page brochure"</span><span class="p">,</span> <span class="s2">"Know God, Belong, Grow, Serve, Live Sent, and Multiply — the campaigns, classes, and daily journeys built on it."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"advisor-network"</span><span class="p">,</span> <span class="s2">"Christian Advisor Network"</span><span class="p">,</span> <span class="s2">"17-page brochure"</span><span class="p">,</span> <span class="s2">"A growth, client-engagement, family-legacy, and church-partnership platform for Christian financial advisors."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"master"</span><span class="p">,</span> <span class="s2">"MASTER Unified Guide"</span><span class="p">,</span> <span class="s2">"28-page brochure"</span><span class="p">,</span> <span class="s2">"The full system and all three ways to work together, combined into a single unified resource."</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># ---- Hub / table of contents section ----</span>
+<span class="n">toc_cards</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+    <span class="n">toc_cards</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;a class="lib-card" href="#</span><span class="si">{</span><span class="n">anchor</span><span class="si">}</span><span class="s1">"&gt;</span>
+<span class="s1">      &lt;div class="lib-title"&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;p class="lib-desc"&gt;</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">      &lt;div class="lib-foot"&gt;&lt;span class="lib-tag"&gt;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;span class="lib-arrow"&gt;&amp;darr;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/a&gt;'''</span>
+
+<span class="n">hub_section</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;section class="hub-hero"&gt;</span>
+<span class="s1">  &lt;div class="inner"&gt;</span>
+<span class="s1">    &lt;div class="hub-kicker"&gt;LIFETOGETHER&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="hub-title"&gt;The Church Formation System Library&lt;/h1&gt;</span>
+<span class="s1">    &lt;p class="hub-sub"&gt;Every guide, every brochure, in one single page &amp;mdash; built for</span>
+<span class="s1">    your iPhone. Tap any card to jump straight to it below.&lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;</span>
+<span class="s1">&lt;div class="lib-list"&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">toc_cards</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span>
+
+<span class="c1"># ---- Each library section, wrapped with a divider header + back-to-top link ----</span>
+<span class="n">body_parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">hub_section</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+    <span class="n">divider</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;section class="lib-divider" id="</span><span class="si">{</span><span class="n">anchor</span><span class="si">}</span><span class="s1">"&gt;</span>
+<span class="s1">  &lt;div class="inner"&gt;</span>
+<span class="s1">    &lt;div class="lib-divider-kicker"&gt;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="lib-divider-title"&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">&lt;/h1&gt;</span>
+<span class="s1">    &lt;a href="#top" class="back-to-top"&gt;&amp;uarr; Back to Library Index&lt;/a&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;</span>
+<span class="s1">'''</span>
+    <span class="n">body_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">divider</span><span class="p">)</span>
+    <span class="n">body_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extracted</span><span class="p">[</span><span class="n">anchor</span><span class="p">])</span>
+    <span class="n">body_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="section-end"&gt;&lt;a href="#top" class="back-to-top"&gt;&amp;uarr; Back to Library Index&lt;/a&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">full_body</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body_parts</span><span class="p">)</span>
+
+<span class="n">EXTRA_CSS</span> <span class="o">=</span> <span class="s1">'''</span>
+<span class="s1">#top{ position:relative; }</span>
+<span class="s1">.hub-hero{ background:var(--navy); background-image:linear-gradient(160deg,#16274A 0%,#0E1930 100%); }</span>
+<span class="s1">.hub-hero .inner{ padding:60px 24px 36px; }</span>
+<span class="s1">.hub-kicker{ font-family:'Archivo'; font-weight:600; font-size:11.5px; letter-spacing:0.22em; color:var(--gold-bright); margin-bottom:20px; }</span>
+<span class="s1">.hub-title{ font-family:'Playfair'; font-weight:700; font-size:29px; line-height:1.18; color:var(--white); margin-bottom:14px; }</span>
+<span class="s1">.hub-sub{ font-family:'Inter'; font-size:14.5px; line-height:1.6; color:rgba(251,248,241,0.85); max-width:420px; }</span>
+
+<span class="s1">.lib-list{ padding:8px 24px 40px; max-width:520px; margin:0 auto; background:var(--navy); background-image:linear-gradient(160deg,#16274A 0%,#0E1930 100%); }</span>
+<span class="s1">.lib-card{ display:block; border:1px solid rgba(217,184,118,0.3); border-radius:10px; padding:18px; margin-top:14px; text-decoration:none; color:inherit; background:rgba(255,255,255,0.03); }</span>
+<span class="s1">.lib-card:first-child{ margin-top:0; }</span>
+<span class="s1">.lib-title{ font-family:'Playfair'; font-weight:700; font-size:17px; color:#FBF8F1; margin-bottom:6px; }</span>
+<span class="s1">.lib-desc{ font-family:'Inter'; font-size:13px; line-height:1.5; color:rgba(251,248,241,0.75); margin-bottom:12px; }</span>
+<span class="s1">.lib-foot{ display:flex; justify-content:space-between; align-items:center; }</span>
+<span class="s1">.lib-tag{ font-family:'Archivo'; font-weight:600; font-size:10px; letter-spacing:0.06em; color:rgba(251,248,241,0.5); }</span>
+<span class="s1">.lib-arrow{ font-family:'Playfair'; font-weight:700; color:var(--gold-bright); font-size:16px; }</span>
+
+<span class="s1">.lib-divider{ background:var(--gold); background-image:linear-gradient(135deg,#C6A15B 0%,#9E7A32 100%); }</span>
+<span class="s1">.lib-divider .inner{ padding:36px 24px 22px; text-align:center; }</span>
+<span class="s1">.lib-divider-kicker{ font-family:'Archivo'; font-weight:700; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(16,30,56,0.65); margin-bottom:8px; }</span>
+<span class="s1">.lib-divider-title{ font-family:'Playfair'; font-weight:700; font-size:24px; color:var(--navy); margin-bottom:14px; }</span>
+<span class="s1">.back-to-top{ display:inline-block; font-family:'Archivo'; font-weight:600; font-size:11px; letter-spacing:0.06em; color:var(--navy); text-decoration:none; border-bottom:1px solid rgba(16,30,56,0.4); padding-bottom:2px; }</span>
+<span class="s1">.section-end{ text-align:center; padding:28px 24px 40px; background:var(--white); }</span>
+<span class="s1">.section-end .back-to-top{ color:var(--gold); border-bottom:1px solid var(--gold); }</span>
+<span class="s1">'''</span>
+
+<span class="n">css</span> <span class="o">=</span> <span class="n">build_css</span><span class="p">()</span> <span class="o">+</span> <span class="n">EXTRA_CSS</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''&lt;!DOCTYPE html&gt;</span>
+<span class="s1">&lt;html lang="en"&gt;</span>
+<span class="s1">&lt;head&gt;</span>
+<span class="s1">&lt;meta charset="utf-8"&gt;</span>
+<span class="s1">&lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"&gt;</span>
+<span class="s1">&lt;title&gt;LifeTogether — Church Formation System Library&lt;/title&gt;</span>
+<span class="s1">&lt;style&gt;</span><span class="si">{</span><span class="n">css</span><span class="si">}</span><span class="s1">&lt;/style&gt;</span>
+<span class="s1">&lt;/head&gt;</span>
+<span class="s1">&lt;body id="top"&gt;</span>
+<span class="si">{</span><span class="n">full_body</span><span class="si">}</span>
+<span class="s1">&lt;/body&gt;</span>
+<span class="s1">&lt;/html&gt;'''</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/build/mobile/combined_library.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total size:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">),</span> <span class="s2">"chars (~</span><span class="si">%.1f</span><span class="s2"> MB)"</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build/mobile/make_combined.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

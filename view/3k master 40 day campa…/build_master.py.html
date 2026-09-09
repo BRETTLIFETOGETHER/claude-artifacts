@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_master.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; 3k master 40 day campa…</div>
+<h1>build_master.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">17 KB</span>
+<a class="btn" href="../../artifacts/3k%20master%2040%20day%20campa%E2%80%A6/build_master.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Rebuild the comprehensive master brochure with the refined editorial layout and accurate cover copy</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">common</span><span class="w"> </span><span class="kn">import</span> <span class="n">esc</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">cover</span><span class="p">,</span> <span class="n">category_section</span><span class="p">,</span> <span class="n">back_cover</span><span class="p">,</span> <span class="n">outline_of_categories</span><span class="p">,</span> <span class="n">PALETTE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data</span><span class="w"> </span><span class="kn">import</span> <span class="n">CATEGORIES</span> <span class="k">as</span> <span class="n">MASTER40</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_duration_categories</span><span class="p">,</span> <span class="n">build_catalytic_sundays</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">calendar_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">CALENDAR_MAP</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">total_titles</span><span class="p">(</span><span class="n">cats</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_legacy</span><span class="p">(</span><span class="n">cats</span><span class="p">,</span> <span class="n">roman</span><span class="p">,</span> <span class="n">entry</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span> <span class="o">==</span> <span class="n">roman</span><span class="p">:</span>
+            <span class="n">c</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+            <span class="k">return</span>
+
+<span class="c1"># ---- Build all five duration sets ----</span>
+<span class="n">forty</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">MASTER40</span><span class="p">)</span>
+
+<span class="n">seven</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"7 Days"</span><span class="p">,</span> <span class="s2">"7-Day"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"Journey"</span><span class="p">:</span> <span class="s2">"Challenge"</span><span class="p">})</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">seven</span><span class="p">,</span> <span class="s2">"VI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"7 Days to Peace"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">seven</span><span class="p">,</span> <span class="s2">"XX"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"7 Days of Generosity"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+
+<span class="n">twentyone</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"21 Days"</span><span class="p">,</span> <span class="s2">"21-Day"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"Journey"</span><span class="p">:</span> <span class="s2">"Experience"</span><span class="p">})</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"VI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days to Peace"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"XX"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days of Generosity"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"XV"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days to Better Relationships"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"XVI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days of Scripture"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+
+<span class="n">thirty</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"30 Days"</span><span class="p">,</span> <span class="s2">"4-Week"</span><span class="p">)</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"IX"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days of Flourishing"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"XII"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days to Whole-Life Health"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library phrasing, kept alongside the converted version."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"VI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days to Better Balance"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"XXVI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days to Emotional Resilience"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+
+<span class="n">sundays</span> <span class="o">=</span> <span class="n">build_catalytic_sundays</span><span class="p">(</span><span class="n">limit_per_category</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+
+<span class="n">GRAND_TOTAL</span> <span class="o">=</span> <span class="n">total_titles</span><span class="p">(</span><span class="n">forty</span><span class="p">)</span> <span class="o">+</span> <span class="n">total_titles</span><span class="p">(</span><span class="n">thirty</span><span class="p">)</span> <span class="o">+</span> <span class="n">total_titles</span><span class="p">(</span><span class="n">twentyone</span><span class="p">)</span> <span class="o">+</span> <span class="n">total_titles</span><span class="p">(</span><span class="n">seven</span><span class="p">)</span> <span class="o">+</span> <span class="n">total_titles</span><span class="p">(</span><span class="n">sundays</span><span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Cover — accurate brand copy, matching the established LifeTogether voice</span>
+<span class="c1"># ============================================================</span>
+
+<span class="n">master_cover</span> <span class="o">=</span> <span class="n">cover</span><span class="p">(</span>
+    <span class="s2">"LifeTogether </span><span class="se">\u00b7</span><span class="s2"> 25 Years </span><span class="se">\u00b7</span><span class="s2"> 500+ Churches </span><span class="se">\u00b7</span><span class="s2"> 50M+ Campaigns"</span><span class="p">,</span>
+    <span class="s1">'The Campaign&lt;br&gt;&lt;em&gt;Format System&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="s2">"One theme, five depths &amp;mdash; the complete architecture behind every LifeTogether campaign, from a single Catalytic Sunday to a full 40-day churchwide season, plus the annual calendar map that ties them to the year."</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">"Formats"</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">GRAND_TOTAL</span><span class="p">,</span> <span class="s2">"Total Titles"</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s2">"Categories Each"</span><span class="p">),</span>
+        <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">CALENDAR_MAP</span><span class="p">),</span> <span class="s2">"Calendar Sundays"</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Ladder section</span>
+<span class="c1"># ============================================================</span>
+
+<span class="n">ladder_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="block bg-navy intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;One Strategy, Five Formats&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;The &lt;em&gt;Campaign Format Ladder&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Every theme in this library can run at five different depths. They aren't five separate libraries &amp;mdash; they're one strategy, so the same theme can meet a church wherever it's ready to start, and grow with it from there.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="formula-grid"&gt;</span>
+<span class="s2">    &lt;div class="formula-card"&gt;&lt;div class="formula-name"&gt;Catalytic Sunday&lt;/div&gt;&lt;div class="formula-pattern"&gt;One standalone message&lt;/div&gt;&lt;div class="formula-note"&gt;The anchor. No series required &amp;mdash; launches, closes, or stands alone.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="formula-card"&gt;&lt;div class="formula-name"&gt;7-Day Challenge&lt;/div&gt;&lt;div class="formula-pattern"&gt;Mon&amp;ndash;Sat + Celebration Sunday&lt;/div&gt;&lt;div class="formula-note"&gt;The on-ramp. Lowest barrier, guest-friendly, no group required.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="formula-card"&gt;&lt;div class="formula-name"&gt;21-Day Experience&lt;/div&gt;&lt;div class="formula-pattern"&gt;3 weeks, daily habit&lt;/div&gt;&lt;div class="formula-note"&gt;The habit builder. Long enough for a rhythm to stick.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="formula-card"&gt;&lt;div class="formula-name"&gt;30-Day / 4-Week Journey&lt;/div&gt;&lt;div class="formula-pattern"&gt;4 sermons + 30-day devotional&lt;/div&gt;&lt;div class="formula-note"&gt;The accessible middle. Lighter lift, small-group-first.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="formula-card"&gt;&lt;div class="formula-name"&gt;40-Day Campaign&lt;/div&gt;&lt;div class="formula-pattern"&gt;6 sessions, full devotional&lt;/div&gt;&lt;div class="formula-note"&gt;The flagship. Full churchwide commitment, all ages.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p style="margin-top:20px;"&gt;Use it in either direction: run a Catalytic Sunday or a 7-Day Challenge to test a theme before committing a full 40-day season to it &amp;mdash; or run the 40-day campaign first and harvest a Catalytic Sunday and a 7-Day Challenge from it the following year.&lt;/p&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># TOC</span>
+<span class="c1"># ============================================================</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_toc</span><span class="p">():</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"Section I </span><span class="se">\u00b7</span><span class="s2"> The 40-Day Campaign"</span><span class="p">,</span> <span class="n">forty</span><span class="p">,</span> <span class="s2">"40"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Section II </span><span class="se">\u00b7</span><span class="s2"> The 30-Day / 4-Week Journey"</span><span class="p">,</span> <span class="n">thirty</span><span class="p">,</span> <span class="s2">"30"</span><span class="p">),</span>
+              <span class="p">(</span><span class="s2">"Section III </span><span class="se">\u00b7</span><span class="s2"> The 21-Day Experience"</span><span class="p">,</span> <span class="n">twentyone</span><span class="p">,</span> <span class="s2">"21"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Section IV </span><span class="se">\u00b7</span><span class="s2"> The 7-Day Challenge"</span><span class="p">,</span> <span class="n">seven</span><span class="p">,</span> <span class="s2">"7"</span><span class="p">),</span>
+              <span class="p">(</span><span class="s2">"Section V </span><span class="se">\u00b7</span><span class="s2"> Catalytic Sundays"</span><span class="p">,</span> <span class="n">sundays</span><span class="p">,</span> <span class="s2">"SUN"</span><span class="p">)]</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">gi</span><span class="p">,</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">body</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;p class="toc-group"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">label</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/p&gt;'</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">:</span>
+            <span class="n">body</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;a class="toc-link" href="#</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span><span class="si">}</span><span class="s1">"&gt;&lt;span class="ix"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/span&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"name"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/a&gt;'</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="toc-nav"&gt;</span>
+<span class="s2">  &lt;p class="toc-title"&gt;Contents&lt;/p&gt;</span>
+<span class="s2">  &lt;p class="toc-note"&gt;5 formats &amp;middot; 30 categories each &amp;middot; </span><span class="si">{</span><span class="n">GRAND_TOTAL</span><span class="si">}</span><span class="s2"> titles &amp;middot; the full annual calendar map&lt;/p&gt;</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">body</span><span class="si">}</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Strategy / narrative blocks (unchanged copy, new markup)</span>
+<span class="c1"># ============================================================</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">strategy_block</span><span class="p">(</span><span class="n">bg</span><span class="p">,</span> <span class="n">eyebrow_ix</span><span class="p">,</span> <span class="n">eyebrow_label</span><span class="p">,</span> <span class="n">heading_html</span><span class="p">,</span> <span class="n">paragraphs</span><span class="p">,</span> <span class="n">criteria_label</span><span class="p">,</span> <span class="n">criteria_items</span><span class="p">,</span> <span class="n">showcase</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">p_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;p&gt;</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&lt;/p&gt;'</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paragraphs</span><span class="p">)</span>
+    <span class="n">crit_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;p&gt;&lt;strong&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s1">:&lt;/strong&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&lt;/p&gt;'</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">criteria_items</span><span class="p">)</span>
+    <span class="n">showcase_html</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">if</span> <span class="n">showcase</span><span class="p">:</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="showcase-item"&gt;&lt;span class="showcase-tag"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;span class="showcase-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">ex</span> <span class="ow">in</span> <span class="n">showcase</span><span class="p">)</span>
+        <span class="n">showcase_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;p class="showcase-label" style="margin-top:0;"&gt;Same Theme, Different Formula&lt;/p&gt;&lt;div class="showcase-grid"&gt;</span><span class="si">{</span><span class="n">items</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="block bg-</span><span class="si">{</span><span class="n">bg</span><span class="si">}</span><span class="s2"> intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;&lt;span class="ix"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">eyebrow_ix</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">eyebrow_label</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;</span><span class="si">{</span><span class="n">heading_html</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">p_html</span><span class="si">}</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">showcase_html</span><span class="si">}</span>
+<span class="s2">  &lt;div class="criteria-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">criteria_label</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    </span><span class="si">{</span><span class="n">crit_html</span><span class="si">}</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">section_a_intro</span> <span class="o">=</span> <span class="n">strategy_block</span><span class="p">(</span>
+    <span class="s2">"navy"</span><span class="p">,</span> <span class="s2">"I"</span><span class="p">,</span> <span class="s2">"The Flagship Format"</span><span class="p">,</span> <span class="s1">'The 40-Day Campaign&lt;br&gt;&lt;em&gt;Vision &amp;amp; Strategy&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s2">"The 40-day campaign is LifeTogether's flagship format &amp;mdash; the one with the deepest roots, the strongest market precedent, and the clearest path from Sunday sermon to daily devotional to small-group discussion. It's the format the whole library was originally built around, and it remains the highest-commitment, highest-payoff option in the system."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;Why 40 days, specifically:&lt;/strong&gt; the number carries its own weight before a single word of content is written &amp;mdash; Moses on the mountain, Israel's spies, Jesus in the wilderness, Nineveh's forty days of repentance. It signals a serious, formative season, not a quick fix."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;The marketing case:&lt;/strong&gt; a 40-day campaign gives a church one unifying theme across every touchpoint for six weeks straight &amp;mdash; the weekend sermon, the daily devotional, the small-group discussion guide, and the content ladder's age-appropriate kids' and teens' editions running in parallel. One theme, one set of graphics, one invite message, four audiences."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;Who it's for:&lt;/strong&gt; the whole church, every age, every weekend."</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">"Marketing Assets This Format Anchors"</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Sermon series"</span><span class="p">,</span> <span class="s2">"6 weekend messages, one per session"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Daily devotional"</span><span class="p">,</span> <span class="s2">"40 daily readings, full depth"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Small group guide"</span><span class="p">,</span> <span class="s2">"6-session discussion guide matching the sermon arc"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Content ladder"</span><span class="p">,</span> <span class="s2">"Parallel kids and teens editions of the same theme"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Capital/vision pairing"</span><span class="p">,</span> <span class="s2">"Strongest format for a building or generosity campaign"</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">section_b_intro</span> <span class="o">=</span> <span class="n">strategy_block</span><span class="p">(</span>
+    <span class="s2">"forest"</span><span class="p">,</span> <span class="s2">"II"</span><span class="p">,</span> <span class="s2">"The Accessible Middle"</span><span class="p">,</span> <span class="s1">'The 30-Day Journey&lt;br&gt;&lt;em&gt;4-Week Companion Format&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s2">"If the 40-day campaign is the flagship, the 30-day journey is its more accessible sibling &amp;mdash; the same theme, a shorter runway, and a noticeably lighter lift for both the platform and the pew."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;What makes it unique:&lt;/strong&gt; this is not just a trimmed-down 40-day campaign. It runs on a genuinely different outline &amp;mdash; a 4-week sermon arc (four messages instead of six) paired with a 30-day daily devotional companion that's written shorter and simpler than the full 40-day devotional. The small-group guide is built to launch a group off a single month's commitment, not a six-week one."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;Why it earns its own slot in the system:&lt;/strong&gt; not every season, and not every congregation, is ready for a full 40-day ask. New churches, smaller churches, a summer series when attendance dips, or a second mid-year campaign layered on top of the main season all fit this format better."</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">"How It Differs From the 40-Day Format"</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Sermon weeks"</span><span class="p">,</span> <span class="s2">"4, not 6"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Devotional depth"</span><span class="p">,</span> <span class="s2">"Shorter daily entries, quicker read"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Small-group entry point"</span><span class="p">,</span> <span class="s2">"The easier on-ramp to launch a new group"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Best timing"</span><span class="p">,</span> <span class="s2">"Summer series, second mid-year campaign, or a new church's first series"</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">section_c_intro</span> <span class="o">=</span> <span class="n">strategy_block</span><span class="p">(</span>
+    <span class="s2">"plum"</span><span class="p">,</span> <span class="s2">"III"</span><span class="p">,</span> <span class="s2">"The Habit Builder"</span><span class="p">,</span> <span class="s1">'The 21-Day Experience&lt;br&gt;&lt;em&gt;Three Weeks to a Rhythm&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s2">"Twenty-one days is the format built for one job: turning a good intention into an actual habit. It's long enough to move past the initial motivation spike and into repetition, without asking for the full six-week commitment of the 40-day format."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;The structure:&lt;/strong&gt; three weeks, each closing on a teaching Sunday that reinforces the habit &amp;mdash; Week 1 (Foundation), Week 2 (Practice), and Week 3 closing on a Commissioning Sunday that sends people into the habit long-term."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;Best-fit themes:&lt;/strong&gt; prayer and fasting, generosity and giving rhythms, Bible engagement, gratitude, and the other spiritual disciplines that live or die by repetition."</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">"Best Uses"</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Prayer &amp; fasting emphases"</span><span class="p">,</span> <span class="s2">"The single most natural fit for this format"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Generosity rhythms"</span><span class="p">,</span> <span class="s2">"Giving habits, not just an annual ask"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Bible engagement pushes"</span><span class="p">,</span> <span class="s2">"Daily reading plans with a churchwide on-ramp"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Emotional health &amp; gratitude"</span><span class="p">,</span> <span class="s2">"Habits that need three weeks to take root"</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">section_d_intro</span> <span class="o">=</span> <span class="n">strategy_block</span><span class="p">(</span>
+    <span class="s2">"teal"</span><span class="p">,</span> <span class="s2">"IV"</span><span class="p">,</span> <span class="s2">"The On-Ramp"</span><span class="p">,</span> <span class="s1">'The 7-Day Challenge&lt;br&gt;&lt;em&gt;The Lowest-Barrier Format&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s2">"The 7-Day Challenge is the easiest yes in the entire system &amp;mdash; a one-week commitment with no small-group homework required, built to bring in people who would never sign up for a 40-day campaign cold."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;The structure:&lt;/strong&gt; six short daily readings, Monday through Saturday, then &lt;strong&gt;Celebration Sunday&lt;/strong&gt; &amp;mdash; a churchwide gathering that closes the week with worship, testimonies, and one clear next step."</span><span class="p">,</span>
+        <span class="s2">"&lt;strong&gt;Where it sits in the strategy:&lt;/strong&gt; a stand-alone on-ramp for new guests and dormant attenders, or a preview week the Sunday before launching the full 40-day or 30-day version of the same theme."</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">"Best Uses"</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"New-guest on-ramps"</span><span class="p">,</span> <span class="s2">"The easiest first commitment a first-time visitor can make"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Dormant-attender re-engagement"</span><span class="p">,</span> <span class="s2">"Low enough barrier to bring people back"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Series preview week"</span><span class="p">,</span> <span class="s2">"Test a theme before committing a full season to it"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Single hard week"</span><span class="p">,</span> <span class="s2">"A seasonal moment the whole church is walking through together"</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># ---- Calendar map ----</span>
+<span class="n">calendar_rows</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">when</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">cat_name</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">note</span> <span class="ow">in</span> <span class="n">CALENDAR_MAP</span><span class="p">:</span>
+    <span class="n">calendar_rows</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">      &lt;li&gt;</span>
+<span class="s2">        &lt;span class="cal-when"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">when</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">        &lt;div class="cal-body"&gt;</span>
+<span class="s2">          &lt;span class="cal-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="si">}</span><span class="s2"> &amp;mdash; &lt;em&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/em&gt;&lt;/span&gt;</span>
+<span class="s2">          &lt;span class="cal-cat"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">cat_name</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">          &lt;span class="cal-note"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">note</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/li&gt;"""</span>
+
+<span class="n">section_e_intro</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="block bg-umber intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;&lt;span class="ix"&gt;V&lt;/span&gt;The Standalone Anchor&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;Catalytic Sundays &amp;amp; the &lt;em&gt;Annual Calendar Map&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Not every Sunday is part of a series. Some Sundays are given to you by the calendar &amp;mdash; Easter, Mother's Day, Father's Day, Memorial Day, Christmas &amp;mdash; and they need their own big idea, whether or not they fall inside a current campaign.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="criteria-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;A Note on the Original Calendar Map&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;You mentioned having built a fuller calendar map previously. I searched and found one direct reference &amp;mdash; "the calendar locks: Easter, Christmas/Advent, Mother's Day, and the annual At the Movies outreach series" &amp;mdash; inside the Preaching Forecast research, but no standalone file with the full set of dates. If it exists elsewhere, it didn't surface in search. The map below is rebuilt fresh and in full.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p class="showcase-label" style="margin-top:0;"&gt;The Annual Catalytic Sunday Map &amp;mdash; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">CALENDAR_MAP</span><span class="p">)</span><span class="si">}</span><span class="s2"> Dates&lt;/p&gt;</span>
+<span class="s2">  &lt;ul class="cal-list"&gt;</span><span class="si">{</span><span class="n">calendar_rows</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">&lt;div class="divider"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;section class="block bg-navy intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;Beyond the Calendar&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;500+ &lt;em&gt;Big Sundays&lt;/em&gt;, Any Week&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Beyond the calendar-locked dates above, every category in the library has its own standalone Catalytic Sunday &amp;mdash; a single message strong enough to open a series, close a season, or carry a Sunday that isn't tied to any date on the calendar.&lt;/p&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Assemble</span>
+<span class="c1"># ============================================================</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">render_categories</span><span class="p">(</span><span class="n">cats</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cats</span><span class="p">):</span>
+        <span class="n">bg</span> <span class="o">=</span> <span class="n">PALETTE</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">PALETTE</span><span class="p">)]</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="n">category_section</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">'id="cat-</span><span class="si">{</span><span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span><span class="si">}</span><span class="s1">"'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'id="</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span><span class="si">}</span><span class="s1">"'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+<span class="n">back_quote</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"What the campaign creates in these days &amp;mdash; the community, the language, the conviction, "</span>
+              <span class="s2">"the relationships, the stories &amp;mdash; is exactly what the ministry needs to be sustainable from "</span>
+              <span class="s2">"week one. You are not launching a program. You are releasing a movement the campaign already built."</span><span class="p">)</span>
+<span class="n">back_attribution</span> <span class="o">=</span> <span class="s2">"Brett Eastman &amp;middot; Founder, LifeTogether"</span>
+<span class="n">back_contact</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'&lt;a href="mailto:brett@lifetogether.com"&gt;brett@lifetogether.com&lt;/a&gt; &amp;middot; '</span>
+                <span class="s1">'&lt;a href="https://lifetogether.com"&gt;lifetogether.com&lt;/a&gt; &amp;middot; '</span>
+                <span class="s1">'25 Years &amp;middot; 500+ Churches &amp;middot; 50M+ Campaigns'</span><span class="p">)</span>
+
+<span class="n">doc_parts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">head</span><span class="p">(</span><span class="s2">"The LifeTogether Campaign Format System"</span><span class="p">),</span>
+    <span class="n">master_cover</span><span class="p">,</span>
+    <span class="n">ladder_html</span><span class="p">,</span>
+    <span class="n">build_toc</span><span class="p">(),</span>
+    <span class="n">section_a_intro</span><span class="p">,</span>
+    <span class="n">outline_of_categories</span><span class="p">(</span><span class="n">forty</span><span class="p">,</span> <span class="s2">"Section I Categories at a Glance"</span><span class="p">),</span>
+    <span class="n">render_categories</span><span class="p">(</span><span class="n">forty</span><span class="p">,</span> <span class="s2">"40"</span><span class="p">),</span>
+    <span class="n">section_b_intro</span><span class="p">,</span>
+    <span class="n">outline_of_categories</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"Section II Categories at a Glance"</span><span class="p">),</span>
+    <span class="n">render_categories</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"30"</span><span class="p">),</span>
+    <span class="n">section_c_intro</span><span class="p">,</span>
+    <span class="n">outline_of_categories</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"Section III Categories at a Glance"</span><span class="p">),</span>
+    <span class="n">render_categories</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"21"</span><span class="p">),</span>
+    <span class="n">section_d_intro</span><span class="p">,</span>
+    <span class="n">outline_of_categories</span><span class="p">(</span><span class="n">seven</span><span class="p">,</span> <span class="s2">"Section IV Categories at a Glance"</span><span class="p">),</span>
+    <span class="n">render_categories</span><span class="p">(</span><span class="n">seven</span><span class="p">,</span> <span class="s2">"7"</span><span class="p">),</span>
+    <span class="n">section_e_intro</span><span class="p">,</span>
+    <span class="n">outline_of_categories</span><span class="p">(</span><span class="n">sundays</span><span class="p">,</span> <span class="s2">"Section V Categories at a Glance"</span><span class="p">),</span>
+    <span class="n">render_categories</span><span class="p">(</span><span class="n">sundays</span><span class="p">,</span> <span class="s2">"SUN"</span><span class="p">),</span>
+    <span class="n">back_cover</span><span class="p">(</span><span class="n">back_quote</span><span class="p">,</span> <span class="n">back_attribution</span><span class="p">,</span> <span class="n">back_contact</span><span class="p">,</span> <span class="s2">"LifeTogether"</span><span class="p">),</span>
+    <span class="s2">"&lt;/body&gt;&lt;/html&gt;"</span>
+<span class="p">]</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_parts</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/lifetogether-campaign-format-system.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Grand total titles:"</span><span class="p">,</span> <span class="n">GRAND_TOTAL</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_master.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

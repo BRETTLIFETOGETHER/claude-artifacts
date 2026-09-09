@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_index.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_index.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">11 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_index.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the master INDEX directory linking every category across all four volumes</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">build_vol4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BASE</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">esc</span>
+
+<span class="n">V1</span> <span class="o">=</span> <span class="s2">"catalytic-sundays-easter-christmas.html"</span>
+<span class="n">V2</span> <span class="o">=</span> <span class="s2">"catalytic-sundays-calendar-strategic.html"</span>
+<span class="n">V3</span> <span class="o">=</span> <span class="s2">"catalyst-kit-vol-3.html"</span>
+<span class="n">V4</span> <span class="o">=</span> <span class="s2">"catalytic-sundays-vol-4.html"</span>
+<span class="n">OUT1</span> <span class="o">=</span> <span class="s2">"catalytic-sundays-outlines-vol-1.html"</span>
+
+<span class="c1"># (display, file, anchor, count, note)</span>
+<span class="n">VOLUMES</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Volume One &amp;mdash; The Easter and Christmas Arcs"</span><span class="p">,</span> <span class="n">V1</span><span class="p">,</span>
+ <span class="s2">"320 titles across 16 categories. The two Sundays a church cannot improvise."</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Resurrection Sunday"</span><span class="p">,</span> <span class="s2">"c1"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"Kit built"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Good Friday"</span><span class="p">,</span> <span class="s2">"c2"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Palm Sunday"</span><span class="p">,</span> <span class="s2">"c3"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Holy Week &amp;amp; Maundy Thursday"</span><span class="p">,</span> <span class="s2">"c4"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Easter for the Skeptic"</span><span class="p">,</span> <span class="s2">"c5"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Sunday After Easter"</span><span class="p">,</span> <span class="s2">"c6"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Ash Wednesday &amp;amp; the Road to Lent"</span><span class="p">,</span> <span class="s2">"c7"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Easter for the Grieving"</span><span class="p">,</span> <span class="s2">"c8"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Christmas Eve"</span><span class="p">,</span> <span class="s2">"c9"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"Outlined"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Christmas Day &amp;amp; Christmas Sunday"</span><span class="p">,</span> <span class="s2">"c10"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Advent Sunday Singles"</span><span class="p">,</span> <span class="s2">"c11"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Christmas for the Skeptic"</span><span class="p">,</span> <span class="s2">"c12"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Characters of the Nativity"</span><span class="p">,</span> <span class="s2">"c13"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Blue Christmas"</span><span class="p">,</span> <span class="s2">"c14"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"After Christmas &amp;amp; New Year"</span><span class="p">,</span> <span class="s2">"c15"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Incarnation"</span><span class="p">,</span> <span class="s2">"c16"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Volume Two &amp;mdash; Calendar Locks and Strategic Weekends"</span><span class="p">,</span> <span class="n">V2</span><span class="p">,</span>
+ <span class="s2">"400 titles across 8 weekends. Every category carries a campaign hinge."</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Mother's Day"</span><span class="p">,</span> <span class="s2">"c1"</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"5 tracks &amp;middot; Kit built"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Father's Day"</span><span class="p">,</span> <span class="s2">"c2"</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"5 tracks"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Graduation"</span><span class="p">,</span> <span class="s2">"c3"</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"5 tracks"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"End-of-Year Giving"</span><span class="p">,</span> <span class="s2">"c4"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Baptism Sunday"</span><span class="p">,</span> <span class="s2">"c5"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Baby Dedication &amp;amp; Family Blessing"</span><span class="p">,</span> <span class="s2">"c6"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Series Launch &amp;amp; Friends Sunday"</span><span class="p">,</span> <span class="s2">"c7"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"Kit built"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Group Life Launch &amp;amp; the Call to Serve"</span><span class="p">,</span> <span class="s2">"c8"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"Kit built"</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Volume Four &amp;mdash; The Working Calendar"</span><span class="p">,</span> <span class="n">V4</span><span class="p">,</span>
+ <span class="s2">"375 titles across 15 categories. The Sundays between the holidays."</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Thanksgiving"</span><span class="p">,</span> <span class="s2">"c1"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Next Step Sundays"</span><span class="p">,</span> <span class="s2">"c2"</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">"3 tracks"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Any Given Sunday"</span><span class="p">,</span> <span class="s2">"c3"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Communion Sundays"</span><span class="p">,</span> <span class="s2">"c4"</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Prayer Sundays"</span><span class="p">,</span> <span class="s2">"c5"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Advent Kickoff"</span><span class="p">,</span> <span class="s2">"c6"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"Launches 21-day devotional"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Lent Kickoff"</span><span class="p">,</span> <span class="s2">"c7"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"Launches 40-day devotional"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Vision Sunday"</span><span class="p">,</span> <span class="s2">"c8"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"New Year's Sunday"</span><span class="p">,</span> <span class="s2">"c9"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Serve Sunday"</span><span class="p">,</span> <span class="s2">"c10"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Connection Sunday"</span><span class="p">,</span> <span class="s2">"c11"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Pair Up and Group Up"</span><span class="p">,</span> <span class="s2">"c12"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Church at Home"</span><span class="p">,</span> <span class="s2">"c13"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Ask Sundays"</span><span class="p">,</span> <span class="s2">"c14"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Ministry Launch Sundays"</span><span class="p">,</span> <span class="s2">"c15"</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">"One per ministry"</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">PROPOSED</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Fall Launch &amp;amp; Back to School"</span><span class="p">,</span> <span class="s2">"The second-biggest reset of the year. Families re-enter routine in late August, which makes it the strongest group-launch window after January and the one most churches sleep through."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Pentecost Sunday"</span><span class="p">,</span> <span class="s2">"The birthday of the church, almost universally under-preached in evangelical congregations. A whole category on the Spirit, power, and the sending."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Memorial Day &amp;amp; Veterans Sunday"</span><span class="p">,</span> <span class="s2">"Honor, sacrifice, freedom, and grief, handled with care rather than avoided. High attendance among people who rarely come."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Church Anniversary &amp;amp; Founder's Sunday"</span><span class="p">,</span> <span class="s2">"Remembering the story, honoring the people who built it, and handing the next chapter to a younger generation. Pairs naturally with a legacy giving moment."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Building Milestones"</span><span class="p">,</span> <span class="s2">"Groundbreaking, dedication, first service in a new space, mortgage burning. Rare, emotional, and almost always improvised because no library exists."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Crisis Response Sundays"</span><span class="p">,</span> <span class="s2">"The message written in forty-eight hours after a local tragedy, a national event, or a loss inside the congregation. Every pastor needs these and nobody has them ready."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Sanctity of Life &amp;amp; Justice Sundays"</span><span class="p">,</span> <span class="s2">"The hard-topic Sunday, written with conviction and pastoral care so it can be preached without splitting a room."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Ordination, Commissioning &amp;amp; Pastor Appreciation"</span><span class="p">,</span> <span class="s2">"Setting people apart, sending staff, honoring leaders, and installing elders. Ceremony without a script is how these usually go."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Fifth Sunday, Guest Speaker &amp;amp; Pulpit Supply"</span><span class="p">,</span> <span class="s2">"The drop-in Sunday. A guest, an intern's first message, or the week the pastor is out. Overlaps with Any Given Sunday but built for someone who does not know the congregation."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Sending &amp;amp; Multiplication Sundays"</span><span class="p">,</span> <span class="s2">"Launching a campus, commissioning a plant team, sending missionaries. The Sundays where a church gives away its best people on purpose."</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="n">BASE</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">.volhead{padding:56px 0 0;border-top:2px solid var(--gold)}</span>
+<span class="s2">.volhead .label{display:block;margin-bottom:10px}</span>
+<span class="s2">.volhead h2{font-size:34px}</span>
+<span class="s2">.volhead .vd{color:#c8c0b2;font-size:19px;margin-top:8px;font-style:italic}</span>
+<span class="s2">.volhead .open{display:inline-block;margin-top:18px;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--navy);</span>
+<span class="s2">background:var(--gold);padding:11px 22px;text-decoration:none;font-weight:700}</span>
+<span class="s2">.dir{margin-top:26px;border-top:1px solid var(--rule)}</span>
+<span class="s2">.dir a{display:flex;gap:14px;align-items:baseline;padding:15px 2px;</span>
+<span class="s2">border-bottom:1px solid rgba(184,147,78,.14);color:var(--cream);text-decoration:none}</span>
+<span class="s2">.dir a:hover{color:var(--gold-lt)}</span>
+<span class="s2">.dir .n{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.14em;</span>
+<span class="s2">color:var(--gold);min-width:30px;flex-shrink:0}</span>
+<span class="s2">.dir .t{flex:1;font-size:20px}</span>
+<span class="s2">.dir .note{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.12em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold-lt);flex-shrink:0}</span>
+<span class="s2">.dir .c{font-family:'Lato',sans-serif;font-size:12px;color:#9d958a;</span>
+<span class="s2">min-width:38px;text-align:right;flex-shrink:0}</span>
+<span class="s2">.kitcard{margin-top:26px;border:1px solid var(--rule);background:var(--navy-2);padding:24px}</span>
+<span class="s2">.kitcard h3{font-size:25px;color:var(--gold-lt)}</span>
+<span class="s2">.kitcard p{margin-top:12px;color:#ded6c6;font-size:18px}</span>
+<span class="s2">.kitcard .open{display:inline-block;margin-top:18px;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--navy);</span>
+<span class="s2">background:var(--gold);padding:11px 22px;text-decoration:none;font-weight:700}</span>
+<span class="s2">.prop{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid rgba(184,147,78,.14)}</span>
+<span class="s2">.prop .pn{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);</span>
+<span class="s2">min-width:32px;flex-shrink:0}</span>
+<span class="s2">.prop .pb h4{font-size:22px}</span>
+<span class="s2">.prop .pb p{margin-top:6px;color:#c8c0b2;font-size:18px}</span>
+<span class="s2">.flag{margin-top:28px;border-left:2px solid var(--gold);padding:8px 0 8px 20px}</span>
+<span class="s2">.flag .label{display:block;margin-bottom:8px}</span>
+<span class="s2">.flag p{margin:0 0 12px;color:#ded6c6}</span>
+<span class="s2">.flag p:last-child{margin-bottom:0}</span>
+<span class="s2">@media(max-width:620px){</span>
+<span class="s2">.volhead h2{font-size:27px}.dir .t{font-size:18px}.dir .note{display:none}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="n">TOTAL_ALL</span> <span class="o">=</span> <span class="mi">320</span> <span class="o">+</span> <span class="mi">400</span> <span class="o">+</span> <span class="mi">375</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="p">[</span><span class="n">head</span><span class="p">(</span><span class="s1">'Catalytic Sundays &amp;mdash; Master Directory | LifeTogether'</span><span class="p">,</span> <span class="n">CSS</span><span class="p">)]</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap cover"&gt;&lt;span class="label"&gt;LifeTogether &amp;middot; The Single-Message Library&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h1&gt;Catalytic Sundays&lt;em&gt;Master Directory&lt;/em&gt;&lt;/h1&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="dek"&gt;Every category, every count, every volume &amp;mdash; one page that opens the whole library.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="brandline"&gt;LifeTogether &amp;middot; 25 Years &amp;middot; 500+ Churches &amp;middot; 50M+ Campaigns&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stats"&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">39</span><span class="p">,</span> <span class="s2">"Categories"</span><span class="p">),</span> <span class="p">(</span><span class="n">TOTAL_ALL</span><span class="p">,</span> <span class="s2">"Titles"</span><span class="p">),</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s2">"Full Outlines"</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">"Catalyst Kits"</span><span class="p">)]:</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stat"&gt;&lt;b&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;&lt;span&gt;'</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="block"&gt;&lt;div class="wrap"&gt;&lt;span class="label"&gt;How to Use This&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;One page, &lt;em&gt;the whole library&lt;/em&gt;&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="drop"&gt;Every category below links straight into the volume that holds it. Counts are honest and match the actual files. Where a category has been built past the title stage &amp;mdash; a full outline, or a complete Catalyst Kit with a seven-day devotional and a group session &amp;mdash; it is marked, so nobody has to guess what is finished and what is inventory.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;Keep all five files in one folder and every link on this page works offline.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">vname</span><span class="p">,</span> <span class="n">vfile</span><span class="p">,</span> <span class="n">vdesc</span><span class="p">,</span> <span class="n">cats</span> <span class="ow">in</span> <span class="n">VOLUMES</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap volhead"&gt;&lt;span class="label"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cats</span><span class="p">))</span> <span class="o">+</span> <span class="s1">' Categories &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Titles&lt;/span&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;'</span> <span class="o">+</span> <span class="n">vname</span> <span class="o">+</span> <span class="s1">'&lt;/h2&gt;&lt;p class="vd"&gt;'</span> <span class="o">+</span> <span class="n">vdesc</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;a class="open" href="'</span> <span class="o">+</span> <span class="n">vfile</span> <span class="o">+</span> <span class="s1">'"&gt;Open the volume&lt;/a&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="dir"&gt;'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">cn</span><span class="p">,</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">note</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cats</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;a href="'</span> <span class="o">+</span> <span class="n">vfile</span> <span class="o">+</span> <span class="s1">'#'</span> <span class="o">+</span> <span class="n">anchor</span> <span class="o">+</span> <span class="s1">'"&gt;&lt;span class="n"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'</span><span class="si">%02d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="t"&gt;'</span> <span class="o">+</span> <span class="n">cn</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">note</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="note"&gt;'</span> <span class="o">+</span> <span class="n">note</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="c"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/a&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="block alt" style="margin-top:56px"&gt;&lt;div class="wrap"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="label"&gt;Built Past the Title Stage&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;Outlines and &lt;em&gt;Catalyst Kits&lt;/em&gt;&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="kitcard"&gt;&lt;h3&gt;Outline Volume One&lt;/h3&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;40 complete sermon outlines &amp;mdash; all 20 Resurrection Sunday titles and all 20 Christmas Eve titles. Text, big idea, movements, illustration slot, the turn, the close, and a bulletin line for each.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;a class="open" href="'</span> <span class="o">+</span> <span class="n">OUT1</span> <span class="o">+</span> <span class="s1">'"&gt;Open the outlines&lt;/a&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="kitcard"&gt;&lt;h3&gt;The Catalyst Kit &amp;mdash; Volume Three&lt;/h3&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;Four complete kits. Each one takes a single Sunday and extends it into a seven-day devotional and a small group session with next steps for the person, the family, and the group. The forty-day campaign architecture compressed into one week.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;a class="open" href="'</span> <span class="o">+</span> <span class="n">V3</span> <span class="o">+</span> <span class="s1">'"&gt;Open the kits&lt;/a&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="block"&gt;&lt;div class="wrap"&gt;&lt;span class="label"&gt;Proposed&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;Ten more categories &lt;em&gt;worth building&lt;/em&gt;&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;None of these exist yet. They are listed in the order I would build them.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">pn</span><span class="p">,</span> <span class="n">pd</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">PROPOSED</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="prop"&gt;&lt;div class="pn"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'</span><span class="si">%02d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;div class="pb"&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h4&gt;'</span> <span class="o">+</span> <span class="n">pn</span> <span class="o">+</span> <span class="s1">'&lt;/h4&gt;&lt;p&gt;'</span> <span class="o">+</span> <span class="n">pd</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="flag"&gt;&lt;span class="label"&gt;Not a category &amp;mdash; a product&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;The custom devotional built from a pastor</span><span class="se">\'</span><span class="s1">s own sermon archive does not belong on the list above, because it is not a Sunday. It is a service. A church hands over ten years of Easter messages and receives a thirty-day devotional in their own pastor</span><span class="se">\'</span><span class="s1">s voice, drawn from what he already preached.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;That is the same engine as the backlist digitization strategy, pointed at a smaller and much easier first sale. Thirty Days to Easter and Thirty Days to Christmas are the two obvious first editions, and a church that buys one will buy the other every year without being asked.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="closing"&gt;&lt;div class="wrap"&gt;&lt;p class="q"&gt;A church does not launch a program on Easter morning. It releases a movement, and then spends the rest of the year proving it meant it.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="attr"&gt;Brett Eastman &amp;middot; LifeTogether&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; Catalytic Sundays &amp;middot; Master Directory &amp;middot; 39 Categories &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">TOTAL_ALL</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Titles&lt;/div&gt;&lt;/footer&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/body&gt;&lt;/html&gt;'</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/catalytic-sundays-INDEX.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"INDEX built. total titles:"</span><span class="p">,</span> <span class="n">TOTAL_ALL</span><span class="p">,</span> <span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_index.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

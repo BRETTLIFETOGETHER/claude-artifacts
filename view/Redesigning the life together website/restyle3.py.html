@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>restyle3.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>restyle3.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">15 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/restyle3.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Catalog-edition restyle: strip v2 overrides, remap colors, rebuild home hero as photo mosaic, add v3 overrides</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="n">PAGES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"page_home.py"</span><span class="p">,</span><span class="s2">"page_assessment.py"</span><span class="p">,</span><span class="s2">"page_create.py"</span><span class="p">,</span><span class="s2">"page_reader.py"</span><span class="p">,</span>
+         <span class="s2">"page_browse_campaign.py"</span><span class="p">,</span><span class="s2">"page_rest.py"</span><span class="p">]</span>
+
+<span class="c1"># ---------- 0. strip all v2 override blocks (they run to &lt;/style&gt;) ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">strip_v2</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'/\* ===== v2[^*]*===== \*/.*?(?=&lt;/style&gt;)'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+
+<span class="c1"># ---------- 1. gradient flattening (before single-hex maps) ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten_gradients</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'linear-gradient\([^)]*#F6A928[^)]*\)'</span><span class="p">,</span> <span class="s1">'#E85321'</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>   <span class="c1"># amber grads → vermilion block</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'linear-gradient\([^)]*#0E3A57[^)]*\)'</span><span class="p">,</span> <span class="s1">'#2E4C97'</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>   <span class="c1"># navy grads → royal blue block</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'linear-gradient\([^)]*#092B42[^)]*\)'</span><span class="p">,</span> <span class="s1">'#243A72'</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'linear-gradient\([^)]*#FDEFDC[^)]*\)'</span><span class="p">,</span> <span class="s1">'#F4F4EF'</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>   <span class="c1"># cream grads → flat sand</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'linear-gradient\([^)]*#F1F6FA[^)]*\)'</span><span class="p">,</span> <span class="s1">'#F4F4EF'</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+<span class="c1"># ---------- 2. v2 → v3 hex remap ----------</span>
+<span class="n">HEXMAP</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">"#0E3A57"</span><span class="p">:</span><span class="s2">"#2E4C97"</span><span class="p">,</span> <span class="s2">"#155377"</span><span class="p">:</span><span class="s2">"#2E4C97"</span><span class="p">,</span> <span class="s2">"#175A85"</span><span class="p">:</span><span class="s2">"#3B5CAD"</span><span class="p">,</span> <span class="s2">"#092B42"</span><span class="p">:</span><span class="s2">"#243A72"</span><span class="p">,</span>
+  <span class="s2">"#12466A"</span><span class="p">:</span><span class="s2">"#2E4C97"</span><span class="p">,</span> <span class="s2">"#0F3E5F"</span><span class="p">:</span><span class="s2">"#2E4C97"</span><span class="p">,</span> <span class="s2">"#0B3049"</span><span class="p">:</span><span class="s2">"#243A72"</span><span class="p">,</span> <span class="s2">"#1A6392"</span><span class="p">:</span><span class="s2">"#3B5CAD"</span><span class="p">,</span>
+  <span class="s2">"#E8F0F7"</span><span class="p">:</span><span class="s2">"#E8EDF6"</span><span class="p">,</span> <span class="s2">"#F4F8FB"</span><span class="p">:</span><span class="s2">"#F6F8FB"</span><span class="p">,</span> <span class="s2">"#D4E2ED"</span><span class="p">:</span><span class="s2">"#D6DEEE"</span><span class="p">,</span> <span class="s2">"#F1F6FA"</span><span class="p">:</span><span class="s2">"#F4F6F1"</span><span class="p">,</span>
+  <span class="s2">"#F7FAFC"</span><span class="p">:</span><span class="s2">"#FAFAF6"</span><span class="p">,</span> <span class="s2">"#C6D9E8"</span><span class="p">:</span><span class="s2">"#E4EFD8"</span><span class="p">,</span> <span class="s2">"#B8CBDA"</span><span class="p">:</span><span class="s2">"#C4CFE8"</span><span class="p">,</span> <span class="s2">"#A9C2D6"</span><span class="p">:</span><span class="s2">"#B9C6DE"</span><span class="p">,</span>
+  <span class="s2">"#7FA0B8"</span><span class="p">:</span><span class="s2">"#9AA9CC"</span><span class="p">,</span> <span class="s2">"#8FA9BE"</span><span class="p">:</span><span class="s2">"#9AA9CC"</span><span class="p">,</span> <span class="s2">"#7FC0E8"</span><span class="p">:</span><span class="s2">"#E3DF3C"</span><span class="p">,</span> <span class="s2">"#6FB6E4"</span><span class="p">:</span><span class="s2">"#E3DF3C"</span><span class="p">,</span>
+  <span class="s2">"#9CC8E8"</span><span class="p">:</span><span class="s2">"#E9E76A"</span><span class="p">,</span> <span class="s2">"#8FB3CC"</span><span class="p">:</span><span class="s2">"#9AA9CC"</span><span class="p">,</span> <span class="s2">"#5C86A5"</span><span class="p">:</span><span class="s2">"#5F7BB0"</span><span class="p">,</span> <span class="s2">"#3E5468"</span><span class="p">:</span><span class="s2">"#454545"</span><span class="p">,</span>
+  <span class="s2">"#F6A928"</span><span class="p">:</span><span class="s2">"#E3DF3C"</span><span class="p">,</span> <span class="s2">"#EA7A0C"</span><span class="p">:</span><span class="s2">"#D64614"</span><span class="p">,</span> <span class="s2">"#E8780C"</span><span class="p">:</span><span class="s2">"#D64614"</span><span class="p">,</span> <span class="s2">"#EE8010"</span><span class="p">:</span><span class="s2">"#E85321"</span><span class="p">,</span>
+  <span class="s2">"#CD6A05"</span><span class="p">:</span><span class="s2">"#C23F10"</span><span class="p">,</span> <span class="s2">"#D18410"</span><span class="p">:</span><span class="s2">"#5F8540"</span><span class="p">,</span> <span class="s2">"#D6820A"</span><span class="p">:</span><span class="s2">"#C23F10"</span><span class="p">,</span> <span class="s2">"#E29A3B"</span><span class="p">:</span><span class="s2">"#7CA457"</span><span class="p">,</span>
+  <span class="s2">"#FFC97A"</span><span class="p">:</span><span class="s2">"#E3DF3C"</span><span class="p">,</span> <span class="s2">"#FFE3B8"</span><span class="p">:</span><span class="s2">"#F2F0B8"</span><span class="p">,</span> <span class="s2">"#FFF3E2"</span><span class="p">:</span><span class="s2">"#FBFAE3"</span><span class="p">,</span> <span class="s2">"#FFF0DA"</span><span class="p">:</span><span class="s2">"#FBFAE3"</span><span class="p">,</span>
+  <span class="s2">"#FDEFDC"</span><span class="p">:</span><span class="s2">"#F1F1E2"</span><span class="p">,</span> <span class="s2">"#FFF7EA"</span><span class="p">:</span><span class="s2">"#F8F8EC"</span><span class="p">,</span> <span class="s2">"#F8DFB8"</span><span class="p">:</span><span class="s2">"#E6ECDA"</span><span class="p">,</span> <span class="s2">"#FBE3BE"</span><span class="p">:</span><span class="s2">"#EAF0E2"</span><span class="p">,</span>
+  <span class="s2">"#7A5310"</span><span class="p">:</span><span class="s2">"#4A5E30"</span><span class="p">,</span> <span class="s2">"#4A2E00"</span><span class="p">:</span><span class="s2">"#1C1C1C"</span><span class="p">,</span>
+  <span class="s2">"rgba(238,128,16"</span><span class="p">:</span><span class="s2">"rgba(232,83,33"</span><span class="p">,</span> <span class="s2">"rgba(246,169,40"</span><span class="p">:</span><span class="s2">"rgba(227,223,60"</span><span class="p">,</span>
+  <span class="s2">"rgba(14,58,87"</span><span class="p">:</span><span class="s2">"rgba(22,22,22"</span><span class="p">,</span> <span class="s2">"rgba(21,83,119"</span><span class="p">:</span><span class="s2">"rgba(46,76,151"</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remap</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">HEXMAP</span><span class="o">.</span><span class="n">items</span><span class="p">():</span> <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+<span class="c1"># ---------- 3. per-page v3 overrides + structural patches ----------</span>
+
+<span class="n">HOME_HERO</span> <span class="o">=</span> <span class="s1">'''&lt;!-- ================= HERO ================= --&gt;</span>
+<span class="s1">&lt;section class="hero"&gt;</span>
+<span class="s1">  &lt;div class="wrap hero-head"&gt;</span>
+<span class="s1">    &lt;span class="eyebrow bare rv"&gt;The Lifetogether Formation Platform&lt;/span&gt;</span>
+<span class="s1">    &lt;h1 class="rv"&gt;Where do you&lt;br&gt;want to &lt;em&gt;grow&lt;/em&gt;?&lt;/h1&gt;</span>
+<span class="s1">    &lt;p class="lede rv"&gt;Twenty-five years of churchwide campaigns, now an intelligent platform. Take a ten-minute assessment and receive a path built for where you are — or bring your own teaching and watch it become curriculum your whole church can walk together.&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="hero-ctas rv"&gt;</span>
+<span class="s1">      &lt;a class="btn btn-primary btn-lg" href="assessment.html"&gt;Take the 10-Minute Assessment&lt;/a&gt;</span>
+<span class="s1">      &lt;a class="btn btn-outline btn-lg" href="create.html"&gt;Bring Your Teaching to Life&lt;/a&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;p class="hero-quiet rv"&gt;Already know what you need? &lt;a href="browse.html"&gt;Browse the campaign library →&lt;/a&gt;&lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="wrap"&gt;&lt;div class="mosaic hero-mz rv" id="heroMosaic" aria-hidden="true"&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="wrap"&gt;</span>
+<span class="s1">    &lt;div class="stats rv"&gt;</span>
+<span class="s1">      &lt;div class="st"&gt;&lt;b&gt;25+&lt;/b&gt;&lt;span&gt;Years of Campaigns&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="st"&gt;&lt;b&gt;500+&lt;/b&gt;&lt;span&gt;Church Partnerships&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="st"&gt;&lt;b&gt;1,000+&lt;/b&gt;&lt;span&gt;Campaign Titles&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="st"&gt;&lt;b&gt;4&lt;/b&gt;&lt;span&gt;Formats — 7·21·30·40&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;</span>
+
+<span class="s1">'''</span>
+
+<span class="n">OVR_HOME</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.hero{background:#fff;padding:72px 0 64px}</span>
+<span class="s2">.hero-head{max-width:840px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}</span>
+<span class="s2">.hero-head h1{margin:20px 0 22px}</span>
+<span class="s2">.hero-head .lede{margin:0 auto 32px}</span>
+<span class="s2">.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}</span>
+<span class="s2">.hero-quiet{margin-top:20px;font-size:14.5px;color:var(--mute)}</span>
+<span class="s2">.hero-quiet a{color:var(--lt-orange);font-weight:700;border-bottom:2px solid rgba(232,83,33,.3)}</span>
+<span class="s2">.hero-mz{grid-template-columns:repeat(6,1fr);grid-auto-rows:104px;margin-top:48px}</span>
+<span class="s2">.hero-mz .big{grid-column:span 2;grid-row:span 2}</span>
+<span class="s2">.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:50px;border-top:2px dotted #C9C9BE;padding-top:32px;text-align:center}</span>
+<span class="s2">.stats b{font-family:var(--display);font-size:42px;font-weight:600;color:var(--ink);display:block;line-height:1}</span>
+<span class="s2">.stats span{font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}</span>
+<span class="s2">.stats .st{display:flex;flex-direction:column;gap:8px}</span>
+<span class="s2">.partners{background:#F4F4EF;border:0;padding:44px 0 48px}</span>
+<span class="s2">.logo-row span{font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-size:16px;color:#8F8F87}</span>
+<span class="s2">.door{border-radius:3px;padding:34px 30px;min-height:360px;box-shadow:none;border:1px solid var(--line)}</span>
+<span class="s2">.door .dart{display:none}</span>
+<span class="s2">.door .dtag{display:inline-block;align-self:flex-start;font-family:var(--ui);font-weight:700;font-size:14px;letter-spacing:.02em;padding:8px 15px;margin-bottom:6px}</span>
+<span class="s2">.door-find{background:#fff}</span>
+<span class="s2">.door-find .dtag{background:var(--lt-green);color:#fff}</span>
+<span class="s2">.door-find h3{color:var(--ink)}.door-find p{color:var(--body)}.door-find .dlink{color:var(--lt-orange)}</span>
+<span class="s2">.door-path{background:var(--lt-blue);border:0}</span>
+<span class="s2">.door-path .dtag{background:var(--lt-lime);color:#1C1C1C}</span>
+<span class="s2">.door-path h3{color:#fff}.door-path p{color:#C4CFE8}.door-path .dlink{color:var(--lt-lime)}</span>
+<span class="s2">.door-create{background:var(--lt-orange);border:0}</span>
+<span class="s2">.door-create .dtag{background:#1C1C1C;color:#fff}</span>
+<span class="s2">.door-create h3{color:#fff}.door-create p{color:#FBD9CB}.door-create .dlink{color:#fff}</span>
+<span class="s2">.scale button.sel{background:var(--lt-blue);border-color:var(--lt-blue);color:#fff;box-shadow:none}</span>
+<span class="s2">.sampler{border-radius:3px;box-shadow:var(--shadow-lg)}</span>
+<span class="s2">.sampler .sdone{background:#EAF0E2;color:#44622C;border-radius:3px}</span>
+<span class="s2">.sampler .sdone a{color:#5F8540!important}</span>
+<span class="s2">.stp .num{border-radius:2px;background:#EAF0E2;color:#5F8540}</span>
+<span class="s2">.mock{border-radius:3px}</span>
+<span class="s2">.mock-head{background:#F4F4EF}</span>
+<span class="s2">.mline i{background:var(--lt-green);border-radius:1px}</span>
+<span class="s2">.yw{background:#EAF0E2;color:#5F8540;border-radius:2px}</span>
+<span class="s2">.shelf-head .eyebrow{color:var(--lt-green-deep)}</span>
+<span class="s2">.fmt-card{border-radius:3px;background:rgba(255,255,255,.14);border:0}</span>
+<span class="s2">.fmt-card .fname{color:var(--lt-lime)}</span>
+<span class="s2">.fmt-card p{color:#E4EFD8}</span>
+<span class="s2">.her .dots40{color:var(--lt-lime)}</span>
+<span class="s2">.hn{border-radius:3px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}</span>
+<span class="s2">.tsti-feature{border-radius:3px;padding:46px 52px}</span>
+<span class="s2">.tsti-feature .avatar{background:var(--lt-blue);border-radius:50%}</span>
+<span class="s2">.tsti-feature blockquote{font-family:var(--wordmark);font-style:italic;font-weight:500;text-transform:none;letter-spacing:0;font-size:clamp(19px,2vw,24px)}</span>
+<span class="s2">.tcard{border-radius:3px}</span>
+<span class="s2">.tcard .avatar{border-radius:50%}</span>
+<span class="s2">.spanel{border-radius:3px;padding:52px 42px 44px}</span>
+<span class="s2">.sp-you{background:var(--lt-blue);border:0}</span>
+<span class="s2">.sp-you h3{color:#fff}.sp-you p{color:#C4CFE8}</span>
+<span class="s2">.sp-church{background:var(--lt-orange);border:0}</span>
+<span class="s2">.sp-church h3{color:#fff}.sp-church p{color:#FBD9CB}</span>
+<span class="s2">.sp-church .btn{background:#1C1C1C;color:#fff}</span>
+<span class="s2">"""</span>
+
+<span class="n">HOME_SCRIPT_ADD</span> <span class="o">=</span> <span class="s1">'''</span>
+<span class="s1">  // catalog hero mosaic — photos + brand color tiles</span>
+<span class="s1">  const mzEl=document.getElementById('heroMosaic');</span>
+<span class="s1">  if(mzEl){mzEl.innerHTML=mosaicHTML([</span>
+<span class="s1">    ['img','p01'],['img','p03'],['big','p04'],['tile','var(--lt-green)'],['img','p05'],</span>
+<span class="s1">    ['img','p08'],['tile','var(--lt-lime)'],['img','p15'],['img','p02'],</span>
+<span class="s1">    ['img','p14'],['img','p13'],['tile','var(--lt-gray)'],['img','p22']</span>
+<span class="s1">  ]);}</span>
+<span class="s1">'''</span>
+
+<span class="n">OVR_ASSESS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.prog i{border-radius:2px;width:26px;height:10px;border:0;background:#E3E3DA}</span>
+<span class="s2">.prog i.done{background:var(--lt-green)}</span>
+<span class="s2">.prog i.cur{background:var(--lt-lime)}</span>
+<span class="s2">.q{border-radius:3px}</span>
+<span class="s2">.scale button{border-radius:2px}</span>
+<span class="s2">.scale button.sel{background:var(--lt-blue);border-color:var(--lt-blue);color:#fff;box-shadow:none}</span>
+<span class="s2">.ig{border-radius:3px}</span>
+<span class="s2">.ig i{border-radius:2px}</span>
+<span class="s2">.proc .parch{width:104px;height:104px}</span>
+<span class="s2">.proc .parch::before,.proc .parch::after{border-radius:3px;border-color:#E3E3DA}</span>
+<span class="s2">.proc .parch::after{border-color:var(--lt-green)}</span>
+<span class="s2">.pf-sum{border-radius:3px}</span>
+<span class="s2">.track{border-radius:0;height:12px}</span>
+<span class="s2">.fill{border-radius:0}</span>
+<span class="s2">.area{border-radius:3px}</span>
+<span class="s2">.area .sg{border-radius:0}</span>
+<span class="s2">.path-cta{border-radius:3px;background:#F4F4EF;border:1px solid var(--line)}</span>
+<span class="s2">.match .why{color:var(--lt-green-deep)}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_CREATE</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.pull{border-radius:3px}</span>
+<span class="s2">.pull .sun{border-radius:2px;background:var(--lt-lime);color:#1C1C1C}</span>
+<span class="s2">.pull blockquote{font-family:var(--wordmark);font-style:italic;text-transform:none;letter-spacing:0}</span>
+<span class="s2">.up{border-radius:3px;border-color:#C9C9BE}</span>
+<span class="s2">.proc .ring{border-radius:50%;border-color:#EAF0E2;border-top-color:var(--lt-green)}</span>
+<span class="s2">.an-card{border-radius:3px}</span>
+<span class="s2">.an-card .vchip{background:var(--lt-blue);color:#fff;border-radius:0}</span>
+<span class="s2">.an-note{border-radius:3px;background:#F4F4EF;color:#4A4A45}</span>
+<span class="s2">.out{border-radius:3px}</span>
+<span class="s2">.out .otag{border-radius:0}</span>
+<span class="s2">.stab{border-radius:3px}</span>
+<span class="s2">.stab.sel{border-color:var(--lt-green);background:#F7FAF2;box-shadow:none}</span>
+<span class="s2">.stab .sn{color:var(--lt-green-deep)}</span>
+<span class="s2">.doc{border-radius:3px}</span>
+<span class="s2">.doc-head{background:#F4F4EF}</span>
+<span class="s2">.regen{border-radius:2px;background:#EAF0E2;color:#5F8540}</span>
+<span class="s2">.regen:hover{background:#DCE8CE}</span>
+<span class="s2">.yw{background:#EAF0E2;color:#5F8540;border-radius:2px}</span>
+<span class="s2">.crumbs b{color:var(--lt-orange)}</span>
+<span class="s2">.exp{border-radius:3px}</span>
+<span class="s2">.exp .ei{border-radius:2px}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_READER</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.dayarch{border-radius:2px}</span>
+<span class="s2">.dayarch.cur{border-color:var(--lt-green);background:#EAF0E2;color:#5F8540}</span>
+<span class="s2">.dayarch.done{background:var(--lt-green);border-color:var(--lt-green)}</span>
+<span class="s2">.rd-camp .mini{border-radius:2px}</span>
+<span class="s2">.verse{border-radius:3px;border-left:5px solid var(--lt-green)}</span>
+<span class="s2">.verse p{font-family:var(--wordmark);font-style:italic;text-transform:none;letter-spacing:0}</span>
+<span class="s2">.verse cite{color:var(--lt-green-deep)}</span>
+<span class="s2">.rq{border-radius:3px;background:#F4F4EF}</span>
+<span class="s2">.done-msg{border-radius:3px}</span>
+<span class="s2">.sun-note{border-radius:3px;background:#FBFAE3;color:#5A5A20}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_BROWSE</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.search input{border-radius:3px;box-shadow:none;border-width:2px}</span>
+<span class="s2">.chtile{border-radius:3px}</span>
+<span class="s2">.chtile .swash{height:5px}</span>
+<span class="s2">.chtile .cnew{background:var(--lt-lime);color:#1C1C1C;border-radius:0}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_CAMPAIGN</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.cd-cover{border-radius:3px;border:5px solid #fff;box-shadow:var(--shadow-lg)}</span>
+<span class="s2">.cd-cover .cover{aspect-ratio:4/4.4}</span>
+<span class="s2">.ph .pnum{border-radius:2px;color:#fff}</span>
+<span class="s2">.ed-card{border-radius:3px;border-top-width:6px}</span>
+<span class="s2">.frame{border-radius:3px}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_HOW</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.an-card{border-radius:3px}</span>
+<span class="s2">.an-card .ai{border-radius:2px}</span>
+<span class="s2">.ft{border-radius:3px}</span>
+<span class="s2">.ft .fname{color:var(--lt-green-deep)}</span>
+<span class="s2">.ph .pnum{border-radius:2px;background:var(--lt-lime);color:#1C1C1C}</span>
+<span class="s2">.lw .wk{border-radius:2px;background:#EAF0E2;color:#5F8540}</span>
+<span class="s2">.fq{border-radius:3px}</span>
+<span class="s2">.fq summary::after{color:var(--lt-orange)}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_PRICING</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.tiers{align-items:stretch}</span>
+<span class="s2">.tier{background:#fff;border:1.5px solid var(--line);border-radius:3px;color:var(--body);padding:0 32px 36px;overflow:hidden}</span>
+<span class="s2">.tier::before{content:'';display:block;height:9px;background:var(--lt-gray);margin:0 -32px 28px}</span>
+<span class="s2">.tier:nth-child(1)::before{background:var(--lt-green)}</span>
+<span class="s2">.tier.hot::before{background:var(--lt-orange)}</span>
+<span class="s2">.tier:nth-child(3)::before{background:var(--lt-blue)}</span>
+<span class="s2">.tier .tname{color:var(--ink)}.tier .tfor{color:var(--mute)}</span>
+<span class="s2">.tier .price{color:var(--ink)}.tier .per{color:var(--mute)}</span>
+<span class="s2">.tier li{color:var(--body)}.tier li::before{color:var(--lt-green)}</span>
+<span class="s2">.tier li.plus::before{color:var(--lt-orange)}</span>
+<span class="s2">.tier .btn-outline{border-color:#1C1C1C;color:#1C1C1C}</span>
+<span class="s2">.tier .btn-outline:hover{background:#1C1C1C;color:#fff}</span>
+<span class="s2">.tier.hot{background:#fff;border:2px solid var(--lt-orange);box-shadow:var(--shadow-lg)}</span>
+<span class="s2">.tier.hot .tname,.tier.hot .price{color:var(--ink)}</span>
+<span class="s2">.tier.hot .tfor,.tier.hot .per{color:var(--mute)}</span>
+<span class="s2">.tier.hot li{color:var(--body)}.tier.hot li::before{color:var(--lt-orange)}</span>
+<span class="s2">.tier.hot .btn{background:var(--lt-orange);color:#fff}</span>
+<span class="s2">.tier.hot .btn:hover{background:var(--lt-orange-deep)}</span>
+<span class="s2">.tier .pop{background:var(--lt-orange);color:#fff;border-radius:0}</span>
+<span class="s2">.alt-card{border-radius:3px}</span>
+<span class="s2">.guarantee{border-radius:3px;background:#F4F4EF;border:1px solid var(--line)}</span>
+<span class="s2">.guarantee .gi{border-radius:2px;background:var(--lt-green)}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_ABOUT</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v3 catalog overrides ===== */</span>
+<span class="s2">.tl::before{background:#DEDED6}</span>
+<span class="s2">.tl-item::before{border-radius:1px;background:var(--lt-green)}</span>
+<span class="s2">.tl-item.gold::before{background:var(--lt-orange)}</span>
+<span class="s2">.tsti-feature{border-radius:3px}</span>
+<span class="s2">.tsti-feature .avatar{background:var(--lt-blue);border-radius:50%}</span>
+<span class="s2">.tsti-feature blockquote{font-family:var(--wordmark);font-style:italic;text-transform:none;letter-spacing:0;font-weight:500}</span>
+<span class="s2">.tcard{border-radius:3px}</span>
+<span class="s2">.tcard .avatar{border-radius:50%}</span>
+<span class="s2">.three .tc{border-radius:3px}</span>
+<span class="s2">.contact{border-radius:3px}</span>
+<span class="s2">.contact .cline i{border-radius:2px;background:#EAF0E2;color:#5F8540}</span>
+<span class="s2">.logo-row span{font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-size:16px;color:#8F8F87}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">head_var</span><span class="p">,</span> <span class="n">block</span><span class="p">):</span>
+    <span class="n">hm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">head_var</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">' = """(.*?)&lt;/style&gt;'</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">hm</span><span class="p">:</span>
+        <span class="c1"># single-head pages use HEAD = """..."""</span>
+        <span class="n">hm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">head_var</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">'="""(.*?)&lt;/style&gt;'</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+    <span class="n">seg</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">seg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;/style&gt;'</span><span class="p">,</span> <span class="n">block</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">&lt;/style&gt;'</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">PAGES</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">strip_v2</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">flatten_gradients</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">remap</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_home.py"</span><span class="p">:</span>
+        <span class="c1"># swap hero block for the catalog mosaic hero</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'&lt;!-- ================= HERO ================= --&gt;'</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'&lt;!-- ================= PARTNERS ================= --&gt;'</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">a</span><span class="p">]</span> <span class="o">+</span> <span class="n">HOME_HERO</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">b</span><span class="p">:]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"HEAD"</span><span class="p">,</span> <span class="n">OVR_HOME</span><span class="p">)</span>
+        <span class="c1"># inject mosaic fill into the DOMContentLoaded script</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"  // featured shelf"</span><span class="p">,</span> <span class="n">HOME_SCRIPT_ADD</span> <span class="o">+</span> <span class="s2">"  // featured shelf"</span><span class="p">)</span>
+        <span class="c1"># remove old fan JS (data-cover fill) — no fan markup remains, guard is querySelectorAll so harmless; keep</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_assessment.py"</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"HEAD"</span><span class="p">,</span> <span class="n">OVR_ASSESS</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"const BANDS=\[.*?\];"</span><span class="p">,</span>
+          <span class="s2">"const BANDS=[{max:2.5,l:'Emerging',c:'#C6552E'},{max:3.5,l:'Growing',c:'#C98F2E'},{max:4.3,l:'Steady',c:'#4E86B8'},{max:9,l:'Strong',c:'#5F8540'}];"</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_create.py"</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"HEAD"</span><span class="p">,</span> <span class="n">OVR_CREATE</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_reader.py"</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"HEAD"</span><span class="p">,</span> <span class="n">OVR_READER</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_browse_campaign.py"</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"B_HEAD"</span><span class="p">,</span> <span class="n">OVR_BROWSE</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"C_HEAD"</span><span class="p">,</span> <span class="n">OVR_CAMPAIGN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_rest.py"</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"H_HEAD"</span><span class="p">,</span> <span class="n">OVR_HOW</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"P_HEAD"</span><span class="p">,</span> <span class="n">OVR_PRICING</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">append_ovr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">"A_HEAD"</span><span class="p">,</span> <span class="n">OVR_ABOUT</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"v3 restyled"</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/restyle3.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

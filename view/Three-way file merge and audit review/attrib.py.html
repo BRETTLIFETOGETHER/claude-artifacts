@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>attrib.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Three-way file merge and audit review</div>
+<h1>attrib.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">5 KB</span>
+<a class="btn" href="../../artifacts/Three-way%20file%20merge%20and%20audit%20review/attrib.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Three-way attribution: compare A, B, C at each divergence point</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">difflib</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'.'</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">findc</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">CTEXT</span><span class="p">,</span> <span class="n">pagemap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loadp</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_paras</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rapidfuzz</span><span class="w"> </span><span class="kn">import</span> <span class="n">fuzz</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">load_paras</span><span class="p">(</span><span class="s1">'A_base.md'</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">load_paras</span><span class="p">(</span><span class="s1">'B_pg.md'</span><span class="p">)</span>
+<span class="n">ATEXT</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">A</span><span class="p">)</span>
+<span class="n">BTEXT</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">B</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">best_sub</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+    <span class="n">al</span> <span class="o">=</span> <span class="n">fuzz</span><span class="o">.</span><span class="n">partial_ratio_alignment</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">,</span> <span class="n">score_cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">al</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+    <span class="n">sub</span> <span class="o">=</span> <span class="n">TEXT</span><span class="p">[</span><span class="n">al</span><span class="o">.</span><span class="n">dest_start</span><span class="p">:</span><span class="n">al</span><span class="o">.</span><span class="n">dest_end</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">fuzz</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">sub</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">,</span> <span class="n">sub</span><span class="p">)</span>
+
+
+<span class="c1"># probe pairs: (label, B wording, C wording) -- pulled from the substantive scan</span>
+<span class="n">probes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"p19 practices Q"</span><span class="p">,</span>
+     <span class="s2">"Which of these four practices is most absent from how you handle money right now"</span><span class="p">,</span>
+     <span class="s2">"Which of these four practices is most challenging for how you handle money right now"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p51 Grow"</span><span class="p">,</span>
+     <span class="s2">"Grow. Saving and margin, the room that turns a fragile budget into a steady one"</span><span class="p">,</span>
+     <span class="s2">"Grow. Saving and investing to create margin now and in the future. Margin becomes the space that turns a fragile budget into a stable one"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p60 whisper"</span><span class="p">,</span>
+     <span class="s2">"It's the question people whisper in the dark, and Ron says it's the one he hears more than any other"</span><span class="p">,</span>
+     <span class="s2">"It's the question people whisper just to themselves, and Ron says it's the one he hears more than any other"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p60 two answers"</span><span class="p">,</span>
+     <span class="s2">"This week gives it two. The first is practical"</span><span class="p">,</span>
+     <span class="s2">"This week gives two answers. The first is practical"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p60 fragile"</span><span class="p">,</span>
+     <span class="s2">"confidence that depends on a number will always be fragile, because the number can move. Confidence anchored in the Provider holds when the number doesn't"</span><span class="p">,</span>
+     <span class="s2">"confidence that depends on a number will always feel vulnerable, because the number can move. Confidence anchored in the Provider holds when the provision feels fragile"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p98 meaning"</span><span class="p">,</span>
+     <span class="s2">"What's the difference between handing down resources and handing down meaning"</span><span class="p">,</span>
+     <span class="s2">"What's the difference between handing down resources and handing down purpose"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p109 safe env"</span><span class="p">,</span>
+     <span class="s2">"a place where people can be heard and feel loved, especially on a subject as tender as money"</span><span class="p">,</span>
+     <span class="s2">"a place where people can be heard and feel loved and supported, especially on a subject as sensitive as money"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p109 no numbers"</span><span class="p">,</span>
+     <span class="s2">"To never ask each other what we make, owe, give, or have saved. Money is personal, and dignity matters more than disclosure"</span><span class="p">,</span>
+     <span class="s2">"To never ask each other what we make, owe, give, or have saved. You and God know your numbers and that's what counts"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p109 encouragement"</span><span class="p">,</span>
+     <span class="s2">"To be givers, not takers. We want to grow, and to help each other take one faithful next step"</span><span class="p">,</span>
+     <span class="s2">"To give encouragement not just receive it. We want to grow, and to help each other make one faithful next step"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p118 split"</span><span class="p">,</span>
+     <span class="s2">"You can always split into two circles after the video and come back together to pray"</span><span class="p">,</span>
+     <span class="s2">"You can always split into two circles after the video and come back together to pray"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p122 thirty-day"</span><span class="p">,</span>
+     <span class="s2">"Do the thirty-day tracking exercise together"</span><span class="p">,</span>
+     <span class="s2">"Do the thirty-day spending plan together"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p122 forty"</span><span class="p">,</span>
+     <span class="s2">"The forty-two days end, but the ten seconds each morning"</span><span class="p">,</span>
+     <span class="s2">"The forty days end, but the ten seconds each morning"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p125 expert"</span><span class="p">,</span>
+     <span class="s2">"You are not the teacher, and you are not the financial advisor"</span><span class="p">,</span>
+     <span class="s2">"You are not the teacher, and you don't have to be a financial expert"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p128 alone"</span><span class="p">,</span>
+     <span class="s2">"Remember you're not alone. God is with you, and so is your church. You're not carrying this by yourself"</span><span class="p">,</span>
+     <span class="s2">"Remember you're not alone. God is with you, and so is your church. And hopefully a co-leader as well.You're not carrying this by yourself"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p128 curriculum"</span><span class="p">,</span>
+     <span class="s2">"Trust the flow of each session, the questions, the exercise, the story"</span><span class="p">,</span>
+     <span class="s2">"Trust the flow of the curriculum, the questions, the exercise, the story"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"p116 verse cards"</span><span class="p">,</span>
+     <span class="s2">"SESSION ONE The Ownership Question"</span><span class="p">,</span>
+     <span class="s2">"SESSION ONE The Ownership Question"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'label'</span><span class="si">:</span><span class="s2">22</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'inA'</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'inB'</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  verdict"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'-'</span> <span class="o">*</span> <span class="mi">90</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">bw</span><span class="p">,</span> <span class="n">cw</span> <span class="ow">in</span> <span class="n">probes</span><span class="p">:</span>
+    <span class="n">aB</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">best_sub</span><span class="p">(</span><span class="n">bw</span><span class="p">,</span> <span class="n">ATEXT</span><span class="p">)</span>
+    <span class="n">aC</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">best_sub</span><span class="p">(</span><span class="n">cw</span><span class="p">,</span> <span class="n">ATEXT</span><span class="p">)</span>
+    <span class="n">bB</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">best_sub</span><span class="p">(</span><span class="n">bw</span><span class="p">,</span> <span class="n">BTEXT</span><span class="p">)</span>
+    <span class="n">bC</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">best_sub</span><span class="p">(</span><span class="n">cw</span><span class="p">,</span> <span class="n">BTEXT</span><span class="p">)</span>
+    <span class="c1"># which wording does A support?</span>
+    <span class="k">if</span> <span class="n">aB</span> <span class="o">-</span> <span class="n">aC</span> <span class="o">&gt;</span> <span class="mf">0.03</span><span class="p">:</span>
+        <span class="n">av</span> <span class="o">=</span> <span class="s1">'A=B'</span>
+    <span class="k">elif</span> <span class="n">aC</span> <span class="o">-</span> <span class="n">aB</span> <span class="o">&gt;</span> <span class="mf">0.03</span><span class="p">:</span>
+        <span class="n">av</span> <span class="o">=</span> <span class="s1">'A=C'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">av</span> <span class="o">=</span> <span class="s1">'A=?'</span>
+    <span class="n">verdict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'A=B'</span><span class="p">:</span> <span class="s1">'C changed it (team/layout edit)'</span><span class="p">,</span>
+               <span class="s1">'A=C'</span><span class="p">:</span> <span class="s1">'B changed it (ALLEN EDIT)'</span><span class="p">,</span>
+               <span class="s1">'A=?'</span><span class="p">:</span> <span class="s1">'A absent/ambiguous'</span><span class="p">}[</span><span class="n">av</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s2">22</span><span class="si">}</span><span class="s2"> B:</span><span class="si">{</span><span class="n">aB</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> C:</span><span class="si">{</span><span class="n">aC</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">av</span><span class="si">}</span><span class="s2">  -&gt; </span><span class="si">{</span><span class="n">verdict</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/merge/attrib.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

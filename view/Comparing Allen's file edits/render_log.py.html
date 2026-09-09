@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>render_log.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Comparing Allen&#x27;s file edits</div>
+<h1>render_log.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">4 KB</span>
+<a class="btn" href="../../artifacts/Comparing%20Allen%27s%20file%20edits/render_log.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Generator that renders the change log markdown from records</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="n">recs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">'records.json'</span><span class="p">))</span>
+
+<span class="n">ORDER</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Leader Guide — Front Matter'</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">'Leader Guide — Session </span><span class="si">%d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)]</span> \
+      <span class="o">+</span> <span class="p">[</span><span class="s1">'Participant Guide — Front Matter'</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">'Participant Guide — Session </span><span class="si">%d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">flags_for</span><span class="p">(</span><span class="n">rec</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s1">'new'</span><span class="p">]</span>
+    <span class="n">old</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s1">'old'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">'Plan spending on'</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'FIX'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'first grade,.'</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'FIX'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">' -- '</span> <span class="ow">in</span> <span class="n">new</span> <span class="ow">and</span> <span class="s1">' -- '</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">old</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'FIX'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'start sharing -- the business model'</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'FIX'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'I have had the honest money conversations'</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'FIX'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">'who owns it\*\*\.'</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'FIX'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'In this session'</span> <span class="ow">in</span> <span class="n">new</span> <span class="ow">or</span> <span class="s1">'the session'</span> <span class="ow">in</span> <span class="n">new</span> <span class="ow">or</span> <span class="s1">'meeting'</span> <span class="ow">in</span> <span class="n">new</span> <span class="ow">or</span> <span class="s1">'Save question 10 for a strong meeting'</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\bnight\b|\bTonight\b|\btonight\b'</span><span class="p">,</span> <span class="n">old</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'EVE'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ctx</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">pre</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'pre'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="n">width</span><span class="p">:])</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="n">width</span><span class="p">])</span>
+    <span class="n">frm</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s1">'from'</span><span class="p">]</span>
+    <span class="n">to</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s1">'to'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">'tag'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'insert'</span><span class="p">:</span>
+        <span class="n">was</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">post</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">post</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">c</span><span class="p">[</span><span class="s1">'tag'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'delete'</span><span class="p">:</span>
+        <span class="n">was</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">frm</span><span class="p">,</span> <span class="n">post</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">post</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">was</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">frm</span><span class="p">,</span> <span class="n">post</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">post</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">was</span><span class="p">,</span> <span class="n">now</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">locator</span><span class="p">(</span><span class="n">rec</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s1">'new'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'&gt; LEADER'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'Leader cue'</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^(\d+)\.\s'</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'</span><span class="se">\\</span><span class="s1">'</span><span class="p">,</span> <span class="s1">''</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">'Item </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'**Day'</span><span class="p">):</span>
+        <span class="n">mm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\*\*Day (\d+)'</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">'Day </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">mm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'**Time guide'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'Time guide'</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'**What'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\*'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'**On '</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\*'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'**Big Idea'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'Big Idea'</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'**Icebreaker'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'Icebreaker'</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'</span><span class="se">\\</span><span class="s1">"Father'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'Prayer'</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'</span><span class="se">\\</span><span class="s1">"Welcome'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">'Welcome script'</span>
+    <span class="k">if</span> <span class="s1">'Read one aloud to open your time'</span> <span class="ow">in</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">'Opening Story intro'</span>
+    <span class="k">return</span> <span class="s1">'Paragraph'</span>
+
+<span class="n">groups</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ORDER</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">recs</span><span class="p">:</span>
+    <span class="n">groups</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">'section'</span><span class="p">],</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">append</span>
+
+<span class="n">W</span><span class="p">(</span><span class="s1">'# Generous Living — Adult Curriculum'</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">'## Allen</span><span class="se">\'</span><span class="s1">s Edit Log: July 21 snapshot → current Shared file'</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">'Compared `july_21_-_Copy_of_Shared_-_Generous_Living_-_Adult_Curriculum_-_July_21_1_39_PM.docx` '</span>
+  <span class="s1">'(older) against `Shared_-_Generous_Living_-_Adult_Curriculum_.docx` (current). Neither file carries '</span>
+  <span class="s1">'tracked changes or comments, so this list was reconstructed by text comparison.'</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">'**127 paragraphs changed. No paragraph added, deleted, or moved. No heading, title, subtitle, '</span>
+  <span class="s1">'fill-in blank, assessment item, or Day listing was restructured.** Everything below is line editing.'</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">'Page numbers are from the current file rendered at 84 pages. Word repaginates slightly against '</span>
+  <span class="s1">'other renderers, so treat these as accurate to within a page.'</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">'Flags: **[FIX]** = introduces an error, revert or correct. **[EVE]** = part of the evening-neutral '</span>
+  <span class="s1">'pass, keep but finish it.'</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">'---'</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+
+<span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">ORDER</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="n">W</span><span class="p">(</span><span class="s1">'## </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">sec</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">fl</span> <span class="o">=</span> <span class="n">flags_for</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="p">(</span><span class="s1">' **[</span><span class="si">%s</span><span class="s1">]**'</span> <span class="o">%</span> <span class="s1">']** **['</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fl</span><span class="p">))</span> <span class="k">if</span> <span class="n">fl</span> <span class="k">else</span> <span class="s1">''</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'**p. </span><span class="si">%d</span><span class="s1"> — </span><span class="si">%s</span><span class="s1">**</span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">'page'</span><span class="p">],</span> <span class="n">locator</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">tag</span><span class="p">))</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">'changes'</span><span class="p">]:</span>
+            <span class="n">was</span><span class="p">,</span> <span class="n">now</span> <span class="o">=</span> <span class="n">ctx</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">W</span><span class="p">(</span><span class="s1">'- was: </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">was</span><span class="p">)</span>
+            <span class="n">W</span><span class="p">(</span><span class="s1">'- now: </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">now</span><span class="p">)</span>
+            <span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">W</span><span class="p">(</span><span class="s1">'---'</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+
+<span class="n">W</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">W</span><span class="p">(</span><span class="s1">'Total discrete word-level changes: </span><span class="si">%d</span><span class="s1"> across 127 paragraphs.'</span> <span class="o">%</span> <span class="n">total</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/Allen_Edit_Log_Generous_Living_Adult.md'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'changes:'</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/cmp/render_log.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

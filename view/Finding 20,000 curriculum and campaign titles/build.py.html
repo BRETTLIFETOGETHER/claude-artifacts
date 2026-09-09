@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">13 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the navy/gold HTML catalog from the title data</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data</span><span class="w"> </span><span class="kn">import</span> <span class="n">EASTER</span><span class="p">,</span> <span class="n">CHRISTMAS</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">esc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">)</span>
+
+<span class="n">E_TOTAL</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">EASTER</span><span class="p">)</span>
+<span class="n">C_TOTAL</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CHRISTMAS</span><span class="p">)</span>
+<span class="n">TOTAL</span> <span class="o">=</span> <span class="n">E_TOTAL</span> <span class="o">+</span> <span class="n">C_TOTAL</span>
+<span class="n">NCAT</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">EASTER</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">CHRISTMAS</span><span class="p">)</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{</span>
+<span class="s2">  --navy:#101a33; --navy-2:#16213d; --navy-3:#1c2a4a;</span>
+<span class="s2">  --gold:#b8934e; --gold-lt:#d9bc82; --cream:#f7f3ea;</span>
+<span class="s2">  --rule:rgba(184,147,78,.28);</span>
+<span class="s2">}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--navy);color:var(--cream);</span>
+<span class="s2">  font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.65;</span>
+<span class="s2">  -webkit-text-size-adjust:100%}</span>
+<span class="s2">.wrap{max-width:860px;margin:0 auto;padding:0 22px}</span>
+<span class="s2">h1,h2,h3,.disp{font-family:'Playfair Display',Georgia,serif;font-weight:600;line-height:1.15;margin:0}</span>
+<span class="s2">.label{font-family:'Lato',system-ui,sans-serif;font-size:11px;letter-spacing:.22em;</span>
+<span class="s2">  text-transform:uppercase;color:var(--gold);font-weight:700}</span>
+
+<span class="s2">/* cover */</span>
+<span class="s2">.cover{padding:78px 0 62px;border-bottom:1px solid var(--rule);text-align:center}</span>
+<span class="s2">.cover .label{display:block;margin-bottom:26px}</span>
+<span class="s2">.cover h1{font-size:52px;color:var(--cream)}</span>
+<span class="s2">.cover h1 em{display:block;font-style:italic;font-size:30px;color:var(--gold-lt);margin-top:12px;font-weight:400}</span>
+<span class="s2">.cover .dek{font-size:21px;color:#e6dfd0;margin:26px auto 0;max-width:600px}</span>
+<span class="s2">.brandline{font-family:'Lato',system-ui,sans-serif;font-size:11px;letter-spacing:.18em;</span>
+<span class="s2">  text-transform:uppercase;color:#b9b0a0;margin-top:34px}</span>
+
+<span class="s2">/* stats */</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--rule);</span>
+<span class="s2">  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.stat{flex:1 1 25%;min-width:130px;background:var(--navy);padding:26px 14px;text-align:center}</span>
+<span class="s2">.stat b{display:block;font-family:'Playfair Display',serif;font-size:36px;color:var(--gold-lt);font-weight:600}</span>
+<span class="s2">.stat span{font-family:'Lato',system-ui,sans-serif;font-size:10px;letter-spacing:.18em;</span>
+<span class="s2">  text-transform:uppercase;color:#b9b0a0}</span>
+
+<span class="s2">/* blocks */</span>
+<span class="s2">.block{padding:60px 0;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.block.alt{background:var(--navy-2)}</span>
+<span class="s2">.block h2{font-size:34px;margin-bottom:8px}</span>
+<span class="s2">.block h2 em{font-style:italic;color:var(--gold-lt)}</span>
+<span class="s2">.block p{color:#e6dfd0;margin:16px 0 0}</span>
+<span class="s2">.drop::first-letter{font-family:'Playfair Display',serif;float:left;font-size:64px;</span>
+<span class="s2">  line-height:.82;padding:6px 12px 0 0;color:var(--gold)}</span>
+<span class="s2">.note{border-left:2px solid var(--gold);padding:6px 0 6px 20px;margin-top:28px;color:#ded6c6}</span>
+<span class="s2">.note .label{display:block;margin-bottom:6px}</span>
+
+<span class="s2">/* index */</span>
+<span class="s2">.idx{margin-top:30px;border-top:1px solid var(--rule)}</span>
+<span class="s2">.idx a{display:flex;justify-content:space-between;gap:16px;align-items:baseline;</span>
+<span class="s2">  padding:15px 2px;border-bottom:1px solid rgba(184,147,78,.14);</span>
+<span class="s2">  color:var(--cream);text-decoration:none}</span>
+<span class="s2">.idx a:hover{color:var(--gold-lt)}</span>
+<span class="s2">.idx .n{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.14em;color:var(--gold);</span>
+<span class="s2">  min-width:30px}</span>
+<span class="s2">.idx .t{flex:1;font-size:20px}</span>
+<span class="s2">.idx .c{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.12em;color:#9d958a}</span>
+
+<span class="s2">/* part head */</span>
+<span class="s2">.parthead{padding:66px 0 0}</span>
+<span class="s2">.parthead .label{display:block;margin-bottom:14px}</span>
+<span class="s2">.parthead h2{font-size:42px}</span>
+<span class="s2">.parthead .rule{height:1px;background:var(--rule);margin-top:26px}</span>
+
+<span class="s2">/* category */</span>
+<span class="s2">.cat{padding:52px 0 8px}</span>
+<span class="s2">.cat .num{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);</span>
+<span class="s2">  letter-spacing:.1em;margin-bottom:6px}</span>
+<span class="s2">.cat h3{font-size:29px}</span>
+<span class="s2">.cat .sub{color:#c8c0b2;font-size:18px;margin-top:8px;max-width:640px;font-style:italic}</span>
+<span class="s2">.cat .count{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.18em;</span>
+<span class="s2">  text-transform:uppercase;color:#9d958a;margin-top:14px}</span>
+
+<span class="s2">/* entries */</span>
+<span class="s2">.entries{margin-top:22px;border-top:1px solid var(--rule)}</span>
+<span class="s2">.entry{display:flex;gap:16px;padding:14px 2px;border-bottom:1px solid rgba(184,147,78,.13)}</span>
+<span class="s2">.entry .i{font-family:'Lato',sans-serif;font-size:11px;color:var(--gold);min-width:26px;</span>
+<span class="s2">  padding-top:6px;letter-spacing:.08em}</span>
+<span class="s2">.entry .body</span><span class="si">{flex:1}</span>
+<span class="s2">.entry .ti{font-family:'Playfair Display',serif;font-size:21px;color:var(--cream);line-height:1.3}</span>
+<span class="s2">.entry .st{font-size:17px;color:#c3bbad;margin-top:3px;line-height:1.45}</span>
+<span class="s2">.entry.hide{display:none}</span>
+
+<span class="s2">/* search */</span>
+<span class="s2">.search{position:sticky;top:0;z-index:20;background:var(--navy-3);</span>
+<span class="s2">  border-bottom:1px solid var(--rule);padding:12px 0}</span>
+<span class="s2">.search input{width:100%;background:var(--navy);color:var(--cream);</span>
+<span class="s2">  border:1px solid var(--rule);border-radius:2px;padding:12px 14px;</span>
+<span class="s2">  font-family:'Cormorant Garamond',serif;font-size:18px}</span>
+<span class="s2">.search input::placeholder{color:#8d8579}</span>
+<span class="s2">.search .hits{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;</span>
+<span class="s2">  text-transform:uppercase;color:#9d958a;margin-top:8px}</span>
+
+<span class="s2">/* closing */</span>
+<span class="s2">.closing{padding:70px 0;text-align:center;background:var(--navy-2)}</span>
+<span class="s2">.closing .q{font-family:'Playfair Display',serif;font-style:italic;font-size:27px;</span>
+<span class="s2">  color:var(--gold-lt);max-width:640px;margin:0 auto;line-height:1.4}</span>
+<span class="s2">.closing .attr{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.2em;</span>
+<span class="s2">  text-transform:uppercase;color:#9d958a;margin-top:24px}</span>
+<span class="s2">footer{padding:40px 0 60px;text-align:center;font-family:'Lato',sans-serif;</span>
+<span class="s2">  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8d8579}</span>
+
+<span class="s2">@media(max-width:620px){</span>
+<span class="s2">  body{font-size:18px}</span>
+<span class="s2">  .cover{padding:54px 0 44px}</span>
+<span class="s2">  .cover h1{font-size:36px}</span>
+<span class="s2">  .cover h1 em{font-size:22px}</span>
+<span class="s2">  .cover .dek{font-size:19px}</span>
+<span class="s2">  .block h2,.parthead h2{font-size:29px}</span>
+<span class="s2">  .cat h3{font-size:25px}</span>
+<span class="s2">  .entry .ti{font-size:19px}</span>
+<span class="s2">  .stat b{font-size:29px}</span>
+<span class="s2">  .idx .t{font-size:18px}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="n">JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">(function(){</span>
+<span class="s2">  var box = document.getElementById('q');</span>
+<span class="s2">  var hits = document.getElementById('hits');</span>
+<span class="s2">  var entries = document.querySelectorAll('.entry');</span>
+<span class="s2">  var cats = document.querySelectorAll('.cat-wrap');</span>
+<span class="s2">  box.addEventListener('input', function(){</span>
+<span class="s2">    var v = box.value.toLowerCase().trim();</span>
+<span class="s2">    var shown = 0;</span>
+<span class="s2">    for (var i = 0; i &lt; entries.length; i++){</span>
+<span class="s2">      var hay = entries[i].getAttribute('data-s');</span>
+<span class="s2">      var ok = (v === '' || hay.indexOf(v) !== -1);</span>
+<span class="s2">      if (ok){ entries[i].classList.remove('hide'); shown++; }</span>
+<span class="s2">      else { entries[i].classList.add('hide'); }</span>
+<span class="s2">    }</span>
+<span class="s2">    for (var j = 0; j &lt; cats.length; j++){</span>
+<span class="s2">      var vis = cats[j].querySelectorAll('.entry:not(.hide)').length;</span>
+<span class="s2">      cats[j].style.display = (vis === 0 &amp;&amp; v !== '') ? 'none' : '';</span>
+<span class="s2">    }</span>
+<span class="s2">    hits.textContent = (v === '') ? (shown + ' titles') : (shown + ' of ' + entries.length + ' titles');</span>
+<span class="s2">  });</span>
+<span class="s2">})();</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cat_block</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="cat-wrap" id="c'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'"&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap cat"&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="num"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'</span><span class="si">%02d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h3&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/h3&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="sub"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">blurb</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="count"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span> <span class="o">+</span> <span class="s1">' single-Sunday titles&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="entries"&gt;'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">hay</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'"'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="entry" data-s="'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">hay</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'"&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="i"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'</span><span class="si">%02d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="body"&gt;&lt;div class="ti"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="st"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;!DOCTYPE html&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;title&gt;Catalytic Sundays &amp;mdash; Easter &amp;amp; Christmas Edition | LifeTogether&lt;/title&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;style&gt;'</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s1">'&lt;/style&gt;&lt;/head&gt;&lt;body&gt;'</span><span class="p">)</span>
+
+<span class="c1"># COVER</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap cover"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="label"&gt;The Campaign Format System &amp;middot; Single-Message Library&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h1&gt;Catalytic Sundays&lt;em&gt;Easter &amp;amp; Christmas Edition&lt;/em&gt;&lt;/h1&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="dek"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">TOTAL</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' standalone messages for the two Sundays that carry the most weight in the church year &amp;mdash; and for every service that surrounds them.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="brandline"&gt;LifeTogether &amp;middot; 25 Years &amp;middot; 500+ Churches &amp;middot; 50M+ Campaigns&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="c1"># STATS</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stats"&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">NCAT</span><span class="p">,</span> <span class="s2">"Categories"</span><span class="p">),</span> <span class="p">(</span><span class="n">TOTAL</span><span class="p">,</span> <span class="s2">"Titles"</span><span class="p">),</span> <span class="p">(</span><span class="n">E_TOTAL</span><span class="p">,</span> <span class="s2">"Easter"</span><span class="p">),</span> <span class="p">(</span><span class="n">C_TOTAL</span><span class="p">,</span> <span class="s2">"Christmas"</span><span class="p">)]:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stat"&gt;&lt;b&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;&lt;span&gt;'</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="c1"># INTRO</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="block"&gt;&lt;div class="wrap"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="label"&gt;Why This Library Exists&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;The two Sundays you &lt;em&gt;cannot&lt;/em&gt; improvise&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="drop"&gt;Every church builds series. Almost no church builds Easter and Christmas the same way, because these two Sundays do not behave like the rest of the calendar. They are not week three of anything. Each one has to stand entirely on its own, in front of the largest and least-churched room a pastor will face all year, with a message that has been preached ten thousand times and still has to land like the first time.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;The existing Catalytic Sundays library holds 510 standalone titles distilled from the thirty thematic campaign categories. It is a strong collection. It also contains no Easter titles and no Christmas titles, because those categories were built around themes rather than dates. This edition closes that gap.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;Sixteen categories, twenty titles each, every one written to carry a full service by itself. No series runway, no devotional required, no small-group companion assumed. Eight categories run the Easter arc from Ash Wednesday through the Sunday after. Eight run the Christmas arc from Advent through the first Sunday of the new year. The two guest categories &amp;mdash; Easter for the Skeptic and Christmas for the Skeptic &amp;mdash; are written for the person who was dragged in by family and is deciding, somewhere around the third song, whether any of this is real.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="note"&gt;&lt;span class="label"&gt;How to use a Catalytic Sunday&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p style="margin-top:0"&gt;&lt;strong&gt;As a standalone:&lt;/strong&gt; one message, one Sunday, complete in itself. &lt;strong&gt;As a launch:&lt;/strong&gt; open a season with the single biggest idea, then let a 40-day, 30-day, 21-day, or 7-day format carry the follow-through. &lt;strong&gt;As a capstone:&lt;/strong&gt; close the arc with its most concentrated statement.&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="c1"># INDEX</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="block alt"&gt;&lt;div class="wrap"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="label"&gt;Contents&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;Sixteen categories &lt;em&gt;at a glance&lt;/em&gt;&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="idx"&gt;'</span><span class="p">)</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">EASTER</span><span class="p">:</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;a href="#c'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'"&gt;&lt;span class="n"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'</span><span class="si">%02d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;span class="t"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;span class="c"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/a&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CHRISTMAS</span><span class="p">:</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;a href="#c'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'"&gt;&lt;span class="n"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'</span><span class="si">%02d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;span class="t"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;span class="c"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/a&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="c1"># SEARCH</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="search"&gt;&lt;div class="wrap"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;input id="q" type="search" placeholder="Search all '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">TOTAL</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' titles and subtitles&amp;hellip;" autocomplete="off"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="hits" id="hits"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">TOTAL</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' titles&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="c1"># PART ONE</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap parthead"&gt;&lt;span class="label"&gt;Part One&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;The Easter Arc&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p style="color:#e6dfd0"&gt;Eight categories, '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">E_TOTAL</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' titles &amp;mdash; from the ashes that open Lent to the Sunday after Easter, when the crowd is gone and the follow-through decides whether any of it held.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="rule"&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">EASTER</span><span class="p">:</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cat_block</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span><span class="p">))</span>
+
+<span class="c1"># PART TWO</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap parthead"&gt;&lt;span class="label"&gt;Part Two&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;The Christmas Arc&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p style="color:#e6dfd0"&gt;Eight categories, '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">C_TOTAL</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' titles &amp;mdash; from the first candle of Advent to the first Sunday of the new year, including the two services most churches under-resource: the skeptic</span><span class="se">\'</span><span class="s1">s Christmas and the grieving one.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="rule"&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CHRISTMAS</span><span class="p">:</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cat_block</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span><span class="p">))</span>
+
+<span class="c1"># CLOSING</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="closing"&gt;&lt;div class="wrap"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="q"&gt;A church does not launch a program on Easter morning. It releases a movement, and then spends the rest of the year proving it meant it.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="attr"&gt;Brett Eastman &amp;middot; LifeTogether&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; Catalytic Sundays &amp;middot; Easter &amp;amp; Christmas Edition &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NCAT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Categories &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">TOTAL</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Titles&lt;/div&gt;&lt;/footer&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;script&gt;'</span> <span class="o">+</span> <span class="n">JS</span> <span class="o">+</span> <span class="s1">'&lt;/script&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/body&gt;&lt;/html&gt;'</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/catalytic-sundays-easter-christmas.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"categories:"</span><span class="p">,</span> <span class="n">NCAT</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"easter:"</span><span class="p">,</span> <span class="n">E_TOTAL</span><span class="p">,</span> <span class="s2">"christmas:"</span><span class="p">,</span> <span class="n">C_TOTAL</span><span class="p">,</span> <span class="s2">"total:"</span><span class="p">,</span> <span class="n">TOTAL</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

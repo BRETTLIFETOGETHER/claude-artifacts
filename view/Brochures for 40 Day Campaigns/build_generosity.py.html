@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_generosity.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Brochures for 40 Day Campaigns</div>
+<h1>build_generosity.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">17 KB</span>
+<a class="btn" href="../../artifacts/Brochures%20for%2040%20Day%20Campaigns/build_generosity.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Builder for the Generosity Collection (titles 1-5)</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">brochure_template</span><span class="w"> </span><span class="kn">import</span> <span class="n">FONTS</span><span class="p">,</span> <span class="n">CSS</span><span class="p">,</span> <span class="n">campaign_page</span>
+
+<span class="n">campaigns</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"01"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#2e7d6b"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#d4eae5"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Generous"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Living"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"Generosity not as an act, but as a way of life"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"We instinctively treat money and resources like a reservoir </span><span class="se">\u2014</span><span class="s2"> something to dam up, guard, and slowly accumulate, as if security comes from how much we can hold. But reservoirs, left to themselves, grow stagnant. And a life organized around keeping rarely produces the joy it quietly promises."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Generous Living offers a different design entirely: a life that flows. Over forty days your people learn to live as conduits rather than containers </span><span class="se">\u2014</span><span class="s2"> letting God</span><span class="se">\u2019</span><span class="s2">s provision move through them to others </span><span class="se">\u2014</span><span class="s2"> and discover the strange math of the kingdom, where the refreshed are those who refresh."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"A generous person will prosper; whoever refreshes others will be refreshed."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"Proverbs 11:25 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Generosity isn</span><span class="se">\u2019</span><span class="s2">t something you do; it</span><span class="se">\u2019</span><span class="s2">s someone you become. The generous life is a river, not a reservoir </span><span class="se">\u2014</span><span class="s2"> and rivers are the only water that stays fresh."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Lifestyle"</span><span class="p">,</span><span class="s2">"Generosity"</span><span class="p">,</span><span class="s2">"Joy"</span><span class="p">,</span><span class="s2">"Flow"</span><span class="p">,</span><span class="s2">"Impact"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"Proverbs 11:24</span><span class="se">\u2013</span><span class="s2">25; Luke 6:38"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"The River, Not the Reservoir"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Lifestyle giving, flow, impact"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"Reservoir or River?"</span><span class="p">,</span><span class="s2">"Two very different ways to relate to everything you have."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"The Stagnation of Keeping"</span><span class="p">,</span><span class="s2">"Why a life built on holding quietly goes stale."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Becoming a Conduit"</span><span class="p">,</span><span class="s2">"Letting God</span><span class="se">\u2019</span><span class="s2">s provision flow through you to others."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"The Kingdom</span><span class="se">\u2019</span><span class="s2">s Strange Math"</span><span class="p">,</span><span class="s2">"How giving leads to gaining and keeping leads to losing."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"Refreshed by Refreshing"</span><span class="p">,</span><span class="s2">"Discovering the joy that only generosity unlocks."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"A Generous Life"</span><span class="p">,</span><span class="s2">"Living, for good, as a river rather than a reservoir."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each of the 40 days offers one small way to let something flow through you </span><span class="se">\u2014</span><span class="s2"> a dollar, an hour, a kindness </span><span class="se">\u2014</span><span class="s2"> plus a partner check-in and a prayer, until generosity becomes your default."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"The people most weighed down by money are rarely the ones who give it away. Generous living is lighter, freer, and quietly happier."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Generous Living and help your people become rivers, not reservoirs."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"02"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#b8902f"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#f1e8cd"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Open"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Hands"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"The cheerful heart behind every open-handed gift"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"Plenty of us give </span><span class="se">\u2014</span><span class="s2"> but we give with a closed heart even when our hands are open. We give reluctantly, out of guilt or pressure, calculating the minimum, half-resenting the ask. And giving like that, Scripture suggests, misses almost the entire point of generosity."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Open Hands is about the heart behind the gift. Over forty days your people move from reluctant, pressured giving to the cheerful, freehearted generosity God actually delights in </span><span class="se">\u2014</span><span class="s2"> discovering the sow-and-reap rhythm of His economy and the deep gladness of giving on purpose."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"Each of you should give what you have decided in your heart to give</span><span class="se">\u2026</span><span class="s2"> for God loves a cheerful giver."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"2 Corinthians 9:7 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"God isn</span><span class="se">\u2019</span><span class="s2">t only interested in what leaves your hand. He</span><span class="se">\u2019</span><span class="s2">s interested in what</span><span class="se">\u2019</span><span class="s2">s happening in your heart while it does. The open hand and the cheerful heart belong together."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Cheerful Giving"</span><span class="p">,</span><span class="s2">"Heart"</span><span class="p">,</span><span class="s2">"Sow &amp;amp; Reap"</span><span class="p">,</span><span class="s2">"Joy"</span><span class="p">,</span><span class="s2">"Freedom"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"2 Corinthians 9:6</span><span class="se">\u2013</span><span class="s2">8; Luke 6:38"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"The Cheerful Open Hand"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Cheerful giving, heart posture"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"The Reluctant Giver"</span><span class="p">,</span><span class="s2">"Why grudging generosity misses the point entirely."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"A Cheerful Heart"</span><span class="p">,</span><span class="s2">"The kind of giver God actually loves."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Sow and Reap"</span><span class="p">,</span><span class="s2">"Understanding the rhythm of God</span><span class="se">\u2019</span><span class="s2">s economy."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"Decided in the Heart"</span><span class="p">,</span><span class="s2">"Moving from impulse and pressure to intentional giving."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"No Strings Attached"</span><span class="p">,</span><span class="s2">"Giving freely, without expecting a return."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"The Glad Hand"</span><span class="p">,</span><span class="s2">"Living with a heart as open as your hand."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each of the 40 days invites one act of cheerful, decided giving and a quick heart-check on the motive behind it, with a partner check-in and a prayer."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"You can give a fortune and gain nothing if your heart stays closed. Open hands begin with an open heart."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Open Hands and help your people become the cheerful givers God delights in."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"03"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#c14d33"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#f5ddd2"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Crazy"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Generosity"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"The extravagant giving the world calls foolish and heaven calls beautiful"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"Most of our giving is safe, sensible, and small </span><span class="se">\u2014</span><span class="s2"> calculated to be generous enough to feel good but never enough to feel it. But the generosity Scripture celebrates is almost reckless: the widow</span><span class="se">\u2019</span><span class="s2">s last coins, the broken jar of perfume, churches in deep poverty begging for the privilege of giving beyond their means."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Crazy Generosity dares your people past sensible. Over forty days they</span><span class="se">\u2019</span><span class="s2">re invited into the kind of extravagant, joyful, faith-filled giving the world calls foolish and heaven calls beautiful </span><span class="se">\u2014</span><span class="s2"> the giving that changes the giver as much as the gift changes the world."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"They gave as much as they were able, and even beyond their ability."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"2 Corinthians 8:3 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Sensible generosity rarely changes anyone. It</span><span class="se">\u2019</span><span class="s2">s the </span><span class="se">\u201c</span><span class="s2">crazy</span><span class="se">\u201d</span><span class="s2"> gift </span><span class="se">\u2014</span><span class="s2"> the one that costs, that surprises, that makes no financial sense </span><span class="se">\u2014</span><span class="s2"> that breaks something open in us and in the world."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Radical"</span><span class="p">,</span><span class="s2">"Sacrificial"</span><span class="p">,</span><span class="s2">"Extravagant"</span><span class="p">,</span><span class="s2">"Faith"</span><span class="p">,</span><span class="s2">"Impact"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"2 Corinthians 8:1</span><span class="se">\u2013</span><span class="s2">5; Mark 12:41</span><span class="se">\u2013</span><span class="s2">44"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"Beyond Their Ability"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Radical generosity, sacrifice"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"The Trouble with Sensible"</span><span class="p">,</span><span class="s2">"Why safe giving rarely changes anything."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"Beyond Their Ability"</span><span class="p">,</span><span class="s2">"The reckless generosity of the Macedonian church."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"The Widow</span><span class="se">\u2019</span><span class="s2">s Everything"</span><span class="p">,</span><span class="s2">"When the smallest gift turns out to be the largest."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"Breaking the Jar"</span><span class="p">,</span><span class="s2">"Extravagance that looks like waste and is actually worship."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"The Joy of Going Too Far"</span><span class="p">,</span><span class="s2">"Why over-the-top giving produces over-the-top joy."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"A Crazy-Generous Church"</span><span class="p">,</span><span class="s2">"Becoming a people known for giving beyond reason."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each of the 40 days stretches generosity one notch past comfortable and offers one bold, joyful step, with a partner check-in and a prayer."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"No one is changed by the gift they barely noticed giving. It</span><span class="se">\u2019</span><span class="s2">s the generosity that costs something that sets us free."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Crazy Generosity and help your people give in ways the world won</span><span class="se">\u2019</span><span class="s2">t understand."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"04"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#9c4a6a"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#f0dce4"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Living"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Generously"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"Being generous with everything </span><span class="se">\u2014</span><span class="s2"> not just money"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"When we hear </span><span class="se">\u201c</span><span class="s2">generosity,</span><span class="se">\u201d</span><span class="s2"> we almost always think money. But some of the stingiest people are generous with their checkbooks and miserly with everything else </span><span class="se">\u2014</span><span class="s2"> their time, their patience, their praise, their forgiveness, their welcome. True generosity turns out to be far bigger than what</span><span class="se">\u2019</span><span class="s2">s in our wallets."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Living Generously expands the whole idea. Over forty days your people learn to be generous in everything </span><span class="se">\u2014</span><span class="s2"> with their time, their words, their hospitality, their grace, their encouragement </span><span class="se">\u2014</span><span class="s2"> until generosity becomes not just something they fund, but the way they treat every person they meet."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"Give, and it will be given to you. A good measure, pressed down, shaken together and running over."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"Luke 6:38 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Generosity was never meant to stop at money. The most generous people give freely with their time, their words, and their grace </span><span class="se">\u2014</span><span class="s2"> everything they have, not just everything in their account."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Time"</span><span class="p">,</span><span class="s2">"Words"</span><span class="p">,</span><span class="s2">"Hospitality"</span><span class="p">,</span><span class="s2">"Grace"</span><span class="p">,</span><span class="s2">"Generous Spirit"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"Luke 6:38; Romans 12:13"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"Generous in Everything"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Everyday generosity, beyond money"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"More Than Money"</span><span class="p">,</span><span class="s2">"Why generosity is far bigger than your bank account."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"Generous with Time"</span><span class="p">,</span><span class="s2">"Giving people the gift of your unhurried presence."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Generous with Words"</span><span class="p">,</span><span class="s2">"Becoming lavish with encouragement and praise."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"Generous with Grace"</span><span class="p">,</span><span class="s2">"Forgiving freely and assuming the best."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"Generous with Welcome"</span><span class="p">,</span><span class="s2">"Opening your table and your home."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"A Generous Way of Life"</span><span class="p">,</span><span class="s2">"Treating everyone you meet with open-handed kindness."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each of the 40 days names one non-financial way to be generous </span><span class="se">\u2014</span><span class="s2"> a word, an hour, a welcome, a second chance </span><span class="se">\u2014</span><span class="s2"> and invites your people to give it, with a partner check-in and a prayer."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"People may forget what you funded, but they never forget how generously you treated them. This is a generosity everyone can practice, today."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Living Generously and help your people be generous with everything, not just money."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+ <span class="s2">"num"</span><span class="p">:</span><span class="s2">"05"</span><span class="p">,</span><span class="s2">"accent"</span><span class="p">:</span><span class="s2">"#2f5a9e"</span><span class="p">,</span><span class="s2">"accent_soft"</span><span class="p">:</span><span class="s2">"#d9e2f1"</span><span class="p">,</span>
+ <span class="s2">"title_a"</span><span class="p">:</span><span class="s2">"Courageous"</span><span class="p">,</span><span class="s2">"title_b"</span><span class="p">:</span><span class="s2">"Generosity"</span><span class="p">,</span>
+ <span class="s2">"subtitle"</span><span class="p">:</span><span class="s2">"Giving boldly, before you feel ready, and trusting God"</span><span class="p">,</span>
+ <span class="s2">"problem"</span><span class="p">:</span><span class="s2">"For many of us, the real barrier to generosity isn</span><span class="se">\u2019</span><span class="s2">t selfishness </span><span class="se">\u2014</span><span class="s2"> it</span><span class="se">\u2019</span><span class="s2">s fear. Fear that there won</span><span class="se">\u2019</span><span class="s2">t be enough. Fear of the future. Fear of giving and regretting it. So we hold back, give cautiously, and wait for a financial security that never quite seems to arrive."</span><span class="p">,</span>
+ <span class="s2">"promise"</span><span class="p">:</span><span class="s2">"Courageous Generosity confronts that fear with faith. Over forty days your people learn to give before they feel ready </span><span class="se">\u2014</span><span class="s2"> to take Scripture</span><span class="se">\u2019</span><span class="s2">s startling invitation to test God</span><span class="se">\u2019</span><span class="s2">s faithfulness </span><span class="se">\u2014</span><span class="s2"> and discover that the God who multiplied a widow</span><span class="se">\u2019</span><span class="s2">s last meal can be trusted with their generosity too."</span><span class="p">,</span>
+ <span class="s2">"verse"</span><span class="p">:</span><span class="s2">"Test me in this</span><span class="se">\u2026</span><span class="s2"> and see if I will not throw open the floodgates of heaven."</span><span class="p">,</span>
+ <span class="s2">"ref"</span><span class="p">:</span><span class="s2">"Malachi 3:10 (NIV)"</span><span class="p">,</span>
+ <span class="s2">"bigidea"</span><span class="p">:</span><span class="s2">"Generosity almost always requires courage, because it almost always comes before certainty. Faith gives first and trusts God for the rest."</span><span class="p">,</span>
+ <span class="s2">"tags"</span><span class="p">:[</span><span class="s2">"Courage"</span><span class="p">,</span><span class="s2">"Faith"</span><span class="p">,</span><span class="s2">"Provision"</span><span class="p">,</span><span class="s2">"Trust"</span><span class="p">,</span><span class="s2">"First Fruits"</span><span class="p">],</span>
+ <span class="s2">"best_for"</span><span class="p">:</span><span class="s2">"Church &amp;amp; Company"</span><span class="p">,</span><span class="s2">"backbone"</span><span class="p">:</span><span class="s2">"Malachi 3:10; 1 Kings 17:8</span><span class="se">\u2013</span><span class="s2">16"</span><span class="p">,</span><span class="s2">"metaphor"</span><span class="p">:</span><span class="s2">"Giving Before You</span><span class="se">\u2019</span><span class="s2">re Ready"</span><span class="p">,</span><span class="s2">"felt"</span><span class="p">:</span><span class="s2">"Courage, faith, overcoming fear in giving"</span><span class="p">,</span>
+ <span class="s2">"sessions"</span><span class="p">:[</span>
+   <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"The Fear Beneath the Wallet"</span><span class="p">,</span><span class="s2">"Naming what really keeps us from giving."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"The Widow</span><span class="se">\u2019</span><span class="s2">s Last Meal"</span><span class="p">,</span><span class="s2">"When giving from your lack becomes a miracle."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"Test Me in This"</span><span class="p">,</span><span class="s2">"Scripture</span><span class="se">\u2019</span><span class="s2">s bold invitation to trust God</span><span class="se">\u2019</span><span class="s2">s provision."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"First, Not Last"</span><span class="p">,</span><span class="s2">"Why generosity belongs at the front of the budget, not the leftovers."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"Giving Before You</span><span class="se">\u2019</span><span class="s2">re Ready"</span><span class="p">,</span><span class="s2">"The courage to give ahead of certainty."</span><span class="p">),</span>
+   <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"The God Who Provides"</span><span class="p">,</span><span class="s2">"Building unshakable confidence in His faithfulness."</span><span class="p">),</span>
+ <span class="p">],</span>
+ <span class="s2">"journey"</span><span class="p">:</span><span class="s2">"Each of the 40 days pairs one fear to face with one courageous act of giving, plus a partner check-in and a prayer </span><span class="se">\u2014</span><span class="s2"> small steps of faith that, over six weeks, break fear</span><span class="se">\u2019</span><span class="s2">s grip on generosity."</span><span class="p">,</span>
+ <span class="s2">"why"</span><span class="p">:</span><span class="s2">"The most generous gift you</span><span class="se">\u2019</span><span class="s2">ll ever give is almost always the one that scared you. Courage is where generosity becomes faith."</span><span class="p">,</span>
+ <span class="s2">"cta"</span><span class="p">:</span><span class="s2">"Launch Courageous Generosity and help your people give boldly and trust deeply."</span><span class="p">,</span>
+ <span class="s2">"note"</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">cover</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="page cover"&gt;</span>
+<span class="s2">  &lt;div class="frame gold"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="cover-inner"&gt;</span>
+<span class="s2">    &lt;div class="brandmark"&gt;Lifetogether&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;The Campaign Library &amp;nbsp;&amp;middot;&amp;nbsp; Generosity Collection&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-rule"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;h1&gt;The &lt;em&gt;Generosity&lt;/em&gt;&lt;br&gt;Collection&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class="sub"&gt;Five forty-day campaigns to move your people from holding back to giving freely </span><span class="se">\u2014</span><span class="s2"> into open-handed, joyful, courageous generosity that changes them and the world around them.&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-foot"&gt;</span>
+<span class="s2">      &lt;div class="stats"&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;5&lt;/div&gt;&lt;div class="l"&gt;Campaigns&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;40&lt;/div&gt;&lt;div class="l"&gt;Day Journey&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;6&lt;/div&gt;&lt;div class="l"&gt;Sessions Each&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="stat"&gt;&lt;div class="n"&gt;NIV&lt;/div&gt;&lt;div class="l"&gt;Scripture&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="tier"&gt;Tier 1 &amp;nbsp;&amp;middot;&amp;nbsp; Giving &amp;amp; Open Hands &amp;nbsp;&amp;middot;&amp;nbsp; For Churches &amp;amp; Companies&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="n">intro</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="page intro"&gt;</span>
+<span class="s2">  &lt;div class="frame"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="intro-inner"&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;Before You Begin&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;No one ever gave their way&lt;br&gt;into &lt;em&gt;regret&lt;/em&gt;.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="lead"&gt;Ask anyone who has learned to give freely and they</span><span class="se">\u2019</span><span class="s2">ll tell you the same thing: generosity is the most joyful risk they ever took. Yet for most of us, an instinct to grip quietly wins </span><span class="se">\u2014</span><span class="s2"> and we miss the freedom and gladness God designed giving to produce. &lt;strong&gt;The Generosity Collection is built to change that.&lt;/strong&gt; Five distinct, forty-day journeys move your people from holding back to giving freely </span><span class="se">\u2014</span><span class="s2"> in their hearts, their habits, and their whole way of life.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="howrow"&gt;</span>
+<span class="s2">      &lt;div class="howcard"&gt;&lt;div class="hn"&gt;40&lt;/div&gt;&lt;h4&gt;A Daily Rhythm&lt;/h4&gt;&lt;p&gt;Every day offers a short reading, one practical step, a spiritual-partner check-in, and a written prayer &amp;mdash; small, repeatable, and easy to keep.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="howcard"&gt;&lt;div class="hn"&gt;6&lt;/div&gt;&lt;h4&gt;A Weekly Gathering&lt;/h4&gt;&lt;p&gt;Six group sessions give the journey its backbone, turning private change into shared momentum across your church or team.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="howcard"&gt;&lt;div class="hn"&gt;1&lt;/div&gt;&lt;h4&gt;A Clear Outcome&lt;/h4&gt;&lt;p&gt;Each campaign is built around one transformation &amp;mdash; so your people don</span><span class="se">\u2019</span><span class="s2">t just admire generosity, they actually begin to live it.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="contents"&gt;</span>
+<span class="s2">      &lt;div class="ct"&gt;Inside This Collection&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="clist"&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;01&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Generous Living&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Make generosity a whole way of life&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;02&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Open Hands&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Become the cheerful giver God loves&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;03&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Crazy Generosity&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Dare to give past sensible&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;04&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Living Generously&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Be generous with everything, not just money&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cli"&gt;&lt;span class="cnum"&gt;05&lt;/span&gt;&lt;span&gt;&lt;span class="cnm"&gt;Courageous Generosity&lt;/span&gt;&lt;br&gt;&lt;span class="cds"&gt;Give boldly and trust God&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="n">closing</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="page close"&gt;</span>
+<span class="s2">  &lt;div class="frame"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="close-inner"&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;Ready When You Are&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;Help your people discover&lt;br&gt;the joy of &lt;em&gt;giving&lt;/em&gt;.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="cp"&gt;From an open heart to a courageous gift, these five campaigns walk your people into a generosity that genuinely changes them </span><span class="se">\u2014</span><span class="s2"> lighter, freer, and more joyful than the gripping life they leave behind. Choose where your church or team is ready to grow, or journey through all five across a season.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="close-list"&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;01&lt;/span&gt;&lt;span class="clt"&gt;Generous Living&lt;/span&gt;&lt;span class="cld"&gt;River, not reservoir&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;02&lt;/span&gt;&lt;span class="clt"&gt;Open Hands&lt;/span&gt;&lt;span class="cld"&gt;The cheerful giver&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;03&lt;/span&gt;&lt;span class="clt"&gt;Crazy Generosity&lt;/span&gt;&lt;span class="cld"&gt;Past sensible&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;04&lt;/span&gt;&lt;span class="clt"&gt;Living Generously&lt;/span&gt;&lt;span class="cld"&gt;Generous in everything&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cl-row"&gt;&lt;span class="cln"&gt;05&lt;/span&gt;&lt;span class="clt"&gt;Courageous Generosity&lt;/span&gt;&lt;span class="cld"&gt;Give boldly&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="close-cta"&gt;&lt;span class="btn"&gt;Start Your Campaign&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="close-foot"&gt;</span>
+<span class="s2">      &lt;div class="niv"&gt;All Scripture taken from the New International Version (NIV)&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="brandmark"&gt;Lifetogether&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="n">pages</span> <span class="o">=</span> <span class="n">cover</span> <span class="o">+</span> <span class="n">intro</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">campaign_page</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">campaigns</span><span class="p">)</span> <span class="o">+</span> <span class="n">closing</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;title&gt;The Generosity Collection </span><span class="se">\u2014</span><span class="s2"> Lifetogether&lt;/title&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">FONTS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;&lt;body&gt;</span><span class="si">{</span><span class="n">pages</span><span class="si">}</span><span class="s2">&lt;/body&gt;&lt;/html&gt;"""</span>
+
+<span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/generosity.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"HTML written:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">),</span> <span class="s2">"chars"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/tmp/build_generosity.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

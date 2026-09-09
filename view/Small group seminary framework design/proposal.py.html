@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>proposal.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>proposal.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">22 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/proposal.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Pastor and board facing proposal for the bundled Pastor&#x27;s Library engagement</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""The Pastor's Library Project — pastor and board facing proposal."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--ink:#0c1723;--ink2:#08111c;--gold:#c19a4b;--goldlt:#e2c689;--parch:#f7f3ea;</span>
+<span class="s2">--parch2:#efe8da;--rule:#d9cfbc;--body:#2b2a26;--muted:#6d6759;--mutedlt:#9fb0c1;}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--parch);color:var(--body);</span>
+<span class="s2">font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;line-height:1.63}</span>
+<span class="s2">.wrap{max-width:900px;margin:0 auto;padding:0 34px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;margin:0;letter-spacing:-.01em}</span>
+<span class="s2">.eyebrow{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.26em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);display:block}</span>
+<span class="s2">p{margin:0 0 15px}</span>
+<span class="s2">.ph{background:#fff5d9;border-bottom:1px dotted var(--gold);padding:0 3px;font-style:normal}</span>
+<span class="s2">header{background:var(--ink);color:#f3efe6;padding:80px 0 66px;position:relative;overflow:hidden}</span>
+<span class="s2">header:before{content:"";position:absolute;inset:0;</span>
+<span class="s2">background:radial-gradient(112</span><span class="si">% 80%</span><span class="s2"> at 8</span><span class="si">% 0%</span><span class="s2">,rgba(193,154,75,.2),transparent 62%)}</span>
+<span class="s2">header .wrap{position:relative}header .eyebrow{color:var(--goldlt)}</span>
+<span class="s2">header h1{font-size:clamp(34px,6vw,60px);line-height:1.02;color:#fbf8f1;margin-top:18px}</span>
+<span class="s2">header h1 em{font-style:italic;font-weight:400;color:var(--goldlt)}</span>
+<span class="s2">header .prep{margin-top:34px;border-top:1px solid rgba(193,154,75,.32);padding-top:20px;</span>
+<span class="s2">font-family:"Lato",sans-serif;font-size:12px;letter-spacing:.09em;line-height:2;color:#a9b6c4}</span>
+<span class="s2">header .prep b{color:var(--goldlt);letter-spacing:.16em;text-transform:uppercase;font-size:9.5px;</span>
+<span class="s2">display:inline-block;min-width:118px}</span>
+<span class="s2">section{padding:58px 0 50px;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">section.dark{background:var(--ink2);color:#e6e0d3;border-bottom:none}</span>
+<span class="s2">section.dark h2,section.dark h3,section.dark h4{color:#fbf8f1}</span>
+<span class="s2">section.dark p{color:#d6cec0}</span>
+<span class="s2">section.tone{background:var(--parch2)}</span>
+<span class="s2">h2.sec{font-size:clamp(26px,4.1vw,38px);line-height:1.1;margin-top:13px;max-width:780px}</span>
+<span class="s2">.kick{font-style:italic;color:var(--muted);margin:13px 0 0;max-width:640px;font-size:20px}</span>
+<span class="s2">section.dark .kick{color:var(--mutedlt)}</span>
+<span class="s2">.narrow{max-width:700px}</span>
+<span class="s2">.pull{font-family:"Playfair Display",serif;font-size:23px;line-height:1.42;</span>
+<span class="s2">border-left:3px solid var(--gold);padding-left:24px;margin:26px 0;max-width:660px}</span>
+<span class="s2">section.dark .pull{color:var(--goldlt)}</span>
+<span class="s2">.ws{border-top:1px solid var(--rule);padding:24px 0}</span>
+<span class="s2">.ws h3{font-size:22px;margin-bottom:4px}</span>
+<span class="s2">.ws .who{font-family:"Lato",sans-serif;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);margin-bottom:10px}</span>
+<span class="s2">.ws ul{margin:0;padding-left:20px}.ws li{margin-bottom:6px;font-size:18px}</span>
+<span class="s2">.out{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--rule);align-items:baseline}</span>
+<span class="s2">.out .mark{flex:0 0 16px;color:var(--gold);font-size:14px}</span>
+<span class="s2">.out .txt{flex:1;font-size:18.5px}</span>
+<span class="s2">section.dark .out{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">table{width:100%;border-collapse:collapse;margin-top:24px;font-size:17px}</span>
+<span class="s2">th{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.15em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);text-align:left;padding:0 14px 11px 0;</span>
+<span class="s2">border-bottom:1px solid var(--rule);vertical-align:bottom}</span>
+<span class="s2">td{padding:13px 14px 13px 0;border-bottom:1px solid var(--rule);vertical-align:top}</span>
+<span class="s2">td.k{font-family:"Playfair Display",serif;font-size:17.5px;width:32%}</span>
+<span class="s2">td.n{font-family:"Lato",sans-serif;font-size:14.5px;white-space:nowrap;color:var(--gold);font-weight:700;text-align:right}</span>
+<span class="s2">td.s{color:var(--muted);font-size:16.5px}</span>
+<span class="s2">tr.total td{border-bottom:none;border-top:2px solid var(--gold);padding-top:16px}</span>
+<span class="s2">tr.total td.k{font-size:19px}tr.total td.n{font-size:17px}</span>
+<span class="s2">section.dark td{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">section.dark td.k{color:#fbf8f1}section.dark td.s{color:var(--mutedlt)}</span>
+<span class="s2">section.dark td.n{color:var(--goldlt)}</span>
+<span class="s2">.qa{border-top:1px solid var(--rule);padding:20px 0}</span>
+<span class="s2">.qa h4{font-size:20px;margin-bottom:8px}</span>
+<span class="s2">.qa p{margin:0;font-size:18px}</span>
+<span class="s2">.honest{border:1px solid var(--gold);background:#fff;padding:24px 26px;margin-top:28px}</span>
+<span class="s2">.honest h4{font-family:"Lato",sans-serif;font-size:10px;font-weight:800;letter-spacing:.2em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);margin-bottom:12px}</span>
+<span class="s2">.honest p{font-size:17.5px;margin-bottom:12px}.honest p:last-child{margin-bottom:0}</span>
+<span class="s2">.note{font-family:"Lato",sans-serif;font-size:13px;line-height:1.75;color:var(--muted);</span>
+<span class="s2">border-top:1px solid var(--rule);margin-top:28px;padding-top:15px;max-width:700px}</span>
+<span class="s2">section.dark .note{color:var(--mutedlt);border-color:rgba(255,255,255,.15)}</span>
+<span class="s2">.close{background:var(--ink);color:#efeae0;padding:70px 0;text-align:center}</span>
+<span class="s2">.close h2{font-size:clamp(25px,4vw,38px);color:#fbf8f1}</span>
+<span class="s2">.close p{max-width:600px;margin:18px auto 0;color:#c9c0b0}</span>
+<span class="s2">.close .sig{margin-top:34px;font-family:"Lato",sans-serif;font-size:11px;letter-spacing:.16em;</span>
+<span class="s2">text-transform:uppercase;color:#8ea1b4;line-height:2.1}</span>
+<span class="s2">footer{background:#070d15;color:#7d8b99;padding:24px 0;font-family:"Lato",sans-serif;</span>
+<span class="s2">font-size:10.5px;letter-spacing:.1em;text-align:center;text-transform:uppercase}</span>
+<span class="s2">@media(max-width:720px){body{font-size:18px}.wrap{padding:0 20px}section{padding:44px 0 38px}</span>
+<span class="s2">td.k{width:auto}}</span>
+<span class="s2">@media print{header,section.dark,.close{-webkit-print-color-adjust:exact;print-color-adjust:exact}</span>
+<span class="s2">section{page-break-inside:avoid}}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">P</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">'&lt;span class="ph"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;'</span> <span class="o">%</span> <span class="n">x</span>
+
+<span class="n">WORKSTREAMS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"The Archive"</span><span class="p">,</span> <span class="s2">"Weeks 1 to 8"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"Full intake of everything &amp;mdash; files, folders, drives, cassettes, and the boxes in the office nobody has opened in years"</span><span class="p">,</span>
+  <span class="s2">"Digitization, transcription, and cleanup of the complete preaching record"</span><span class="p">,</span>
+  <span class="s2">"Indexing by topic, book, passage, occasion, formation outcome and campaign hinge"</span><span class="p">,</span>
+  <span class="s2">"&lt;b&gt;The Coverage Report&lt;/b&gt; &amp;mdash; what has been preached, what has never been preached, and where the gaps are"</span><span class="p">,</span>
+  <span class="s2">"A written rights and ownership review, so the board knows exactly what the church holds"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"The Library"</span><span class="p">,</span> <span class="s2">"Months 2 to 6"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"Ten timeless small group studies drawn from "</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Pastor]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"'s own preaching"</span><span class="p">,</span>
+  <span class="s2">"The membership series and the vision-and-values campaign"</span><span class="p">,</span>
+  <span class="s2">"The top felt-need series, selected from the Coverage Report rather than from instinct"</span><span class="p">,</span>
+  <span class="s2">"A financial health track and a generosity track built on his convictions, not a licensed program"</span><span class="p">,</span>
+  <span class="s2">"Easter and Christmas devotional series, written to be reused every year"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"The Publication"</span><span class="p">,</span> <span class="s2">"Months 4 to 10"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"The book &amp;mdash; manuscript, cover, interior design, and print-ready files"</span><span class="p">,</span>
+  <span class="s2">"The churchwide campaign built from the book, in the forty-day shape"</span><span class="p">,</span>
+  <span class="s2">"Journals and participant workbooks, print-ready"</span><span class="p">,</span>
+  <span class="s2">"Narrated audio editions of the core library"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"The Platform and the Partnership"</span><span class="p">,</span> <span class="s2">"Months 1 to 12"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"The working Pastor's Library site: search, sort, filter, and staff access from any device"</span><span class="p">,</span>
+  <span class="s2">"The twenty-part church intelligence library, benchmarked against current practice"</span><span class="p">,</span>
+  <span class="s2">"An eighteen-month preaching calendar with campaigns positioned"</span><span class="p">,</span>
+  <span class="s2">"Three to four timely campaigns aimed at what the next eighteen months will actually require"</span><span class="p">,</span>
+  <span class="s2">"Monthly working sessions with "</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Pastor]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" and the team for twelve months"</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">OUTCOMES</span> <span class="o">=</span> <span class="p">[</span>
+<span class="s2">"Eighteen months of preaching planned, written, and aligned across the pulpit, the groups, and the households."</span><span class="p">,</span>
+<span class="s2">"Every message ever preached at "</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Church]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" digitized, indexed, and findable in seconds."</span><span class="p">,</span>
+<span class="s2">"One complete book manuscript in "</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Pastor]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"'s own voice and under his own name."</span><span class="p">,</span>
+<span class="s2">"Ten small group studies so the groups in this church are studying their own pastor."</span><span class="p">,</span>
+<span class="s2">"Four launch-ready campaigns including Easter and Christmas, each with sermon, devotional, group session, children's version and print file."</span><span class="p">,</span>
+<span class="s2">"A membership series and a vision-and-values series the staff can run without the senior pastor in the room."</span><span class="p">,</span>
+<span class="s2">"A searchable platform the whole staff uses, and a preaching calendar that answers what comes next before anyone asks."</span><span class="p">,</span>
+<span class="s2">"An archive complete enough that a successor could run this church's teaching calendar from it alone."</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">BOARD</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Who owns the work?"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The church owns everything produced in this engagement &amp;mdash; the studies, the campaigns, the</span>
+<span class="sd"> devotional series, the platform content, and the book's church-use rights. """</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Pastor]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2"> retains authorship credit and personal-use rights to his own sermons, and receives a complete</span>
+<span class="s2"> personal copy of the digitized archive. LifeTogether retains only its own engine, templates, and</span>
+<span class="s2"> production systems, which are the tools rather than the output. All of this is written into the</span>
+<span class="s2"> agreement rather than assumed."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"What happens if the pastor leaves?"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The library stays. That is a large part of why this is worth doing. Today, thirty years of this</span>
+<span class="sd"> church's teaching lives in one man's memory and one man's filing system, and the day he leaves,</span>
+<span class="sd"> most of it leaves with him. When this engagement is finished, the church holds the teaching record,</span>
+<span class="sd"> the campaigns, the curriculum, and the calendar independent of any individual."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"What does it cost after the first year?"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Nothing is required. The platform subscription is included for three full years as part of the</span>
+<span class="sd"> engagement. If the church chooses to continue past year three, it renews at the standard rate for</span>
+<span class="sd"> its size, and if it does not, the church keeps every file produced during the engagement in a</span>
+<span class="sd"> permanent, exportable form."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"How do we know it is working?"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Four checkpoints with defined deliverables: the Coverage Report at week eight, the platform live</span>
+<span class="sd"> with the full archive indexed at month four, the first campaign launched at month six, and the book</span>
+<span class="sd"> manuscript complete at month ten. Each is a specific artifact the board can look at. If the week</span>
+<span class="sd"> eight report does not convince you, the engagement can stop there."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"What is the real risk?"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""That the church buys a large project and it becomes a folder nobody opens. That risk is real, and</span>
+<span class="sd"> the two things that reduce it are both in the design: the monthly working sessions keep it on</span>
+<span class="sd"> somebody's calendar, and the preaching calendar makes the library load-bearing rather than</span>
+<span class="sd"> optional. If the archive is where next month's sermon comes from, it does not become a folder."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">();</span> <span class="n">W</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">write</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;The Pastor's Library Project &amp;mdash; Proposal&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@300;400;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;"""</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;&lt;/head&gt;&lt;body&gt;"</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;header&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;A Proposal from LifeTogether Ministries&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;The Pastor's&lt;br&gt;&lt;em&gt;Library Project&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">&lt;div class="prep"&gt;</span>
+<span class="s2">&lt;b&gt;Prepared for&lt;/b&gt;"""</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Pastor Name]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">""" and the Board of """</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Church Name]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""&lt;br&gt;</span>
+<span class="s2">&lt;b&gt;Prepared by&lt;/b&gt;Brett Eastman, LifeTogether Ministries&lt;br&gt;</span>
+<span class="s2">&lt;b&gt;Date&lt;/b&gt;"""</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Date]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""&lt;br&gt;</span>
+<span class="s2">&lt;b&gt;Valid through&lt;/b&gt;"""</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Date + 60 days]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/header&gt;"""</span><span class="p">)</span>
+
+    <span class="c1"># 1 situation</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="narrow"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Situation&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Thirty years of work, and almost none of it can be found&lt;/h2&gt;</span>
+<span class="s2">&lt;div style="margin-top:22px"&gt;</span>
+<span class="s2">&lt;p&gt;We have worked with more than five hundred churches over twenty-five years, and the same thing is</span>
+<span class="s2">true in nearly every one of them. The most valuable teaching asset the congregation owns is the</span>
+<span class="s2">senior pastor's own body of work, and it is the one asset nobody has ever helped him steward.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;A pastor we worked with had handwritten every message he ever preached. Boxes of paper in a garage.</span>
+<span class="s2">Thirty years of study, prayer, and pastoral care, sitting in cardboard, and every Monday morning he</span>
+<span class="s2">started a new message from nothing anyway.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="pull"&gt;The most under-stewarded resource in any congregation is the senior pastor's own</span>
+<span class="s2">library. He has already done the work. Nobody has ever helped him keep it.&lt;/div&gt;</span>
+<span class="s2">&lt;p&gt;This proposal is not a criticism of how """</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Church]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">""" has operated. Every church we</span>
+<span class="s2">know is in the same position, because there has never been anyone whose job it was to do anything</span>
+<span class="s2">about it. What follows is a twelve-month engagement to change that, and to turn what</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Pastor]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">""" has already preached into something this church can use for the next</span>
+<span class="s2">decade.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="c1"># 2 what we propose</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;What We Propose&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Four workstreams over twelve months&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Aggregate. Curate. Customize. Publish. The same four moves in every engagement, run</span>
+<span class="s2">in sequence so the church sees progress every month rather than at the end.&lt;/p&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">when</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">WORKSTREAMS</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="ws"&gt;&lt;h3&gt;</span><span class="si">%s</span><span class="s1">&lt;/h3&gt;&lt;div class="who"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;ul&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">when</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">W</span><span class="p">(</span><span class="s2">"&lt;li&gt;</span><span class="si">%s</span><span class="s2">&lt;/li&gt;"</span> <span class="o">%</span> <span class="n">it</span><span class="p">)</span>
+        <span class="n">W</span><span class="p">(</span><span class="s2">"&lt;/ul&gt;&lt;/div&gt;"</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+
+    <span class="c1"># 3 the platform bundle</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Included at No Additional Charge&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;The whole LifeTogether platform, for three years&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;The library is what we build for this church. The platform is everything we have</span>
+<span class="s2">already built for every church, and it comes with the engagement.&lt;/p&gt;</span>
+<span class="s2">&lt;div style="max-width:700px;margin-top:24px"&gt;</span>
+<span class="s2">&lt;p&gt;An archive on its own is a filing cabinet. What makes it useful is the system that reads it,</span>
+<span class="s2">searches it, and turns it into something the church can run on a Sunday. That system already exists,</span>
+<span class="s2">and rather than sell it separately we include it, because the engagement does not work without</span>
+<span class="s2">it.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;table style="color:#e6e0d3"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;What is included&lt;/th&gt;&lt;th&gt;What it is&lt;/th&gt;&lt;th&gt;Value if bought alone&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Church All-Access, three years&lt;/td&gt;&lt;td class="s"&gt;The full LifeTogether intelligence operating system across all six ministry environments &amp;mdash; the weekend, the week, the group, the classroom, the team, and the household. Unlimited seats for staff, volunteers, group leaders and members.&lt;/td&gt;&lt;td class="n"&gt;$10,470&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;The Sermon Curator platform&lt;/td&gt;&lt;td class="s"&gt;5,155 messages across 73 categories, searchable alongside this church's own archive, with service design, illustration prompts and next-step architecture attached to each one.&lt;/td&gt;&lt;td class="n"&gt;Included in All-Access&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;The 40 Days campaign library&lt;/td&gt;&lt;td class="s"&gt;17,319 churchwide campaigns across 23 channels, each with sermon builds, daily devotionals and group sessions. Unlimited use for three years rather than priced per campaign.&lt;/td&gt;&lt;td class="n"&gt;$17,910&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;All 22 diagnostics&lt;/td&gt;&lt;td class="s"&gt;Free permanently for every church, including this one. Ministry health, staff, groups, generosity, and formation.&lt;/td&gt;&lt;td class="n"&gt;No charge, ever&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr class="total"&gt;&lt;td class="k"&gt;Platform value included&lt;/td&gt;&lt;td class="s"&gt;Three years, no additional cost, no renewal obligation&lt;/td&gt;&lt;td class="n"&gt;$28,380&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Why we include rather than sell it: the engagement produces a profile of this church</span>
+<span class="s2">&amp;mdash; its pastor, its people, its season, its gaps &amp;mdash; that nothing else we do can produce. The</span>
+<span class="s2">platform is what reads that profile. Charging separately for the thing that makes the work usable</span>
+<span class="s2">would be selling a car and invoicing for the keys.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="c1"># 4 outcomes</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Outcomes&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;What is true twelve months from now&lt;/h2&gt;</span>
+<span class="s2">&lt;div style="margin-top:24px;max-width:740px"&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">OUTCOMES</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="out"&gt;&lt;span class="mark"&gt;&amp;#9679;&lt;/span&gt;&lt;span class="txt"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="n">o</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;/div&gt;</span>
+<span class="s2">&lt;p class="note"&gt;We make no claims about attendance, giving, or engagement. Those depend on a great</span>
+<span class="s2">many things outside this engagement, and any provider who promises them should be asked how they</span>
+<span class="s2">intend to prove it.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="c1"># 5 board section</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;For the Board&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;The five questions a board should ask&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Answered here rather than in a meeting, so the conversation can be about whether to</span>
+<span class="s2">do it rather than about what it is.&lt;/p&gt;</span>
+<span class="s2">&lt;div style="margin-top:26px;max-width:730px"&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">BOARD</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="qa"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+
+    <span class="c1"># 6 investment</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Investment&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Four levels. Our recommendation for """</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Church]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">""" is Level Three.&lt;/h2&gt;</span>
+<span class="s2">&lt;table style="color:#e6e0d3"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Level&lt;/th&gt;&lt;th&gt;Scope&lt;/th&gt;&lt;th&gt;Investment&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;One &amp;middot; Discovery and Audit&lt;/td&gt;&lt;td class="s"&gt;Intake, digitization sample, the Coverage Report, an architecture recommendation, and one message produced end to end. Four to six weeks.&lt;/td&gt;&lt;td class="n"&gt;$8,500 &amp;ndash; 15,000&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Two &amp;middot; The Working Library&lt;/td&gt;&lt;td class="s"&gt;Full archive indexed, platform live, ten studies, one campaign, twelve-month preaching calendar.&lt;/td&gt;&lt;td class="n"&gt;$28,000 &amp;ndash; 45,000&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Three &amp;middot; The Full System&lt;/td&gt;&lt;td class="s"&gt;Everything in this proposal: all four workstreams, the book and its campaign, Easter and Christmas, financial health and generosity, membership, vision and values, and twelve months of partnership.&lt;/td&gt;&lt;td class="n"&gt;$65,000 &amp;ndash; 125,000&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Four &amp;middot; The Legacy Edition&lt;/td&gt;&lt;td class="s"&gt;Adds the Transition File for succession, the weddings and funerals archive, the counseling playbook, a next-generation translation of the core teaching, a second-language edition, and full rights and estate work.&lt;/td&gt;&lt;td class="n"&gt;$175,000 +&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;h3 style="font-size:23px;margin-top:40px"&gt;Three ways churches fund this&lt;/h3&gt;</span>
+<span class="s2">&lt;table style="color:#e6e0d3"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Source&lt;/th&gt;&lt;th&gt;How it usually works&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;The church budget&lt;/td&gt;&lt;td class="s"&gt;Approved as curriculum and communications spend, often replacing what the church already pays for licensed studies and campaign materials.&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;One family&lt;/td&gt;&lt;td class="s"&gt;A household in the congregation funds it as a gift honoring their pastor. This is the most common path at Level Three, and it is frequently the most meaningful thing that family has ever given toward.&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;A foundation&lt;/td&gt;&lt;td class="s"&gt;Funded as part of a named cohort of churches, with a published standard and a shared coverage report.&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Payment is milestone-based, not up front: thirty percent at signing, thirty percent at</span>
+<span class="s2">the Coverage Report, twenty-five percent at platform launch, and fifteen percent on delivery of the</span>
+<span class="s2">manuscript.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="c1"># 7 honest status + founding</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="narrow"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Where This Stands&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;What you should know before deciding&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="honest"&gt;&lt;h4&gt;Said plainly&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;We have built the components of this over twenty-five years &amp;mdash; the campaign library, the</span>
+<span class="s2">curriculum system, the sermon platform, the production engine. We have not yet completed a full</span>
+<span class="s2">Pastor's Library engagement end to end for a single church. """</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Church]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">""" would be among</span>
+<span class="s2">the first.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;We would rather tell you that than have you discover it. It is also why the founding terms below</span>
+<span class="s2">exist, and why the engagement is structured so you can stop after the Coverage Report at week eight</span>
+<span class="s2">if what you see does not convince you.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;h3 style="font-size:23px;margin-top:36px"&gt;Founding cohort terms&lt;/h3&gt;</span>
+<span class="s2">&lt;p style="margin-top:14px"&gt;For the first ten churches, the engagement is offered at a reduced rate,</span>
+<span class="s2">with the platform locked at today's pricing for three years. In exchange we ask three things, and</span>
+<span class="s2">only three: that the church actually uses it, with the platform live and the first campaign launched</span>
+<span class="s2">within six months; one honest twenty-minute call each quarter about what is working and what is not;</span>
+<span class="s2">and one approved case study at the end of the year. We will ask for introductions only if the work</span>
+<span class="s2">has been good, and never as a condition.&lt;/p&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Placeholders in this document are marked in yellow and must be filled before it</span>
+<span class="s2">travels. Investment figures shown are the standard ladder; the specific number for</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Church]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">""" appears on the signature page.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="close"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;h2&gt;Start with week eight.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;The Coverage Report will tell you, in print, what this church has preached for thirty years and</span>
+<span class="s2">what it has never preached once. Whatever you decide about the rest, that document is worth having.</span>
+<span class="s2">Let us begin there.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="sig"&gt;Brett Eastman &amp;nbsp;&amp;middot;&amp;nbsp; LifeTogether Ministries&lt;br&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[email]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">""" &amp;nbsp;&amp;middot;&amp;nbsp; """</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[phone]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; The Pastor's Library Project &amp;middot;</span>
+<span class="s2">Proposal for """</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="s2">"[Church Name]"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">build</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/pastors-library-proposal.html"</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="s2">"| div:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;div"</span><span class="p">)</span> <span class="o">-</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/div&gt;"</span><span class="p">),</span>
+          <span class="s2">"| sections:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;section"</span><span class="p">),</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/section&gt;"</span><span class="p">),</span>
+          <span class="s2">"| tables:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;table"</span><span class="p">),</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/table&gt;"</span><span class="p">),</span>
+          <span class="s2">"| placeholders:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">'class="ph"'</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/proposal.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

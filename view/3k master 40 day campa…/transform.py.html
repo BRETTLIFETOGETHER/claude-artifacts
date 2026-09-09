@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>transform.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; 3k master 40 day campa…</div>
+<h1>transform.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">1 edit</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">5 KB</span>
+<a class="btn" href="../../artifacts/3k%20master%2040%20day%20campa%E2%80%A6/transform.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Transformation engine to derive 7-day, 21-day, 30-day, and Catalytic Sunday titles from the 40-day master</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data</span><span class="w"> </span><span class="kn">import</span> <span class="n">CATEGORIES</span> <span class="k">as</span> <span class="n">MASTER</span>
+
+<span class="n">STRIP_SUFFIXES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">" Journey"</span><span class="p">,</span> <span class="s2">" Challenge"</span><span class="p">,</span> <span class="s2">" Experience"</span><span class="p">,</span> <span class="s2">" Adventure"</span><span class="p">,</span> <span class="s2">" Plan"</span><span class="p">,</span> <span class="s2">" Project"</span><span class="p">,</span>
+    <span class="s2">" Reset"</span><span class="p">,</span> <span class="s2">" Path"</span><span class="p">,</span> <span class="s2">" Companion"</span><span class="p">,</span> <span class="s2">" Primer"</span><span class="p">,</span> <span class="s2">" Conversation"</span>
+<span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_theme</span><span class="p">(</span><span class="n">title</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Pull the core theme phrase out of a 40-day title, stripping day-scaffolding."""</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="c1"># Colon-based titles: "Hook: A 40-Day Journey to Outcome" -&gt; return hook (and outcome separately)</span>
+    <span class="k">if</span> <span class="s2">":"</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="n">hook</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">rest</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"to (.+)$"</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">outcome</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">hook</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">outcome</span>
+    <span class="c1"># "The 40-Day X Journey/Challenge/..."</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"The 40-Day (.+)"</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+        <span class="n">rest</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suf</span> <span class="ow">in</span> <span class="n">STRIP_SUFFIXES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rest</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suf</span><span class="p">):</span>
+                <span class="n">rest</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">suf</span><span class="p">)]</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">rest</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="kc">None</span>
+    <span class="c1"># "40 Days of X" / "40 Days to X"</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"40 Days (?:of|to) (.+)"</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_direct</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">day_word</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Straightforward day-count swap for Direct-formula titles."""</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"40 Days of"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">day_word</span><span class="si">}</span><span class="s2"> of"</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"40 Days to"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">day_word</span><span class="si">}</span><span class="s2"> to"</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"40 Days"</span><span class="p">,</span> <span class="n">day_word</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">t</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_journey</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">day_label</span><span class="p">,</span> <span class="n">journey_word</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"The 40-Day"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The </span><span class="si">{</span><span class="n">day_label</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># normalize trailing journey-word if requested (e.g., Challenge for 7-day file)</span>
+    <span class="k">return</span> <span class="n">t</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_promise</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">day_label</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"A 40-Day Journey"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"A </span><span class="si">{</span><span class="n">day_label</span><span class="si">}</span><span class="s2"> Journey"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">t</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_duration_categories</span><span class="p">(</span><span class="n">day_word</span><span class="p">,</span> <span class="n">day_label</span><span class="p">,</span> <span class="n">formula_overrides</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    day_word: e.g. '7 Days' (for Direct titles: '40 Days of X' -&gt; '7 Days of X')</span>
+<span class="sd">    day_label: e.g. '7-Day' (for Journey/Promise titles: 'A 40-Day Journey' -&gt; 'A 7-Day Journey')</span>
+<span class="sd">    formula_overrides: optional dict mapping formula name -&gt; replacement word for "Journey"</span>
+<span class="sd">    """</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">MASTER</span><span class="p">:</span>
+        <span class="n">new_cat</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"roman"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">],</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="s2">"tag"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"tag"</span><span class="p">],</span>
+            <span class="s2">"tagline"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"tagline"</span><span class="p">],</span> <span class="s2">"description"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"description"</span><span class="p">],</span>
+            <span class="s2">"titles"</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">formula</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">title</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"40 Days of"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">day_word</span><span class="si">}</span><span class="s2"> of"</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"40 Days to"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">day_word</span><span class="si">}</span><span class="s2"> to"</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"The 40-Day"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The </span><span class="si">{</span><span class="n">day_label</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"A 40-Day Journey"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"A </span><span class="si">{</span><span class="n">day_label</span><span class="si">}</span><span class="s2"> Journey"</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"40-Day"</span><span class="p">,</span> <span class="n">day_label</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"40 Days"</span><span class="p">,</span> <span class="n">day_word</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">formula_overrides</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">formula_overrides</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+            <span class="n">new_cat</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="n">formula</span><span class="p">,</span> <span class="n">desc</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_cat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_catalytic_sundays</span><span class="p">(</span><span class="n">limit_per_category</span><span class="o">=</span><span class="mi">17</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Standalone single-Sunday titles derived from the 40-day master themes.</span>
+<span class="sd">    Dedupes within each category (Direct/Journey formulas often share a theme word),</span>
+<span class="sd">    pulling further into the category's list as needed to reach the target count."""</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">MASTER</span><span class="p">:</span>
+        <span class="n">new_cat</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"roman"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">],</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="s2">"tag"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"tag"</span><span class="p">],</span>
+            <span class="s2">"tagline"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"tagline"</span><span class="p">],</span> <span class="s2">"description"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"description"</span><span class="p">],</span>
+            <span class="s2">"titles"</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">formula</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_cat</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">limit_per_category</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">hook</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">=</span> <span class="n">extract_theme</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">formula</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"Promise"</span><span class="p">,</span> <span class="s2">"Single-Word"</span><span class="p">):</span>
+                <span class="n">sunday_title</span> <span class="o">=</span> <span class="n">hook</span>
+                <span class="n">blurb</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"One catalytic Sunday on </span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">outcome</span> <span class="k">else</span> <span class="n">desc</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sunday_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"The </span><span class="si">{</span><span class="n">hook</span><span class="si">}</span><span class="s2"> Sunday"</span>
+                <span class="n">blurb</span> <span class="o">=</span> <span class="n">desc</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">sunday_title</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">new_cat</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">sunday_title</span><span class="p">,</span> <span class="s2">"Big Sunday"</span><span class="p">,</span> <span class="n">blurb</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_cat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">seven</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"7 Days"</span><span class="p">,</span> <span class="s2">"7-Day"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"Journey"</span><span class="p">:</span><span class="s2">"Challenge"</span><span class="p">})</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"7-day sample:"</span><span class="p">,</span> <span class="n">seven</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"titles"</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">twentyone</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"21 Days"</span><span class="p">,</span> <span class="s2">"21-Day"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"Journey"</span><span class="p">:</span><span class="s2">"Experience"</span><span class="p">})</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"21-day sample:"</span><span class="p">,</span> <span class="n">twentyone</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"titles"</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">thirty</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"30 Days"</span><span class="p">,</span> <span class="s2">"4-Week"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"30-day sample:"</span><span class="p">,</span> <span class="n">thirty</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"titles"</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">sundays</span> <span class="o">=</span> <span class="n">build_catalytic_sundays</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"sunday sample:"</span><span class="p">,</span> <span class="n">sundays</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"titles"</span><span class="p">][:</span><span class="mi">6</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"sunday total:"</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">sundays</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/transform.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

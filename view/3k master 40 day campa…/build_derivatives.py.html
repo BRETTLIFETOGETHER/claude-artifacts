@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_derivatives.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; 3k master 40 day campa…</div>
+<h1>build_derivatives.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">14 KB</span>
+<a class="btn" href="../../artifacts/3k%20master%2040%20day%20campa%E2%80%A6/build_derivatives.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Generate all four derivative brochure files (7-day, 21-day, 30-day, Catalytic Sundays)</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">common</span><span class="w"> </span><span class="kn">import</span> <span class="n">esc</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">cover</span><span class="p">,</span> <span class="n">toc</span><span class="p">,</span> <span class="n">category_section</span><span class="p">,</span> <span class="n">colophon</span><span class="p">,</span> <span class="n">PALETTE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_duration_categories</span><span class="p">,</span> <span class="n">build_catalytic_sundays</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">total_titles</span><span class="p">(</span><span class="n">cats</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_legacy</span><span class="p">(</span><span class="n">cats</span><span class="p">,</span> <span class="n">roman</span><span class="p">,</span> <span class="n">entry</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span> <span class="o">==</span> <span class="n">roman</span><span class="p">:</span>
+            <span class="n">c</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+            <span class="k">return</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"category </span><span class="si">{</span><span class="n">roman</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">page_title</span><span class="p">,</span> <span class="n">eyebrow</span><span class="p">,</span> <span class="n">cover_title_html</span><span class="p">,</span> <span class="n">subtitle</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">footer_note</span><span class="p">,</span>
+           <span class="n">intro_html</span><span class="p">,</span> <span class="n">categories</span><span class="p">,</span> <span class="n">colophon_title</span><span class="p">,</span> <span class="n">colophon_note</span><span class="p">):</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">head</span><span class="p">(</span><span class="n">page_title</span><span class="p">),</span> <span class="n">cover</span><span class="p">(</span><span class="n">eyebrow</span><span class="p">,</span> <span class="n">cover_title_html</span><span class="p">,</span> <span class="n">subtitle</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">footer_note</span><span class="p">),</span> <span class="n">intro_html</span><span class="p">,</span> <span class="n">toc</span><span class="p">(</span><span class="n">categories</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">categories</span><span class="p">):</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">category_section</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">PALETTE</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">PALETTE</span><span class="p">)]))</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colophon</span><span class="p">(</span><span class="n">colophon_title</span><span class="p">,</span> <span class="n">colophon_note</span><span class="p">))</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"&lt;/body&gt;&lt;/html&gt;"</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/mnt/user-data/outputs/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"-&gt;"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="s2">"bytes,"</span><span class="p">,</span> <span class="n">total_titles</span><span class="p">(</span><span class="n">categories</span><span class="p">),</span> <span class="s2">"titles"</span><span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># FILE 1 — THE 7-DAY CHALLENGE MASTER LIBRARY</span>
+<span class="c1"># ============================================================</span>
+<span class="n">seven</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"7 Days"</span><span class="p">,</span> <span class="s2">"7-Day"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"Journey"</span><span class="p">:</span> <span class="s2">"Challenge"</span><span class="p">})</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">seven</span><span class="p">,</span> <span class="s2">"VI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"7 Days to Peace"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry alongside </span><span class="se">\u201c</span><span class="s2">7 Days of Peace.</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">seven</span><span class="p">,</span> <span class="s2">"XX"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"7 Days of Generosity"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+
+<span class="n">seven_intro</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="block bg-navy intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;The One-Week On-Ramp&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;Every 40-day campaign, &lt;em&gt;in one week&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;This library takes all 600 titles from the Master 40-Day Campaign Library and reframes each one as a 7-Day Challenge &amp;mdash; the shortest, easiest on-ramp in the whole system. Same theme, same category, one-seventh the runtime.&lt;/p&gt;</span>
+<span class="s2">  &lt;p class="showcase-label"&gt;The 7-Day Session Map&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="session-map"&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Day 1&lt;/div&gt;&lt;div class="session-day-name"&gt;Mon&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Day 2&lt;/div&gt;&lt;div class="session-day-name"&gt;Tue&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Day 3&lt;/div&gt;&lt;div class="session-day-name"&gt;Wed&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Day 4&lt;/div&gt;&lt;div class="session-day-name"&gt;Thu&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Day 5&lt;/div&gt;&lt;div class="session-day-name"&gt;Fri&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Day 6&lt;/div&gt;&lt;div class="session-day-name"&gt;Sat&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day sunday"&gt;&lt;div class="session-day-label"&gt;Day 7&lt;/div&gt;&lt;div class="session-day-name"&gt;Celebration&lt;br&gt;Sunday&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p&gt;Six short daily readings, Monday through Saturday &amp;mdash; five to ten minutes each, no small-group homework required. Then &lt;strong&gt;Celebration Sunday&lt;/strong&gt;: a churchwide gathering that closes the week with worship, a testimony or two from people who did the challenge, and one clear next step (join a group, take a next class, make a decision).&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="criteria-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;Best Uses&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;New-guest on-ramps &amp;middot; dormant-attender re-engagement &amp;middot; a sermon-series preview before launching the full 40-day version &amp;middot; a low-barrier seasonal moment (New Year, back-to-school, a single hard week the church is walking through together) &amp;middot; testing a theme before committing a full campaign season to it.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="legacy-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;Legacy Titles Integrated&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;The five original 7-day titles from the founding library are folded in throughout: &lt;strong&gt;7 Days of Prayer&lt;/strong&gt;, &lt;strong&gt;7 Days of Rest&lt;/strong&gt;, and &lt;strong&gt;7 Days of Gratitude&lt;/strong&gt; already appear verbatim as Direct-formula conversions in their categories. &lt;strong&gt;7 Days to Peace&lt;/strong&gt; and &lt;strong&gt;7 Days of Generosity&lt;/strong&gt; are carried forward as bonus entries in Grace, Peace &amp;amp; Rest and Stewardship, since their exact phrasing differed from the converted set.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">render</span><span class="p">(</span>
+    <span class="s2">"lifetogether-7-day-challenge-library.html"</span><span class="p">,</span>
+    <span class="s2">"The 7-Day Challenge Master Library"</span><span class="p">,</span>
+    <span class="s2">"LifeTogether Ministries </span><span class="se">\u00b7</span><span class="s2"> Campaign &amp; Curriculum Library"</span><span class="p">,</span>
+    <span class="s1">'The 7-Day Challenge&lt;br&gt;&lt;em&gt;Master Library&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="s2">"Every 40-day campaign, reframed as a one-week on-ramp </span><span class="se">\u2014</span><span class="s2"> six sessions and a Celebration Sunday."</span><span class="p">,</span>
+    <span class="p">[(</span><span class="mi">30</span><span class="p">,</span> <span class="s2">"Categories"</span><span class="p">),</span> <span class="p">(</span><span class="n">total_titles</span><span class="p">(</span><span class="n">seven</span><span class="p">),</span> <span class="s2">"Titles"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"6+1"</span><span class="p">,</span> <span class="s2">"Session Map"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"All"</span><span class="p">,</span> <span class="s2">"Ages"</span><span class="p">)],</span>
+    <span class="s2">"Derived from the Master 40-Day Campaign Library"</span><span class="p">,</span>
+    <span class="n">seven_intro</span><span class="p">,</span>
+    <span class="n">seven</span><span class="p">,</span>
+    <span class="s2">"The 7-Day Challenge Master Library"</span><span class="p">,</span>
+    <span class="s2">"600+ titles, six daily sessions and a Celebration Sunday, derived from every category in the Master 40-Day Campaign Library."</span>
+<span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># FILE 2 — THE 21-DAY EXPERIENCE MASTER LIBRARY</span>
+<span class="c1"># ============================================================</span>
+<span class="n">twentyone</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"21 Days"</span><span class="p">,</span> <span class="s2">"21-Day"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"Journey"</span><span class="p">:</span> <span class="s2">"Experience"</span><span class="p">})</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"VI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days to Peace"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"XX"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days of Generosity"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"XV"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days to Better Relationships"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">twentyone</span><span class="p">,</span> <span class="s2">"XVI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"21 Days of Scripture"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry </span><span class="se">\u2014</span><span class="s2"> daily Bible engagement."</span><span class="p">))</span>
+
+<span class="n">twentyone_intro</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="block bg-navy intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;The Habit Builder&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;Three weeks, &lt;em&gt;one real habit&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Twenty-one days is long enough to move past a good idea and into an actual rhythm &amp;mdash; the format built specifically for habit formation: prayer, fasting, generosity, Bible engagement, emotional health, and the other spiritual disciplines that need repetition to stick.&lt;/p&gt;</span>
+<span class="s2">  &lt;p class="showcase-label"&gt;The 21-Day Structure&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="session-map" style="grid-template-columns:repeat(4,1fr);"&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Week 1&lt;/div&gt;&lt;div class="session-day-name"&gt;Foundation&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Week 2&lt;/div&gt;&lt;div class="session-day-name"&gt;Practice&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day sunday"&gt;&lt;div class="session-day-label"&gt;Week 3&lt;/div&gt;&lt;div class="session-day-name"&gt;Commission&lt;br&gt;Sunday&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="session-day"&gt;&lt;div class="session-day-label"&gt;Daily&lt;/div&gt;&lt;div class="session-day-name"&gt;Habit&lt;br&gt;Tracker&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p&gt;Each week closes on a teaching Sunday that reinforces the daily habit rather than introducing new content &amp;mdash; Week 3 closes with a Commissioning Sunday, sending people into the habit long-term with a simple tracking tool to keep it going past day 21.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="criteria-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;Best Uses&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;Prayer and fasting emphases &amp;middot; generosity and giving seasons &amp;middot; Bible engagement pushes &amp;middot; emotional-health and gratitude rhythms &amp;middot; any spiritual discipline the church wants to move from event to habit.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="legacy-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;Legacy Titles Integrated&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;21 Days of Prayer&lt;/strong&gt; already appears verbatim as a Direct-formula conversion. &lt;strong&gt;21 Days to Peace&lt;/strong&gt;, &lt;strong&gt;21 Days of Generosity&lt;/strong&gt;, &lt;strong&gt;21 Days to Better Relationships&lt;/strong&gt;, and &lt;strong&gt;21 Days of Scripture&lt;/strong&gt; are carried forward as bonus entries in their nearest-fit categories, since their exact phrasing differed from the converted set.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">render</span><span class="p">(</span>
+    <span class="s2">"lifetogether-21-day-experience-library.html"</span><span class="p">,</span>
+    <span class="s2">"The 21-Day Experience Master Library"</span><span class="p">,</span>
+    <span class="s2">"LifeTogether Ministries </span><span class="se">\u00b7</span><span class="s2"> Campaign &amp; Curriculum Library"</span><span class="p">,</span>
+    <span class="s1">'The 21-Day Experience&lt;br&gt;&lt;em&gt;Master Library&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="s2">"Every 40-day theme, built for habit formation </span><span class="se">\u2014</span><span class="s2"> three weeks to a rhythm that sticks."</span><span class="p">,</span>
+    <span class="p">[(</span><span class="mi">30</span><span class="p">,</span> <span class="s2">"Categories"</span><span class="p">),</span> <span class="p">(</span><span class="n">total_titles</span><span class="p">(</span><span class="n">twentyone</span><span class="p">),</span> <span class="s2">"Titles"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span> <span class="s2">"Weeks"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"All"</span><span class="p">,</span> <span class="s2">"Ages"</span><span class="p">)],</span>
+    <span class="s2">"Derived from the Master 40-Day Campaign Library"</span><span class="p">,</span>
+    <span class="n">twentyone_intro</span><span class="p">,</span>
+    <span class="n">twentyone</span><span class="p">,</span>
+    <span class="s2">"The 21-Day Experience Master Library"</span><span class="p">,</span>
+    <span class="s2">"600+ titles built for habit formation </span><span class="se">\u2014</span><span class="s2"> prayer, fasting, generosity, and Scripture engagement across three weeks."</span>
+<span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># FILE 3 — THE 30-DAY / 4-WEEK COMPANION JOURNEYS</span>
+<span class="c1"># ============================================================</span>
+<span class="n">thirty</span> <span class="o">=</span> <span class="n">build_duration_categories</span><span class="p">(</span><span class="s2">"30 Days"</span><span class="p">,</span> <span class="s2">"4-Week"</span><span class="p">)</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"IX"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days of Flourishing"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"XII"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days to Whole-Life Health"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library phrasing, kept alongside the converted </span><span class="se">\u201c</span><span class="s2">30 Days of Whole Life Health.</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"VI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days to Better Balance"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+<span class="n">add_legacy</span><span class="p">(</span><span class="n">thirty</span><span class="p">,</span> <span class="s2">"XXVI"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"30 Days to Emotional Resilience"</span><span class="p">,</span> <span class="s2">"Legacy"</span><span class="p">,</span> <span class="s2">"Original founding-library title, carried forward as a bonus entry."</span><span class="p">))</span>
+
+<span class="n">thirty_intro</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="block bg-navy intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;The 4-Week Companion Format&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;A shorter arc, &lt;em&gt;a lighter lift&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Not every series needs the full six-week, 40-day commitment. This library reframes most of the same themes as a &lt;strong&gt;4-week Sunday sermon arc&lt;/strong&gt; &amp;mdash; four messages instead of six &amp;mdash; paired with a 30-day daily devotional companion that runs a little longer than the sermon series itself, so the daily habit outlasts the last Sunday.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="criteria-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;How This Differs From the 40-Day Format&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;Fewer sermon weeks:&lt;/strong&gt; four Sunday messages, not six.&lt;/p&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;A lighter devotional:&lt;/strong&gt; shorter daily entries built for a quicker read, not the fuller 40-day devotional structure.&lt;/p&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;Small-group-first:&lt;/strong&gt; designed to launch a group off a shorter series commitment &amp;mdash; a good on-ramp for groups not ready for a full 40-day round.&lt;/p&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;Different outline:&lt;/strong&gt; weekly big-idea plus daily application, rather than the 40-day format's six-session curriculum plus full daily devotional arc.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p class="showcase-label"&gt;Format Note&lt;/p&gt;</span>
+<span class="s2">  &lt;p&gt;Titles below carry two conventions: &lt;strong&gt;&amp;ldquo;30 Days of X&amp;rdquo;&lt;/strong&gt; for the daily-devotional framing, and &lt;strong&gt;&amp;ldquo;The 4-Week X Journey&amp;rdquo;&lt;/strong&gt; for the Sunday-sermon-arc framing &amp;mdash; use whichever matches how you're marketing the series that season.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="legacy-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;Legacy Titles Integrated&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;30 Days of Rest&lt;/strong&gt; already appears verbatim as a Direct-formula conversion. &lt;strong&gt;30 Days of Flourishing&lt;/strong&gt;, &lt;strong&gt;30 Days to Whole-Life Health&lt;/strong&gt;, &lt;strong&gt;30 Days to Better Balance&lt;/strong&gt;, and &lt;strong&gt;30 Days to Emotional Resilience&lt;/strong&gt; are carried forward as bonus entries in their nearest-fit categories.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">render</span><span class="p">(</span>
+    <span class="s2">"lifetogether-30-day-4-week-journeys.html"</span><span class="p">,</span>
+    <span class="s2">"The 30-Day / 4-Week Companion Journeys"</span><span class="p">,</span>
+    <span class="s2">"LifeTogether Ministries </span><span class="se">\u00b7</span><span class="s2"> Campaign &amp; Curriculum Library"</span><span class="p">,</span>
+    <span class="s1">'The 30-Day Journeys&lt;br&gt;&lt;em&gt;4-Week Companion Format&lt;/em&gt;'</span><span class="p">,</span>
+    <span class="s2">"Most 40-day themes, reframed as a 4-week sermon arc with a lighter 30-day devotional companion."</span><span class="p">,</span>
+    <span class="p">[(</span><span class="mi">30</span><span class="p">,</span> <span class="s2">"Categories"</span><span class="p">),</span> <span class="p">(</span><span class="n">total_titles</span><span class="p">(</span><span class="n">thirty</span><span class="p">),</span> <span class="s2">"Titles"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span> <span class="s2">"Sermon Weeks"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"30"</span><span class="p">,</span> <span class="s2">"Devotional Days"</span><span class="p">)],</span>
+    <span class="s2">"Derived from the Master 40-Day Campaign Library"</span><span class="p">,</span>
+    <span class="n">thirty_intro</span><span class="p">,</span>
+    <span class="n">thirty</span><span class="p">,</span>
+    <span class="s2">"The 30-Day / 4-Week Companion Journeys"</span><span class="p">,</span>
+    <span class="s2">"600+ titles built for a shorter sermon arc and lighter devotional companion </span><span class="se">\u2014</span><span class="s2"> a small-group-first on-ramp to the full 40-day format."</span>
+<span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># FILE 4 — CATALYTIC SUNDAYS (500 Big Sundays)</span>
+<span class="c1"># ============================================================</span>
+<span class="n">sundays</span> <span class="o">=</span> <span class="n">build_catalytic_sundays</span><span class="p">(</span><span class="n">limit_per_category</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+
+<span class="n">sundays_intro</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="block bg-navy intro"&gt;</span>
+<span class="s2">  &lt;p class="intro-eyebrow"&gt;Not a Series </span><span class="se">\u2014</span><span class="s2"> a Single Sunday&lt;/p&gt;</span>
+<span class="s2">  &lt;h2&gt;500 Sundays that &lt;em&gt;carry their own weight&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Every title in this library stands alone. No six-week arc, no daily devotional, no small-group guide required &amp;mdash; just one Sunday built to hit hard on its own: a launch Sunday that opens a season, a vision Sunday, a standalone message strong enough to be the whole point.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="criteria-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;How to Use a Catalytic Sunday&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;As a launch:&lt;/strong&gt; open a full campaign season with the single biggest idea from that theme, then let the 40-day, 30-day, 21-day, or 7-day version carry the follow-through.&lt;/p&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;As a capstone:&lt;/strong&gt; close a season or teaching year with the theme's most concentrated statement.&lt;/p&gt;</span>
+<span class="s2">    &lt;p&gt;&lt;strong&gt;On its own:&lt;/strong&gt; a fifth-Sunday, holiday-adjacent, or between-series week that still needs to matter.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p&gt;Titles are drawn from all 30 categories in the Master 40-Day Campaign Library, distilled to their single strongest idea &amp;mdash; roughly 17 per category, 500+ in total.&lt;/p&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">render</span><span class="p">(</span>
+    <span class="s2">"lifetogether-catalytic-sundays.html"</span><span class="p">,</span>
+    <span class="s2">"Catalytic Sundays"</span><span class="p">,</span>
+    <span class="s2">"LifeTogether Ministries </span><span class="se">\u00b7</span><span class="s2"> Campaign &amp; Curriculum Library"</span><span class="p">,</span>
+    <span class="s1">'Catalytic Sundays'</span><span class="p">,</span>
+    <span class="s2">"500 standalone, single-message Sundays </span><span class="se">\u2014</span><span class="s2"> no series required."</span><span class="p">,</span>
+    <span class="p">[(</span><span class="mi">30</span><span class="p">,</span> <span class="s2">"Categories"</span><span class="p">),</span> <span class="p">(</span><span class="n">total_titles</span><span class="p">(</span><span class="n">sundays</span><span class="p">),</span> <span class="s2">"Big Sundays"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"Sunday Each"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"New"</span><span class="p">,</span> <span class="s2">"Library"</span><span class="p">)],</span>
+    <span class="s2">"Distilled from the Master 40-Day Campaign Library </span><span class="se">\u2014</span><span class="s2"> no prior file found under this name"</span><span class="p">,</span>
+    <span class="n">sundays_intro</span><span class="p">,</span>
+    <span class="n">sundays</span><span class="p">,</span>
+    <span class="s2">"Catalytic Sundays"</span><span class="p">,</span>
+    <span class="s2">"500+ standalone single-Sunday titles, distilled from every category in the Master 40-Day Campaign Library."</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_derivatives.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_booklet.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_booklet.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">10 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_booklet.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Print-ready brandable seven-day journal template</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">master_content</span><span class="w"> </span><span class="kn">import</span> <span class="n">DRAFTS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kits</span><span class="w"> </span><span class="kn">import</span> <span class="n">KITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loop_content</span><span class="w"> </span><span class="kn">import</span> <span class="n">FAMILY</span>
+
+<span class="n">K</span> <span class="o">=</span> <span class="n">KITS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># He's Not Where You Left Him</span>
+<span class="n">FAM</span> <span class="o">=</span> <span class="n">FAMILY</span><span class="p">[</span><span class="s2">"He's Not Where You Left Him"</span><span class="p">]</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">@page{size:5.5in 8.5in;margin:0}</span>
+<span class="s2">:root{--ink:#1a1a1a;--soft:#5a5550;--rule:#d8d2c6;--accent:#8a6d3b;--paper:#fdfbf6}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:#3a3a3a;font-family:'Cormorant Garamond',Georgia,serif;color:var(--ink)}</span>
+<span class="s2">.page{width:5.5in;height:8.5in;background:var(--paper);margin:0 auto 14px;padding:0.62in 0.58in;</span>
+<span class="s2">position:relative;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.4)}</span>
+<span class="s2">.pn{position:absolute;bottom:0.34in;left:0;right:0;text-align:center;</span>
+<span class="s2">font-family:'Lato',sans-serif;font-size:7.5pt;letter-spacing:.14em;color:#a09a90}</span>
+<span class="s2">h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;margin:0;line-height:1.14}</span>
+<span class="s2">.fld{background:#f2ead8;border-bottom:1px solid var(--accent);padding:0 3px}</span>
+<span class="s2">.cov{display:flex;flex-direction:column;justify-content:center;text-align:center;height:100%}</span>
+<span class="s2">.cov .ch{font-family:'Lato',sans-serif;font-size:8pt;letter-spacing:.3em;text-transform:uppercase;</span>
+<span class="s2">color:var(--accent);margin-bottom:0.5in}</span>
+<span class="s2">.cov h1{font-size:31pt;line-height:1.08}</span>
+<span class="s2">.cov .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13pt;</span>
+<span class="s2">color:var(--soft);margin-top:14px}</span>
+<span class="s2">.cov .rule{width:44px;height:1px;background:var(--accent);margin:0.4in auto}</span>
+<span class="s2">.cov .days{font-family:'Lato',sans-serif;font-size:8pt;letter-spacing:.24em;</span>
+<span class="s2">text-transform:uppercase;color:var(--soft)}</span>
+<span class="s2">h2.ph{font-size:19pt;margin-bottom:4px}</span>
+<span class="s2">.eyebrow{font-family:'Lato',sans-serif;font-size:7.5pt;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--accent);margin-bottom:9px}</span>
+<span class="s2">p{font-size:10.5pt;line-height:1.62;margin:0 0 10px;color:var(--ink)}</span>
+<span class="s2">p.small{font-size:9.5pt;color:var(--soft)}</span>
+<span class="s2">.hr{height:1px;background:var(--rule);margin:16px 0}</span>
+<span class="s2">.sig{margin-top:20px}</span>
+<span class="s2">.sigline{border-bottom:1px solid var(--ink);height:26px;margin-bottom:5px}</span>
+<span class="s2">.siglbl{font-family:'Lato',sans-serif;font-size:7.5pt;letter-spacing:.14em;</span>
+<span class="s2">text-transform:uppercase;color:var(--soft);margin-bottom:16px}</span>
+<span class="s2">.grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}</span>
+<span class="s2">.box{width:0.62in;height:0.62in;border:1px solid var(--rule);display:flex;</span>
+<span class="s2">align-items:center;justify-content:center;font-family:'Lato',sans-serif;font-size:8pt;color:#b5aea3}</span>
+<span class="s2">.dayhead{border-bottom:1px solid var(--rule);padding-bottom:9px;margin-bottom:13px}</span>
+<span class="s2">.dayhead .dn{font-family:'Lato',sans-serif;font-size:7.5pt;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--accent)}</span>
+<span class="s2">.dayhead h3{font-size:17pt;margin-top:4px}</span>
+<span class="s2">.dayhead .ref{font-family:'Lato',sans-serif;font-size:8pt;color:var(--soft);margin-top:4px;letter-spacing:.04em}</span>
+<span class="s2">.q{font-family:'Playfair Display',serif;font-size:12pt;font-style:italic;</span>
+<span class="s2">color:var(--accent);margin-bottom:12px;line-height:1.35}</span>
+<span class="s2">.lines .ln{border-bottom:1px solid var(--rule);height:0.31in}</span>
+<span class="s2">.do{border:1px solid var(--accent);padding:11px 13px;margin-top:16px;display:flex;gap:11px;align-items:flex-start}</span>
+<span class="s2">.do .cb{width:15px;height:15px;border:1.5px solid var(--accent);flex-shrink:0;margin-top:2px}</span>
+<span class="s2">.do .dl{font-family:'Lato',sans-serif;font-size:7pt;letter-spacing:.2em;text-transform:uppercase;</span>
+<span class="s2">color:var(--accent);display:block;margin-bottom:4px}</span>
+<span class="s2">.do .dt{font-size:10pt;line-height:1.5}</span>
+<span class="s2">.fam{margin-top:15px;border-top:1px dashed var(--rule);padding-top:11px}</span>
+<span class="s2">.fam .fl{font-family:'Lato',sans-serif;font-size:7pt;letter-spacing:.2em;</span>
+<span class="s2">text-transform:uppercase;color:var(--soft);margin-bottom:5px}</span>
+<span class="s2">.fam p{font-size:9.5pt;margin-bottom:5px}</span>
+<span class="s2">.notes .ln{border-bottom:1px solid var(--rule);height:0.34in}</span>
+<span class="s2">.back{display:flex;flex-direction:column;justify-content:center;height:100%;text-align:center}</span>
+<span class="s2">.back h2{font-size:21pt;margin-bottom:12px}</span>
+<span class="s2">.qr{width:1.5in;height:1.5in;border:1px dashed var(--accent);margin:0.28in auto;</span>
+<span class="s2">display:flex;align-items:center;justify-content:center;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:7.5pt;letter-spacing:.12em;color:var(--accent);text-align:center;padding:10px;line-height:1.5}</span>
+<span class="s2">.bar{background:#1c2a4a;color:#f7f3ea;padding:16px 22px;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:10pt;letter-spacing:.06em;max-width:5.5in;margin:0 auto 14px;line-height:1.6}</span>
+<span class="s2">.bar b{color:#d9bc82;letter-spacing:.16em;text-transform:uppercase;font-size:8.5pt;</span>
+<span class="s2">display:block;margin-bottom:5px}</span>
+<span class="s2">@media print{</span>
+<span class="s2">body{background:#fff}</span>
+<span class="s2">.page{box-shadow:none;margin:0;page-break-after:always;break-after:page}</span>
+<span class="s2">.bar{display:none}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;title&gt;Seven-Day Journal &amp;mdash; Brandable Template | LifeTogether&lt;/title&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;style&gt;'</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s1">'&lt;/style&gt;&lt;/head&gt;&lt;body&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="bar"&gt;&lt;b&gt;How to use this template&lt;/b&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'Twenty pages, 5.5 x 8.5 inches, laid out for saddle-stitch on letter paper folded in half. '</span>
+         <span class="s1">'Every shaded field is yours to replace. Print to PDF at actual size, hand it to any local printer, '</span>
+         <span class="s1">'and ask for 70lb uncoated text with a 100lb cover. This bar does not print.&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">page</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="page"&gt;'</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'&lt;div class="pn"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span> <span class="k">if</span> <span class="n">num</span> <span class="k">else</span> <span class="s1">''</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="c1"># COVER</span>
+<span class="n">page</span><span class="p">(</span><span class="s1">'&lt;div class="cov"&gt;&lt;div class="ch"&gt;&lt;span class="fld"&gt;[ YOUR CHURCH NAME ]&lt;/span&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;h1&gt;'</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="s2">"t"</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'&lt;/h1&gt;'</span>
+     <span class="s1">'&lt;div class="sub"&gt;'</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="s2">"s"</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span>
+     <span class="s1">'&lt;div class="rule"&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;div class="days"&gt;A Seven-Day Journey&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="c1"># p2 welcome</span>
+<span class="n">page</span><span class="p">(</span><span class="s1">'&lt;div class="eyebrow"&gt;Before you begin&lt;/div&gt;&lt;h2 class="ph"&gt;A word from your pastor&lt;/h2&gt;'</span>
+     <span class="s1">'&lt;div class="hr"&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;p&gt;&lt;span class="fld"&gt;[ REPLACE THIS PAGE. One hundred words, first person, written by the pastor. '</span>
+     <span class="s1">'Say why you chose this passage for this church in this season. Do not make it good. Make it yours. '</span>
+     <span class="s1">'This is the single highest-leverage page in the booklet and it takes about ten minutes to write. ]&lt;/span&gt;&lt;/p&gt;'</span>
+     <span class="s1">'&lt;p class="small"&gt;Seven days. Ten minutes each. Read the page, answer the one question, do the one thing. '</span>
+     <span class="s1">'If you miss a day, do not go back and catch up &amp;mdash; just pick up where the calendar is. '</span>
+     <span class="s1">'Nobody has ever finished one of these by making up lost days.&lt;/p&gt;'</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># p3 commitment</span>
+<span class="n">page</span><span class="p">(</span><span class="s1">'&lt;div class="eyebrow"&gt;Page three&lt;/div&gt;&lt;h2 class="ph"&gt;I</span><span class="se">\'</span><span class="s1">m in.&lt;/h2&gt;&lt;div class="hr"&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;p&gt;Sign this in the service, with a pen, while everyone else is signing theirs. '</span>
+     <span class="s1">'Then write down one person who will ask you about it on Wednesday.&lt;/p&gt;'</span>
+     <span class="s1">'&lt;div class="sig"&gt;&lt;div class="sigline"&gt;&lt;/div&gt;&lt;div class="siglbl"&gt;Name&lt;/div&gt;'</span>
+     <span class="s1">'&lt;div class="sigline"&gt;&lt;/div&gt;&lt;div class="siglbl"&gt;Date I start&lt;/div&gt;'</span>
+     <span class="s1">'&lt;div class="sigline"&gt;&lt;/div&gt;&lt;div class="siglbl"&gt;My spiritual partner &amp;mdash; the person walking this with me&lt;/div&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;p class="small"&gt;Scan the code on the back page to enroll and send your partner their own copy.&lt;/p&gt;'</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># p4 tracker</span>
+<span class="n">page</span><span class="p">(</span><span class="s1">'&lt;div class="eyebrow"&gt;Page four&lt;/div&gt;&lt;h2 class="ph"&gt;Seven days&lt;/h2&gt;&lt;div class="hr"&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;p&gt;Check the box each morning. That is the whole system.&lt;/p&gt;'</span>
+     <span class="s1">'&lt;div class="grid"&gt;'</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="box"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span>
+     <span class="s1">'&lt;div class="hr"&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;p class="small"&gt;Day four is where most people stop. That is not a character problem, it is simply '</span>
+     <span class="s1">'where the novelty runs out and the habit has not formed yet. If you get past day four you will '</span>
+     <span class="s1">'almost certainly finish.&lt;/p&gt;'</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># 7 day spreads</span>
+<span class="n">pg</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">act</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">K</span><span class="p">[</span><span class="s2">"dev"</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'&lt;div class="dayhead"&gt;&lt;div class="dn"&gt;Day '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;h3&gt;'</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">+</span> <span class="s1">'&lt;/h3&gt;'</span>
+            <span class="s1">'&lt;div class="ref"&gt;'</span> <span class="o">+</span> <span class="n">ref</span> <span class="o">+</span> <span class="s1">' &amp;middot; NIV&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">para</span> <span class="ow">in</span> <span class="n">rd</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">+=</span> <span class="s1">'&lt;p&gt;'</span> <span class="o">+</span> <span class="n">para</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span>
+    <span class="n">page</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">pg</span><span class="p">);</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'&lt;div class="eyebrow"&gt;Day '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' &amp;mdash; respond&lt;/div&gt;'</span>
+             <span class="s1">'&lt;div class="q"&gt;'</span> <span class="o">+</span> <span class="n">q</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;div class="lines"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'&lt;div class="ln"&gt;&lt;/div&gt;'</span> <span class="o">*</span> <span class="mi">7</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span>
+             <span class="s1">'&lt;div class="do"&gt;&lt;div class="cb"&gt;&lt;/div&gt;&lt;div&gt;&lt;span class="dl"&gt;Do this today&lt;/span&gt;'</span>
+             <span class="s1">'&lt;span class="dt"&gt;'</span> <span class="o">+</span> <span class="n">act</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+             <span class="s1">'&lt;div class="fam"&gt;&lt;div class="fl"&gt;At the table tonight &amp;mdash; optional&lt;/div&gt;'</span>
+             <span class="s1">'&lt;p&gt;&lt;strong&gt;Ask:&lt;/strong&gt; '</span> <span class="o">+</span> <span class="n">FAM</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span>
+             <span class="s1">'&lt;p&gt;&lt;strong&gt;Say:&lt;/strong&gt; '</span> <span class="o">+</span> <span class="n">FAM</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span>
+             <span class="s1">'&lt;p&gt;&lt;strong&gt;Do:&lt;/strong&gt; '</span> <span class="o">+</span> <span class="n">FAM</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">page</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">pg</span><span class="p">);</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># notes</span>
+<span class="n">page</span><span class="p">(</span><span class="s1">'&lt;div class="eyebrow"&gt;Page '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pg</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;h2 class="ph"&gt;Notes&lt;/h2&gt;&lt;div class="hr"&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;div class="notes"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'&lt;div class="ln"&gt;&lt;/div&gt;'</span> <span class="o">*</span> <span class="mi">17</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">,</span> <span class="n">pg</span><span class="p">);</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="n">page</span><span class="p">(</span><span class="s1">'&lt;div class="notes" style="padding-top:0.1in"&gt;'</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'&lt;div class="ln"&gt;&lt;/div&gt;'</span> <span class="o">*</span> <span class="mi">19</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">,</span> <span class="n">pg</span><span class="p">);</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># back</span>
+<span class="n">page</span><span class="p">(</span><span class="s1">'&lt;div class="back"&gt;&lt;div class="eyebrow"&gt;You finished&lt;/div&gt;'</span>
+     <span class="s1">'&lt;h2&gt;Do not stop here.&lt;/h2&gt;'</span>
+     <span class="s1">'&lt;p class="small"&gt;Seven days changed something small. Six weeks in a room with five other people '</span>
+     <span class="s1">'changes something that stays changed.&lt;/p&gt;'</span>
+     <span class="s1">'&lt;div class="qr"&gt;[ QR CODE ]&lt;br&gt;Enroll, invite&lt;br&gt;your partner,&lt;br&gt;join a group&lt;/div&gt;'</span>
+     <span class="s1">'&lt;p class="small"&gt;&lt;span class="fld"&gt;[ CELEBRATION SUNDAY &amp;mdash; DATE ]&lt;/span&gt;&lt;br&gt;'</span>
+     <span class="s1">'Come ready to tell us what happened.&lt;/p&gt;'</span>
+     <span class="s1">'&lt;div class="hr"&gt;&lt;/div&gt;'</span>
+     <span class="s1">'&lt;p class="small"&gt;&lt;span class="fld"&gt;[ CHURCH NAME ]&lt;/span&gt;&lt;br&gt;'</span>
+     <span class="s1">'&lt;span class="fld"&gt;[ address &amp;middot; website ]&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/body&gt;&lt;/html&gt;'</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/catalytic-journal-template.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"pages:"</span><span class="p">,</span> <span class="n">html</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">'class="page"'</span><span class="p">),</span> <span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_booklet.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

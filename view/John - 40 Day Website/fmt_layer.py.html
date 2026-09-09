@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>fmt_layer.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; John - 40 Day Website</div>
+<h1>fmt_layer.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">12 KB</span>
+<a class="btn" href="../../artifacts/John%20-%2040%20Day%20Website/fmt_layer.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Stage the 8 new format builders and the format registry for the engine</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/site/engine.js'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">assert</span> <span class="s1">'function bookFmt'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span><span class="p">,</span> <span class="s2">"already applied"</span>
+
+<span class="n">NEW</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''</span>
+<span class="s1">/* ================= sixteen-format layer ================= */</span>
+<span class="s1">function stripTags(h){ return String(h).replace(/&lt;[^&gt;]+&gt;/g,' ').replace(/\s+/g,' ').trim(); }</span>
+<span class="s1">function firstPara(h){ var m=/&lt;p&gt;([\s\S]*?)&lt;\/p&gt;/.exec(h); return m?stripTags(m[1]):stripTags(h).slice(0,220); }</span>
+
+<span class="s1">function bookFmt(C){</span>
+<span class="s1">  var dev=devotional(C), r=rngFor(C[9],'book');</span>
+<span class="s1">  var m={c:rot(KB[FAM_BY_CAT[C[2]]].concepts,0), t:C[0], ap:audPhrase(C), th:C[10]};</span>
+<span class="s1">  var byPart=</span><span class="si">{}</span><span class="s1">, order=[];</span>
+<span class="s1">  dev.days.forEach(function(d){ if(!byPart[d.wk]){byPart[d.wk]=[];order.push(d.wk);} byPart[d.wk].push(d); });</span>
+<span class="s1">  var chapters=order.map(function(w,i){</span>
+<span class="s1">    var ri=rngFor(C[9],'bkch'+i);</span>
+<span class="s1">    return { n:i+1, title:w.replace(/^Part \d+ \u00b7 /,''),</span>
+<span class="s1">      intro:gOpen(ri,m)+" "+gTruth(ri,m),</span>
+<span class="s1">      sections:byPart[w].map(function(d){ return {h:d.title, scr:d.scr, body:d.body}; }) };</span>
+<span class="s1">  });</span>
+<span class="s1">  var words=dev.days.reduce(function(a,d){return a+stripTags(d.body).split(' ').length;},0);</span>
+<span class="s1">  return { kind:'Book', title:C[0], sub:C[1]||'', author:'The Lifetogether Team',</span>
+<span class="s1">    howto:"Read one section a day, or a chapter a week with a pen nearby. "+gTruth(r,m)+" "+gStepCore(r,m,true),</span>
+<span class="s1">    chapters:chapters,</span>
+<span class="s1">    epilogue:gPromise(r,C[0],C[1],m.c)+" "+gClose(r,m,dev.days.length)+" "+gCarry(r,dev.days.length),</span>
+<span class="s1">    pagesEst:Math.round(words/280)+8 };</span>
+<span class="s1">}</span>
+
+<span class="s1">function courseFmt(C){</span>
+<span class="s1">  var dev=devotional(C), gs=groupStudy(C);</span>
+<span class="s1">  var m={c:rot(KB[FAM_BY_CAT[C[2]]].concepts,1), t:C[0], ap:audPhrase(C), th:C[10]};</span>
+<span class="s1">  var byPart=</span><span class="si">{}</span><span class="s1">, order=[];</span>
+<span class="s1">  dev.days.forEach(function(d){ if(!byPart[d.wk]){byPart[d.wk]=[];order.push(d.wk);} byPart[d.wk].push(d); });</span>
+<span class="s1">  var modules=order.map(function(w,i){</span>
+<span class="s1">    var r=rngFor(C[9],'crs'+i);</span>
+<span class="s1">    var lessons=byPart[w].map(function(d){ return {t:d.title, key:firstPara(d.body), scr:d.scr}; });</span>
+<span class="s1">    return { n:i+1, title:w.replace(/^Part \d+ \u00b7 /,''),</span>
+<span class="s1">      objectives:[ "Name where "+m.c+" is currently thin in your ordinary week.",</span>
+<span class="s1">                   "Trace what Scripture in this module actually claims about "+m.c+".",</span>
+<span class="s1">                   "Practice one measurable act of "+m.c+" before the module closes." ].map(function(o,oi){ var ro=rngFor(C[9],'obj'+i+'-'+oi); return pk(ro,["","By the end of this module you will be able to ",""]) ? o : o; }),</span>
+<span class="s1">      lessons:lessons,</span>
+<span class="s1">      quiz:[gQuestion(r,m),gQuestion(r,m),gQuestion(r,m)],</span>
+<span class="s1">      challenge:gPractice(r,m) };</span>
+<span class="s1">  });</span>
+<span class="s1">  return { kind:'Membership Course', title:C[0]+" \u2014 The Course", sub:C[1]||'', modules:modules,</span>
+<span class="s1">    completion:"Members who finish all "+modules.length+" modules receive the "+C[0]+" completion certificate and the alumni discussion track." };</span>
+<span class="s1">}</span>
+
+<span class="s1">function leaderTrainingFmt(C){</span>
+<span class="s1">  var gs=groupStudy(C);</span>
+<span class="s1">  var m={c:rot(KB[FAM_BY_CAT[C[2]]].concepts,2), t:C[0], ap:'your group', th:C[10]};</span>
+<span class="s1">  var names=["Before You Launch","Leading the Room","Shepherding the Middle Weeks","Landing the Plane"];</span>
+<span class="s1">  var mods=names.map(function(nm,i){</span>
+<span class="s1">    var r=rngFor(C[9],'lt'+i);</span>
+<span class="s1">    var tipLead=pk(r,["The best facilitators of "+C[0]+" ","Groups rise to the level of their questions, so ","Your job is temperature, not content, which means ","Silence is a tool here; ","Nobody joins a group to be lectured, so "]);</span>
+<span class="s1">    var tipCore=pk(r,["ask, wait a full seven seconds, and then wait three more.","let the readings do the heavy lifting and keep your own airtime under a quarter.","open with the easiest honest question and save the deep one for minute forty.","name the quiet person kindly and hand them the second question, never the first.","end five minutes early on purpose; people remember rooms that respected them.","text one member midweek about one thing they said; retention is pastoral, not procedural."]);</span>
+<span class="s1">    var tipTail=pk(r,[" Trust the process across all "+gs.sessions.length+" sessions."," That single habit changes the whole journey."," Do this weekly and the room will start doing it for you."," It is small, repeatable, and it works."]);</span>
+<span class="s1">    return { n:i+1, title:nm,</span>
+<span class="s1">      aims:["Know exactly what session "+(Math.min(i*2+1,gs.sessions.length))+" of "+C[0]+" is trying to produce","Handle the two moments most likely to stall a room","Leave with one practice you will use this week"],</span>
+<span class="s1">      note:tipLead+tipCore+tipTail,</span>
+<span class="s1">      practice:gPractice(r,m) };</span>
+<span class="s1">  });</span>
+<span class="s1">  return { kind:'Leader Training', title:C[0]+" \u2014 Facilitator Course", sessions:gs.sessions.map(function(x){return x.title;}), modules:mods,</span>
+<span class="s1">    promise:"Forty minutes of training now saves forty awkward minutes every week of the journey." };</span>
+<span class="s1">}</span>
+
+<span class="s1">function familyFmt(C){</span>
+<span class="s1">  var dev=devotional(C);</span>
+<span class="s1">  var m={c:rot(KB[FAM_BY_CAT[C[2]]].concepts,3), t:C[0], ap:'your home', th:C[10]};</span>
+<span class="s1">  var weeks=[]; var seen=</span><span class="si">{}</span><span class="s1">;</span>
+<span class="s1">  dev.days.forEach(function(d,i){ var w=Math.floor(i/7); if(!seen[w]){seen[w]=true; weeks.push({i:w, mem:d.mem});} });</span>
+<span class="s1">  var out=weeks.map(function(w){</span>
+<span class="s1">    var r=rngFor(C[9],'famw'+w.i);</span>
+<span class="s1">    var actLead=pk(r,["Around the table this week, ","One evening this week, ","On the fridge this week: ","Pick a night and ","Before Sunday, "]);</span>
+<span class="s1">    var actCore=pk(r,["build a family list of places you spotted "+m.c+" and read it out loud on Sunday.","let the youngest pick one act of "+m.c+" the whole house does together.","write the memory verse on the mirror and say it together at breakfast.","cook one meal as a team and pray one sentence each before eating.","take a walk and let everyone name one thing they are thankful for per block.","have each person secretly serve one other person in the house, then guess who at week\u2019s end."]);</span>
+<span class="s1">    var debrief=pk(r,[" Debrief with one question: where did it feel easiest, and hardest?"," Close by asking what surprised everyone."," No lecture after; the doing is the lesson."," Let the kids grade the grown-ups, kindly."]);</span>
+<span class="s1">    var pr=(function(){ var rr=rngFor(C[9],'famp'+w.i);</span>
+<span class="s1">      return pk(rr,["Father,","Lord,","God,"])+" "+pk(rr,["thank You for this family, exactly as it is today.","thank You for our table and everyone around it."])+" "+pk(rr,["Grow "+m.c+" in our home this week.","Help each of us practice "+m.c+" where we live."])+" "+pk(rr,["Amen.","In Jesus\u2019 name, amen."]); })();</span>
+<span class="s1">    return { week:w.i+1, verse:w.mem, tableTalk:[gQuestion(r,m),gQuestion(r,m)], activity:actLead+actCore+debrief, prayer:pr,</span>
+<span class="s1">      blessing:"Speak this over each child at bedtime once this week: \u201CYou are loved, you are Ours and God\u2019s, and "+m.c+" looks good on you.\u201D" };</span>
+<span class="s1">  });</span>
+<span class="s1">  return { kind:'Family Guide', title:C[0]+" \u2014 Family Guide", weeks:out,</span>
+<span class="s1">    note:"Ten relaxed minutes, a few nights a week. The guide follows the same journey the adults are reading, so the whole house is in one story." };</span>
+<span class="s1">}</span>
+
+<span class="s1">function podcastFmt(C){</span>
+<span class="s1">  var dev=devotional(C), gs=groupStudy(C);</span>
+<span class="s1">  var m={c:rot(KB[FAM_BY_CAT[C[2]]].concepts,4), t:C[0], ap:'your week', th:C[10]};</span>
+<span class="s1">  var eps=gs.sessions.map(function(sx,i){</span>
+<span class="s1">    var r=rngFor(C[9],'pod'+i);</span>
+<span class="s1">    var day=dev.days[Math.min(i*7,dev.days.length-1)];</span>
+<span class="s1">    return { ep:i+1, title:sx.title,</span>
+<span class="s1">      coldOpen:gHook(r,m),</span>
+<span class="s1">      segments:[</span>
+<span class="s1">        {h:'Scripture moment', body:'Read '+day.scr+' slowly on air; let it sit for two beats before commentary.'},</span>
+<span class="s1">        {h:'The conversation', body:gQuestion(r,m)+' '+gQuestion(r,m)},</span>
+<span class="s1">        {h:'A story from the road', body:gStory(r)},</span>
+<span class="s1">        {h:'This week\u2019s move', body:gStep(r,m)}</span>
+<span class="s1">      ],</span>
+<span class="s1">      outro:pk(r,["Same feed, next week: ","We pick the road back up next episode with ","Do not miss the next stretch: "]) + (gs.sessions[i+1]?gs.sessions[i+1].title:"the Celebration episode") + ". "+gCarry(r,(i+1)*7),</span>
+<span class="s1">      runtime:'22\u201328 min' };</span>
+<span class="s1">  });</span>
+<span class="s1">  return { kind:'Podcast Series', title:C[0]+" \u2014 The Podcast", trailer:{ title:'Trailer', script:gPromise(rngFor(C[9],'podT'),C[0],C[1],m.c)+" Subscribe and walk the whole journey with us." }, episodes:eps };</span>
+<span class="s1">}</span>
+
+<span class="s1">function videoCourseFmt(C){</span>
+<span class="s1">  var gs=groupStudy(C);</span>
+<span class="s1">  var m={c:rot(KB[FAM_BY_CAT[C[2]]].concepts,5), t:C[0], ap:'this room', th:C[10]};</span>
+<span class="s1">  var lessons=gs.sessions.map(function(sx,i){</span>
+<span class="s1">    var r=rngFor(C[9],'vid'+i);</span>
+<span class="s1">    return { n:i+1, title:sx.title,</span>
+<span class="s1">      lowerThirds:(sx.movements||[]).slice(0,3).map(function(mv){return mv.t||mv.title||sx.title;}),</span>
+<span class="s1">      beats:[</span>
+<span class="s1">        {b:'Open (0:00\u20131:30)', s:gHook(r,m)},</span>
+<span class="s1">        {b:'Teach (1:30\u201310:00)', s:gTruth(r,m)+' '+gTruth(r,m)+' '+gApply(r,m)},</span>
+<span class="s1">        {b:'Story (10:00\u201313:00)', s:gStory(r)},</span>
+<span class="s1">        {b:'Send (13:00\u201315:00)', s:gStep(r,m)+' '+gClose(r,m,(i+1)*7)}</span>
+<span class="s1">      ],</span>
+<span class="s1">      runtime:'12\u201315 min' };</span>
+<span class="s1">  });</span>
+<span class="s1">  return { kind:'Video Course', title:C[0]+" \u2014 On Video", lessons:lessons,</span>
+<span class="s1">    production:"Shot as direct-to-camera teaching with two b-roll passes; scripts below are delivery-ready and match the group study beat for beat." };</span>
+<span class="s1">}</span>
+
+<span class="s1">function podFmt(C){</span>
+<span class="s1">  var dev=devotional(C), r=rngFor(C[9],'pod-print');</span>
+<span class="s1">  var m={c:rot(KB[FAM_BY_CAT[C[2]]].concepts,6), t:C[0], ap:'your church', th:C[10]};</span>
+<span class="s1">  var words=dev.days.reduce(function(a,d){return a+stripTags(d.body).split(' ').length;},0);</span>
+<span class="s1">  var pages=Math.round(words/280)+12;</span>
+<span class="s1">  return { kind:'Print-on-Demand', title:C[0],</span>
+<span class="s1">    trim:'5.5\u2033 \u00d7 8.5\u2033 trade paperback', pages:pages, paper:'60# cream, perfect bound', cover:'Matte softcover',</span>
+<span class="s1">    interior:['Title page','Welcome &amp; how to use','Memory verse index',dev.days.length+' daily readings','Group discussion appendix','Notes pages'],</span>
+<span class="s1">    backCover:gPromise(r,C[0],C[1],m.c)+" "+gTruth(r,m)+" One book, one church, one journey \u2014 congregation-wide print rights included.",</span>
+<span class="s1">    note:'Upload-ready spec for KDP, IngramSpark, or your local printer; per-unit cost at this page count typically lands between $2.85 and $4.10.' };</span>
+<span class="s1">}</span>
+
+<span class="s1">function libraryFmt(C){</span>
+<span class="s1">  var keys=FORMAT_KEYS.filter(function(k){return k!=='Digital Library';});</span>
+<span class="s1">  var slug=C[0].toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');</span>
+<span class="s1">  return { kind:'Digital Library', title:C[0]+" \u2014 Complete Digital Library",</span>
+<span class="s1">    items:keys.map(function(k){ return {format:k, file:slug+'-'+k.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.pdf'}; }),</span>
+<span class="s1">    license:'One church license covers every file: print, project, email, and adapt inside your congregation.',</span>
+<span class="s1">    delivery:'All files unlock in your account immediately after checkout and stay in your library.' };</span>
+<span class="s1">}</span>
+
+<span class="s1">var FORMAT_KEYS=['Book','Devotional','7-Day Experience','21-Day Challenge','30-Day Journey','40-Day Campaign','Membership Course','Small Group Curriculum','Leader Training','Family Guide','Youth Edition','Children\u2019s Edition','Podcast Series','Video Course','Print-on-Demand','Digital Library'];</span>
+
+<span class="s1">function formatFor(C,key){</span>
+<span class="s1">  switch(key){</span>
+<span class="s1">    case 'Book': return bookFmt(C);</span>
+<span class="s1">    case 'Devotional': return devotional(C);</span>
+<span class="s1">    case '7-Day Experience': return devotional(C,'7-Day');</span>
+<span class="s1">    case '21-Day Challenge': return devotional(C,'21-Day');</span>
+<span class="s1">    case '30-Day Journey': return devotional(C,'30-Day');</span>
+<span class="s1">    case '40-Day Campaign': return devotional(C,'40-Day');</span>
+<span class="s1">    case 'Membership Course': return courseFmt(C);</span>
+<span class="s1">    case 'Small Group Curriculum': return groupStudy(C);</span>
+<span class="s1">    case 'Leader Training': return leaderTrainingFmt(C);</span>
+<span class="s1">    case 'Family Guide': return familyFmt(C);</span>
+<span class="s1">    case 'Youth Edition': return youth(C);</span>
+<span class="s1">    case 'Children\u2019s Edition': return children(C);</span>
+<span class="s1">    case 'Podcast Series': return podcastFmt(C);</span>
+<span class="s1">    case 'Video Course': return videoCourseFmt(C);</span>
+<span class="s1">    case 'Print-on-Demand': return podFmt(C);</span>
+<span class="s1">    case 'Digital Library': return libraryFmt(C);</span>
+<span class="s1">  }</span>
+<span class="s1">  return devotional(C);</span>
+<span class="s1">}</span>
+<span class="s1">'''</span>
+
+<span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'window.Engine={'</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">NEW</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'window.Engine={ get:get,'</span><span class="p">,</span> <span class="s1">'window.Engine={ get:get, format:formatFor, FORMAT_KEYS:FORMAT_KEYS, book:bookFmt, course:courseFmt, leaderTraining:leaderTrainingFmt, family:familyFmt, podcast:podcastFmt, videoCourse:videoCourseFmt, printOnDemand:podFmt, library:libraryFmt,'</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/site/engine.js'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"format layer installed"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/fmt_layer.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

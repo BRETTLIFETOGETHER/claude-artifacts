@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>generate.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Marketplace intelligence industry edition</div>
+<h1>generate.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">2 edits</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">11 KB</span>
+<a class="btn" href="../../artifacts/Marketplace%20intelligence%20industry%20edition/generate.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Script to generate the 20 additional workplace categories (50 campaigns each) using the 5-section framework, then write to xlsx</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">SECTIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Calling &amp; Purpose"</span><span class="p">,</span>
+    <span class="s2">"Leadership &amp; Character"</span><span class="p">,</span>
+    <span class="s2">"Stewardship &amp; Excellence"</span><span class="p">,</span>
+    <span class="s2">"Relationships &amp; Culture"</span><span class="p">,</span>
+    <span class="s2">"Legacy &amp; Kingdom Impact"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">CALLING_T</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"The </span><span class="si">{role}</span><span class="s2">'s Calling"</span><span class="p">,</span>
+    <span class="s2">"Called to </span><span class="si">{verb_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Faith in </span><span class="si">{workplace_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"More Than </span><span class="si">{task_article}</span><span class="s2"> </span><span class="si">{task_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Sacred Work"</span><span class="p">,</span>
+    <span class="s2">"Created to </span><span class="si">{verb_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"The Ministry of </span><span class="si">{domain_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Beyond the </span><span class="si">{task_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Ordinary Days, Eternal Purpose"</span><span class="p">,</span>
+    <span class="s2">"Faith at Work"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">CALLING_S</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Discovering God's purpose in </span><span class="si">{domain}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Living out a sacred trust as </span><span class="si">{article}</span><span class="s2"> </span><span class="si">{role_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Christ present in every </span><span class="si">{workplace_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Seeing the whole person behind the </span><span class="si">{task_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"</span><span class="si">{verbing}</span><span class="s2"> as an offering to God"</span><span class="p">,</span>
+    <span class="s2">"Reflecting the Creator through </span><span class="si">{domain}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Faithfulness in the daily work of </span><span class="si">{domain}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Building trust one </span><span class="si">{task_lc}</span><span class="s2"> at a time"</span><span class="p">,</span>
+    <span class="s2">"Finding meaning in routine </span><span class="si">{domain}</span><span class="s2"> work"</span><span class="p">,</span>
+    <span class="s2">"Living authentically as </span><span class="si">{article}</span><span class="s2"> </span><span class="si">{role_lc}</span><span class="s2"> for Christ"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">LEADERSHIP_T</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Leading with Integrity"</span><span class="p">,</span>
+    <span class="s2">"The Trusted </span><span class="si">{role}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Grace Under Pressure"</span><span class="p">,</span>
+    <span class="s2">"Wisdom in </span><span class="si">{workplace_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"The Servant </span><span class="si">{role}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Courage to Tell the Truth"</span><span class="p">,</span>
+    <span class="s2">"Leading Through Uncertainty"</span><span class="p">,</span>
+    <span class="s2">"Character on Call"</span><span class="p">,</span>
+    <span class="s2">"The </span><span class="si">{role}</span><span class="s2">'s Example"</span><span class="p">,</span>
+    <span class="s2">"Leading Well, Serving Well"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">LEADERSHIP_S</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Leading by character, not just title"</span><span class="p">,</span>
+    <span class="s2">"Character that earns lasting confidence"</span><span class="p">,</span>
+    <span class="s2">"Leading through the moments that matter most"</span><span class="p">,</span>
+    <span class="s2">"Discernment beyond the </span><span class="si">{task_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Leadership expressed through service, not status"</span><span class="p">,</span>
+    <span class="s2">"Honesty in the hardest conversations"</span><span class="p">,</span>
+    <span class="s2">"Faith when the answers aren't clear yet"</span><span class="p">,</span>
+    <span class="s2">"Who you are when no one's watching"</span><span class="p">,</span>
+    <span class="s2">"Mentoring the next generation of </span><span class="si">{role_plural_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Influence built on trust, not title"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">STEWARDSHIP_T</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Excellence as Worship"</span><span class="p">,</span>
+    <span class="s2">"Stewarding Your Training"</span><span class="p">,</span>
+    <span class="s2">"The Disciplined </span><span class="si">{role}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Guarding Against Burnout"</span><span class="p">,</span>
+    <span class="s2">"Faithful in the Details"</span><span class="p">,</span>
+    <span class="s2">"Stewarding Trust"</span><span class="p">,</span>
+    <span class="s2">"The Long Obedience"</span><span class="p">,</span>
+    <span class="s2">"Wise Use of Time"</span><span class="p">,</span>
+    <span class="s2">"Lifelong Learning, Lifelong Faith"</span><span class="p">,</span>
+    <span class="s2">"The Whole-Person </span><span class="si">{role}</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">STEWARDSHIP_S</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Bringing your best </span><span class="si">{task_lc}</span><span class="s2"> as an offering"</span><span class="p">,</span>
+    <span class="s2">"Using hard-won expertise for eternal purposes"</span><span class="p">,</span>
+    <span class="s2">"Excellence without idolizing achievement"</span><span class="p">,</span>
+    <span class="s2">"A sustainable rhythm for a demanding calling"</span><span class="p">,</span>
+    <span class="s2">"Precision as an act of care"</span><span class="p">,</span>
+    <span class="s2">"Guarding what's been entrusted to you"</span><span class="p">,</span>
+    <span class="s2">"Excellence over a career, not just a day"</span><span class="p">,</span>
+    <span class="s2">"Stewarding a full schedule with peace"</span><span class="p">,</span>
+    <span class="s2">"Growing in skill and in Christ together"</span><span class="p">,</span>
+    <span class="s2">"Excellence that includes the soul, not just the </span><span class="si">{task_lc}</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">RELATIONSHIPS_T</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Beyond the </span><span class="si">{task_title}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"The Healthy Team"</span><span class="p">,</span>
+    <span class="s2">"Compassion in Conflict"</span><span class="p">,</span>
+    <span class="s2">"Serving Like Family"</span><span class="p">,</span>
+    <span class="s2">"Building Trust Quickly"</span><span class="p">,</span>
+    <span class="s2">"The Collegial </span><span class="si">{role}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Culture of Care"</span><span class="p">,</span>
+    <span class="s2">"Listening First"</span><span class="p">,</span>
+    <span class="s2">"Faith Among Colleagues"</span><span class="p">,</span>
+    <span class="s2">"Protecting What Matters Most at Home"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">RELATIONSHIPS_S</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Building real relationships beyond the </span><span class="si">{task_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"A culture that supports every </span><span class="si">{role_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Navigating hard conversations with grace"</span><span class="p">,</span>
+    <span class="s2">"Treating clients and coworkers like family"</span><span class="p">,</span>
+    <span class="s2">"Earning confidence in a short window of time"</span><span class="p">,</span>
+    <span class="s2">"Honoring peers across every specialty and role"</span><span class="p">,</span>
+    <span class="s2">"Building a workplace people trust"</span><span class="p">,</span>
+    <span class="s2">"Presence as the first and best gift"</span><span class="p">,</span>
+    <span class="s2">"Living authentically in a secular workplace"</span><span class="p">,</span>
+    <span class="s2">"Guarding home while serving others well"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">LEGACY_T</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"The </span><span class="si">{role}</span><span class="s2">'s Legacy"</span><span class="p">,</span>
+    <span class="s2">"Work That Points to Heaven"</span><span class="p">,</span>
+    <span class="s2">"Beyond Retirement"</span><span class="p">,</span>
+    <span class="s2">"Mentoring the Next Generation"</span><span class="p">,</span>
+    <span class="s2">"The Kingdom </span><span class="si">{role}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Finish Well"</span><span class="p">,</span>
+    <span class="s2">"A Legacy of Character"</span><span class="p">,</span>
+    <span class="s2">"Generational Impact"</span><span class="p">,</span>
+    <span class="s2">"Eternal Significance in Daily Work"</span><span class="p">,</span>
+    <span class="s2">"Called Beyond </span><span class="si">{workplace_title}</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">LEGACY_S</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"More than years spent in </span><span class="si">{domain}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Work with significance that outlasts a career"</span><span class="p">,</span>
+    <span class="s2">"A calling that doesn't end at retirement"</span><span class="p">,</span>
+    <span class="s2">"Passing on more than skill"</span><span class="p">,</span>
+    <span class="s2">"Influence that outlasts any title"</span><span class="p">,</span>
+    <span class="s2">"Faithfulness all the way to the last </span><span class="si">{task_lc}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="s2">"Remembered for how you treated people"</span><span class="p">,</span>
+    <span class="s2">"Building a legacy of faith and skill"</span><span class="p">,</span>
+    <span class="s2">"Every </span><span class="si">{task_lc}</span><span class="s2">, an eternal opportunity"</span><span class="p">,</span>
+    <span class="s2">"Influence that reaches your community and church"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">SECTION_TEMPLATES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">SECTIONS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">CALLING_T</span><span class="p">,</span> <span class="n">CALLING_S</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">SECTIONS</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">LEADERSHIP_T</span><span class="p">,</span> <span class="n">LEADERSHIP_S</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">SECTIONS</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">STEWARDSHIP_T</span><span class="p">,</span> <span class="n">STEWARDSHIP_S</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">SECTIONS</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">RELATIONSHIPS_T</span><span class="p">,</span> <span class="n">RELATIONSHIPS_S</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">SECTIONS</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">LEGACY_T</span><span class="p">,</span> <span class="n">LEGACY_S</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">CATEGORIES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Physicians"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Physician"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"medicine"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Medicine"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"exam room"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Exam Room"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"diagnosis"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Diagnosis"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Heal"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Healing"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Dentists"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Dentist"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"dentistry"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Dentistry"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"operatory"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Operatory"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"appointment"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Appointment"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Restore"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Restoring"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Nurses"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Nurse"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"nursing"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Nursing"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"bedside"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Bedside"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"shift"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Shift"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Care"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Caring"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Therapists &amp; Counselors"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Counselor"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"counseling"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Counseling"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"therapy room"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Therapy Room"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"session"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Session"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Counsel"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Counseling"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Accountants &amp; CPAs"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"CPA"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"accounting"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Accounting"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"ledger"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Ledger"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"return"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Return"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Steward"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Stewarding"</span><span class="p">,</span>
+         <span class="n">role_plural_lc</span><span class="o">=</span><span class="s2">"CPAs"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Architects"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Architect"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"architecture"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Architecture"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"blueprint"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Blueprint"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"design"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Design"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Design"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Designing"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Commercial Real Estate"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Broker"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"commercial real estate"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Commercial Real Estate"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"listing"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Listing"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"deal"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Deal"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Build"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Building"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Insurance Professionals"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Agent"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"insurance"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Insurance"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"policy"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Policy"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"claim"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Claim"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Protect"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Protecting"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Bankers"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Banker"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"banking"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Banking"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"branch"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Branch"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"transaction"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Transaction"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Steward"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Stewarding"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Private Equity &amp; Venture Capital"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Investor"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"private equity and venture capital"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Private Equity"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"deal room"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Deal Room"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"deal"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Deal"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Invest"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Investing"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Family Office Executives"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Executive"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"family office leadership"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Family Office Leadership"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"family office"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Family Office"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"portfolio review"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Portfolio Review"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Steward"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Stewarding"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Engineers"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Engineer"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"engineering"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Engineering"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"job site"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Job Site"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"project"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Project"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Engineer"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Engineering"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Scientists"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Scientist"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"science"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Science"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"laboratory"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Laboratory"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"experiment"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Experiment"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Discover"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Discovering"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"University Faculty"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Professor"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"academia"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Academia"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"lecture hall"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Lecture Hall"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"lecture"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Lecture"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Teach"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Teaching"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Coaches &amp; Consultants"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Coach"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"coaching and consulting"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Coaching"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"coaching session"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Coaching Session"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"session"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Session"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Coach"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Coaching"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Human Resources"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"HR Leader"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"human resources"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Human Resources"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"interview room"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Interview Room"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"hire"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Hire"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Hire"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Hiring"</span><span class="p">,</span>
+         <span class="n">role_plural_lc</span><span class="o">=</span><span class="s2">"HR leaders"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Manufacturing Executives"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Executive"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"manufacturing leadership"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Manufacturing"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"plant floor"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Plant Floor"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"production run"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Production Run"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Build"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Building"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Franchise Owners"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Franchise Owner"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"franchising"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Franchising"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"storefront"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Storefront"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"location"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Location"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Multiply"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Multiplying"</span><span class="p">,</span>
+         <span class="n">role_plural_lc</span><span class="o">=</span><span class="s2">"franchise owners"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Restaurant &amp; Hospitality Owners"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Owner"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"an"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"hospitality"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Hospitality"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"dining room"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Dining Room"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"table"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Table"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Serve"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Serving"</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Agriculture &amp; Food Producers"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">"Producer"</span><span class="p">,</span> <span class="n">article</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"food production"</span><span class="p">,</span>
+         <span class="n">domain_title</span><span class="o">=</span><span class="s2">"Agriculture"</span><span class="p">,</span> <span class="n">workplace_lc</span><span class="o">=</span><span class="s2">"field"</span><span class="p">,</span> <span class="n">workplace_title</span><span class="o">=</span><span class="s2">"the Field"</span><span class="p">,</span>
+         <span class="n">task_lc</span><span class="o">=</span><span class="s2">"harvest"</span><span class="p">,</span> <span class="n">task_title</span><span class="o">=</span><span class="s2">"Harvest"</span><span class="p">,</span> <span class="n">verb_title</span><span class="o">=</span><span class="s2">"Grow"</span><span class="p">,</span> <span class="n">verbing</span><span class="o">=</span><span class="s2">"Growing"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">TASK_ARTICLE_AN</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Appointment"</span><span class="p">,</span> <span class="s2">"Experiment"</span><span class="p">}</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">CATEGORIES</span><span class="p">:</span>
+    <span class="n">role_lc</span> <span class="o">=</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"role"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"role"</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"CPA"</span><span class="p">,</span> <span class="s2">"HR Leader"</span><span class="p">)</span> <span class="k">else</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"role"</span><span class="p">]</span>
+    <span class="n">role_plural_lc</span> <span class="o">=</span> <span class="n">cat</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"role_plural_lc"</span><span class="p">,</span> <span class="n">role_lc</span> <span class="o">+</span> <span class="s2">"s"</span><span class="p">)</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="p">[</span><span class="s2">"role_lc"</span><span class="p">]</span> <span class="o">=</span> <span class="n">role_lc</span>
+    <span class="n">fmt</span><span class="p">[</span><span class="s2">"role_plural_lc"</span><span class="p">]</span> <span class="o">=</span> <span class="n">role_plural_lc</span>
+    <span class="n">fmt</span><span class="p">[</span><span class="s2">"task_article"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"an"</span> <span class="k">if</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"task_title"</span><span class="p">]</span> <span class="ow">in</span> <span class="n">TASK_ARTICLE_AN</span> <span class="k">else</span> <span class="s2">"a"</span>
+
+    <span class="k">for</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">titles</span><span class="p">,</span> <span class="n">subs</span> <span class="ow">in</span> <span class="n">SECTION_TEMPLATES</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t_tpl</span><span class="p">,</span> <span class="n">s_tpl</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">titles</span><span class="p">,</span> <span class="n">subs</span><span class="p">),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="n">t_tpl</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">fmt</span><span class="p">)</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="n">s_tpl</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">fmt</span><span class="p">)</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">"Category"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span>
+                <span class="s2">"Section"</span><span class="p">:</span> <span class="n">section_name</span><span class="p">,</span>
+                <span class="s2">"#"</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                <span class="s2">"Title"</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+                <span class="s2">"Subtitle"</span><span class="p">:</span> <span class="n">sub</span><span class="p">,</span>
+            <span class="p">})</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total rows: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Categories: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">'Category'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'Category'</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"/home/claude/workplace_lib/campaigns.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"saved csv"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/workplace_lib/generate.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_strategy.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Family Legacy Ecosystem Diagram</div>
+<h1>build_strategy.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">2 edits</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">32 KB</span>
+<a class="btn" href="../../artifacts/Family%20Legacy%20Ecosystem%20Diagram/build_strategy.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Main generator: builds the multi-page Family Legacy strategic opportunity document HTML</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fl_content</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">AUDIENCE_VALUE</span><span class="p">,</span> <span class="n">CATEGORIES</span><span class="p">,</span> <span class="n">AFFINITIES</span><span class="p">,</span> <span class="n">FORMATS</span><span class="p">,</span>
+                        <span class="n">CAMPAIGNS</span><span class="p">,</span> <span class="n">CATALOG_MORE</span><span class="p">)</span>
+
+<span class="n">F</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/fonts"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">b64</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">((</span><span class="n">F</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+<span class="n">poppins_b</span><span class="p">,</span> <span class="n">poppins_sb</span><span class="p">,</span> <span class="n">poppins_m</span><span class="p">,</span> <span class="n">inter</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Poppins-Bold.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Poppins-SemiBold.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Poppins-Medium.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Inter.ttf"</span><span class="p">)</span>
+
+<span class="n">INK</span><span class="p">,</span> <span class="n">FOREST</span><span class="p">,</span> <span class="n">FOREST2</span><span class="p">,</span> <span class="n">LEAF</span><span class="p">,</span> <span class="n">GOLD</span><span class="p">,</span> <span class="n">BRICK</span><span class="p">,</span> <span class="n">CREAM</span><span class="p">,</span> <span class="n">MUTE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"#1d2622"</span><span class="p">,</span> <span class="s2">"#0e3a2d"</span><span class="p">,</span> <span class="s2">"#15503c"</span><span class="p">,</span> <span class="s2">"#4a7c2f"</span><span class="p">,</span> <span class="s2">"#f5a623"</span><span class="p">,</span> <span class="s2">"#a04e3c"</span><span class="p">,</span> <span class="s2">"#f7f5f0"</span><span class="p">,</span> <span class="s2">"#5d6b62"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tree</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"#ffffff"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">56</span><span class="p">):</span>
+    <span class="n">sw</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">br</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"M50 60 C 46 48, 40 42, 30 36"</span><span class="p">,</span><span class="s2">"M50 60 C 54 48, 60 42, 70 36"</span><span class="p">,</span>
+          <span class="s2">"M50 56 C 48 46, 44 40, 36 50"</span><span class="p">,</span><span class="s2">"M50 56 C 52 46, 56 40, 64 50"</span><span class="p">,</span><span class="s2">"M50 52 C 50 42, 50 36, 50 26"</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;path d="</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">" stroke="</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">" stroke-width="</span><span class="si">{</span><span class="n">sw</span><span class="si">}</span><span class="s1">" stroke-linecap="round" fill="none"/&gt;'</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">br</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;svg width="</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">" height="</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"&gt;&lt;g fill="</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">"&gt;</span>
+<span class="s1">      &lt;path d="M46 58 q4 -6 8 0 v28 a4 4 0 0 1 -8 0 z"/&gt;</span><span class="si">{</span><span class="n">p</span><span class="si">}</span>
+<span class="s1">      &lt;circle cx="50" cy="22" r="10"/&gt;&lt;circle cx="30" cy="33" r="8"/&gt;&lt;circle cx="70" cy="33" r="8"/&gt;</span>
+<span class="s1">      &lt;circle cx="34" cy="50" r="7"/&gt;&lt;circle cx="66" cy="50" r="7"/&gt;&lt;circle cx="22" cy="46" r="6"/&gt;&lt;circle cx="78" cy="46" r="6"/&gt;</span>
+<span class="s1">    &lt;/g&gt;&lt;/svg&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">brand</span><span class="p">(</span><span class="n">small</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">sz</span> <span class="o">=</span> <span class="mi">40</span> <span class="k">if</span> <span class="n">small</span> <span class="k">else</span> <span class="mi">52</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="mi">15</span> <span class="k">if</span> <span class="n">small</span> <span class="k">else</span> <span class="mi">18</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="brand"&gt;</span><span class="si">{</span><span class="n">tree</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">sz</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;div class="bn"&gt;Family Legacy&lt;span&gt;BY DESIGN&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;div class="tag"&gt;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">if</span> <span class="n">tag</span> <span class="k">else</span> <span class="s1">''</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;div class="seclabel"&gt;&lt;div class="sq"&gt;&lt;/div&gt;&lt;h2&gt;</span><span class="si">{</span><span class="n">txt</span><span class="si">}</span><span class="s1">&lt;/h2&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+
+<span class="n">PAGES</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># ---------- 1. COVER ----------</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet cover"&gt;</span>
+<span class="s1">  &lt;div class="cv-shape"&gt;&lt;/div&gt;&lt;div class="cv-shape2"&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="cv-top"&gt;</span><span class="si">{</span><span class="n">brand</span><span class="p">()</span><span class="si">}</span><span class="s1">&lt;div class="cv-pres"&gt;A STRATEGIC OPPORTUNITY BRIEF&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="cv-mid"&gt;</span>
+<span class="s1">    &lt;div class="cv-kick"&gt;THE FAMILY LEGACY CATEGORY&lt;/div&gt;</span>
+<span class="s1">    &lt;h1&gt;From a campaign library&lt;br&gt;into a scalable&lt;br&gt;&lt;em&gt;legacy ecosystem.&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s1">    &lt;div class="cv-rule"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p&gt;How one body of work </span><span class="se">\u2014</span><span class="s1"> grounded in Tom Conway</span><span class="se">\u2019</span><span class="s1">s Multi-Generational Legacy Coaching Process </span><span class="se">\u2014</span>
+<span class="s1">       becomes a multiplying platform serving families, the advisors who guide them, and the communities around them.&lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="cv-foot"&gt;</span>
+<span class="s1">    &lt;div class="cv-stats"&gt;</span>
+<span class="s1">      &lt;div class="cv-stat"&gt;&lt;b&gt;$124T&lt;/b&gt;&lt;span&gt;The Great Wealth Transfer through 2048&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="cv-stat"&gt;&lt;b&gt;10+&lt;/b&gt;&lt;span&gt;Flagship campaigns, with a deep catalog beneath&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="cv-stat"&gt;&lt;b&gt;8 </span><span class="se">\u00d7</span><span class="s1"> 8&lt;/b&gt;&lt;span&gt;Topics </span><span class="se">\u00d7</span><span class="s1"> audiences = exponential reach&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div class="cv-by"&gt;Prepared for ministry partners, advisors &amp;amp; donors &amp;nbsp;</span><span class="se">\u00b7</span><span class="s1">&amp;nbsp; Presented by &lt;b&gt;lifetogether&lt;/b&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 2. THE OPPORTUNITY ----------</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet"&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">label</span><span class="p">(</span><span class="s2">"The Opportunity"</span><span class="p">,</span><span class="s2">"Why now"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;div class="lead-band"&gt;</span>
+<span class="s1">    &lt;div class="lead-q"&gt;</span><span class="se">\u201c</span><span class="s1">The largest transfer of wealth in history is also the&lt;br&gt;greatest discipleship opportunity of our time.</span><span class="se">\u201d</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="two-col"&gt;</span>
+<span class="s1">    &lt;div&gt;</span>
+<span class="s1">      &lt;h3 class="ch"&gt;The wave is here&lt;/h3&gt;</span>
+<span class="s1">      &lt;p&gt;An estimated &lt;b&gt;$124 trillion&lt;/b&gt; will change hands through 2048 </span><span class="se">\u2014</span><span class="s1"> the largest wealth transfer ever recorded,</span>
+<span class="s1">         with roughly &lt;b&gt;$105 trillion&lt;/b&gt; flowing to heirs and &lt;b&gt;$18 trillion&lt;/b&gt; to charity.</span>
+<span class="s1">         More than half of it comes from the &lt;b&gt;2%&lt;/b&gt; of households who are high-net-worth.&lt;/p&gt;</span>
+<span class="s1">      &lt;p&gt;Every one of those families is quietly asking the same questions: &lt;i&gt;Will our children be ready? What</span>
+<span class="s1">         holds us together? Is there more to pass on than money?&lt;/i&gt;&lt;/p&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div&gt;</span>
+<span class="s1">      &lt;h3 class="ch"&gt;The gap nobody is filling&lt;/h3&gt;</span>
+<span class="s1">      &lt;p&gt;Families are transferring &lt;b&gt;wealth without wisdom&lt;/b&gt; </span><span class="se">\u2014</span><span class="s1"> handing heirs a fortune and no compass.</span>
+<span class="s1">         Advisors are trained for the balance sheet, not the dinner table. Churches disciple individuals</span>
+<span class="s1">         but rarely reach the family system.&lt;/p&gt;</span>
+<span class="s1">      &lt;p&gt;The result is the oldest problem in Scripture: a legacy left &lt;b&gt;by default&lt;/b&gt; instead of &lt;b&gt;by design&lt;/b&gt;.&lt;/p&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="answer"&gt;</span>
+<span class="s1">    &lt;div class="answer-ic"&gt;</span><span class="si">{</span><span class="n">tree</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">GOLD</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">46</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div&gt;</span>
+<span class="s1">      &lt;h3&gt;The Family Legacy category is the answer </span><span class="se">\u2014</span><span class="s1"> and the doorway.&lt;/h3&gt;</span>
+<span class="s1">      &lt;p&gt;It equips families to transfer &lt;b&gt;wisdom before wealth&lt;/b&gt;: to name their values, write a family mission,</span>
+<span class="s1">         and hand on a living faith. And it does it through the proven 40-day campaign model that has already</span>
+<span class="s1">         shaped thousands of churches </span><span class="se">\u2014</span><span class="s1"> now aimed squarely at the family, and built to scale into an entire ecosystem.&lt;/p&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 3. WHY THIS MATTERS TO EVERYONE ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">aud_card</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">ic</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="vcard"&gt;</span>
+<span class="s1">      &lt;div class="vic"&gt;&lt;svg viewBox="0 0 24 24" width="22" height="22"&gt;&lt;path d="</span><span class="si">{</span><span class="n">ic</span><span class="si">}</span><span class="s1">"/&gt;&lt;/svg&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;h4&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;'''</span>
+<span class="n">cards</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">aud_card</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">AUDIENCE_VALUE</span><span class="p">)</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet"&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">label</span><span class="p">(</span><span class="s2">"Why This Matters </span><span class="se">\u2014</span><span class="s2"> To Everyone"</span><span class="p">,</span><span class="s2">"One category, five reasons to build it"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;p class="sub-intro"&gt;A campaign library only matters if the people who could champion it can see themselves in it.</span>
+<span class="s1">     Here is the case for each audience whose </span><span class="se">\u201c</span><span class="s1">yes</span><span class="se">\u201d</span><span class="s1"> moves this forward.&lt;/p&gt;</span>
+<span class="s1">  &lt;div class="vgrid"&gt;</span><span class="si">{</span><span class="n">cards</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="keyq"&gt;If Brett handed this to Tom Conway, a senior pastor, a ministry partner, or a donor </span><span class="se">\u2014</span>
+<span class="s1">     &lt;b&gt;would they immediately see the opportunity and want to build it?&lt;/b&gt; Every page that follows is built to earn that yes.&lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 4. CATEGORIES vs AFFINITIES ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">col_chips</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="mchip </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet"&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">label</span><span class="p">(</span><span class="s2">"Two Dimensions, One Library"</span><span class="p">,</span><span class="s2">"Categories </span><span class="se">\u00d7</span><span class="s2"> Affinities"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;p class="sub-intro"&gt;The library is built on two axes at once. &lt;b&gt;Categories&lt;/b&gt; are topics </span><span class="se">\u2014</span><span class="s1"> what the campaign is about.</span>
+<span class="s1">     &lt;b&gt;Affinities&lt;/b&gt; are audiences </span><span class="se">\u2014</span><span class="s1"> who it</span><span class="se">\u2019</span><span class="s1">s built for. The same content, re-voiced for a new audience, becomes a new product.&lt;/p&gt;</span>
+<span class="s1">  &lt;div class="ca-grid"&gt;</span>
+<span class="s1">    &lt;div class="ca-box cat"&gt;</span>
+<span class="s1">      &lt;div class="ca-head"&gt;CATEGORIES &lt;span&gt;topics&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="chiprow"&gt;</span><span class="si">{</span><span class="n">col_chips</span><span class="p">(</span><span class="n">CATEGORIES</span><span class="p">,</span><span class="s2">"cat"</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div class="ca-x"&gt;</span><span class="se">\u00d7</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="ca-box aff"&gt;</span>
+<span class="s1">      &lt;div class="ca-head"&gt;AFFINITIES &lt;span&gt;audiences&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="chiprow"&gt;</span><span class="si">{</span><span class="n">col_chips</span><span class="p">(</span><span class="n">AFFINITIES</span><span class="p">,</span><span class="s2">"aff"</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="ca-result"&gt;</span>
+<span class="s1">    &lt;div class="ca-eq"&gt;Every campaign lives at an intersection&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="ca-examples"&gt;</span>
+<span class="s1">      &lt;span&gt;&lt;b&gt;Family Legacy&lt;/b&gt; </span><span class="se">\u00d7</span><span class="s1"> &lt;b&gt;Business Owners&lt;/b&gt; = Business Owner Edition&lt;/span&gt;</span>
+<span class="s1">      &lt;span&gt;&lt;b&gt;Family Legacy&lt;/b&gt; </span><span class="se">\u00d7</span><span class="s1"> &lt;b&gt;Advisors&lt;/b&gt; = Advisor Edition&lt;/span&gt;</span>
+<span class="s1">      &lt;span&gt;&lt;b&gt;Family Legacy&lt;/b&gt; </span><span class="se">\u00d7</span><span class="s1"> &lt;b&gt;Family Offices&lt;/b&gt; = Family Office Edition&lt;/span&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;p&gt;One library, two dimensions, exponential reach. A handful of strong categories, re-voiced across a dozen</span>
+<span class="s1">       affinities, becomes hundreds of tailored resources </span><span class="se">\u2014</span><span class="s1"> each one feeling purpose-built for the reader who opens it.&lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 5. THE ECOSYSTEM / DOORWAY ----------</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet"&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">label</span><span class="p">(</span><span class="s2">"Think Ecosystem, Not Campaign"</span><span class="p">,</span><span class="s2">"The category is a doorway"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;p class="sub-intro"&gt;Family Legacy isn</span><span class="se">\u2019</span><span class="s1">t a shelf of studies. It</span><span class="se">\u2019</span><span class="s1">s the front door to the &lt;b&gt;Family Legacy by Design&lt;/b&gt;</span>
+<span class="s1">     ecosystem </span><span class="se">\u2014</span><span class="s1"> a path that draws a family deeper, and gives advisors and churches a place to lead them.&lt;/p&gt;</span>
+<span class="s1">  &lt;div class="eco"&gt;</span>
+<span class="s1">    &lt;div class="eco-band aud"&gt;&lt;span class="eco-t"&gt;Audiences&lt;/span&gt;</span>
+<span class="s1">      &lt;div class="eco-items"&gt;&lt;span&gt;Legacy Families&lt;/span&gt;&lt;span&gt;Christian Advisors&lt;/span&gt;&lt;span&gt;Affinity Groups&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="eco-arrow"&gt;access through &amp;darr;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="eco-band plat"&gt;&lt;span class="eco-t"&gt;The Membership Platform&lt;/span&gt;</span>
+<span class="s1">      &lt;div class="eco-items"&gt;&lt;span&gt;Resources for families&lt;/span&gt;&lt;span&gt;Tools &amp;amp; certification for advisors&lt;/span&gt;&lt;span&gt;Specialized editions&lt;/span&gt;&lt;span&gt;&amp;infin; new libraries added&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="eco-arrow"&gt;powered by &amp;darr;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="eco-band eng"&gt;&lt;span class="eco-t"&gt;The Content Engine&lt;/span&gt;</span>
+<span class="s1">      &lt;div class="eco-items"&gt;&lt;span&gt;Foundations&lt;/span&gt;&lt;span&gt;&amp;times; Affinity Editions&lt;/span&gt;&lt;span&gt;&amp;times; Campaign Libraries&lt;/span&gt;&lt;span&gt;&amp;rarr; Formats&lt;/span&gt;&lt;span&gt;+ Advisor Tools&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="ip-strip"&gt;</span>
+<span class="s1">    &lt;div class="ip-h"&gt;Built on Tom Conway</span><span class="se">\u2019</span><span class="s1">s intellectual property&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="ip-items"&gt;</span>
+<span class="s1">      &lt;span&gt;Multi-Generational Legacy Coaching Process&lt;/span&gt;&lt;span&gt;The Five Areas of Legacy&lt;/span&gt;</span>
+<span class="s1">      &lt;span&gt;The F.A.M.I.L.Y. Review&lt;/span&gt;&lt;span&gt;Family Mission &amp;amp; Values&lt;/span&gt;</span>
+<span class="s1">      &lt;span&gt;Generational Discipleship&lt;/span&gt;&lt;span&gt;Legacy Conversations &amp;amp; Letters&lt;/span&gt;&lt;span&gt;Advisor Tools&lt;/span&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;p&gt;A family that starts with a 6-session study can be drawn into a devotional, a coached F.A.M.I.L.Y. Review,</span>
+<span class="s1">       an advisor relationship, and ultimately the membership platform. The campaign is the first step of a long journey.&lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 6. CAMPAIGN FLEXIBILITY ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fmt_card</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;div class="fcard"&gt;&lt;div class="fname"&gt;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="fdesc"&gt;</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span>
+<span class="n">fcards</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fmt_card</span><span class="p">(</span><span class="o">*</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">FORMATS</span><span class="p">)</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet"&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">label</span><span class="p">(</span><span class="s2">"One Campaign, Many Experiences"</span><span class="p">,</span><span class="s2">"Built-in flexibility"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;p class="sub-intro"&gt;A single campaign isn</span><span class="se">\u2019</span><span class="s1">t one product </span><span class="se">\u2014</span><span class="s1"> it</span><span class="se">\u2019</span><span class="s1">s a source. The same body of teaching flexes to fit</span>
+<span class="s1">     the moment, the audience, and the ministry context. Take the flagship, &lt;b&gt;Family Legacy&lt;/b&gt;:&lt;/p&gt;</span>
+<span class="s1">  &lt;div class="flex-hub"&gt;</span>
+<span class="s1">    &lt;div class="hub-core"&gt;</span><span class="si">{</span><span class="n">tree</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"#fff"</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;span&gt;Family&lt;br&gt;Legacy&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="hub-note"&gt;becomes &amp;rarr;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="fgrid"&gt;</span><span class="si">{</span><span class="n">fcards</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="flex-foot"&gt;Every title in the category carries the same flexibility </span><span class="se">\u2014</span><span class="s1"> so one investment in content</span>
+<span class="s1">     serves the church-wide campaign, the small group, the personal devotional, and the advisor-led family workshop alike.&lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 7..16  CAMPAIGN PAGES ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sess_rows</span><span class="p">(</span><span class="n">sessions</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">t</span><span class="p">,</span><span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sessions</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;div class="sess"&gt;&lt;div class="sn"&gt;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div&gt;&lt;div class="st"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="sd"&gt;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+    <span class="k">return</span> <span class="n">out</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">chips</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="s2">"need"</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="ch-</span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CAMPAIGNS</span><span class="p">:</span>
+    <span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet camp"&gt;</span>
+<span class="s1">      &lt;div class="camp-hd"&gt;</span>
+<span class="s1">        &lt;div class="camp-rank"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'rank'</span><span class="p">]</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="camp-ttl"&gt;&lt;div class="camp-cat"&gt;FAMILY LEGACY </span><span class="se">\u00b7</span><span class="s1"> FLAGSHIP CAMPAIGN&lt;/div&gt;</span>
+<span class="s1">          &lt;h2&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/h2&gt;&lt;div class="camp-tag"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'tag'</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">        </span><span class="si">{</span><span class="n">brand</span><span class="p">(</span><span class="n">small</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="camp-body"&gt;</span>
+<span class="s1">        &lt;div class="camp-L"&gt;</span>
+<span class="s1">          &lt;div class="blk prob"&gt;&lt;div class="blk-h"&gt;The Core Problem&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'problem'</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="blk prom"&gt;&lt;div class="blk-h"&gt;The Transformation Promise&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'promise'</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="blk why"&gt;&lt;div class="blk-h"&gt;Why This Campaign Matters&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'why'</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">        &lt;div class="camp-R"&gt;</span>
+<span class="s1">          &lt;div class="mini"&gt;&lt;div class="mini-h"&gt;Felt Needs&lt;/div&gt;&lt;div class="chiprow"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'needs'</span><span class="p">],</span><span class="s2">"need"</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="mini"&gt;&lt;div class="mini-h"&gt;Intended Audience&lt;/div&gt;&lt;p class="aud-line"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'audience'</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="mini"&gt;&lt;div class="mini-h"&gt;Ministry Outcomes&lt;/div&gt;&lt;ul class="out"&gt;</span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;li&gt;</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s2">&lt;/li&gt;"</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="s1">'outcomes'</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/ul&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="arch"&gt;</span>
+<span class="s1">        &lt;div class="arch-h"&gt;&lt;span&gt;Expanded Campaign Architecture&lt;/span&gt;&lt;span class="arch-fmt"&gt;6 Sessions </span><span class="se">\u00b7</span><span class="s1"> 40-Day Journey </span><span class="se">\u00b7</span><span class="s1"> flexes to 4-session, 21/30-day, workshop &amp;amp; devotional&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="sessgrid"&gt;</span><span class="si">{</span><span class="n">sess_rows</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'sessions'</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="camp-foot"&gt;</span>
+<span class="s1">        &lt;div class="cf-h"&gt;A doorway into the ecosystem&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="cf-path"&gt;</span>
+<span class="s1">          &lt;span class="cf-step on"&gt;This campaign&lt;/span&gt;&lt;span class="cf-ar"&gt;&amp;rarr;&lt;/span&gt;</span>
+<span class="s1">          &lt;span class="cf-step"&gt;Devotional&lt;/span&gt;&lt;span class="cf-ar"&gt;&amp;rarr;&lt;/span&gt;</span>
+<span class="s1">          &lt;span class="cf-step"&gt;Coached F.A.M.I.L.Y. Review&lt;/span&gt;&lt;span class="cf-ar"&gt;&amp;rarr;&lt;/span&gt;</span>
+<span class="s1">          &lt;span class="cf-step"&gt;Advisor relationship&lt;/span&gt;&lt;span class="cf-ar"&gt;&amp;rarr;&lt;/span&gt;</span>
+<span class="s1">          &lt;span class="cf-step end"&gt;Membership platform&lt;/span&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">    &lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 17. THE CATALOG UNDERNEATH ----------</span>
+<span class="n">more</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="mchip cat"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">CATALOG_MORE</span><span class="p">)</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet"&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">label</span><span class="p">(</span><span class="s2">"The Catalog Underneath"</span><span class="p">,</span><span class="s2">"The Top 10 are the tip"</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">  &lt;p class="sub-intro"&gt;The ten flagship campaigns are the visible front of a much deeper catalog. Beneath them sit dozens</span>
+<span class="s1">     more titles in the same category </span><span class="se">\u2014</span><span class="s1"> each one a doorway for a different family, season, or felt need.&lt;/p&gt;</span>
+<span class="s1">  &lt;div class="depth"&gt;</span>
+<span class="s1">    &lt;div class="depth-row top"&gt;&lt;span class="dl"&gt;FLAGSHIP </span><span class="se">\u00b7</span><span class="s1"> TOP 10&lt;/span&gt;&lt;div class="chiprow"&gt;</span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="mchip gold"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">CAMPAIGNS</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="depth-row"&gt;&lt;span class="dl"&gt;DEEPER CATALOG </span><span class="se">\u00b7</span><span class="s1"> 11</span><span class="se">\u2013</span><span class="s1">20&lt;/span&gt;&lt;div class="chiprow"&gt;</span><span class="si">{</span><span class="n">more</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="depth-row faint"&gt;&lt;span class="dl"&gt;AND BEYOND&lt;/span&gt;&lt;div class="chiprow"&gt;&lt;span class="mchip ghost"&gt;+ continually expanding&lt;/span&gt;&lt;span class="mchip ghost"&gt;+ affinity editions&lt;/span&gt;&lt;span class="mchip ghost"&gt;+ new categories&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="rapid"&gt;</span>
+<span class="s1">    &lt;div class="rapid-h"&gt;Generated rapidly, by design&lt;/div&gt;</span>
+<span class="s1">    &lt;p&gt;Because every campaign shares one architecture </span><span class="se">\u2014</span><span class="s1"> problem, promise, felt needs, audience, outcomes, six sessions </span><span class="se">\u2014</span>
+<span class="s1">       new titles and affinity editions can be drafted in hours, not months, with AI-assisted production. The catalog isn</span><span class="se">\u2019</span><span class="s1">t</span>
+<span class="s1">       a fixed inventory; it</span><span class="se">\u2019</span><span class="s1">s a &lt;b&gt;growing system&lt;/b&gt; that compounds with every addition.&lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------- 18. THE BUILD / CTA ----------</span>
+<span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''&lt;section class="sheet cta"&gt;</span>
+<span class="s1">  &lt;div class="cta-shape"&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="cta-in"&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">brand</span><span class="p">()</span><span class="si">}</span>
+<span class="s1">    &lt;div class="cta-kick"&gt;THE INVITATION&lt;/div&gt;</span>
+<span class="s1">    &lt;h1&gt;Build Family Legacy as the&lt;br&gt;flagship of the ecosystem.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div class="cv-rule"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="cta-steps"&gt;</span>
+<span class="s1">      &lt;div class="cta-step"&gt;&lt;b&gt;1&lt;/b&gt;&lt;div&gt;&lt;h4&gt;Prove the model&lt;/h4&gt;&lt;p&gt;Develop the Top 10 Family Legacy campaigns to full </span><span class="se">\u201c</span><span class="s1">beef</span><span class="se">\u201d</span><span class="s1"> </span><span class="se">\u2014</span><span class="s1"> problem, promise, architecture, and formats </span><span class="se">\u2014</span><span class="s1"> as the proof-of-concept for the whole library.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="cta-step"&gt;&lt;b&gt;2&lt;/b&gt;&lt;div&gt;&lt;h4&gt;Open the doorways&lt;/h4&gt;&lt;p&gt;Add affinity editions (Advisor, Business Owner, Family Office) and connect each campaign into the F.A.M.I.L.Y. Review and coaching path.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="cta-step"&gt;&lt;b&gt;3&lt;/b&gt;&lt;div&gt;&lt;h4&gt;Stand up the platform&lt;/h4&gt;&lt;p&gt;Bring families, advisors, and affinity groups onto one membership platform </span><span class="se">\u2014</span><span class="s1"> and keep adding libraries.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div class="cta-close"&gt;</span>
+<span class="s1">      &lt;p&gt;This is not a catalog. It</span><span class="se">\u2019</span><span class="s1">s the start of a scalable Family Legacy ecosystem </span><span class="se">\u2014</span><span class="s1"> a way to transfer</span>
+<span class="s1">         &lt;b&gt;wisdom before wealth&lt;/b&gt; to a generation, and to mobilize the families and advisors positioned to fund the Kingdom.&lt;/p&gt;</span>
+<span class="s1">      &lt;div class="cta-by"&gt;Family Legacy by Design &amp;nbsp;</span><span class="se">\u00b7</span><span class="s1">&amp;nbsp; Presented by &lt;b&gt;lifetogether&lt;/b&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ---------------- ASSEMBLE ----------------</span>
+<span class="n">CSS</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Poppins';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">poppins_b</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:700;</span><span class="se">}}</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Poppins';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">poppins_sb</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:600;</span><span class="se">}}</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Poppins';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">poppins_m</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:500;</span><span class="se">}}</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Inter';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">inter</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:400 700;</span><span class="se">}}</span>
+<span class="s1">*</span><span class="se">{{</span><span class="s1">margin:0;padding:0;box-sizing:border-box;</span><span class="se">}}</span>
+<span class="s1">:root</span><span class="se">{{</span><span class="s1">--ink:</span><span class="si">{</span><span class="n">INK</span><span class="si">}</span><span class="s1">;--forest:</span><span class="si">{</span><span class="n">FOREST</span><span class="si">}</span><span class="s1">;--forest2:</span><span class="si">{</span><span class="n">FOREST2</span><span class="si">}</span><span class="s1">;--leaf:</span><span class="si">{</span><span class="n">LEAF</span><span class="si">}</span><span class="s1">;--gold:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s1">;--brick:</span><span class="si">{</span><span class="n">BRICK</span><span class="si">}</span><span class="s1">;--cream:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s1">;--mute:</span><span class="si">{</span><span class="n">MUTE</span><span class="si">}</span><span class="s1">;</span><span class="se">}}</span>
+<span class="s1">html,body</span><span class="se">{{</span><span class="s1">background:#cdd3cd;font-family:'Inter',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;</span><span class="se">}}</span>
+<span class="s1">h1,h2,h3,h4,.fp</span><span class="se">{{</span><span class="s1">font-family:'Poppins',sans-serif;</span><span class="se">}}</span>
+<span class="s1">.sheet</span><span class="se">{{</span><span class="s1">width:816px;height:1056px;background:var(--cream);margin:0 auto;position:relative;overflow:hidden;</span>
+<span class="s1">  padding:46px 56px;page-break-after:always;</span><span class="se">}}</span>
+<span class="s1">.sheet:last-child</span><span class="se">{{</span><span class="s1">page-break-after:auto;</span><span class="se">}}</span>
+
+<span class="s1">.brand</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;gap:11px;</span><span class="se">}}</span>
+<span class="s1">.brand .bn</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;color:#fff;font-size:18px;line-height:1;</span><span class="se">}}</span>
+<span class="s1">.brand .bn span</span><span class="se">{{</span><span class="s1">display:block;font-weight:500;font-size:10.5px;letter-spacing:.16em;color:#cfe0d4;margin-top:3px;</span><span class="se">}}</span>
+
+<span class="s1">.seclabel</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;gap:12px;margin-bottom:16px;</span><span class="se">}}</span>
+<span class="s1">.seclabel .sq</span><span class="se">{{</span><span class="s1">width:17px;height:17px;background:var(--gold);border-radius:4px;flex:none;</span><span class="se">}}</span>
+<span class="s1">.seclabel h2</span><span class="se">{{</span><span class="s1">font-size:27px;font-weight:700;color:var(--forest);letter-spacing:-.4px;</span><span class="se">}}</span>
+<span class="s1">.seclabel .tag</span><span class="se">{{</span><span class="s1">margin-left:auto;font-size:11.5px;color:var(--mute);font-weight:500;font-family:'Poppins';</span>
+<span class="s1">  background:#ece9e1;padding:6px 13px;border-radius:18px;</span><span class="se">}}</span>
+<span class="s1">.sub-intro</span><span class="se">{{</span><span class="s1">font-size:14.5px;line-height:1.6;color:#33403a;max-width:680px;margin-bottom:22px;</span><span class="se">}}</span>
+<span class="s1">.ch</span><span class="se">{{</span><span class="s1">font-size:16px;font-weight:600;color:var(--forest);margin-bottom:7px;</span><span class="se">}}</span>
+
+<span class="s1">/* COVER */</span>
+<span class="s1">.cover</span><span class="se">{{</span><span class="s1">background:var(--forest);color:#fff;display:flex;flex-direction:column;padding:54px 56px 46px;</span><span class="se">}}</span>
+<span class="s1">.cv-shape</span><span class="se">{{</span><span class="s1">position:absolute;top:-120px;right:-160px;width:520px;height:640px;background:var(--leaf);opacity:.22;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.cv-shape2</span><span class="se">{{</span><span class="s1">position:absolute;bottom:-160px;left:-120px;width:420px;height:560px;background:var(--forest2);opacity:.55;transform:skewX(-16deg);</span><span class="se">}}</span>
+<span class="s1">.cv-top</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.cv-pres</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;font-size:11px;letter-spacing:.18em;color:var(--gold);</span><span class="se">}}</span>
+<span class="s1">.cv-mid</span><span class="se">{{</span><span class="s1">position:relative;z-index:2;margin-top:auto;margin-bottom:auto;</span><span class="se">}}</span>
+<span class="s1">.cv-kick</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;letter-spacing:.2em;font-size:13px;color:#a9c6b3;margin-bottom:16px;</span><span class="se">}}</span>
+<span class="s1">.cover h1</span><span class="se">{{</span><span class="s1">font-size:54px;font-weight:700;line-height:1.04;letter-spacing:-1px;</span><span class="se">}}</span>
+<span class="s1">.cover h1 em</span><span class="se">{{</span><span class="s1">color:var(--gold);font-style:normal;</span><span class="se">}}</span>
+<span class="s1">.cv-rule</span><span class="se">{{</span><span class="s1">width:90px;height:5px;background:var(--gold);border-radius:3px;margin:24px 0;</span><span class="se">}}</span>
+<span class="s1">.cv-mid p</span><span class="se">{{</span><span class="s1">font-size:16px;line-height:1.6;color:#e3ede5;max-width:600px;</span><span class="se">}}</span>
+<span class="s1">.cv-foot</span><span class="se">{{</span><span class="s1">position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.cv-stats</span><span class="se">{{</span><span class="s1">display:flex;gap:20px;margin-bottom:24px;</span><span class="se">}}</span>
+<span class="s1">.cv-stat</span><span class="se">{{</span><span class="s1">flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:16px 16px;</span><span class="se">}}</span>
+<span class="s1">.cv-stat b</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:28px;color:var(--gold);display:block;</span><span class="se">}}</span>
+<span class="s1">.cv-stat span</span><span class="se">{{</span><span class="s1">font-size:12px;color:#d4e0d7;line-height:1.4;display:block;margin-top:5px;</span><span class="se">}}</span>
+<span class="s1">.cv-by</span><span class="se">{{</span><span class="s1">font-size:12.5px;color:#bcd2c2;border-top:1px solid rgba(255,255,255,.16);padding-top:16px;</span><span class="se">}}</span>
+<span class="s1">.cv-by b,.cv-stat b+span b</span><span class="se">{{</span><span class="s1">color:#fff;</span><span class="se">}}</span>
+
+<span class="s1">/* OPPORTUNITY */</span>
+<span class="s1">.lead-band</span><span class="se">{{</span><span class="s1">background:var(--forest);border-radius:16px;padding:26px 30px;margin-bottom:24px;position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">.lead-band:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;right:-40px;top:-30px;width:240px;height:200%;background:var(--gold);opacity:.10;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.lead-q</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;color:#fff;font-size:21px;line-height:1.35;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.two-col</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:24px;</span><span class="se">}}</span>
+<span class="s1">.two-col p</span><span class="se">{{</span><span class="s1">font-size:13.5px;line-height:1.6;color:#36433c;margin-bottom:10px;</span><span class="se">}}</span>
+<span class="s1">.two-col b</span><span class="se">{{</span><span class="s1">color:var(--forest);</span><span class="se">}}</span>
+<span class="s1">.answer</span><span class="se">{{</span><span class="s1">display:flex;gap:18px;align-items:flex-start;background:#fff;border-radius:16px;padding:24px 26px;</span>
+<span class="s1">  border-left:6px solid var(--gold);box-shadow:0 8px 22px rgba(14,58,45,.10);</span><span class="se">}}</span>
+<span class="s1">.answer-ic</span><span class="se">{{</span><span class="s1">flex:none;width:64px;height:64px;border-radius:14px;background:#eef3ec;display:flex;align-items:center;justify-content:center;</span><span class="se">}}</span>
+<span class="s1">.answer h3</span><span class="se">{{</span><span class="s1">font-size:18px;color:var(--forest);font-weight:700;margin-bottom:8px;</span><span class="se">}}</span>
+<span class="s1">.answer p</span><span class="se">{{</span><span class="s1">font-size:13.5px;line-height:1.6;color:#36433c;</span><span class="se">}}</span>
+<span class="s1">.answer b</span><span class="se">{{</span><span class="s1">color:var(--brick);</span><span class="se">}}</span>
+
+<span class="s1">/* AUDIENCE VALUE */</span>
+<span class="s1">.vgrid</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:1fr 1fr;gap:16px;</span><span class="se">}}</span>
+<span class="s1">.vcard</span><span class="se">{{</span><span class="s1">background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 7px 18px rgba(14,58,45,.07);border-top:4px solid var(--leaf);</span><span class="se">}}</span>
+<span class="s1">.vcard:nth-child(5)</span><span class="se">{{</span><span class="s1">grid-column:1 / span 2;border-top-color:var(--gold);</span><span class="se">}}</span>
+<span class="s1">.vic</span><span class="se">{{</span><span class="s1">width:42px;height:42px;border-radius:11px;background:#eef3ec;display:flex;align-items:center;justify-content:center;margin-bottom:11px;</span><span class="se">}}</span>
+<span class="s1">.vic svg</span><span class="se">{{</span><span class="s1">fill:var(--forest);</span><span class="se">}}</span>
+<span class="s1">.vcard h4</span><span class="se">{{</span><span class="s1">font-size:16px;font-weight:600;color:var(--forest);margin-bottom:7px;</span><span class="se">}}</span>
+<span class="s1">.vcard p</span><span class="se">{{</span><span class="s1">font-size:12.8px;line-height:1.55;color:#3a463f;</span><span class="se">}}</span>
+<span class="s1">.keyq</span><span class="se">{{</span><span class="s1">margin-top:20px;background:#f0ece2;border-radius:13px;padding:18px 22px;font-size:13.5px;line-height:1.6;color:#3a463f;</span>
+<span class="s1">  border-left:5px solid var(--brick);</span><span class="se">}}</span>
+<span class="s1">.keyq b</span><span class="se">{{</span><span class="s1">color:var(--brick);</span><span class="se">}}</span>
+
+<span class="s1">/* CATEGORIES x AFFINITIES */</span>
+<span class="s1">.ca-grid</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:1fr 44px 1fr;align-items:stretch;gap:0;margin-bottom:24px;</span><span class="se">}}</span>
+<span class="s1">.ca-box</span><span class="se">{{</span><span class="s1">background:#fff;border-radius:15px;padding:20px;box-shadow:0 7px 18px rgba(14,58,45,.07);</span><span class="se">}}</span>
+<span class="s1">.ca-box.cat</span><span class="se">{{</span><span class="s1">border-top:5px solid var(--forest);</span><span class="se">}}</span>
+<span class="s1">.ca-box.aff</span><span class="se">{{</span><span class="s1">border-top:5px solid var(--brick);</span><span class="se">}}</span>
+<span class="s1">.ca-x</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:700;font-size:34px;color:var(--gold);</span><span class="se">}}</span>
+<span class="s1">.ca-head</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:15px;color:var(--forest);letter-spacing:.04em;margin-bottom:14px;</span><span class="se">}}</span>
+<span class="s1">.ca-box.aff .ca-head</span><span class="se">{{</span><span class="s1">color:var(--brick);</span><span class="se">}}</span>
+<span class="s1">.ca-head span</span><span class="se">{{</span><span class="s1">font-weight:500;font-size:11px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-left:8px;</span><span class="se">}}</span>
+<span class="s1">.chiprow</span><span class="se">{{</span><span class="s1">display:flex;flex-wrap:wrap;gap:7px;</span><span class="se">}}</span>
+<span class="s1">.mchip</span><span class="se">{{</span><span class="s1">border-radius:8px;padding:6px 11px;font-size:12px;font-weight:500;font-family:'Inter';line-height:1.2;</span><span class="se">}}</span>
+<span class="s1">.mchip.cat</span><span class="se">{{</span><span class="s1">background:#eaf0e8;color:var(--forest);border:1px solid #d3e0d2;</span><span class="se">}}</span>
+<span class="s1">.mchip.aff</span><span class="se">{{</span><span class="s1">background:#f6ebe7;color:var(--brick);border:1px solid #eccfc6;</span><span class="se">}}</span>
+<span class="s1">.mchip.gold</span><span class="se">{{</span><span class="s1">background:#fdf1dc;color:#8a5a06;border:1px solid #f3d79b;</span><span class="se">}}</span>
+<span class="s1">.mchip.ghost</span><span class="se">{{</span><span class="s1">background:transparent;color:var(--mute);border:1px dashed #bcc4bd;</span><span class="se">}}</span>
+<span class="s1">.ca-result</span><span class="se">{{</span><span class="s1">background:var(--forest);border-radius:15px;padding:22px 26px;color:#fff;position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">.ca-result:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;left:-40px;bottom:-40px;width:240px;height:200%;background:var(--leaf);opacity:.16;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.ca-eq</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;color:var(--gold);font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.ca-examples</span><span class="se">{{</span><span class="s1">display:flex;flex-direction:column;gap:6px;margin-bottom:14px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.ca-examples span</span><span class="se">{{</span><span class="s1">font-size:14px;color:#eaf2ec;</span><span class="se">}}</span>
+<span class="s1">.ca-examples b</span><span class="se">{{</span><span class="s1">color:#fff;font-weight:600;</span><span class="se">}}</span>
+<span class="s1">.ca-result p</span><span class="se">{{</span><span class="s1">font-size:13px;line-height:1.6;color:#d7e3da;position:relative;z-index:2;</span><span class="se">}}</span>
+
+<span class="s1">/* ECOSYSTEM */</span>
+<span class="s1">.eco</span><span class="se">{{</span><span class="s1">margin-bottom:20px;</span><span class="se">}}</span>
+<span class="s1">.eco-band</span><span class="se">{{</span><span class="s1">border-radius:13px;padding:15px 20px;display:flex;align-items:center;gap:18px;</span><span class="se">}}</span>
+<span class="s1">.eco-band .eco-t</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:14px;flex:none;width:150px;</span><span class="se">}}</span>
+<span class="s1">.eco-items</span><span class="se">{{</span><span class="s1">display:flex;flex-wrap:wrap;gap:8px;</span><span class="se">}}</span>
+<span class="s1">.eco-items span</span><span class="se">{{</span><span class="s1">font-size:12px;border-radius:7px;padding:5px 10px;font-weight:500;</span><span class="se">}}</span>
+<span class="s1">.eco-band.aud</span><span class="se">{{</span><span class="s1">background:#fff;border:1px solid #e1ddd1;</span><span class="se">}}</span>
+<span class="s1">.eco-band.aud .eco-t</span><span class="se">{{</span><span class="s1">color:var(--forest);</span><span class="se">}}</span><span class="s1"> .eco-band.aud .eco-items span</span><span class="se">{{</span><span class="s1">background:#eef3ec;color:var(--forest);</span><span class="se">}}</span>
+<span class="s1">.eco-band.plat</span><span class="se">{{</span><span class="s1">background:var(--forest);</span><span class="se">}}</span><span class="s1"> .eco-band.plat .eco-t</span><span class="se">{{</span><span class="s1">color:var(--gold);</span><span class="se">}}</span>
+<span class="s1">.eco-band.plat .eco-items span</span><span class="se">{{</span><span class="s1">background:rgba(255,255,255,.10);color:#eaf2ec;</span><span class="se">}}</span>
+<span class="s1">.eco-band.eng</span><span class="se">{{</span><span class="s1">background:#f0ece2;border:1px solid #e1ddd1;</span><span class="se">}}</span><span class="s1"> .eco-band.eng .eco-t</span><span class="se">{{</span><span class="s1">color:var(--brick);</span><span class="se">}}</span>
+<span class="s1">.eco-band.eng .eco-items span</span><span class="se">{{</span><span class="s1">background:#fff;color:#3a463f;border:1px solid #e3ddcf;</span><span class="se">}}</span>
+<span class="s1">.eco-arrow</span><span class="se">{{</span><span class="s1">text-align:center;font-family:'Poppins';font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:7px 0;</span><span class="se">}}</span>
+<span class="s1">.ip-strip</span><span class="se">{{</span><span class="s1">background:#fff;border-radius:15px;padding:22px 26px;box-shadow:0 7px 18px rgba(14,58,45,.07);border-top:5px solid var(--gold);</span><span class="se">}}</span>
+<span class="s1">.ip-h</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;color:var(--forest);font-size:16px;margin-bottom:13px;</span><span class="se">}}</span>
+<span class="s1">.ip-items</span><span class="se">{{</span><span class="s1">display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;</span><span class="se">}}</span>
+<span class="s1">.ip-items span</span><span class="se">{{</span><span class="s1">background:#eef3ec;color:var(--forest);border:1px solid #d3e0d2;border-radius:8px;padding:6px 11px;font-size:12px;font-weight:500;</span><span class="se">}}</span>
+<span class="s1">.ip-strip p</span><span class="se">{{</span><span class="s1">font-size:13px;line-height:1.6;color:#3a463f;</span><span class="se">}}</span>
+
+<span class="s1">/* FLEXIBILITY */</span>
+<span class="s1">.flex-hub</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;justify-content:center;gap:18px;margin:6px 0 20px;</span><span class="se">}}</span>
+<span class="s1">.hub-core</span><span class="se">{{</span><span class="s1">width:120px;height:120px;border-radius:50%;background:var(--forest);color:#fff;display:flex;flex-direction:column;</span>
+<span class="s1">  align-items:center;justify-content:center;gap:4px;box-shadow:0 10px 24px rgba(14,58,45,.22);</span><span class="se">}}</span>
+<span class="s1">.hub-core span</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:15px;text-align:center;line-height:1.1;</span><span class="se">}}</span>
+<span class="s1">.hub-note</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;color:var(--gold);font-size:15px;</span><span class="se">}}</span>
+<span class="s1">.fgrid</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:1fr 1fr;gap:13px;</span><span class="se">}}</span>
+<span class="s1">.fcard</span><span class="se">{{</span><span class="s1">background:#fff;border-radius:12px;padding:14px 17px;box-shadow:0 6px 15px rgba(14,58,45,.06);border-left:4px solid var(--leaf);</span><span class="se">}}</span>
+<span class="s1">.fname</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;color:var(--forest);font-size:14.5px;margin-bottom:3px;</span><span class="se">}}</span>
+<span class="s1">.fdesc</span><span class="se">{{</span><span class="s1">font-size:12.3px;line-height:1.5;color:#46524b;</span><span class="se">}}</span>
+<span class="s1">.flex-foot</span><span class="se">{{</span><span class="s1">margin-top:20px;background:#f0ece2;border-radius:13px;padding:16px 20px;font-size:13px;line-height:1.6;color:#3a463f;border-left:5px solid var(--gold);</span><span class="se">}}</span>
+
+<span class="s1">/* CAMPAIGN PAGES */</span>
+<span class="s1">.camp</span><span class="se">{{</span><span class="s1">padding:40px 50px;</span><span class="se">}}</span>
+<span class="s1">.camp-hd</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;gap:18px;background:var(--forest);border-radius:16px;padding:20px 24px;margin-bottom:18px;position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">.camp-hd:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;right:-30px;top:-40px;width:200px;height:240%;background:var(--leaf);opacity:.18;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.camp-rank</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:46px;color:var(--gold);line-height:1;flex:none;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.camp-ttl</span><span class="se">{{</span><span class="s1">flex:1;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.camp-cat</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;font-size:10.5px;letter-spacing:.16em;color:#a9c6b3;margin-bottom:4px;</span><span class="se">}}</span>
+<span class="s1">.camp-ttl h2</span><span class="se">{{</span><span class="s1">color:#fff;font-size:30px;font-weight:700;line-height:1;letter-spacing:-.4px;</span><span class="se">}}</span>
+<span class="s1">.camp-tag</span><span class="se">{{</span><span class="s1">color:var(--gold);font-size:14px;font-style:italic;font-family:'Inter';margin-top:5px;</span><span class="se">}}</span>
+<span class="s1">.camp-hd .brand</span><span class="se">{{</span><span class="s1">position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.camp-body</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-bottom:16px;</span><span class="se">}}</span>
+<span class="s1">.blk</span><span class="se">{{</span><span class="s1">border-radius:12px;padding:14px 16px;margin-bottom:12px;</span><span class="se">}}</span>
+<span class="s1">.blk:last-child</span><span class="se">{{</span><span class="s1">margin-bottom:0;</span><span class="se">}}</span>
+<span class="s1">.blk-h</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;</span><span class="se">}}</span>
+<span class="s1">.blk p</span><span class="se">{{</span><span class="s1">font-size:13px;line-height:1.55;color:#36433c;</span><span class="se">}}</span>
+<span class="s1">.blk.prob</span><span class="se">{{</span><span class="s1">background:#f6ebe7;border-left:4px solid var(--brick);</span><span class="se">}}</span><span class="s1"> .blk.prob .blk-h</span><span class="se">{{</span><span class="s1">color:var(--brick);</span><span class="se">}}</span>
+<span class="s1">.blk.prom</span><span class="se">{{</span><span class="s1">background:#eef3ec;border-left:4px solid var(--leaf);</span><span class="se">}}</span><span class="s1"> .blk.prom .blk-h</span><span class="se">{{</span><span class="s1">color:var(--leaf);</span><span class="se">}}</span>
+<span class="s1">.blk.why</span><span class="se">{{</span><span class="s1">background:#fdf3e1;border-left:4px solid var(--gold);</span><span class="se">}}</span><span class="s1"> .blk.why .blk-h</span><span class="se">{{</span><span class="s1">color:#b07a0c;</span><span class="se">}}</span>
+<span class="s1">.camp-R</span><span class="se">{{</span><span class="s1">display:flex;flex-direction:column;gap:12px;</span><span class="se">}}</span>
+<span class="s1">.mini</span><span class="se">{{</span><span class="s1">background:#fff;border-radius:12px;padding:13px 15px;box-shadow:0 5px 13px rgba(14,58,45,.06);</span><span class="se">}}</span>
+<span class="s1">.mini-h</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);margin-bottom:8px;</span><span class="se">}}</span>
+<span class="s1">.ch-need</span><span class="se">{{</span><span class="s1">display:inline-block;background:#f0ece2;color:#5a4a3a;border-radius:7px;padding:5px 9px;font-size:11.5px;margin:0 5px 5px 0;</span><span class="se">}}</span>
+<span class="s1">.aud-line</span><span class="se">{{</span><span class="s1">font-size:12.5px;color:#3a463f;line-height:1.5;</span><span class="se">}}</span>
+<span class="s1">.out</span><span class="se">{{</span><span class="s1">list-style:none;</span><span class="se">}}</span>
+<span class="s1">.out li</span><span class="se">{{</span><span class="s1">font-size:12.5px;color:#36433c;line-height:1.5;padding-left:16px;position:relative;margin-bottom:3px;</span><span class="se">}}</span>
+<span class="s1">.out li:before</span><span class="se">{{</span><span class="s1">content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--gold);</span><span class="se">}}</span>
+<span class="s1">.arch</span><span class="se">{{</span><span class="s1">background:var(--forest);border-radius:14px;padding:18px 22px;position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">.arch:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;left:-40px;bottom:-40px;width:220px;height:200%;background:var(--leaf);opacity:.14;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.arch-h</span><span class="se">{{</span><span class="s1">display:flex;align-items:baseline;justify-content:space-between;margin-bottom:13px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.arch-h span:first-child</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;color:#fff;font-size:15px;</span><span class="se">}}</span>
+<span class="s1">.arch-fmt</span><span class="se">{{</span><span class="s1">font-size:10.5px;color:#a9c6b3;font-family:'Poppins';font-weight:500;max-width:330px;text-align:right;</span><span class="se">}}</span>
+<span class="s1">.sessgrid</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:1fr 1fr;gap:9px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.sess</span><span class="se">{{</span><span class="s1">display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;</span><span class="se">}}</span>
+<span class="s1">.sn</span><span class="se">{{</span><span class="s1">flex:none;width:24px;height:24px;border-radius:7px;background:var(--gold);color:#5a3a00;font-family:'Poppins';font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;</span><span class="se">}}</span>
+<span class="s1">.st</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;color:#fff;font-size:13px;line-height:1.2;</span><span class="se">}}</span>
+<span class="s1">.sd</span><span class="se">{{</span><span class="s1">font-size:11px;color:#bcd2c2;line-height:1.35;margin-top:2px;</span><span class="se">}}</span>
+
+<span class="s1">.camp-foot</span><span class="se">{{</span><span class="s1">margin-top:14px;background:#f0ece2;border-radius:13px;padding:15px 20px;border-left:5px solid var(--brick);</span><span class="se">}}</span>
+<span class="s1">.cf-h</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brick);margin-bottom:11px;</span><span class="se">}}</span>
+<span class="s1">.cf-path</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;flex-wrap:wrap;gap:7px;</span><span class="se">}}</span>
+<span class="s1">.cf-step</span><span class="se">{{</span><span class="s1">background:#fff;border:1px solid #ddd7ca;border-radius:20px;padding:6px 13px;font-size:11.5px;font-weight:500;color:#46524b;font-family:'Poppins';</span><span class="se">}}</span>
+<span class="s1">.cf-step.on</span><span class="se">{{</span><span class="s1">background:var(--forest);color:#fff;border-color:var(--forest);</span><span class="se">}}</span>
+<span class="s1">.cf-step.end</span><span class="se">{{</span><span class="s1">background:var(--gold);color:#5a3a00;border-color:var(--gold);font-weight:600;</span><span class="se">}}</span>
+<span class="s1">.cf-ar</span><span class="se">{{</span><span class="s1">color:var(--brick);font-family:'Poppins';font-weight:700;font-size:14px;</span><span class="se">}}</span>
+
+<span class="s1">/* CATALOG DEPTH */</span>
+<span class="s1">.depth</span><span class="se">{{</span><span class="s1">display:flex;flex-direction:column;gap:14px;margin-bottom:22px;</span><span class="se">}}</span>
+<span class="s1">.depth-row</span><span class="se">{{</span><span class="s1">background:#fff;border-radius:13px;padding:15px 18px;box-shadow:0 6px 15px rgba(14,58,45,.06);</span><span class="se">}}</span>
+<span class="s1">.depth-row.top</span><span class="se">{{</span><span class="s1">border-left:5px solid var(--gold);</span><span class="se">}}</span>
+<span class="s1">.depth-row.faint</span><span class="se">{{</span><span class="s1">background:transparent;box-shadow:none;border:1px dashed #c2cabf;</span><span class="se">}}</span>
+<span class="s1">.dl</span><span class="se">{{</span><span class="s1">display:block;font-family:'Poppins';font-weight:700;font-size:10.5px;letter-spacing:.12em;color:var(--mute);margin-bottom:10px;</span><span class="se">}}</span>
+<span class="s1">.rapid</span><span class="se">{{</span><span class="s1">background:var(--forest);border-radius:15px;padding:22px 26px;color:#fff;position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">.rapid:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;right:-40px;top:-30px;width:240px;height:200%;background:var(--gold);opacity:.10;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.rapid-h</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;color:var(--gold);font-size:16px;margin-bottom:10px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.rapid p</span><span class="se">{{</span><span class="s1">font-size:13.5px;line-height:1.65;color:#e0ebe2;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.rapid b</span><span class="se">{{</span><span class="s1">color:#fff;</span><span class="se">}}</span>
+
+<span class="s1">/* CTA */</span>
+<span class="s1">.cta</span><span class="se">{{</span><span class="s1">background:var(--forest);color:#fff;padding:50px 56px;</span><span class="se">}}</span>
+<span class="s1">.cta-shape</span><span class="se">{{</span><span class="s1">position:absolute;top:-140px;right:-160px;width:520px;height:640px;background:var(--leaf);opacity:.2;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.cta-in</span><span class="se">{{</span><span class="s1">position:relative;z-index:2;height:100%;display:flex;flex-direction:column;</span><span class="se">}}</span>
+<span class="s1">.cta-kick</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;letter-spacing:.2em;font-size:12px;color:var(--gold);margin:26px 0 12px;</span><span class="se">}}</span>
+<span class="s1">.cta h1</span><span class="se">{{</span><span class="s1">font-size:42px;font-weight:700;line-height:1.06;letter-spacing:-.6px;</span><span class="se">}}</span>
+<span class="s1">.cta-steps</span><span class="se">{{</span><span class="s1">margin:18px 0 auto;display:flex;flex-direction:column;gap:14px;</span><span class="se">}}</span>
+<span class="s1">.cta-step</span><span class="se">{{</span><span class="s1">display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:16px 20px;</span><span class="se">}}</span>
+<span class="s1">.cta-step b</span><span class="se">{{</span><span class="s1">flex:none;width:38px;height:38px;border-radius:10px;background:var(--gold);color:#5a3a00;font-family:'Poppins';font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;</span><span class="se">}}</span>
+<span class="s1">.cta-step h4</span><span class="se">{{</span><span class="s1">font-size:16px;font-weight:600;color:#fff;margin-bottom:4px;</span><span class="se">}}</span>
+<span class="s1">.cta-step p</span><span class="se">{{</span><span class="s1">font-size:13px;line-height:1.55;color:#d4e0d7;</span><span class="se">}}</span>
+<span class="s1">.cta-close</span><span class="se">{{</span><span class="s1">border-top:1px solid rgba(255,255,255,.16);padding-top:20px;</span><span class="se">}}</span>
+<span class="s1">.cta-close p</span><span class="se">{{</span><span class="s1">font-size:15px;line-height:1.6;color:#e6efe8;margin-bottom:16px;</span><span class="se">}}</span>
+<span class="s1">.cta-close b</span><span class="se">{{</span><span class="s1">color:var(--gold);</span><span class="se">}}</span>
+<span class="s1">.cta-by</span><span class="se">{{</span><span class="s1">font-size:12.5px;color:#bcd2c2;</span><span class="se">}}</span><span class="s1"> .cta-by b</span><span class="se">{{</span><span class="s1">color:#fff;</span><span class="se">}}</span>
+<span class="s1">'''</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="s2">"&lt;!doctype html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='utf-8'&gt;&lt;style&gt;"</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;&lt;/head&gt;&lt;body&gt;"</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PAGES</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"&lt;/body&gt;&lt;/html&gt;"</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/family_legacy_strategy.html"</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">HTML</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"wrote"</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">HTML</span><span class="p">),</span> <span class="s2">"bytes;"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">PAGES</span><span class="p">),</span> <span class="s2">"pages"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_strategy.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

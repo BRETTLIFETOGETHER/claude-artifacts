@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_staff.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_staff.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">28 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_staff.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Church Staff Intelligence platform builder</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">staff_roles</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROLES</span><span class="p">,</span> <span class="n">LEVEL_NAMES</span>
+
+<span class="n">DEVOS</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Foundation"</span><span class="p">,</span><span class="s2">"Called and Kept"</span><span class="p">,</span><span class="s2">"Forty days on identity before competence. Who you are when the role is taken away."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Competence"</span><span class="p">,</span><span class="s2">"Faithful in Small Things"</span><span class="p">,</span><span class="s2">"Fifty-six days on diligence, integrity and the unseen work."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Leadership"</span><span class="p">,</span><span class="s2">"The Weight and the Yoke"</span><span class="p">,</span><span class="s2">"Seventy days on carrying responsibility without being crushed by it."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Multiplication"</span><span class="p">,</span><span class="s2">"What You Leave Behind"</span><span class="p">,</span><span class="s2">"Eighty-four days on succession, legacy and releasing what you built."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">CUSTOM</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Denominational affiliation"</span><span class="p">,[</span><span class="s2">"Baptist"</span><span class="p">,</span><span class="s2">"Non-denominational"</span><span class="p">,</span><span class="s2">"Methodist"</span><span class="p">,</span><span class="s2">"Presbyterian"</span><span class="p">,</span><span class="s2">"Pentecostal / Charismatic"</span><span class="p">,</span><span class="s2">"Lutheran"</span><span class="p">,</span><span class="s2">"Anglican / Episcopal"</span><span class="p">,</span><span class="s2">"Reformed"</span><span class="p">,</span><span class="s2">"Bible / Evangelical Free"</span><span class="p">,</span><span class="s2">"Restoration Movement"</span><span class="p">],</span>
+  <span class="s2">"Changes governance modules, ordination language, and which historical voices are cited."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Theological persuasion"</span><span class="p">,[</span><span class="s2">"Reformed"</span><span class="p">,</span><span class="s2">"Wesleyan-Arminian"</span><span class="p">,</span><span class="s2">"Pentecostal-Charismatic"</span><span class="p">,</span><span class="s2">"Broadly Evangelical"</span><span class="p">,</span><span class="s2">"Confessional / Liturgical"</span><span class="p">],</span>
+  <span class="s2">"Changes the devotional exegesis, the disputed-questions handling, and the theology electives."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Church size"</span><span class="p">,[</span><span class="s2">"Under 100"</span><span class="p">,</span><span class="s2">"100 to 250"</span><span class="p">,</span><span class="s2">"250 to 500"</span><span class="p">,</span><span class="s2">"500 to 1,000"</span><span class="p">,</span><span class="s2">"1,000 to 2,500"</span><span class="p">,</span><span class="s2">"Over 2,500"</span><span class="p">],</span>
+  <span class="s2">"Changes staffing assumptions, delegation depth, and whether a role is one person or a team."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Stage"</span><span class="p">,[</span><span class="s2">"Church plant"</span><span class="p">,</span><span class="s2">"Growing"</span><span class="p">,</span><span class="s2">"Plateaued"</span><span class="p">,</span><span class="s2">"Replant / turnaround"</span><span class="p">,</span><span class="s2">"Established"</span><span class="p">,</span><span class="s2">"Multisite"</span><span class="p">],</span>
+  <span class="s2">"Changes urgency, sequence, and which competencies come first."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Delivery"</span><span class="p">,[</span><span class="s2">"Self-paced"</span><span class="p">,</span><span class="s2">"Cohort / small group"</span><span class="p">,</span><span class="s2">"Blended"</span><span class="p">],</span>
+  <span class="s2">"Changes pacing, peer work, and how competency is verified."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">PROCESS</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Recruit"</span><span class="p">,</span><span class="s2">"Find and assess"</span><span class="p">,</span><span class="s2">"Role profile, competency screen, theological fit, reference discipline, and a written scorecard before anyone is interviewed."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Train"</span><span class="p">,</span><span class="s2">"Build the competency"</span><span class="p">,</span><span class="s2">"The four-level track for that role, with modules, reading, practice assignments and the companion devotional."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Develop"</span><span class="p">,</span><span class="s2">"Deepen and coach"</span><span class="p">,</span><span class="s2">"A coach, a cohort, quarterly review against the competency map, and stretch assignments inside the real job."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Multiply"</span><span class="p">,</span><span class="s2">"Reproduce the role"</span><span class="p">,</span><span class="s2">"Every level ends by requiring the person to train someone else. Nobody certifies at Expert without two people trained to completion."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">DELIVERY</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Self-paced"</span><span class="p">,</span><span class="s2">"One person, their own clock"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Video modules and written guides"</span><span class="p">,</span><span class="s2">"Practice assignment after each module"</span><span class="p">,</span><span class="s2">"Self-check quiz per module"</span><span class="p">,</span>
+   <span class="s2">"Portfolio submitted at the end of each level"</span><span class="p">,</span><span class="s2">"Coach review at level completion only"</span><span class="p">],</span>
+  <span class="s2">"Best for a solo staff member, a bivocational leader, or a church with one person in the role."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Cohort"</span><span class="p">,</span><span class="s2">"Six to twelve peers, same pace"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Weekly ninety-minute session"</span><span class="p">,</span><span class="s2">"Peer case work on real situations"</span><span class="p">,</span><span class="s2">"Assignments due between sessions"</span><span class="p">,</span>
+   <span class="s2">"Cohort leader trained and supplied"</span><span class="p">,</span><span class="s2">"Group portfolio review"</span><span class="p">],</span>
+  <span class="s2">"Best for a staff team, a denominational cohort, or a network training several churches at once."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Blended"</span><span class="p">,</span><span class="s2">"Modules alone, practice together"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Content consumed individually"</span><span class="p">,</span><span class="s2">"Monthly cohort gathering for application"</span><span class="p">,</span><span class="s2">"Coach assigned per person"</span><span class="p">,</span>
+   <span class="s2">"Peer accountability partner"</span><span class="p">,</span><span class="s2">"Combined self and peer assessment"</span><span class="p">],</span>
+  <span class="s2">"Best for larger churches and for Advanced and Expert levels, where practice matters more than content."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">ASSESS</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Knowledge check"</span><span class="p">,</span><span class="s2">"Per module"</span><span class="p">,</span><span class="s2">"A short check after each module. Not a gate, a rehearsal — spaced retrieval, retakeable."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Practice assignment"</span><span class="p">,</span><span class="s2">"Per module"</span><span class="p">,</span><span class="s2">"Something done in the actual job that week. Reviewed by a coach, not graded by a machine."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Competency portfolio"</span><span class="p">,</span><span class="s2">"Per level"</span><span class="p">,</span><span class="s2">"The artifacts named in the certification requirement — a plan, a document, a recorded conversation."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Peer and supervisor review"</span><span class="p">,</span><span class="s2">"Per level"</span><span class="p">,</span><span class="s2">"360 input from the people who see the work, against the published competency map."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Oral examination"</span><span class="p">,</span><span class="s2">"Advanced and Expert"</span><span class="p">,</span><span class="s2">"A live conversation with a certified assessor. Character and judgment cannot be tested on paper."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Multiplication proof"</span><span class="p">,</span><span class="s2">"Expert only"</span><span class="p">,</span><span class="s2">"Names of people trained to completion. No exceptions, and no substitutions."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">ORGANIC</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">[</span><span class="s2">"Apprenticeship"</span><span class="p">,</span><span class="s2">"Watch, help, lead, hand off — the four-stage handoff that predates every curriculum."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Real work as the classroom"</span><span class="p">,</span><span class="s2">"Every assignment happens inside the actual job that week, never in a simulation."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Table learning"</span><span class="p">,</span><span class="s2">"A cohort eating together before it studies. Formation runs on relationship, not modules."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Story and testimony"</span><span class="p">,</span><span class="s2">"Practitioners telling what went wrong, which is what people actually remember."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Coaching over instruction"</span><span class="p">,</span><span class="s2">"Questions before answers. The coach's job is to make them think, not to inform them."</span><span class="p">],</span>
+ <span class="p">[</span><span class="s2">"Formation before function"</span><span class="p">,</span><span class="s2">"The devotional runs the whole way through. Competence without character is a liability."</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">esc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\\</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\\\</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\</span><span class="s2">'"</span><span class="p">)</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"roles"</span><span class="p">:</span> <span class="n">ROLES</span><span class="p">,</span> <span class="s2">"lv"</span><span class="p">:</span> <span class="n">LEVEL_NAMES</span><span class="p">,</span> <span class="s2">"devos"</span><span class="p">:</span> <span class="n">DEVOS</span><span class="p">,</span> <span class="s2">"custom"</span><span class="p">:</span> <span class="n">CUSTOM</span><span class="p">,</span>
+           <span class="s2">"proc"</span><span class="p">:</span> <span class="n">PROCESS</span><span class="p">,</span> <span class="s2">"deliv"</span><span class="p">:</span> <span class="n">DELIVERY</span><span class="p">,</span> <span class="s2">"assess"</span><span class="p">:</span> <span class="n">ASSESS</span><span class="p">,</span> <span class="s2">"organic"</span><span class="p">:</span> <span class="n">ORGANIC</span><span class="p">}</span>
+
+<span class="n">TOTAL_MODULES</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="s2">"m"</span><span class="p">])</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ROLES</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s2">"lv"</span><span class="p">])</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">*{box-sizing:border-box;margin:0;padding:0}</span>
+<span class="s2">:root{--blue:#1d4ed8;--blue-d:#1e3a8a;--blue-l:#3b82f6;--blue-p:#eff6ff;--blue-b:#dbeafe;</span>
+<span class="s2">--ink:#0f172a;--body:#334155;--mute:#64748b;--faint:#94a3b8;</span>
+<span class="s2">--line:#e2e8f0;--bg:#f8fafc;--white:#fff;--max:1180px;</span>
+<span class="s2">--sh:0 1px 2px rgba(15,23,42,.04),0 4px 12px rgba(15,23,42,.05);</span>
+<span class="s2">--sh-l:0 2px 4px rgba(15,23,42,.04),0 12px 32px rgba(15,23,42,.08)}</span>
+<span class="s2">html{scroll-behavior:smooth}</span>
+<span class="s2">body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--body);</span>
+<span class="s2">line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased}</span>
+<span class="s2">.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}</span>
+<span class="s2">h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-.022em;font-weight:700}</span>
+<span class="s2">section{padding:80px 0}</span>
+<span class="s2">.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;</span>
+<span class="s2">color:var(--blue);margin-bottom:14px}</span>
+<span class="s2">h2.sh{font-size:35px}</span>
+<span class="s2">p.lede{font-size:18px;color:var(--mute);margin-top:12px;max-width:66ch}</span>
+<span class="s2">header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.95);</span>
+<span class="s2">backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.nav{display:flex;align-items:center;gap:26px;height:64px}</span>
+<span class="s2">.brand{font-weight:800;font-size:16px;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}</span>
+<span class="s2">.brand span{color:var(--blue)}</span>
+<span class="s2">.nav nav{display:flex;gap:22px;margin-left:auto;overflow-x:auto;scrollbar-width:none}</span>
+<span class="s2">.nav nav::-webkit-scrollbar{display:none}</span>
+<span class="s2">.nav a{color:var(--mute);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;cursor:pointer}</span>
+<span class="s2">.nav a:hover{color:var(--blue)}</span>
+<span class="s2">.hero{background:var(--white);border-bottom:1px solid var(--line);padding:88px 0 72px}</span>
+<span class="s2">.hero h1{font-size:56px;font-weight:800;letter-spacing:-.035em;max-width:17ch}</span>
+<span class="s2">.hero h1 em{font-style:normal;color:var(--blue)}</span>
+<span class="s2">.hero .l2{font-size:21px;color:var(--mute);margin-top:22px;max-width:64ch}</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;margin-top:36px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.stats&gt;div{flex:1 1 150px;padding:20px 18px 20px 0}</span>
+<span class="s2">.stats b{display:block;font-size:30px;color:var(--blue);font-weight:800;letter-spacing:-.03em}</span>
+<span class="s2">.stats span{font-size:13.5px;color:var(--mute);display:block;margin-top:3px}</span>
+<span class="s2">.arrow4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:32px;</span>
+<span class="s2">border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--white)}</span>
+<span class="s2">.a4{padding:24px 22px;border-right:1px solid var(--line)}</span>
+<span class="s2">.a4:last-child{border-right:0}</span>
+<span class="s2">.a4 .n4{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}</span>
+<span class="s2">.a4 h4{font-size:19px;margin-top:9px}</span>
+<span class="s2">.a4 .s4{font-size:14px;color:var(--blue-l);font-weight:600;margin-top:3px}</span>
+<span class="s2">.a4 p{font-size:14.5px;color:var(--mute);margin-top:10px;line-height:1.55}</span>
+<span class="s2">.filt{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}</span>
+<span class="s2">.fb{border:1px solid var(--line);background:var(--white);border-radius:8px;padding:8px 15px;</span>
+<span class="s2">font-family:inherit;font-size:14px;color:var(--body);cursor:pointer;font-weight:500}</span>
+<span class="s2">.fb:hover{border-color:var(--blue-l);color:var(--blue)}</span>
+<span class="s2">.fb.on{background:var(--blue);border-color:var(--blue);color:#fff}</span>
+<span class="s2">.roles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}</span>
+<span class="s2">.rc{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px 18px;</span>
+<span class="s2">cursor:pointer;text-align:left;font-family:inherit;transition:all .18s}</span>
+<span class="s2">.rc:hover{border-color:var(--blue-l);box-shadow:var(--sh-l);transform:translateY(-2px)}</span>
+<span class="s2">.rc .rt{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}</span>
+<span class="s2">.rc h4{font-size:17px;margin-top:8px;line-height:1.25}</span>
+<span class="s2">.rc p{font-size:13.5px;color:var(--mute);margin-top:7px;line-height:1.5}</span>
+<span class="s2">.rc .go{font-size:12.5px;font-weight:600;color:var(--blue);margin-top:12px}</span>
+<span class="s2">.back{background:none;border:0;color:var(--blue);font-family:inherit;font-size:14px;font-weight:600;</span>
+<span class="s2">cursor:pointer;padding:0;margin-bottom:18px}</span>
+<span class="s2">.rhero{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:32px;</span>
+<span class="s2">box-shadow:var(--sh);margin-bottom:24px}</span>
+<span class="s2">.rhero .rt2{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}</span>
+<span class="s2">.rhero h2{font-size:33px;margin-top:10px}</span>
+<span class="s2">.rhero .pp{font-size:19px;color:var(--mute);margin-top:10px;max-width:66ch}</span>
+<span class="s2">.resp{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}</span>
+<span class="s2">.resp span{font-size:14px;background:var(--bg);border:1px solid var(--line);padding:7px 13px;border-radius:7px}</span>
+<span class="s2">.anchor{margin-top:22px;padding:18px 22px;background:var(--blue-p);border-left:3px solid var(--blue);</span>
+<span class="s2">border-radius:0 10px 10px 0}</span>
+<span class="s2">.anchor .al{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;</span>
+<span class="s2">color:var(--blue);margin-bottom:6px}</span>
+<span class="s2">.anchor .ar2{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.02em}</span>
+<span class="s2">.anchor p{font-size:15.5px;color:var(--blue-d);margin-top:6px}</span>
+<span class="s2">.lvtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}</span>
+<span class="s2">.lt2{background:var(--white);border:1px solid var(--line);border-radius:11px;padding:16px 14px;</span>
+<span class="s2">cursor:pointer;text-align:left;font-family:inherit;transition:all .16s}</span>
+<span class="s2">.lt2:hover{border-color:var(--blue-l)}</span>
+<span class="s2">.lt2.on{border-color:var(--blue);border-width:2px;padding:15px 13px;box-shadow:var(--sh)}</span>
+<span class="s2">.lt2 .ln{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}</span>
+<span class="s2">.lt2.on .ln{color:var(--blue)}</span>
+<span class="s2">.lt2 h5{font-size:16px;color:var(--ink);font-weight:700;margin-top:6px}</span>
+<span class="s2">.lt2 .wk{font-size:13px;color:var(--mute);margin-top:2px}</span>
+<span class="s2">.lvbody{background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--sh)}</span>
+<span class="s2">.lvh{padding:28px 32px;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.lvh h3{font-size:25px}</span>
+<span class="s2">.lvh p{font-size:16px;color:var(--mute);margin-top:6px;max-width:70ch}</span>
+<span class="s2">.mods{padding:8px 32px}</span>
+<span class="s2">.md{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.md:last-child{border-bottom:0}</span>
+<span class="s2">.md .mn2{font-size:12px;font-weight:700;color:var(--blue);min-width:26px;flex-shrink:0}</span>
+<span class="s2">.md .mb</span><span class="si">{flex:1}</span>
+<span class="s2">.md .mt2{font-size:17px;color:var(--ink);font-weight:600}</span>
+<span class="s2">.md .ms{font-size:15px;color:var(--mute);margin-top:3px}</span>
+<span class="s2">.lvf{padding:24px 32px;background:var(--bg);border-top:1px solid var(--line)}</span>
+<span class="s2">.lvf .fl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}</span>
+<span class="s2">.lvf .fv{font-size:16.5px;color:var(--ink)}</span>
+<span class="s2">.lvf .fr{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}</span>
+<span class="s2">.dev{margin-top:20px;background:var(--blue-d);border-radius:14px;padding:26px 30px;color:#fff}</span>
+<span class="s2">.dev .dl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#93c5fd;margin-bottom:8px}</span>
+<span class="s2">.dev h4{color:#fff;font-size:23px}</span>
+<span class="s2">.dev p{color:#bfdbfe;font-size:16px;margin-top:8px;max-width:64ch}</span>
+<span class="s2">.cust{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}</span>
+<span class="s2">.cu{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:22px 24px}</span>
+<span class="s2">.cu h4{font-size:17px}</span>
+<span class="s2">.cu .opts2{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}</span>
+<span class="s2">.cu .opts2 button{border:1px solid var(--line);background:var(--white);border-radius:7px;padding:6px 12px;</span>
+<span class="s2">font-family:inherit;font-size:13.5px;color:var(--body);cursor:pointer}</span>
+<span class="s2">.cu .opts2 button:hover{border-color:var(--blue-l);color:var(--blue)}</span>
+<span class="s2">.cu .opts2 button.on{background:var(--blue);border-color:var(--blue);color:#fff}</span>
+<span class="s2">.cu .eff{font-size:14px;color:var(--mute);margin-top:12px;line-height:1.5;font-style:italic}</span>
+<span class="s2">.prof{background:var(--blue-p);border:1px solid var(--blue-b);border-radius:13px;padding:22px 26px;margin-top:20px}</span>
+<span class="s2">.prof .pl2{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}</span>
+<span class="s2">.prof .pv{font-size:17px;color:var(--blue-d)}</span>
+<span class="s2">.three3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}</span>
+<span class="s2">.d3{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:24px}</span>
+<span class="s2">.d3 h4{font-size:19px}</span>
+<span class="s2">.d3 .sub3{font-size:14px;color:var(--blue);font-weight:600;margin-top:3px}</span>
+<span class="s2">.d3 ul{list-style:none;margin-top:14px}</span>
+<span class="s2">.d3 li{font-size:14.5px;color:var(--body);padding:5px 0 5px 17px;position:relative}</span>
+<span class="s2">.d3 li::before{content:"";position:absolute;left:0;top:14px;width:6px;height:6px;border-radius:99px;background:var(--blue-b)}</span>
+<span class="s2">.d3 .best{font-size:14px;color:var(--mute);margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-style:italic}</span>
+<span class="s2">.trow{display:flex;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.trow .tk{font-size:16.5px;color:var(--ink);font-weight:600;min-width:220px;flex-shrink:0}</span>
+<span class="s2">.trow .tw{font-size:13px;color:var(--blue);font-weight:600;min-width:130px;flex-shrink:0}</span>
+<span class="s2">.trow .tv{flex:1;font-size:16px;color:var(--mute)}</span>
+<span class="s2">.org{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:26px}</span>
+<span class="s2">.og{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px 22px}</span>
+<span class="s2">.og h4{font-size:17px}</span>
+<span class="s2">.og p{font-size:14.5px;color:var(--mute);margin-top:6px;line-height:1.55}</span>
+<span class="s2">.cta{background:var(--blue-d);color:#fff;text-align:center;padding:74px 0}</span>
+<span class="s2">.cta h2{color:#fff;font-size:38px;letter-spacing:-.03em}</span>
+<span class="s2">.cta p{color:#bfdbfe;font-size:18px;margin-top:14px;max-width:58ch;margin-left:auto;margin-right:auto}</span>
+<span class="s2">footer{background:var(--ink);color:var(--faint);padding:30px 0;font-size:14px}</span>
+<span class="s2">@media(max-width:1000px){.roles{grid-template-columns:repeat(2,1fr)}</span>
+<span class="s2">.arrow4,.lvtabs,.three3{grid-template-columns:repeat(2,1fr)}</span>
+<span class="s2">.a4:nth-child(2){border-right:0}.a4:nth-child(-n+2){border-bottom:1px solid var(--line)}</span>
+<span class="s2">.hero h1{font-size:40px}.cust,.org{grid-template-columns:1fr}}</span>
+<span class="s2">@media(max-width:640px){</span>
+<span class="s2">section{padding:52px 0}.hero{padding:52px 0 44px}.hero h1{font-size:32px}.hero .l2{font-size:18px}</span>
+<span class="s2">h2.sh{font-size:26px}.roles,.arrow4,.lvtabs,.three3{grid-template-columns:1fr}</span>
+<span class="s2">.a4{border-right:0;border-bottom:1px solid var(--line)}.a4:last-child{border-bottom:0}</span>
+<span class="s2">.rhero,.mods,.lvh,.lvf{padding-left:20px;padding-right:20px}.rhero{padding:22px 20px}</span>
+<span class="s2">.trow{flex-direction:column;gap:4px}.trow .tk,.trow .tw{min-width:0}</span>
+<span class="s2">.cta h2{font-size:27px}}</span>
+<span class="s2">@media(prefers-reduced-motion:reduce){*{transition:none!important}}</span>
+<span class="s2">"""</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;Church Staff Intelligence — Staff Formation for Every Role&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;__CSS__&lt;/style&gt;&lt;/head&gt;&lt;body&gt;</span>
+
+<span class="s2">&lt;header&gt;&lt;div class="wrap nav"&gt;</span>
+<span class="s2">  &lt;div class="brand"&gt;Church Staff &lt;span&gt;Intelligence&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;nav&gt;</span>
+<span class="s2">    &lt;a data-j="roles"&gt;The 20 Roles&lt;/a&gt;&lt;a data-j="levels"&gt;Four Levels&lt;/a&gt;&lt;a data-j="customize"&gt;Customize&lt;/a&gt;</span>
+<span class="s2">    &lt;a data-j="delivery"&gt;Delivery&lt;/a&gt;&lt;a data-j="certify"&gt;Certification&lt;/a&gt;&lt;a data-j="process"&gt;Recruit to Multiply&lt;/a&gt;</span>
+<span class="s2">  &lt;/nav&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;</span>
+
+<span class="s2">&lt;div class="hero"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Staff Intelligence to Staff Formation&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;Most churches hire for competence and then &lt;em&gt;develop nobody&lt;/em&gt;.&lt;/h1&gt;</span>
+<span class="s2">  &lt;p class="l2"&gt;Twenty roles. Four levels each. Every module anchored to a biblical figure who actually did the job, with a companion devotional running the whole way through — because competence without character is a liability, not an asset.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="stats"&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;20&lt;/b&gt;&lt;span&gt;core staff roles&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;80&lt;/b&gt;&lt;span&gt;development tracks&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;__MODS__&lt;/b&gt;&lt;span&gt;training modules&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;36&lt;/b&gt;&lt;span&gt;weeks, entry to expert&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;4&lt;/b&gt;&lt;span&gt;certification levels&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;section id="process"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;One System&lt;/div&gt;</span>
+<span class="s2">  &lt;h2 class="sh"&gt;Recruit. Train. Develop. Multiply.&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;Most churches do the first one and hope for the rest. This is the same process for every role, at any size, in any stage.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="arrow4" id="proc"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="roles" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"&gt;</span>
+<span class="s2">  &lt;div class="wrap" id="rolesection"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;The Library&lt;/div&gt;</span>
+<span class="s2">  &lt;h2 class="sh"&gt;Twenty roles, each with a full development track.&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;Select any role to open its responsibilities, biblical anchor, four levels and certification requirements.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="filt" id="filt"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="roles" id="roles"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="wrap" id="roledetail" style="display:none"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="levels"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;The Ladder&lt;/div&gt;</span>
+<span class="s2">  &lt;h2 class="sh"&gt;Four levels, and nobody skips one.&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;Every role runs the same ladder, so a church can talk about development in one language across the whole staff.&lt;/p&gt;</span>
+<span class="s2">  &lt;div id="lvgrid"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="eyebrow" style="margin-top:52px"&gt;Companion Devotionals&lt;/div&gt;</span>
+<span class="s2">  &lt;h3 style="font-size:24px"&gt;The biblical backbone runs the whole way through.&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;One devotional series per level, taken daily alongside the modules. Formation and competence at the same time, never one then the other.&lt;/p&gt;</span>
+<span class="s2">  &lt;div id="devos"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="customize" style="background:var(--white);border-top:1px solid var(--line)"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Customization&lt;/div&gt;</span>
+<span class="s2">  &lt;h2 class="sh"&gt;The same ladder, tuned to your church.&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;A Baptist church plant of eighty and a Presbyterian multisite of four thousand need the same competencies and completely different emphases. Set the profile and the track adjusts.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="cust" id="cust"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="prof" id="prof"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="delivery"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Delivery&lt;/div&gt;</span>
+<span class="s2">  &lt;h2 class="sh"&gt;Self-paced, cohort, or both.&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;The content is identical. What changes is the pace, the peer work and how competency gets verified.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="three3" id="deliv"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="eyebrow" style="margin-top:52px"&gt;Organic Learning&lt;/div&gt;</span>
+<span class="s2">  &lt;h3 style="font-size:24px"&gt;The half a curriculum cannot deliver.&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;Every track carries an organizational spine and an organic one. The modules are the spine. These are the reason anyone actually changes.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="org" id="org"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="certify" style="background:var(--white);border-top:1px solid var(--line)"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Certification&lt;/div&gt;</span>
+<span class="s2">  &lt;h2 class="sh"&gt;Six ways competency is verified.&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="lede"&gt;A certificate that only proves someone watched videos is worth nothing. Character and judgment cannot be tested on paper, so they are examined in conversation and demonstrated in the actual job.&lt;/p&gt;</span>
+<span class="s2">  &lt;div id="assess"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="prof" style="margin-top:30px"&gt;</span>
+<span class="s2">    &lt;div class="pl2"&gt;The rule that protects the credential&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="pv"&gt;Nobody certifies at Expert without naming two people they trained to completion. No exceptions and no substitutions &amp;mdash; the level is called Multiplication, and a credential that does not require it is a participation award.&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;div class="cta"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;h2&gt;One stop for recruiting, training, developing and multiplying every role.&lt;/h2&gt;</span>
+<span class="s2">  &lt;p&gt;Any church, any size, any stage. Built on the same intelligence-to-formation architecture as the rest of the LifeTogether platform.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;Church Staff Intelligence &amp;middot; Staff Formation &amp;middot; 20 roles &amp;middot; 80 tracks &amp;middot; __MODS__ modules&lt;/div&gt;&lt;/footer&gt;</span>
+
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">var D = __DATA__;</span>
+<span class="s2">var st = {cat:"All", role:null, lv:0, prof:</span><span class="si">{}</span><span class="s2">};</span>
+
+<span class="s2">function esc2(s){ return String(s); }</span>
+
+<span class="s2">function renderProc(){</span>
+<span class="s2">  var h = "", i;</span>
+<span class="s2">  for (i=0;i&lt;D.proc.length;i++){</span>
+<span class="s2">    h += '&lt;div class="a4"&gt;&lt;div class="n4"&gt;Step ' + (i+1) + '&lt;/div&gt;&lt;h4&gt;' + D.proc[i][0] + '&lt;/h4&gt;';</span>
+<span class="s2">    h += '&lt;div class="s4"&gt;' + D.proc[i][1] + '&lt;/div&gt;&lt;p&gt;' + D.proc[i][2] + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("proc").innerHTML = h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function cats(){</span>
+<span class="s2">  var out = ["All"], i;</span>
+<span class="s2">  for (i=0;i&lt;D.roles.length;i++){</span>
+<span class="s2">    if (out.indexOf(D.roles[i].cat) === -1){ out.push(D.roles[i].cat); }</span>
+<span class="s2">  }</span>
+<span class="s2">  return out;</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderRoles(){</span>
+<span class="s2">  var cs = cats(), h = "", i;</span>
+<span class="s2">  for (i=0;i&lt;cs.length;i++){</span>
+<span class="s2">    h += '&lt;button class="fb' + (st.cat===cs[i]?" on":"") + '" data-f="' + cs[i] + '"&gt;' + cs[i] + '&lt;/button&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("filt").innerHTML = h;</span>
+<span class="s2">  h = "";</span>
+<span class="s2">  for (i=0;i&lt;D.roles.length;i++){</span>
+<span class="s2">    var r = D.roles[i];</span>
+<span class="s2">    if (st.cat !== "All" &amp;&amp; r.cat !== st.cat){ continue; }</span>
+<span class="s2">    h += '&lt;button class="rc" data-r="' + i + '"&gt;&lt;div class="rt"&gt;' + r.cat + '&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;h4&gt;' + r.n + '&lt;/h4&gt;&lt;p&gt;' + r.p + '&lt;/p&gt;';</span>
+<span class="s2">    h += '&lt;div class="go"&gt;4 levels &amp;middot; open track &amp;rsaquo;&lt;/div&gt;&lt;/button&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("roles").innerHTML = h;</span>
+<span class="s2">  var fb = document.querySelectorAll(".fb");</span>
+<span class="s2">  for (i=0;i&lt;fb.length;i++){</span>
+<span class="s2">    fb[i].onclick = function(){ st.cat = this.getAttribute("data-f"); renderRoles(); };</span>
+<span class="s2">  }</span>
+<span class="s2">  var rc = document.querySelectorAll(".rc");</span>
+<span class="s2">  for (i=0;i&lt;rc.length;i++){</span>
+<span class="s2">    rc[i].onclick = function(){</span>
+<span class="s2">      st.role = parseInt(this.getAttribute("data-r"),10); st.lv = 0; renderDetail();</span>
+<span class="s2">      document.getElementById("roles").scrollIntoView({block:"start"});</span>
+<span class="s2">    };</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+
+<span class="s2">function profLine(){</span>
+<span class="s2">  var keys = [], i;</span>
+<span class="s2">  for (i=0;i&lt;D.custom.length;i++){</span>
+<span class="s2">    var v = st.prof[i];</span>
+<span class="s2">    if (v){ keys.push(v); }</span>
+<span class="s2">  }</span>
+<span class="s2">  return keys.length ? keys.join("  &amp;middot;  ") : "No profile set — showing the standard track for every role.";</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderDetail(){</span>
+<span class="s2">  var box = document.getElementById("roledetail");</span>
+<span class="s2">  var list = document.getElementById("rolesection");</span>
+<span class="s2">  if (st.role === null){ box.style.display = "none"; list.style.display = "block"; return; }</span>
+<span class="s2">  list.style.display = "none"; box.style.display = "block";</span>
+<span class="s2">  var r = D.roles[st.role], i;</span>
+<span class="s2">  var h = '&lt;button class="back" id="bk"&gt;&amp;larr; All twenty roles&lt;/button&gt;';</span>
+<span class="s2">  h += '&lt;div class="rhero"&gt;&lt;div class="rt2"&gt;' + r.cat + '&lt;/div&gt;&lt;h2&gt;' + r.n + '&lt;/h2&gt;';</span>
+<span class="s2">  h += '&lt;p class="pp"&gt;' + r.p + '&lt;/p&gt;&lt;div class="resp"&gt;';</span>
+<span class="s2">  for (i=0;i&lt;r.r.length;i++){ h += '&lt;span&gt;' + r.r[i] + '&lt;/span&gt;'; }</span>
+<span class="s2">  h += '&lt;/div&gt;&lt;div class="anchor"&gt;&lt;div class="al"&gt;Biblical anchor&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="ar2"&gt;' + r.a + '&lt;/div&gt;&lt;p&gt;' + r.fig + '&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="lvtabs"&gt;';</span>
+<span class="s2">  for (i=0;i&lt;4;i++){</span>
+<span class="s2">    h += '&lt;button class="lt2' + (st.lv===i?" on":"") + '" data-l="' + i + '"&gt;';</span>
+<span class="s2">    h += '&lt;div class="ln"&gt;' + D.lv[i][1] + '&lt;/div&gt;&lt;h5&gt;' + D.lv[i][0] + '&lt;/h5&gt;';</span>
+<span class="s2">    h += '&lt;div class="wk"&gt;' + D.lv[i][2] + ' &amp;middot; ' + r.lv[i].m.length + ' modules&lt;/div&gt;&lt;/button&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  var L = r.lv[st.lv];</span>
+<span class="s2">  h += '&lt;div class="lvbody"&gt;&lt;div class="lvh"&gt;&lt;h3&gt;' + D.lv[st.lv][0] + ' &amp;mdash; ' + D.lv[st.lv][1] + '&lt;/h3&gt;';</span>
+<span class="s2">  h += '&lt;p&gt;' + D.lv[st.lv][3] + '&lt;/p&gt;&lt;/div&gt;&lt;div class="mods"&gt;';</span>
+<span class="s2">  for (i=0;i&lt;L.m.length;i++){</span>
+<span class="s2">    h += '&lt;div class="md"&gt;&lt;span class="mn2"&gt;' + (i&lt;9?"0":"") + (i+1) + '&lt;/span&gt;&lt;span class="mb"&gt;';</span>
+<span class="s2">    h += '&lt;span class="mt2"&gt;' + L.m[i][0] + '&lt;/span&gt;&lt;span class="ms"&gt;' + L.m[i][1] + '&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;&lt;div class="lvf"&gt;&lt;div class="fl"&gt;Outcome&lt;/div&gt;&lt;div class="fv"&gt;' + L.o + '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="fr"&gt;&lt;div class="fl"&gt;Certification requires&lt;/div&gt;&lt;div class="fv"&gt;' + L.c + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  var dv = D.devos[st.lv];</span>
+<span class="s2">  h += '&lt;div class="dev"&gt;&lt;div class="dl"&gt;Companion devotional &amp;middot; ' + dv[0] + ' level&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;h4&gt;' + dv[1] + '&lt;/h4&gt;&lt;p&gt;' + dv[2] + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="prof" style="margin-top:18px"&gt;&lt;div class="pl2"&gt;Tuned for&lt;/div&gt;&lt;div class="pv"&gt;' + profLine() + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  box.innerHTML = h;</span>
+<span class="s2">  document.getElementById("bk").onclick = function(){ st.role = null; renderDetail(); renderRoles();</span>
+<span class="s2">    document.getElementById("roles").scrollIntoView({block:"start"}); };</span>
+<span class="s2">  var lt = document.querySelectorAll(".lt2");</span>
+<span class="s2">  for (i=0;i&lt;lt.length;i++){</span>
+<span class="s2">    lt[i].onclick = function(){ st.lv = parseInt(this.getAttribute("data-l"),10); renderDetail(); };</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderLevels(){</span>
+<span class="s2">  var h = '&lt;div class="arrow4"&gt;', i;</span>
+<span class="s2">  for (i=0;i&lt;D.lv.length;i++){</span>
+<span class="s2">    h += '&lt;div class="a4"&gt;&lt;div class="n4"&gt;Level ' + (i+1) + '&lt;/div&gt;&lt;h4&gt;' + D.lv[i][0] + '&lt;/h4&gt;';</span>
+<span class="s2">    h += '&lt;div class="s4"&gt;' + D.lv[i][1] + ' &amp;middot; ' + D.lv[i][2] + '&lt;/div&gt;&lt;p&gt;' + D.lv[i][3] + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("lvgrid").innerHTML = h + '&lt;/div&gt;';</span>
+<span class="s2">  h = "";</span>
+<span class="s2">  for (i=0;i&lt;D.devos.length;i++){</span>
+<span class="s2">    h += '&lt;div class="trow"&gt;&lt;span class="tk"&gt;' + D.devos[i][1] + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="tw"&gt;' + D.devos[i][0] + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="tv"&gt;' + D.devos[i][2] + '&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("devos").innerHTML = h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderCustom(){</span>
+<span class="s2">  var h = "", i, j;</span>
+<span class="s2">  for (i=0;i&lt;D.custom.length;i++){</span>
+<span class="s2">    h += '&lt;div class="cu"&gt;&lt;h4&gt;' + D.custom[i][0] + '&lt;/h4&gt;&lt;div class="opts2"&gt;';</span>
+<span class="s2">    for (j=0;j&lt;D.custom[i][1].length;j++){</span>
+<span class="s2">      var on = st.prof[i] === D.custom[i][1][j];</span>
+<span class="s2">      h += '&lt;button data-c="' + i + '" data-v="' + j + '"' + (on?' class="on"':'') + '&gt;' + D.custom[i][1][j] + '&lt;/button&gt;';</span>
+<span class="s2">    }</span>
+<span class="s2">    h += '&lt;/div&gt;&lt;div class="eff"&gt;' + D.custom[i][2] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("cust").innerHTML = h;</span>
+<span class="s2">  var bs = document.querySelectorAll(".opts2 button");</span>
+<span class="s2">  for (i=0;i&lt;bs.length;i++){</span>
+<span class="s2">    bs[i].onclick = function(){</span>
+<span class="s2">      var c = parseInt(this.getAttribute("data-c"),10), v = parseInt(this.getAttribute("data-v"),10);</span>
+<span class="s2">      var val = D.custom[c][1][v];</span>
+<span class="s2">      if (st.prof[c] === val){ delete st.prof[c]; } else { st.prof[c] = val; }</span>
+<span class="s2">      renderCustom(); renderProf(); if (st.role !== null){ renderDetail(); }</span>
+<span class="s2">    };</span>
+<span class="s2">  }</span>
+<span class="s2">  renderProf();</span>
+<span class="s2">}</span>
+<span class="s2">function renderProf(){</span>
+<span class="s2">  document.getElementById("prof").innerHTML =</span>
+<span class="s2">    '&lt;div class="pl2"&gt;Your church profile&lt;/div&gt;&lt;div class="pv"&gt;' + profLine() + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderDeliv(){</span>
+<span class="s2">  var h = "", i, j;</span>
+<span class="s2">  for (i=0;i&lt;D.deliv.length;i++){</span>
+<span class="s2">    h += '&lt;div class="d3"&gt;&lt;h4&gt;' + D.deliv[i][0] + '&lt;/h4&gt;&lt;div class="sub3"&gt;' + D.deliv[i][1] + '&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">    for (j=0;j&lt;D.deliv[i][2].length;j++){ h += '&lt;li&gt;' + D.deliv[i][2][j] + '&lt;/li&gt;'; }</span>
+<span class="s2">    h += '&lt;/ul&gt;&lt;div class="best"&gt;' + D.deliv[i][3] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("deliv").innerHTML = h;</span>
+<span class="s2">  h = "";</span>
+<span class="s2">  for (i=0;i&lt;D.organic.length;i++){</span>
+<span class="s2">    h += '&lt;div class="og"&gt;&lt;h4&gt;' + D.organic[i][0] + '&lt;/h4&gt;&lt;p&gt;' + D.organic[i][1] + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("org").innerHTML = h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function renderAssess(){</span>
+<span class="s2">  var h = "", i;</span>
+<span class="s2">  for (i=0;i&lt;D.assess.length;i++){</span>
+<span class="s2">    h += '&lt;div class="trow"&gt;&lt;span class="tk"&gt;' + D.assess[i][0] + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="tw"&gt;' + D.assess[i][1] + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="tv"&gt;' + D.assess[i][2] + '&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById("assess").innerHTML = h;</span>
+<span class="s2">}</span>
+
+<span class="s2">renderProc(); renderRoles(); renderDetail(); renderLevels(); renderCustom(); renderDeliv(); renderAssess();</span>
+<span class="s2">var jl = document.querySelectorAll("[data-j]");</span>
+<span class="s2">for (var z=0; z&lt;jl.length; z++){</span>
+<span class="s2">  jl[z].onclick = function(){</span>
+<span class="s2">    var t = this.getAttribute("data-j");</span>
+<span class="s2">    if (t === "roles" &amp;&amp; st.role !== null){ st.role = null; renderDetail(); renderRoles(); }</span>
+<span class="s2">    document.getElementById(t).scrollIntoView({block:"start"});</span>
+<span class="s2">  };</span>
+<span class="s2">}</span>
+<span class="s2">&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">HTML</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__CSS__"</span><span class="p">,</span> <span class="n">CSS</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__DATA__"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">","</span><span class="p">,</span> <span class="s2">":"</span><span class="p">)))</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__MODS__"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">TOTAL_MODULES</span><span class="p">))</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/church-staff-intelligence.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"roles:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ROLES</span><span class="p">),</span> <span class="s2">"| modules:"</span><span class="p">,</span> <span class="n">TOTAL_MODULES</span><span class="p">,</span> <span class="s2">"| KB:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_staff.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

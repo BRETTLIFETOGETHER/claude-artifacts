@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_fingrow.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_fingrow.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">27 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_fingrow.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Builder for both platforms in the shared blue system</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fingrow_data</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""*{box-sizing:border-box;margin:0;padding:0}</span>
+<span class="s2">:root{--blue:#1d4ed8;--blue-d:#1e3a8a;--blue-l:#3b82f6;--blue-p:#eff6ff;--blue-b:#dbeafe;</span>
+<span class="s2">--ink:#0f172a;--body:#334155;--mute:#64748b;--faint:#94a3b8;</span>
+<span class="s2">--line:#e2e8f0;--bg:#f8fafc;--white:#fff;--max:1160px;</span>
+<span class="s2">--sh:0 1px 2px rgba(15,23,42,.04),0 4px 12px rgba(15,23,42,.05);</span>
+<span class="s2">--sh-l:0 2px 4px rgba(15,23,42,.04),0 12px 32px rgba(15,23,42,.08)}</span>
+<span class="s2">html{scroll-behavior:smooth}</span>
+<span class="s2">body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--body);</span>
+<span class="s2">line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased}</span>
+<span class="s2">.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}</span>
+<span class="s2">h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-.022em;font-weight:700}</span>
+<span class="s2">section{padding:80px 0}</span>
+<span class="s2">.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}</span>
+<span class="s2">h2.sh{font-size:35px}</span>
+<span class="s2">p.lede{font-size:18px;color:var(--mute);margin-top:12px;max-width:66ch}</span>
+<span class="s2">header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.95);</span>
+<span class="s2">backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.nav{display:flex;align-items:center;gap:26px;height:64px}</span>
+<span class="s2">.brand{font-weight:800;font-size:16px;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}</span>
+<span class="s2">.brand span{color:var(--blue)}</span>
+<span class="s2">.nav nav{display:flex;gap:22px;margin-left:auto;overflow-x:auto;scrollbar-width:none}</span>
+<span class="s2">.nav nav::-webkit-scrollbar{display:none}</span>
+<span class="s2">.nav a{color:var(--mute);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;cursor:pointer}</span>
+<span class="s2">.nav a:hover{color:var(--blue)}</span>
+<span class="s2">.hero{background:var(--white);border-bottom:1px solid var(--line);padding:88px 0 70px}</span>
+<span class="s2">.hero h1{font-size:55px;font-weight:800;letter-spacing:-.035em;max-width:17ch}</span>
+<span class="s2">.hero h1 em{font-style:normal;color:var(--blue)}</span>
+<span class="s2">.hero .l2{font-size:21px;color:var(--mute);margin-top:22px;max-width:64ch}</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;margin-top:34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.stats&gt;div{flex:1 1 150px;padding:20px 18px 20px 0}</span>
+<span class="s2">.stats b{display:block;font-size:29px;color:var(--blue);font-weight:800;letter-spacing:-.03em}</span>
+<span class="s2">.stats span{font-size:13.5px;color:var(--mute);display:block;margin-top:3px}</span>
+<span class="s2">.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px}</span>
+<span class="s2">.tw{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:28px 26px}</span>
+<span class="s2">.tw:last-child{border-color:var(--blue-b);background:var(--blue-p)}</span>
+<span class="s2">.tw .tg{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}</span>
+<span class="s2">.tw:last-child .tg{color:var(--blue)}</span>
+<span class="s2">.tw h3{font-size:24px;margin-top:8px}</span>
+<span class="s2">.tw p{font-size:16.5px;color:var(--mute);margin-top:10px;line-height:1.6}</span>
+<span class="s2">.tw:last-child p{color:var(--blue-d)}</span>
+<span class="s2">.tw .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}</span>
+<span class="s2">.tw .pills span{font-size:13.5px;background:var(--bg);border:1px solid var(--line);padding:6px 11px;border-radius:7px}</span>
+<span class="s2">.tw:last-child .pills span{background:var(--white);border-color:var(--blue-b)}</span>
+<span class="s2">.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}</span>
+<span class="s2">.dc{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px 20px;</span>
+<span class="s2">cursor:pointer;text-align:left;font-family:inherit;transition:all .18s}</span>
+<span class="s2">.dc:hover{border-color:var(--blue-l);box-shadow:var(--sh-l);transform:translateY(-2px)}</span>
+<span class="s2">.dc.on{border-color:var(--blue);border-width:2px;padding:21px 19px}</span>
+<span class="s2">.dc h4{font-size:18px}</span>
+<span class="s2">.dc p{font-size:14.5px;color:var(--mute);margin-top:7px;line-height:1.5}</span>
+<span class="s2">.dbody{margin-top:18px;background:var(--white);border:1px solid var(--line);border-radius:15px;</span>
+<span class="s2">overflow:hidden;box-shadow:var(--sh)}</span>
+<span class="s2">.dh2{padding:28px 32px;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.dh2 h3{font-size:26px}</span>
+<span class="s2">.dh2 .q{font-size:18px;color:var(--blue);font-weight:600;margin-top:6px}</span>
+<span class="s2">.dh2 p{font-size:16.5px;color:var(--mute);margin-top:12px;max-width:70ch}</span>
+<span class="s2">.dsub{padding:22px 32px}</span>
+<span class="s2">.dsub .lb{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}</span>
+<span class="s2">.dsub ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}</span>
+<span class="s2">.dsub li{font-size:16px;color:var(--body);padding-left:20px;position:relative}</span>
+<span class="s2">.dsub li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:99px;background:var(--blue-b)}</span>
+<span class="s2">.dtools{padding:0 32px 22px}</span>
+<span class="s2">.dtools .pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}</span>
+<span class="s2">.dtools .pills span{font-size:14px;background:var(--blue-p);color:var(--blue-d);border:1px solid var(--blue-b);</span>
+<span class="s2">padding:7px 13px;border-radius:8px;font-weight:500}</span>
+<span class="s2">.dband{padding:20px 32px;background:var(--bg);border-top:1px solid var(--line);font-size:16.5px;color:var(--ink)}</span>
+<span class="s2">.dband b{display:block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:5px}</span>
+<span class="s2">.assess{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-l);overflow:hidden;margin-top:26px}</span>
+<span class="s2">.ahead{padding:26px 32px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;</span>
+<span class="s2">align-items:center;gap:18px;flex-wrap:wrap}</span>
+<span class="s2">.ahead h3{font-size:22px}</span>
+<span class="s2">.prog{display:flex;align-items:center;gap:12px}</span>
+<span class="s2">.ptrk{width:130px;height:6px;background:var(--line);border-radius:99px;overflow:hidden}</span>
+<span class="s2">.pfil{height:100%;background:var(--blue);width:0;border-radius:99px;transition:width .3s}</span>
+<span class="s2">.pct{font-size:13px;font-weight:700;color:var(--blue);min-width:56px;text-align:right}</span>
+<span class="s2">.qs{padding:10px 32px 6px}</span>
+<span class="s2">.qrow{padding:16px 0;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.qrow:last-child{border-bottom:0}</span>
+<span class="s2">.qt{font-size:16.5px;color:var(--ink);font-weight:500;margin-bottom:11px}</span>
+<span class="s2">.opts{display:flex;gap:8px;flex-wrap:wrap}</span>
+<span class="s2">.opt{border:1px solid var(--line);background:var(--white);border-radius:8px;padding:8px 14px;</span>
+<span class="s2">font-family:inherit;font-size:14px;color:var(--body);cursor:pointer;font-weight:500;transition:all .15s}</span>
+<span class="s2">.opt:hover{border-color:var(--blue-l);color:var(--blue)}</span>
+<span class="s2">.opt.on{background:var(--blue);border-color:var(--blue);color:#fff}</span>
+<span class="s2">.afoot{padding:22px 32px;background:var(--bg);border-top:1px solid var(--line);</span>
+<span class="s2">display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}</span>
+<span class="s2">.afoot .note{font-size:14px;color:var(--mute)}</span>
+<span class="s2">.btn{background:var(--blue);color:#fff;border:0;border-radius:9px;padding:12px 24px;</span>
+<span class="s2">font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}</span>
+<span class="s2">.btn:hover{background:var(--blue-d)}</span>
+<span class="s2">.btn:disabled{background:var(--line);color:var(--faint);cursor:not-allowed}</span>
+<span class="s2">.res{margin-top:20px;background:var(--white);border:2px solid var(--blue);border-radius:16px;overflow:hidden}</span>
+<span class="s2">.rh{padding:30px 32px;background:var(--blue);color:#fff}</span>
+<span class="s2">.rh .rl{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.85}</span>
+<span class="s2">.rh .sc{font-size:46px;font-weight:800;letter-spacing:-.03em;margin-top:6px}</span>
+<span class="s2">.rh h3{color:#fff;font-size:26px;margin-top:4px}</span>
+<span class="s2">.rh p{font-size:17px;margin-top:10px;opacity:.92;max-width:62ch}</span>
+<span class="s2">.rb{padding:26px 32px}</span>
+<span class="s2">.rb .lb{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}</span>
+<span class="s2">.bandrow{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.bandrow:last-child{border-bottom:0}</span>
+<span class="s2">.bandrow.hit{background:var(--blue-p);margin:0 -12px;padding:12px}</span>
+<span class="s2">.bandrow .bn{font-size:15px;font-weight:700;color:var(--blue);min-width:74px}</span>
+<span class="s2">.bandrow .bt{font-size:16.5px;font-weight:600;color:var(--ink);min-width:220px}</span>
+<span class="s2">.bandrow .bd{flex:1;font-size:15.5px;color:var(--mute)}</span>
+<span class="s2">.trow{display:flex;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.trow .tk{font-size:16.5px;color:var(--ink);font-weight:600;min-width:230px;flex-shrink:0}</span>
+<span class="s2">.trow .tw2{font-size:13px;color:var(--blue);font-weight:700;min-width:120px;flex-shrink:0}</span>
+<span class="s2">.trow .tv{flex:1;font-size:16px;color:var(--mute)}</span>
+<span class="s2">.trow .tg2{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);</span>
+<span class="s2">background:var(--blue-p);color:var(--blue);padding:4px 9px;border-radius:5px;flex-shrink:0}</span>
+<span class="s2">.bar{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);align-items:flex-start}</span>
+<span class="s2">.bar .bnum{font-size:17px;font-weight:800;color:var(--blue);min-width:96px;flex-shrink:0;letter-spacing:-.02em}</span>
+<span class="s2">.bar .bb</span><span class="si">{flex:1}</span>
+<span class="s2">.bar .bt2{font-size:19px;font-weight:700;color:var(--ink)}</span>
+<span class="s2">.bar .bd2{font-size:16px;color:var(--mute);margin-top:5px}</span>
+<span class="s2">.bar ul{list-style:none;margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}</span>
+<span class="s2">.bar li{font-size:15px;color:var(--body);padding-left:18px;position:relative}</span>
+<span class="s2">.bar li::before{content:"";position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:99px;background:var(--blue-b)}</span>
+<span class="s2">.eng{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:26px;margin-top:14px}</span>
+<span class="s2">.eng .en2{display:flex;justify-content:space-between;gap:14px;align-items:baseline;flex-wrap:wrap}</span>
+<span class="s2">.eng h4{font-size:23px}</span>
+<span class="s2">.eng .lib{font-size:12.5px;font-weight:700;color:var(--blue);background:var(--blue-p);</span>
+<span class="s2">border:1px solid var(--blue-b);padding:5px 11px;border-radius:7px}</span>
+<span class="s2">.eng .ed{font-size:16.5px;color:var(--mute);margin-top:10px;max-width:70ch}</span>
+<span class="s2">.eng ul{list-style:none;margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px 22px}</span>
+<span class="s2">.eng li{font-size:15.5px;color:var(--body);padding-left:18px;position:relative}</span>
+<span class="s2">.eng li::before{content:"";position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:99px;background:var(--blue-b)}</span>
+<span class="s2">.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}</span>
+<span class="s2">.th{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:24px}</span>
+<span class="s2">.th h4{font-size:20px}</span>
+<span class="s2">.th .s{font-size:14.5px;color:var(--blue);font-weight:600;margin-top:3px}</span>
+<span class="s2">.th p{font-size:15.5px;color:var(--mute);margin-top:10px;line-height:1.55}</span>
+<span class="s2">.big{background:var(--white);border-left:3px solid var(--blue);padding:24px 28px;margin-top:26px;</span>
+<span class="s2">font-size:22px;color:var(--ink);font-weight:600;letter-spacing:-.02em;border-radius:0 12px 12px 0}</span>
+<span class="s2">.cta{background:var(--blue-d);color:#fff;text-align:center;padding:72px 0}</span>
+<span class="s2">.cta h2{color:#fff;font-size:36px;letter-spacing:-.03em}</span>
+<span class="s2">.cta p{color:#bfdbfe;font-size:18px;margin-top:14px;max-width:58ch;margin-left:auto;margin-right:auto}</span>
+<span class="s2">footer{background:var(--ink);color:var(--faint);padding:30px 0;font-size:14px}</span>
+<span class="s2">@media(max-width:1000px){.dgrid,.three{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}</span>
+<span class="s2">.hero h1{font-size:40px}}</span>
+<span class="s2">@media(max-width:640px){section{padding:52px 0}.hero{padding:52px 0 44px}.hero h1{font-size:31px}</span>
+<span class="s2">.hero .l2{font-size:18px}h2.sh{font-size:26px}.dgrid,.three{grid-template-columns:1fr}</span>
+<span class="s2">.dsub ul,.bar ul,.eng ul{grid-template-columns:1fr}</span>
+<span class="s2">.qs,.ahead,.afoot,.dh2,.dsub,.dtools,.dband,.rb,.rh{padding-left:20px;padding-right:20px}</span>
+<span class="s2">.trow,.bar{flex-direction:column;gap:6px}.trow .tk,.trow .tw2,.bar .bnum{min-width:0}</span>
+<span class="s2">.bandrow{flex-direction:column;gap:4px}.bandrow .bt{min-width:0}</span>
+<span class="s2">.rh .sc{font-size:36px}.cta h2{font-size:26px}}</span>
+<span class="s2">@media(prefers-reduced-motion:reduce){*{transition:none!important}}"""</span>
+
+<span class="n">SHELL</span> <span class="o">=</span> <span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;&lt;title&gt;__TITLE__&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;__CSS__&lt;/style&gt;&lt;/head&gt;&lt;body&gt;__BODY__&lt;script&gt;__JS__&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"""</span>
+
+<span class="c1"># ---------- FINANCIAL ----------</span>
+<span class="n">FIN_BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;header&gt;&lt;div class="wrap nav"&gt;&lt;div class="brand"&gt;Church Financial &lt;span&gt;Health&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;nav&gt;&lt;a data-j="split"&gt;Two Houses&lt;/a&gt;&lt;a data-j="domains"&gt;Six Domains&lt;/a&gt;&lt;a data-j="check"&gt;Health Check&lt;/a&gt;</span>
+<span class="s2">&lt;a data-j="teach"&gt;Sermons&lt;/a&gt;&lt;a data-j="curric"&gt;Curriculum&lt;/a&gt;&lt;a data-j="coach"&gt;Coaching&lt;/a&gt;&lt;/nav&gt;&lt;/div&gt;&lt;/header&gt;</span>
+<span class="s2">&lt;div class="hero"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Financial Intelligence to Financial Formation&lt;/div&gt;</span>
+<span class="s2">&lt;h1&gt;A funded church and a &lt;em&gt;generous church&lt;/em&gt; are not the same thing.&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="l2"&gt;Most financial health products handle the institution's money or the household's money. Confusing the two is how a budget gets met while a congregation stays exactly as it was. This handles both, and keeps them distinct.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="stats"&gt;&lt;div&gt;&lt;b&gt;6&lt;/b&gt;&lt;span&gt;domains&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;12&lt;/b&gt;&lt;span&gt;question health check&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;8&lt;/b&gt;&lt;span&gt;curriculum tracks&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;755&lt;/b&gt;&lt;span&gt;sermon messages&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;6&lt;/b&gt;&lt;span&gt;coaching tracks&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;section id="split"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Structure&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Two houses, one roof.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;A church has two entirely different money problems, and almost nobody separates them. One is a competency problem. The other is a heart problem, and it is not solved by better bookkeeping.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="two" id="split2"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="domains" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"&gt;</span>
+<span class="s2">&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Library&lt;/div&gt;&lt;h2 class="sh"&gt;Six domains, each with its own floor.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Select a domain to see what it covers, the tools inside it, and the minimum credible standard.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="dgrid" id="dgrid"&gt;&lt;/div&gt;&lt;div id="dbody"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="check"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;Diagnostic&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Twelve questions. Then the honest answer.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Scored one to four across both houses. Nothing here is scored against another church.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="assessbox"&gt;&lt;/div&gt;&lt;div id="resbox"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="teach" style="background:var(--white);border-top:1px solid var(--line)"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Preaching&lt;/div&gt;&lt;h2 class="sh"&gt;Seven hundred and fifty-five messages on money.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Drawn from the sermon library. End-of-year giving alone runs six tracks and a hundred and seventy titles.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="serm"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="big"&gt;Never run formation and an ask in the same six weeks. Ninety days minimum between them, or the covenant is a lie and the congregation knows it.&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="curric"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;Curriculum&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Eight tracks, from struggling to significance.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;The progression is deliberate: struggling to stability to surplus to stewardship to significance. A church with only a budgeting class serves one end of its congregation.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="curr"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="coach" style="background:var(--white);border-top:1px solid var(--line)"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Coaching&lt;/div&gt;&lt;h2 class="sh"&gt;The staff needs one shared language about money.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Six coaching tracks by seat, plus one half-day that stops the team having six different conversations about the same money.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="coach2"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;div class="cta"&gt;&lt;div class="wrap"&gt;&lt;h2&gt;Fund the mission. Form the people. In that order, and never confused.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;Built on the same intelligence-to-formation architecture as the rest of the platform.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;Church Financial Health &amp;middot; Six domains &amp;middot; Eight curriculum tracks &amp;middot; 755 messages&lt;/div&gt;&lt;/footer&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">FIN_JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">var D=__DATA__;var st={dom:0,ans:</span><span class="si">{}</span><span class="s2">,shown:false};</span>
+<span class="s2">function el(i){return document.getElementById(i);}</span>
+<span class="s2">function rSplit(){var h="",i,j;for(i=0;i&lt;D.split.length;i++){var s=D.split[i];</span>
+<span class="s2">h+='&lt;div class="tw"&gt;&lt;div class="tg"&gt;'+s[1]+'&lt;/div&gt;&lt;h3&gt;'+s[0]+'&lt;/h3&gt;&lt;p&gt;'+s[2]+'&lt;/p&gt;&lt;div class="pills"&gt;';</span>
+<span class="s2">for(j=0;j&lt;s[3].length;j++){h+='&lt;span&gt;'+s[3][j]+'&lt;/span&gt;';}h+='&lt;/div&gt;&lt;/div&gt;';}el("split2").innerHTML=h;}</span>
+<span class="s2">function rDom(){var h="",i,j;for(i=0;i&lt;D.dom.length;i++){h+='&lt;button class="dc'+(st.dom===i?" on":"")+'" data-d="'+i+'"&gt;';</span>
+<span class="s2">h+='&lt;h4&gt;'+D.dom[i].n+'&lt;/h4&gt;&lt;p&gt;'+D.dom[i].one+'&lt;/p&gt;&lt;/button&gt;';}el("dgrid").innerHTML=h;</span>
+<span class="s2">var X=D.dom[st.dom];h='&lt;div class="dbody"&gt;&lt;div class="dh2"&gt;&lt;h3&gt;'+X.n+'&lt;/h3&gt;&lt;div class="q"&gt;'+X.one+'&lt;/div&gt;&lt;p&gt;'+X.why+'&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;div class="dsub"&gt;&lt;div class="lb"&gt;What it covers&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">for(j=0;j&lt;X.sub.length;j++){h+='&lt;li&gt;'+X.sub[j]+'&lt;/li&gt;';}h+='&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;div class="dtools"&gt;&lt;div class="lb"&gt;Tools included&lt;/div&gt;&lt;div class="pills"&gt;';</span>
+<span class="s2">for(j=0;j&lt;X.tools.length;j++){h+='&lt;span&gt;'+X.tools[j]+'&lt;/span&gt;';}h+='&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;div class="dband"&gt;&lt;b&gt;The floor&lt;/b&gt;'+X.band+'&lt;/div&gt;&lt;/div&gt;';el("dbody").innerHTML=h;</span>
+<span class="s2">var b=document.querySelectorAll(".dc");for(i=0;i&lt;b.length;i++){b[i].onclick=function(){st.dom=parseInt(this.getAttribute("data-d"),10);rDom();};}}</span>
+<span class="s2">function nAns(){var n=0,i;for(i=0;i&lt;D.qs.length;i++){if(st.ans[i]!==undefined)n++;}return n;}</span>
+<span class="s2">function score(){var s=0,i;for(i=0;i&lt;D.qs.length;i++){if(st.ans[i]!==undefined)s+=(4-st.ans[i]);}return s;}</span>
+<span class="s2">function rAssess(){var i,j,n=nAns(),t=D.qs.length,p=Math.round(n/t*100);</span>
+<span class="s2">var h='&lt;div class="assess"&gt;&lt;div class="ahead"&gt;&lt;h3&gt;Financial health check&lt;/h3&gt;&lt;div class="prog"&gt;';</span>
+<span class="s2">h+='&lt;div class="ptrk"&gt;&lt;div class="pfil" style="width:'+p+'%"&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="pct"&gt;'+n+' of '+t+'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="qs"&gt;';</span>
+<span class="s2">for(i=0;i&lt;D.qs.length;i++){h+='&lt;div class="qrow"&gt;&lt;div class="qt"&gt;'+(i+1)+'. '+D.qs[i][0]+'&lt;/div&gt;&lt;div class="opts"&gt;';</span>
+<span class="s2">for(j=0;j&lt;D.qs[i][1].length;j++){h+='&lt;button class="opt'+(st.ans[i]===j?" on":"")+'" data-q="'+i+'" data-o="'+j+'"&gt;'+D.qs[i][1][j]+'&lt;/button&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;&lt;/div&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;&lt;div class="afoot"&gt;&lt;div class="note"&gt;Answer all twelve for an accurate band.&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;button class="btn" id="see"'+(n&lt;t?" disabled":"")+'&gt;See your score&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">el("assessbox").innerHTML=h;</span>
+<span class="s2">var o=document.querySelectorAll(".opt");for(i=0;i&lt;o.length;i++){o[i].onclick=function(){</span>
+<span class="s2">var q=parseInt(this.getAttribute("data-q"),10),v=parseInt(this.getAttribute("data-o"),10);</span>
+<span class="s2">if(st.ans[q]===v){delete st.ans[q];}else{st.ans[q]=v;}rAssess();if(st.shown)rRes();};}</span>
+<span class="s2">var s=el("see");if(s){s.onclick=function(){st.shown=true;rRes();el("resbox").scrollIntoView({block:"start"});};}}</span>
+<span class="s2">function rRes(){var box=el("resbox");if(!st.shown){box.innerHTML="";return;}</span>
+<span class="s2">var sc=score(),i,hit=-1;</span>
+<span class="s2">for(i=0;i&lt;D.bands.length;i++){var r=D.bands[i][0].split(" to ");if(sc&gt;=parseInt(r[0],10)&amp;&amp;sc&lt;=parseInt(r[1],10))hit=i;}</span>
+<span class="s2">if(hit&lt;0)hit=0;</span>
+<span class="s2">var h='&lt;div class="res"&gt;&lt;div class="rh"&gt;&lt;div class="rl"&gt;Your score&lt;/div&gt;&lt;div class="sc"&gt;'+sc+' / 48&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;h3&gt;'+D.bands[hit][1]+'&lt;/h3&gt;&lt;p&gt;'+D.bands[hit][2]+'&lt;/p&gt;&lt;/div&gt;&lt;div class="rb"&gt;&lt;div class="lb"&gt;All four bands&lt;/div&gt;';</span>
+<span class="s2">for(i=0;i&lt;D.bands.length;i++){h+='&lt;div class="bandrow'+(i===hit?" hit":"")+'"&gt;&lt;span class="bn"&gt;'+D.bands[i][0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="bt"&gt;'+D.bands[i][1]+'&lt;/span&gt;&lt;span class="bd"&gt;'+D.bands[i][2]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">box.innerHTML=h+'&lt;/div&gt;&lt;/div&gt;';}</span>
+<span class="s2">function rSerm(){var h="",i;for(i=0;i&lt;D.serm.length;i++){h+='&lt;div class="trow"&gt;&lt;span class="tk"&gt;'+D.serm[i][0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="tw2"&gt;'+D.serm[i][1]+' messages&lt;/span&gt;&lt;span class="tv"&gt;'+D.serm[i][2]+'&lt;/span&gt;&lt;/div&gt;';}el("serm").innerHTML=h;}</span>
+<span class="s2">function rCurr(){var h="",i;for(i=0;i&lt;D.curric.length;i++){h+='&lt;div class="trow"&gt;&lt;span class="tk"&gt;'+D.curric[i][0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="tw2"&gt;'+D.curric[i][1]+'&lt;/span&gt;&lt;span class="tv"&gt;'+D.curric[i][2]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="tg2"&gt;'+D.curric[i][3]+'&lt;/span&gt;&lt;/div&gt;';}el("curr").innerHTML=h;}</span>
+<span class="s2">function rCoach(){var h="",i;for(i=0;i&lt;D.coach.length;i++){h+='&lt;div class="trow"&gt;&lt;span class="tk"&gt;'+D.coach[i][0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="tw2"&gt;'+D.coach[i][1]+'&lt;/span&gt;&lt;span class="tv"&gt;'+D.coach[i][2]+'&lt;/span&gt;&lt;/div&gt;';}el("coach2").innerHTML=h;}</span>
+<span class="s2">rSplit();rDom();rAssess();rRes();rSerm();rCurr();rCoach();</span>
+<span class="s2">var jl=document.querySelectorAll("[data-j]");for(var z=0;z&lt;jl.length;z++){jl[z].onclick=function(){</span>
+<span class="s2">el(this.getAttribute("data-j")).scrollIntoView({block:"start"});};}</span>
+<span class="s2">"""</span>
+
+<span class="n">fin_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"split"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">FIN_SPLIT</span><span class="p">,</span> <span class="s2">"dom"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">FIN_DOMAINS</span><span class="p">,</span> <span class="s2">"qs"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">FIN_QS</span><span class="p">,</span> <span class="s2">"bands"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">FIN_BANDS</span><span class="p">,</span>
+            <span class="s2">"serm"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">FIN_SERMONS</span><span class="p">,</span> <span class="s2">"curric"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">FIN_CURRIC</span><span class="p">,</span> <span class="s2">"coach"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">FIN_COACH</span><span class="p">}</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">SHELL</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__TITLE__"</span><span class="p">,</span> <span class="s2">"Church Financial Health — Fund the Mission, Form the People"</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__CSS__"</span><span class="p">,</span> <span class="n">CSS</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__BODY__"</span><span class="p">,</span> <span class="n">FIN_BODY</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__JS__"</span><span class="p">,</span> <span class="n">FIN_JS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__DATA__"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">fin_data</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">","</span><span class="p">,</span> <span class="s2">":"</span><span class="p">))))</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/church-financial-health.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"financial:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"KB"</span><span class="p">)</span>
+
+<span class="c1"># ---------- GROWTH ----------</span>
+<span class="n">GROW_BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;header&gt;&lt;div class="wrap nav"&gt;&lt;div class="brand"&gt;Church &lt;span&gt;Growth&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;nav&gt;&lt;a data-j="math"&gt;The Math&lt;/a&gt;&lt;a data-j="engines"&gt;Five Engines&lt;/a&gt;&lt;a data-j="barriers"&gt;Barriers&lt;/a&gt;</span>
+<span class="s2">&lt;a data-j="check"&gt;Diagnostic&lt;/a&gt;&lt;a data-j="stages"&gt;Stages&lt;/a&gt;&lt;/nav&gt;&lt;/div&gt;&lt;/header&gt;</span>
+<span class="s2">&lt;div class="hero"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Growth Intelligence to Church Formation&lt;/div&gt;</span>
+<span class="s2">&lt;h1&gt;Most churches try to fix growth with more &lt;em&gt;reach&lt;/em&gt; when the leak is retention.&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="l2"&gt;If a hundred guests visit and eighty never return, another hundred guests changes nothing. Every strategy here starts by finding the leak, because reach spending on a leaking church is the most common waste in ministry.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="stats"&gt;&lt;div&gt;&lt;b&gt;3&lt;/b&gt;&lt;span&gt;growth motions&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;5&lt;/b&gt;&lt;span&gt;engines&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;6&lt;/b&gt;&lt;span&gt;size barriers&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;10&lt;/b&gt;&lt;span&gt;question diagnostic&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;6&lt;/b&gt;&lt;span&gt;lifecycle stages&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;section id="math"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;First Principles&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Three motions, and only one of them compounds.&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="three" id="math2"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="big" id="truth"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="engines" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"&gt;</span>
+<span class="s2">&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Engines&lt;/div&gt;&lt;h2 class="sh"&gt;Invite. Welcome. Connect. Serve. Send.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Five engines, each with its own library behind it. A church that runs all five compounds; a church that runs one plateaus at the ceiling of that one.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="eng"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="barriers"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;Ceilings&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Every church stops at a number, and the number is predictable.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Growth barriers are structural, not spiritual. Each one breaks for a specific reason and clears for a specific reason.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="bars"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="check" style="background:var(--white);border-top:1px solid var(--line)"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Diagnostic&lt;/div&gt;&lt;h2 class="sh"&gt;Ten questions. Then stop guessing.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Find out whether you have a reach problem, a retention problem or a leadership problem, before spending a dollar on any of them.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="assessbox"&gt;&lt;/div&gt;&lt;div id="resbox"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section id="stages"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;Lifecycle&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;The same number means different things.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Two hundred people in a three-year-old plant and two hundred in an eighty-year-old church are completely different situations requiring opposite interventions.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="stg"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;div class="cta"&gt;&lt;div class="wrap"&gt;&lt;h2&gt;Find the leak. Then open the tap.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;Growth strategy built on the same intelligence-to-formation architecture as the rest of the platform.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;Church Growth &amp;middot; Five engines &amp;middot; Six barriers &amp;middot; Ten-question diagnostic&lt;/div&gt;&lt;/footer&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">GROW_JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">var D=__DATA__;var st={ans:</span><span class="si">{}</span><span class="s2">,shown:false};</span>
+<span class="s2">function el(i){return document.getElementById(i);}</span>
+<span class="s2">function rMath(){var h="",i;for(i=0;i&lt;D.math.length;i++){h+='&lt;div class="th"&gt;&lt;h4&gt;'+D.math[i][0]+'&lt;/h4&gt;';</span>
+<span class="s2">h+='&lt;div class="s"&gt;'+D.math[i][1]+'&lt;/div&gt;&lt;p&gt;'+D.math[i][2]+'&lt;/p&gt;&lt;/div&gt;';}el("math2").innerHTML=h;</span>
+<span class="s2">el("truth").innerHTML=D.truth;}</span>
+<span class="s2">function rEng(){var h="",i,j;for(i=0;i&lt;D.eng.length;i++){var E=D.eng[i];</span>
+<span class="s2">h+='&lt;div class="eng"&gt;&lt;div class="en2"&gt;&lt;h4&gt;'+E[0]+'&lt;/h4&gt;&lt;span class="lib"&gt;'+E[4]+'&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;div class="s" style="font-size:15px;color:var(--blue);font-weight:600"&gt;'+E[1]+'&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;p class="ed"&gt;'+E[2]+'&lt;/p&gt;&lt;ul&gt;';</span>
+<span class="s2">for(j=0;j&lt;E[3].length;j++){h+='&lt;li&gt;'+E[3][j]+'&lt;/li&gt;';}h+='&lt;/ul&gt;&lt;/div&gt;';}el("eng").innerHTML=h;}</span>
+<span class="s2">function rBars(){var h="",i,j;for(i=0;i&lt;D.bars.length;i++){var B=D.bars[i];</span>
+<span class="s2">h+='&lt;div class="bar"&gt;&lt;span class="bnum"&gt;'+B[0]+'&lt;/span&gt;&lt;span class="bb"&gt;&lt;span class="bt2"&gt;'+B[1]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;div class="bd2"&gt;'+B[2]+'&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">for(j=0;j&lt;B[3].length;j++){h+='&lt;li&gt;'+B[3][j]+'&lt;/li&gt;';}h+='&lt;/ul&gt;&lt;/span&gt;&lt;/div&gt;';}el("bars").innerHTML=h;}</span>
+<span class="s2">function nAns(){var n=0,i;for(i=0;i&lt;D.qs.length;i++){if(st.ans[i]!==undefined)n++;}return n;}</span>
+<span class="s2">function score(){var s=0,i;for(i=0;i&lt;D.qs.length;i++){if(st.ans[i]!==undefined)s+=(4-st.ans[i]);}return s;}</span>
+<span class="s2">function rAssess(){var i,j,n=nAns(),t=D.qs.length,p=Math.round(n/t*100);</span>
+<span class="s2">var h='&lt;div class="assess"&gt;&lt;div class="ahead"&gt;&lt;h3&gt;Growth diagnostic&lt;/h3&gt;&lt;div class="prog"&gt;';</span>
+<span class="s2">h+='&lt;div class="ptrk"&gt;&lt;div class="pfil" style="width:'+p+'%"&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="pct"&gt;'+n+' of '+t+'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="qs"&gt;';</span>
+<span class="s2">for(i=0;i&lt;D.qs.length;i++){h+='&lt;div class="qrow"&gt;&lt;div class="qt"&gt;'+(i+1)+'. '+D.qs[i][0]+'&lt;/div&gt;&lt;div class="opts"&gt;';</span>
+<span class="s2">for(j=0;j&lt;D.qs[i][1].length;j++){h+='&lt;button class="opt'+(st.ans[i]===j?" on":"")+'" data-q="'+i+'" data-o="'+j+'"&gt;'+D.qs[i][1][j]+'&lt;/button&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;&lt;/div&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;&lt;div class="afoot"&gt;&lt;div class="note"&gt;Answer all ten for an accurate band.&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;button class="btn" id="see"'+(n&lt;t?" disabled":"")+'&gt;See the diagnosis&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">el("assessbox").innerHTML=h;</span>
+<span class="s2">var o=document.querySelectorAll(".opt");for(i=0;i&lt;o.length;i++){o[i].onclick=function(){</span>
+<span class="s2">var q=parseInt(this.getAttribute("data-q"),10),v=parseInt(this.getAttribute("data-o"),10);</span>
+<span class="s2">if(st.ans[q]===v){delete st.ans[q];}else{st.ans[q]=v;}rAssess();if(st.shown)rRes();};}</span>
+<span class="s2">var s=el("see");if(s){s.onclick=function(){st.shown=true;rRes();el("resbox").scrollIntoView({block:"start"});};}}</span>
+<span class="s2">function rRes(){var box=el("resbox");if(!st.shown){box.innerHTML="";return;}</span>
+<span class="s2">var sc=score(),i,hit=-1;</span>
+<span class="s2">for(i=0;i&lt;D.bands.length;i++){var r=D.bands[i][0].split(" to ");if(sc&gt;=parseInt(r[0],10)&amp;&amp;sc&lt;=parseInt(r[1],10))hit=i;}</span>
+<span class="s2">if(hit&lt;0)hit=0;</span>
+<span class="s2">var h='&lt;div class="res"&gt;&lt;div class="rh"&gt;&lt;div class="rl"&gt;Your score&lt;/div&gt;&lt;div class="sc"&gt;'+sc+' / 40&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;h3&gt;'+D.bands[hit][1]+'&lt;/h3&gt;&lt;p&gt;'+D.bands[hit][2]+'&lt;/p&gt;&lt;/div&gt;&lt;div class="rb"&gt;&lt;div class="lb"&gt;All four bands&lt;/div&gt;';</span>
+<span class="s2">for(i=0;i&lt;D.bands.length;i++){h+='&lt;div class="bandrow'+(i===hit?" hit":"")+'"&gt;&lt;span class="bn"&gt;'+D.bands[i][0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="bt"&gt;'+D.bands[i][1]+'&lt;/span&gt;&lt;span class="bd"&gt;'+D.bands[i][2]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">box.innerHTML=h+'&lt;/div&gt;&lt;/div&gt;';}</span>
+<span class="s2">function rStg(){var h="",i;for(i=0;i&lt;D.stages.length;i++){h+='&lt;div class="trow"&gt;&lt;span class="tk"&gt;'+D.stages[i][0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="tw2"&gt;'+D.stages[i][1]+'&lt;/span&gt;&lt;span class="tv"&gt;'+D.stages[i][2]+'&lt;/span&gt;&lt;/div&gt;';}el("stg").innerHTML=h;}</span>
+<span class="s2">rMath();rEng();rBars();rAssess();rRes();rStg();</span>
+<span class="s2">var jl=document.querySelectorAll("[data-j]");for(var z=0;z&lt;jl.length;z++){jl[z].onclick=function(){</span>
+<span class="s2">el(this.getAttribute("data-j")).scrollIntoView({block:"start"});};}</span>
+<span class="s2">"""</span>
+
+<span class="n">grow_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"math"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">GROW_MATH</span><span class="p">,</span> <span class="s2">"truth"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">GROW_TRUTH</span><span class="p">,</span> <span class="s2">"eng"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">GROW_ENGINES</span><span class="p">,</span> <span class="s2">"bars"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">GROW_BARRIERS</span><span class="p">,</span>
+             <span class="s2">"qs"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">GROW_QS</span><span class="p">,</span> <span class="s2">"bands"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">GROW_BANDS</span><span class="p">,</span> <span class="s2">"stages"</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">GROW_STAGES</span><span class="p">}</span>
+<span class="n">out2</span> <span class="o">=</span> <span class="n">SHELL</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__TITLE__"</span><span class="p">,</span> <span class="s2">"Church Growth — Find the Leak, Then Open the Tap"</span><span class="p">)</span>
+<span class="n">out2</span> <span class="o">=</span> <span class="n">out2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__CSS__"</span><span class="p">,</span> <span class="n">CSS</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__BODY__"</span><span class="p">,</span> <span class="n">GROW_BODY</span><span class="p">)</span>
+<span class="n">out2</span> <span class="o">=</span> <span class="n">out2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__JS__"</span><span class="p">,</span> <span class="n">GROW_JS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__DATA__"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">grow_data</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">","</span><span class="p">,</span> <span class="s2">":"</span><span class="p">))))</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/church-growth-platform.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"growth:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out2</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"KB"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_fingrow.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

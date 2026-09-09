@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>page_browse_campaign.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>page_browse_campaign.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">14 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/page_browse_campaign.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the browse library page and the flagship campaign detail page</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">shell</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+
+<span class="c1"># ============================== BROWSE ==============================</span>
+<span class="n">B_HEAD</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="s2">.bh-hero{padding:80px 0 56px}</span>
+<span class="s2">.bh-hero .wrap{max-width:860px;text-align:center;margin:0 auto}</span>
+<span class="s2">.search{max-width:560px;margin:34px auto 0;position:relative}</span>
+<span class="s2">.search input{width:100%;font-family:var(--ui);font-size:16px;padding:18px 24px 18px 52px;border-radius:999px;</span>
+<span class="s2">  border:1.5px solid var(--line);background:var(--paper);box-shadow:var(--shadow);color:var(--ink)}</span>
+<span class="s2">.search input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px rgba(35,122,82,.12)}</span>
+<span class="s2">.search .ic{position:absolute;left:22px;top:50%;transform:translateY(-50%);color:var(--mute)}</span>
+<span class="s2">.search .hint{font-size:12.5px;color:var(--mute);margin-top:12px}</span>
+<span class="s2">.shelf{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}</span>
+<span class="s2">.noRes{display:none;text-align:center;padding:40px 0;color:var(--mute);font-size:15px}</span>
+<span class="s2">.chgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}</span>
+<span class="s2">.chtile{position:relative;border-radius:16px;padding:22px 20px 18px;text-align:left;overflow:hidden;</span>
+<span class="s2">  border:1px solid var(--line-soft);background:var(--paper);transition:transform .22s var(--ease),box-shadow .22s;display:block}</span>
+<span class="s2">.chtile:hover{transform:translateY(-4px);box-shadow:var(--shadow)}</span>
+<span class="s2">.chtile .swash{position:absolute;top:0;left:0;right:0;height:5px}</span>
+<span class="s2">.chtile b{display:block;font-size:15px;font-weight:650;color:var(--ink);line-height:1.3;margin-bottom:5px;padding-right:34px}</span>
+<span class="s2">.chtile span{font-size:12px;color:var(--mute)}</span>
+<span class="s2">.chtile .cnew{position:absolute;top:14px;right:14px;font-size:9px;font-weight:800;letter-spacing:.12em;background:var(--ink);color:#F1E8CE;padding:4px 8px;border-radius:999px}</span>
+<span class="s2">.seas{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}</span>
+<span class="s2">@media(max-width:1080px){.shelf,.chgrid{grid-template-columns:repeat(2,1fr)}.seas{grid-template-columns:1fr}}</span>
+<span class="s2">@media(max-width:560px){.shelf,.chgrid{grid-template-columns:1fr}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">B_BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;section class="bh-hero"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;span class="eyebrow bare"&gt;The Campaign Library&lt;/span&gt;</span>
+<span class="s2">    &lt;h1 class="mt16"&gt;One library.&lt;br&gt;A thousand &lt;em&gt;doors&lt;/em&gt;.&lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="lede mt24" style="margin-left:auto;margin-right:auto"&gt;Twenty-three formation channels. Over a thousand titles, led by 383 hand-finished flagships — every one with a distinct scriptural backbone, ready to launch churchwide or walk personally.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="search"&gt;</span>
+<span class="s2">      &lt;span class="ic"&gt;⌕&lt;/span&gt;</span>
+<span class="s2">      &lt;input id="q" type="search" placeholder="Search the flagship shelf — try &amp;ldquo;prayer&amp;rdquo;, &amp;ldquo;anxiety&amp;rdquo;, &amp;ldquo;marriage&amp;rdquo;…" autocomplete="off"&gt;</span>
+<span class="s2">      &lt;p class="hint"&gt;Searching 24 featured flagships in this preview · the full platform searches the entire catalog&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-white tight" id="flagships"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head" style="margin-bottom:40px"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow gold" style="color:var(--gold-deep)"&gt;★ Editors&amp;rsquo; Flagships&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;Hand-finished. &lt;em class="gold"&gt;Grade&amp;nbsp;AA.&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="lede"&gt;Every flagship is fully built — devotional, group guide, sermon builds, youth and family editions — and certified through forty-five validation gates before it reaches this shelf.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="shelf" id="flagGrid"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="noRes" id="noRes"&gt;Nothing on the flagship shelf matches that — the full platform searches all 16,000+ titles. Try &amp;ldquo;prayer&amp;rdquo;, &amp;ldquo;family&amp;rdquo;, or &amp;ldquo;peace&amp;rdquo;.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head" style="margin-bottom:36px"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow"&gt;Browse by Formation Channel&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;Twenty-three channels.&lt;br&gt;&lt;em&gt;Every&lt;/em&gt; season of a life.&lt;/h2&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="chgrid" id="chGrid"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="small mt24"&gt;Counts reflect the live master catalog. Channel pages open in the full platform.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-sand tight" id="seasonal"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head" style="margin-bottom:36px"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow" style="color:var(--gold-deep)"&gt;Seasonal Collections&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;The calendar is a &lt;em class="gold"&gt;catechism&lt;/em&gt;.&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="lede"&gt;Easter, the new year, generosity season — the moments your whole congregation is already paying attention. Launch into them.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="seas" id="seasGrid"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-green tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap"&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h2 style="font-size:clamp(26px,3.2vw,38px)"&gt;Not sure which one?&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="lede" style="color:#DCEBDD"&gt;Ten minutes with the assessment turns a thousand doors into three good ones — matched to you.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;a class="btn btn-gold btn-lg" href="assessment.html"&gt;Find my path &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">B_SCRIPTS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">document.addEventListener('DOMContentLoaded',()=&gt;{</span>
+<span class="s2">  renderCards('#flagGrid', FLAGSHIPS);</span>
+<span class="s2">  const seas=[FLAG['easter'],FLAG['new-year'],FLAG['unplugged']];</span>
+<span class="s2">  renderCards('#seasGrid', seas);</span>
+<span class="s2">  document.getElementById('chGrid').innerHTML=CHANNELS.map(c=&gt;`</span>
+<span class="s2">    &lt;a class="chtile" href="#flagships" title="$</span><span class="si">{c.name}</span><span class="s2">"&gt;</span>
+<span class="s2">      &lt;span class="swash" style="background:var($</span><span class="si">{c.v}</span><span class="s2">)"&gt;&lt;/span&gt;</span>
+<span class="s2">      ${c.isnew?'&lt;span class="cnew"&gt;NEW&lt;/span&gt;':''}</span>
+<span class="s2">      &lt;b&gt;$</span><span class="si">{c.name}</span><span class="s2">&lt;/b&gt;&lt;span&gt;${c.n.toLocaleString()} titles&lt;/span&gt;</span>
+<span class="s2">    &lt;/a&gt;`).join('');</span>
+<span class="s2">  // live search over flagship shelf</span>
+<span class="s2">  const q=document.getElementById('q');</span>
+<span class="s2">  q.addEventListener('input',()=&gt;{</span>
+<span class="s2">    const t=q.value.trim().toLowerCase();</span>
+<span class="s2">    const hits=FLAGSHIPS.filter(f=&gt;!t||f.t.toLowerCase().includes(t)||f.s.toLowerCase().includes(t)||CH[f.ch].name.toLowerCase().includes(t));</span>
+<span class="s2">    renderCards('#flagGrid',hits);</span>
+<span class="s2">    document.getElementById('noRes').style.display=hits.length?'none':'block';</span>
+<span class="s2">  });</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">write</span><span class="p">(</span><span class="s2">"browse.html"</span><span class="p">,</span> <span class="s2">"The Campaign Library — Browse by Channel | Lifetogether"</span><span class="p">,</span> <span class="n">B_BODY</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">"campaigns"</span><span class="p">,</span> <span class="n">head</span><span class="o">=</span><span class="n">B_HEAD</span><span class="p">,</span> <span class="n">scripts</span><span class="o">=</span><span class="n">B_SCRIPTS</span><span class="p">)</span>
+
+
+<span class="c1"># ============================== CAMPAIGN DETAIL ==============================</span>
+<span class="n">C_HEAD</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="s2">.cd-hero{padding:80px 0 70px}</span>
+<span class="s2">.cd-hero .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:center}</span>
+<span class="s2">.cd-cover{width:min(360px,100%);margin:0 auto;border-radius:180px 180px 18px 18px;overflow:hidden;</span>
+<span class="s2">  box-shadow:0 34px 80px rgba(20,53,42,.24);border:6px solid #fff;position:relative}</span>
+<span class="s2">.cd-cover .cover{aspect-ratio:4/5}</span>
+<span class="s2">.cd-meta{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 26px}</span>
+<span class="s2">.editions{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}</span>
+<span class="s2">.ed-card{background:var(--paper);border:1px solid var(--line-soft);border-radius:18px;padding:26px 24px;box-shadow:var(--shadow);border-top:4px solid var(--green)}</span>
+<span class="s2">.ed-card:nth-child(2){border-top-color:var(--c-prayer)}</span>
+<span class="s2">.ed-card:nth-child(3){border-top-color:var(--c-family)}</span>
+<span class="s2">.ed-card:nth-child(4){border-top-color:var(--gold)}</span>
+<span class="s2">.ed-card b{font-family:var(--display);font-size:18px;font-weight:600;color:var(--ink);display:block;margin-bottom:12px}</span>
+<span class="s2">.ed-card ul{list-style:none;display:flex;flex-direction:column;gap:8px}</span>
+<span class="s2">.ed-card li{font-size:13.5px;color:var(--body);display:flex;gap:9px;align-items:flex-start}</span>
+<span class="s2">.ed-card li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}</span>
+<span class="s2">.arc{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-top:44px}</span>
+<span class="s2">.arc::before{content:'';position:absolute;top:26px;left:9%;right:9%;height:2px;background:var(--line)}</span>
+<span class="s2">.ph{text-align:center;position:relative;padding:0 12px}</span>
+<span class="s2">.ph .pnum{width:52px;height:52px;border-radius:26px 26px 8px 8px;margin:0 auto 16px;position:relative;z-index:1;</span>
+<span class="s2">  display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:650;font-size:19px;color:#fff}</span>
+<span class="s2">.ph b{display:block;font-size:15px;color:var(--ink);margin-bottom:6px}</span>
+<span class="s2">.ph span{font-size:12.5px;color:var(--body);line-height:1.5}</span>
+<span class="s2">.frame{background:var(--paper);border:1px solid var(--line-soft);border-radius:22px;padding:34px 38px;box-shadow:var(--shadow)}</span>
+<span class="s2">.frame h3{margin-bottom:10px}</span>
+<span class="s2">.frame p{font-size:15px;color:var(--body);line-height:1.7}</span>
+<span class="s2">.rel{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}</span>
+<span class="s2">@media(max-width:1080px){.editions{grid-template-columns:repeat(2,1fr)}.arc{grid-template-columns:1fr;gap:22px}.arc::before{display:none}.rel{grid-template-columns:1fr}}</span>
+<span class="s2">@media(max-width:920px){.cd-hero .wrap{grid-template-columns:1fr}}</span>
+<span class="s2">@media(max-width:560px){.editions{grid-template-columns:1fr}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">C_BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;section class="cd-hero"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="cd-cover rv"&gt;&lt;div class="cover" id="cdCover"&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;span class="chip gold"&gt;★ Flagship · Grade AA&lt;/span&gt;</span>
+<span class="s2">      &lt;h1 class="mt16" style="font-size:clamp(38px,4.6vw,56px)"&gt;40 Days of&lt;br&gt;&lt;em&gt;Life Together&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">      &lt;p class="lede mt16"&gt;The flagship groups launch campaign — and the one this platform is named for. Forty days in which a congregation stops attending the same building and starts walking the same road: one church, one conversation, one season of daily life together.&lt;/p&gt;</span>
+<span class="s2">      &lt;div class="cd-meta"&gt;</span>
+<span class="s2">        &lt;span class="chip"&gt;&lt;i style="width:8px;height:8px;border-radius:50%;background:var(--c-community);display:inline-block"&gt;&lt;/i&gt;&amp;nbsp;Community &amp;amp; Belonging&lt;/span&gt;</span>
+<span class="s2">        &lt;span class="chip ink"&gt;40 days · also in 30/21/7&lt;/span&gt;</span>
+<span class="s2">        &lt;span class="chip ink"&gt;Adult · Youth · Children &amp;amp; Family · Leader&lt;/span&gt;</span>
+<span class="s2">        &lt;span class="chip ink"&gt;EN · ES · PT&lt;/span&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div style="display:flex;gap:14px;flex-wrap:wrap"&gt;</span>
+<span class="s2">        &lt;a class="btn btn-primary btn-lg" href="reader.html?a=community&amp;c=life-together&amp;f=40"&gt;Preview Day One free &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">        &lt;a class="btn btn-outline btn-lg" href="pricing.html"&gt;Launch it at your church&lt;/a&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-white tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow"&gt;Every edition, ready on day one&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;The whole church.&lt;br&gt;The &lt;em&gt;same&lt;/em&gt; forty days.&lt;/h2&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="editions"&gt;</span>
+<span class="s2">      &lt;div class="ed-card rv"&gt;&lt;b&gt;Adult Edition&lt;/b&gt;&lt;ul&gt;</span>
+<span class="s2">        &lt;li&gt;40 / 30 / 21 / 7-day devotional&lt;/li&gt;&lt;li&gt;Journal prompts &amp;amp; prayers&lt;/li&gt;&lt;li&gt;Memory verse plan&lt;/li&gt;&lt;li&gt;Print &amp;amp; digital masters&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="ed-card rv"&gt;&lt;b&gt;Youth / Student Edition&lt;/b&gt;&lt;ul&gt;</span>
+<span class="s2">        &lt;li&gt;Re-aimed daily readings&lt;/li&gt;&lt;li&gt;Leader talk sheets&lt;/li&gt;&lt;li&gt;Group icebreakers&lt;/li&gt;&lt;li&gt;Social graphics pack&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="ed-card rv"&gt;&lt;b&gt;Children &amp;amp; Family Edition&lt;/b&gt;&lt;ul&gt;</span>
+<span class="s2">        &lt;li&gt;Family table talks&lt;/li&gt;&lt;li&gt;Kids&amp;rsquo; activity pages&lt;/li&gt;&lt;li&gt;Parent cue cards&lt;/li&gt;&lt;li&gt;Family blessing liturgy&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="ed-card rv"&gt;&lt;b&gt;Leader Kit&lt;/b&gt;&lt;ul&gt;</span>
+<span class="s2">        &lt;li&gt;Host recruiting scripts&lt;/li&gt;&lt;li&gt;One-evening training&lt;/li&gt;&lt;li&gt;Session-by-session guide&lt;/li&gt;&lt;li&gt;Care &amp;amp; follow-up plan&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;p class="small mt24"&gt;Plus complete weekend message builds — title, texts, preaching ideas, and outline. Preach them in your voice.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow"&gt;The daily arc&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;Five phases. One &lt;em&gt;formation&lt;/em&gt;.&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="lede"&gt;Every Lifetogether campaign walks the same proven arc — the architecture beneath twenty-five years of churchwide movements.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="arc"&gt;</span>
+<span class="s2">      &lt;div class="ph rv"&gt;&lt;span class="pnum" style="background:var(--c-purpose)"&gt;1&lt;/span&gt;&lt;b&gt;Invitation&lt;/b&gt;&lt;span&gt;Days 1–5 · A gentle on-ramp. Presence over readiness.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="ph rv"&gt;&lt;span class="pnum" style="background:var(--green)"&gt;2&lt;/span&gt;&lt;b&gt;Foundations&lt;/b&gt;&lt;span&gt;Days 6–15 · The scriptural backbone, laid one text at a time.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="ph rv"&gt;&lt;span class="pnum" style="background:var(--c-emotional)"&gt;3&lt;/span&gt;&lt;b&gt;Practice&lt;/b&gt;&lt;span&gt;Days 16–27 · Truth becomes habit — small, daily, repeatable.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="ph rv"&gt;&lt;span class="pnum" style="background:var(--c-family)"&gt;4&lt;/span&gt;&lt;b&gt;Perseverance&lt;/b&gt;&lt;span&gt;Days 28–35 · When novelty fades, formation begins.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="ph rv"&gt;&lt;span class="pnum" style="background:var(--gold)"&gt;5&lt;/span&gt;&lt;b&gt;Commissioning&lt;/b&gt;&lt;span&gt;Days 36–40 · Sent, not finished. The next season named.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-white tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap grid2"&gt;</span>
+<span class="s2">    &lt;div class="frame rv"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow" style="color:#5A53B8"&gt;The smallest structure&lt;/span&gt;</span>
+<span class="s2">      &lt;h3 class="mt8"&gt;Spiritual Partner framework&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;Each participant is paired with one partner for the season — one text a day, one honest check-in a week. It is the smallest structure in the campaign and the one people mention most, five years later.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="frame rv"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow" style="color:var(--gold-deep)"&gt;Landing the plane&lt;/span&gt;</span>
+<span class="s2">      &lt;h3 class="mt8"&gt;Celebration Sunday&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;Every campaign ends with a stories-and-next-steps Sunday — baptism moments, group sign-ups for the next season, and a commissioning blessing. The full plan ships in the Leader Kit.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;div class="sec-head" style="margin-bottom:36px"&gt;</span>
+<span class="s2">      &lt;span class="eyebrow"&gt;Keep walking&lt;/span&gt;</span>
+<span class="s2">      &lt;h2&gt;Related &lt;em&gt;campaigns&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="rel" id="relGrid"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="band-green tight"&gt;</span>
+<span class="s2">  &lt;div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap"&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h2 style="font-size:clamp(26px,3.2vw,38px)"&gt;Launch Life Together at your church.&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="lede" style="color:#DCEBDD"&gt;Every edition, every build, every leader tool — ready before your next planning meeting.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;a class="btn btn-gold btn-lg" href="pricing.html"&gt;See plans &amp;amp; pricing &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">C_SCRIPTS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">document.addEventListener('DOMContentLoaded',()=&gt;{</span>
+<span class="s2">  const f=FLAG['life-together'];</span>
+<span class="s2">  document.getElementById('cdCover').innerHTML=coverSVG(f)+`&lt;span class="cv-days"&gt;40 DAYS&lt;/span&gt;&lt;span class="cv-star"&gt;★&lt;/span&gt;&lt;span class="cv-title" style="font-size:24px"&gt;$</span><span class="si">{f.t}</span><span class="s2">&lt;/span&gt;`;</span>
+<span class="s2">  renderCards('#relGrid',[FLAG['better-together'],FLAG['prayer'],FLAG['beloved']]);</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">write</span><span class="p">(</span><span class="s2">"campaign.html"</span><span class="p">,</span> <span class="s2">"40 Days of Life Together — Flagship Campaign | Lifetogether"</span><span class="p">,</span> <span class="n">C_BODY</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">"campaigns"</span><span class="p">,</span> <span class="n">head</span><span class="o">=</span><span class="n">C_HEAD</span><span class="p">,</span> <span class="n">scripts</span><span class="o">=</span><span class="n">C_SCRIPTS</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/page_browse_campaign.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

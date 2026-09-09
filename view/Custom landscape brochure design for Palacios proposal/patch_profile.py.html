@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>patch_profile.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Custom landscape brochure design for Palacios proposal</div>
+<h1>patch_profile.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">14 KB</span>
+<a class="btn" href="../../artifacts/Custom%20landscape%20brochure%20design%20for%20Palacios%20proposal/patch_profile.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Patch script to add the personalization profile and open-ended story questionnaire</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="n">p</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/faith-through-art-studio.html"</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># ---------- 1. CSS additions ----------</span>
+<span class="n">css_anchor</span> <span class="o">=</span> <span class="s2">"  .hide{display:none;}"</span>
+<span class="n">css_new</span> <span class="o">=</span> <span class="s2">"""  .hide{display:none;}</span>
+<span class="s2">  .bubs{display:flex;flex-wrap:wrap;gap:7px;margin:.35rem 0 0;}</span>
+<span class="s2">  .bub{</span>
+<span class="s2">    font-family:inherit;font-size:.83rem;font-weight:500;padding:8px 14px;</span>
+<span class="s2">    border:1px solid var(--line);background:#fff;color:var(--ink);</span>
+<span class="s2">    border-radius:22px;cursor:pointer;line-height:1.3;text-align:left;</span>
+<span class="s2">  }</span>
+<span class="s2">  .bub:hover{border-color:var(--clay);}</span>
+<span class="s2">  .bub.on{background:var(--plum);border-color:var(--plum);color:#fff;}</span>
+<span class="s2">  .qb{border-top:1px solid var(--line);padding:15px 0;}</span>
+<span class="s2">  .qb:first-child{border-top:none;padding-top:4px;}</span>
+<span class="s2">  .qb .qt{font-weight:600;font-size:.94rem;margin:0;}</span>
+<span class="s2">  .qb .qh{font-size:.76rem;color:var(--mut);margin:.1rem 0 0;}</span>
+<span class="s2">  .oq{border-top:1px solid var(--line);padding:16px 0;}</span>
+<span class="s2">  .oq:first-child{border-top:none;}</span>
+<span class="s2">  .oq label{display:block;font-weight:600;font-size:.94rem;margin-bottom:.15rem;}</span>
+<span class="s2">  .oq .hint{font-size:.78rem;color:var(--mut);margin:0 0 .45rem;}</span>
+<span class="s2">  textarea{</span>
+<span class="s2">    width:100%;min-height:78px;border:1px solid var(--line);border-radius:5px;</span>
+<span class="s2">    padding:11px 12px;font-family:inherit;font-size:.9rem;line-height:1.55;</span>
+<span class="s2">    color:var(--ink);background:#fff;resize:vertical;</span>
+<span class="s2">  }</span>
+<span class="s2">  textarea:focus{outline:none;border-color:var(--clay);}</span>
+<span class="s2">  .conf{</span>
+<span class="s2">    background:var(--vine);color:#EAF1EC;border-radius:6px;padding:18px 20px;margin-bottom:18px;</span>
+<span class="s2">  }</span>
+<span class="s2">  .conf h3{color:#fff;margin-bottom:.3rem;}</span>
+<span class="s2">  .conf p{margin:0 0 .5rem;font-size:.85rem;opacity:.94;}</span>
+<span class="s2">  .conf p:last-child{margin:0;}</span>
+<span class="s2">  .cbrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:.86rem;}</span>
+<span class="s2">  .cbrow input{margin-top:5px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--clay);}</span>
+<span class="s2">  .brief{background:#fff;border:1px solid var(--clay);border-radius:6px;padding:22px;}</span>
+<span class="s2">  .brief h4{font-family:'Fraunces',Georgia,serif;font-size:.95rem;margin:1rem 0 .3rem;color:var(--clay);}</span>
+<span class="s2">  .brief h4:first-child{margin-top:0;}</span>
+<span class="s2">  .brief p{font-size:.88rem;margin:0 0 .4rem;}</span>
+<span class="s2">  .brief .said{font-style:italic;color:var(--ink);border-left:2px solid var(--line);padding-left:12px;}"""</span>
+<span class="k">assert</span> <span class="n">css_anchor</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">css_anchor</span><span class="p">,</span> <span class="n">css_new</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># ---------- 2. New sections before PRICING ----------</span>
+<span class="n">sec_anchor</span> <span class="o">=</span> <span class="s2">"&lt;!-- PRICING --&gt;"</span>
+<span class="n">sections</span> <span class="o">=</span> <span class="s2">"""&lt;!-- PROFILE (BUBBLES) --&gt;</span>
+<span class="s2">&lt;section class="sec hide" id="profileSec"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;p class="eyebrow"&gt;Step Four </span><span class="se">\u00b7</span><span class="s2"> About Three Minutes&lt;/p&gt;</span>
+<span class="s2">    &lt;h2&gt;Now let's make it yours&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="mut small" style="max-width:40em;"&gt;Tap whatever is most true. There are no wrong answers and nothing here is a test </span><span class="se">\u2014</span><span class="s2"> these choices decide how your daily readings get written: their length, their voice, how much Scripture they carry, and what you are actually asked to make.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="card" id="bubQs"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;button class="btn" id="toStory"&gt;Continue </span><span class="se">\u2014</span><span class="s2"> in your own words&lt;/button&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- OPEN-ENDED --&gt;</span>
+<span class="s2">&lt;section class="sec hide" id="storySec"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;p class="eyebrow"&gt;Step Five </span><span class="se">\u00b7</span><span class="s2"> Optional, and the Part That Matters Most&lt;/p&gt;</span>
+<span class="s2">    &lt;h2&gt;In your own words&lt;/h2&gt;</span>
+
+<span class="s2">    &lt;div class="conf"&gt;</span>
+<span class="s2">      &lt;h3&gt;This is confidential.&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;What you write here is private. It is not published, not shown to other members, not used in marketing, not sold or shared with anyone, and never treated as sales intelligence. Kim and John read it only to prepare well for you </span><span class="se">\u2014</span><span class="s2"> and only if you tick the first box below.&lt;/p&gt;</span>
+<span class="s2">      &lt;p&gt;Nothing is visible to another person unless you choose to share it or give someone access. You can ask for it to be deleted at any time and it will be, without a conversation about why.&lt;/p&gt;</span>
+<span class="s2">      &lt;p&gt;One honest limit: Kim is an artist and John is a pastor. Neither is a licensed counselor. If something you write suggests you are carrying more than a creative practice is built to hold, John may gently point you toward someone qualified. That is care, not rejection.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;p class="mut small" style="max-width:40em;"&gt;Answer as many or as few as you like. One sentence is plenty. Half of these get skipped by most people, and the ones you do answer are what make a devotional feel written for you rather than at you.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="card" id="openQs"&gt;&lt;/div&gt;</span>
+
+<span class="s2">    &lt;div class="card"&gt;</span>
+<span class="s2">      &lt;h3&gt;Before you send it&lt;/h3&gt;</span>
+<span class="s2">      &lt;div class="cbrow"&gt;&lt;input type="checkbox" id="c1"&gt;&lt;label for="c1"&gt;Kim and John may read this in order to prepare my readings and any experience I book.&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cbrow"&gt;&lt;input type="checkbox" id="c2"&gt;&lt;label for="c2"&gt;Do not share any part of this with anyone else, including in a group setting, without asking me first.&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cbrow"&gt;&lt;input type="checkbox" id="c3"&gt;&lt;label for="c3"&gt;Delete my written answers once my current journey is finished.&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;p class="tiny mut" style="margin:.6rem 0 0;"&gt;The second box is on by default in practice whether you tick it or not. It is here so you can see it in writing.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;button class="btn" id="buildBrief"&gt;Show me my profile&lt;/button&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- BRIEF --&gt;</span>
+<span class="s2">&lt;section class="sec hide" id="briefSec"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;p class="eyebrow"&gt;Your Devotional Profile&lt;/p&gt;</span>
+<span class="s2">    &lt;h2&gt;What we'd write for you&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="mut small"&gt;This is the brief a writer would work from. Nothing here goes anywhere until you say so.&lt;/p&gt;</span>
+<span class="s2">    &lt;div id="briefBody"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;"&gt;</span>
+<span class="s2">      &lt;button class="btn" onclick="window.print()"&gt;Print or save a copy&lt;/button&gt;</span>
+<span class="s2">      &lt;button class="btn ghost" onclick="document.getElementById('storySec').scrollIntoView({behavior:'smooth'})"&gt;Go back and change something&lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- PRICING --&gt;"""</span>
+<span class="k">assert</span> <span class="n">sec_anchor</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sec_anchor</span><span class="p">,</span> <span class="n">sections</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># ---------- 3. JS additions ----------</span>
+<span class="n">js_anchor</span> <span class="o">=</span> <span class="s2">"drawSegs(); drawTiers(); drawCal(); drawLadder();"</span>
+<span class="n">js_new</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">// ---------- Step Four: personalization bubbles ----------</span>
+<span class="s2">var BUBS = [</span>
+<span class="s2"> {q:'When everything is too much, what actually helps?', h:'Choose all that are true.', m:true,</span>
+<span class="s2">  o:['Silence','Being outdoors','Scripture','One trusted friend','Making something with my hands','Music','Moving my body']},</span>
+<span class="s2"> {q:'Where do you most reliably meet God?', h:'Or, if that language is not yours \u2014 where do you feel most awake?', m:true,</span>
+<span class="s2">  o:['In words and reading','In images and beauty','In nature','In music','In serving someone','In silence','I am not sure anymore']},</span>
+<span class="s2"> {q:'When will you honestly do this?', h:'Be realistic rather than aspirational.', m:false,</span>
+<span class="s2">  o:['Early morning','Midday','Evening','Late at night','It changes \u2014 meet me where I am']},</span>
+<span class="s2"> {q:'How long should a day take?', h:'', m:false,</span>
+<span class="s2">  o:['Five minutes','Ten to fifteen','Twenty to thirty','As long as it takes']},</span>
+<span class="s2"> {q:'What voice helps you most?', h:'', m:false,</span>
+<span class="s2">  o:['Gentle and tender','Direct and clear','Story-driven','Rooted and teaching-heavy','Playful and light']},</span>
+<span class="s2"> {q:'How much Scripture do you want?', h:'There is no wrong answer here and no judgment attached to any of them.', m:false,</span>
+<span class="s2">  o:['One verse, held closely','A short passage','A full chapter to sit in','Very little \u2014 give me the principle underneath']},</span>
+<span class="s2"> {q:'What are you drawn to make?', h:'Choose all that appeal.', m:true,</span>
+<span class="s2">  o:['Color and abstraction','Landscape and place','Words and lettering','Symbols and icons','Faces and figures','No idea \u2014 surprise me']},</span>
+<span class="s2"> {q:'How much have you painted before?', h:'', m:false,</span>
+<span class="s2">  o:['Never','Not since school','I dabble','I have a regular practice','I do this professionally']},</span>
+<span class="s2"> {q:'What do you have on hand?', h:'We will write around whatever you already own.', m:true,</span>
+<span class="s2">  o:['Watercolor','Acrylic','Ink or pen','Pastels or charcoal','Paper and a pencil only','Nothing yet']},</span>
+<span class="s2"> {q:'Where are you with God right now?', h:'Answer honestly. This changes how the readings are written, and every one of these answers is welcome here.', m:false,</span>
+<span class="s2">  o:['Steady and close','Going through the motions','Distant, and honest about it','Hurt by church, still looking','Not sure what I believe \u2014 here for the beauty']},</span>
+<span class="s2"> {q:'Who is doing this alongside you?', h:'', m:true,</span>
+<span class="s2">  o:['Just me','A friend','My spouse','A small group','My family','Nobody yet, but I would like that']},</span>
+<span class="s2"> {q:'Thirty days from now, what would make this worth it?', h:'Choose up to three.', m:true,</span>
+<span class="s2">  o:['A finished piece I am proud of','A habit that stuck','Something finally named','Some peace','Feeling close to God again','Something to give away','A conversation I have been avoiding']}</span>
+<span class="s2">];</span>
+
+<span class="s2">var OPENQ = [</span>
+<span class="s2"> {q:'What season are you in right now?', h:'In your own words \u2014 not the tidy version.'},</span>
+<span class="s2"> {q:'Tell me about a moment you would call a turning point.', h:'It can be recent or forty years old. Good or hard.'},</span>
+<span class="s2"> {q:'What are you carrying that you have not said out loud?', h:'You can write it here and never say it to anyone. That still counts.'},</span>
+<span class="s2"> {q:'What breakthrough are you hoping for?', h:'The thing you would call an answer if it came.'},</span>
+<span class="s2"> {q:'What has been the hardest part of this last year?', h:''},</span>
+<span class="s2"> {q:'What would a finish line look like?', h:'If this went as well as it possibly could, what would be true when you got to the end?'},</span>
+<span class="s2"> {q:'Is there a verse, a phrase, a song, or a place that keeps coming back to you?', h:'Even if you do not know why it keeps returning.'},</span>
+<span class="s2"> {q:'Who are you doing this for, besides yourself?', h:''},</span>
+<span class="s2"> {q:'What do you want to be able to say a year from now?', h:'Write the sentence you hope will be true.'},</span>
+<span class="s2"> {q:'What have I not asked that matters?', h:'This is often the most useful box on the page.'}</span>
+<span class="s2">];</span>
+
+<span class="s2">var CLOSE = [</span>
+<span class="s2"> 'This season, the truest sentence about my life is\u2026',</span>
+<span class="s2"> 'What I most want to hear is\u2026',</span>
+<span class="s2"> 'If I made one thing this year that mattered, it would be\u2026'</span>
+<span class="s2">];</span>
+
+<span class="s2">var bAns = [];</span>
+<span class="s2">for (var q=0;q&lt;BUBS.length;q++){ bAns.push([]); }</span>
+
+<span class="s2">function drawBubs(){</span>
+<span class="s2">  var h = '';</span>
+<span class="s2">  for (var i=0;i&lt;BUBS.length;i++){</span>
+<span class="s2">    var B = BUBS[i];</span>
+<span class="s2">    h += '&lt;div class="qb"&gt;&lt;p class="qt"&gt;' + B.q + '&lt;/p&gt;';</span>
+<span class="s2">    if (B.h){ h += '&lt;p class="qh"&gt;' + B.h + '&lt;/p&gt;'; }</span>
+<span class="s2">    h += '&lt;div class="bubs"&gt;';</span>
+<span class="s2">    for (var j=0;j&lt;B.o.length;j++){</span>
+<span class="s2">      var on = (bAns[i].indexOf(B.o[j]) &gt; -1) ? ' on' : '';</span>
+<span class="s2">      h += '&lt;button class="bub' + on + '" onclick="tapBub(' + i + ',' + j + ')"&gt;' + B.o[j] + '&lt;/button&gt;';</span>
+<span class="s2">    }</span>
+<span class="s2">    h += '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  el('bubQs').innerHTML = h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function tapBub(i, j){</span>
+<span class="s2">  var v = BUBS[i].o[j];</span>
+<span class="s2">  var at = bAns[i].indexOf(v);</span>
+<span class="s2">  if (BUBS[i].m){</span>
+<span class="s2">    if (at &gt; -1){ bAns[i].splice(at,1); } else { bAns[i].push(v); }</span>
+<span class="s2">  } else {</span>
+<span class="s2">    bAns[i] = (at &gt; -1) ? [] : [v];</span>
+<span class="s2">  }</span>
+<span class="s2">  drawBubs();</span>
+<span class="s2">}</span>
+
+<span class="s2">function drawOpen(){</span>
+<span class="s2">  var h = '';</span>
+<span class="s2">  for (var i=0;i&lt;OPENQ.length;i++){</span>
+<span class="s2">    h += '&lt;div class="oq"&gt;&lt;label for="o' + i + '"&gt;' + OPENQ[i].q + '&lt;/label&gt;';</span>
+<span class="s2">    if (OPENQ[i].h){ h += '&lt;p class="hint"&gt;' + OPENQ[i].h + '&lt;/p&gt;'; }</span>
+<span class="s2">    h += '&lt;textarea id="o' + i + '" placeholder="However much or little you want."&gt;&lt;/textarea&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;div class="oq"&gt;&lt;label&gt;Finish these three, if you can.&lt;/label&gt;';</span>
+<span class="s2">  h += '&lt;p class="hint"&gt;Short is better than complete.&lt;/p&gt;';</span>
+<span class="s2">  for (var c=0;c&lt;CLOSE.length;c++){</span>
+<span class="s2">    h += '&lt;p class="hint" style="margin:.5rem 0 .2rem;color:var(--ink);font-weight:500;"&gt;' + CLOSE[c] + '&lt;/p&gt;';</span>
+<span class="s2">    h += '&lt;textarea id="cl' + c + '" style="min-height:52px;"&gt;&lt;/textarea&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  el('openQs').innerHTML = h;</span>
+<span class="s2">}</span>
+
+<span class="s2">el('toStory').onclick = function(){</span>
+<span class="s2">  el('storySec').classList.remove('hide');</span>
+<span class="s2">  el('storySec').scrollIntoView({behavior:'smooth'});</span>
+<span class="s2">};</span>
+
+<span class="s2">el('buildBrief').onclick = function(){</span>
+<span class="s2">  var h = '&lt;div class="brief"&gt;';</span>
+<span class="s2">  var A = AUD[seg];</span>
+<span class="s2">  h += '&lt;h4&gt;Who this is for&lt;/h4&gt;&lt;p&gt;' + A.n + '&lt;/p&gt;';</span>
+
+<span class="s2">  var lbl = ['What helps under pressure','Where they come alive','When they will read',</span>
+<span class="s2">    'Length','Voice','Scripture weight','Drawn to make','Experience','Supplies on hand',</span>
+<span class="s2">    'Where they are with God','Doing this alongside','What would make it worth it'];</span>
+<span class="s2">  h += '&lt;h4&gt;How to write for them&lt;/h4&gt;';</span>
+<span class="s2">  for (var i=0;i&lt;BUBS.length;i++){</span>
+<span class="s2">    var v = bAns[i].length ? bAns[i].join(', ') : '\u2014 not answered';</span>
+<span class="s2">    h += '&lt;p&gt;&lt;strong&gt;' + lbl[i] + ':&lt;/strong&gt; ' + v + '&lt;/p&gt;';</span>
+<span class="s2">  }</span>
+
+<span class="s2">  var any = false, sh = '';</span>
+<span class="s2">  for (var k=0;k&lt;OPENQ.length;k++){</span>
+<span class="s2">    var t = el('o' + k).value.replace(/^\s+|\s+$/g,'');</span>
+<span class="s2">    if (t){ any = true; sh += '&lt;p&gt;&lt;strong&gt;' + OPENQ[k].q + '&lt;/strong&gt;&lt;/p&gt;&lt;p class="said"&gt;' + t + '&lt;/p&gt;'; }</span>
+<span class="s2">  }</span>
+<span class="s2">  for (var c=0;c&lt;CLOSE.length;c++){</span>
+<span class="s2">    var t2 = el('cl' + c).value.replace(/^\s+|\s+$/g,'');</span>
+<span class="s2">    if (t2){ any = true; sh += '&lt;p&gt;&lt;strong&gt;' + CLOSE[c] + '&lt;/strong&gt;&lt;/p&gt;&lt;p class="said"&gt;' + t2 + '&lt;/p&gt;'; }</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;h4&gt;In their own words&lt;/h4&gt;';</span>
+<span class="s2">  h += any ? sh : '&lt;p class="mut"&gt;Left blank \u2014 which is completely fine. The readings will still be shaped by everything above.&lt;/p&gt;';</span>
+
+<span class="s2">  var perms = [];</span>
+<span class="s2">  if (el('c1').checked){ perms.push('Kim and John may read this to prepare'); }</span>
+<span class="s2">  if (el('c2').checked){ perms.push('Not to be shared with anyone else without asking first'); }</span>
+<span class="s2">  if (el('c3').checked){ perms.push('Delete written answers when this journey ends'); }</span>
+<span class="s2">  h += '&lt;h4&gt;Permissions&lt;/h4&gt;';</span>
+<span class="s2">  h += perms.length ? '&lt;p&gt;' + perms.join('. ') + '.&lt;/p&gt;'</span>
+<span class="s2">    : '&lt;p class="mut"&gt;No permissions granted \u2014 nothing here will be read by anyone until you say so.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;p class="tiny mut" style="margin-top:1rem;"&gt;Confidential. Held securely, never published, never used as sales intelligence, and deleted on request.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+
+<span class="s2">  el('briefBody').innerHTML = h;</span>
+<span class="s2">  el('briefSec').classList.remove('hide');</span>
+<span class="s2">  el('briefSec').scrollIntoView({behavior:'smooth'});</span>
+<span class="s2">};</span>
+
+<span class="s2">drawSegs(); drawTiers(); drawCal(); drawLadder(); drawBubs(); drawOpen();"""</span>
+<span class="k">assert</span> <span class="n">js_anchor</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">js_anchor</span><span class="p">,</span> <span class="n">js_new</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># ---------- 4. reveal profile section after result ----------</span>
+<span class="n">res_anchor</span> <span class="o">=</span> <span class="s2">"  el('resultSec').scrollIntoView({behavior:'smooth'});"</span>
+<span class="n">res_new</span> <span class="o">=</span> <span class="s2">"""  el('resultSec').scrollIntoView({behavior:'smooth'});</span>
+<span class="s2">  el('profileSec').classList.remove('hide');"""</span>
+<span class="k">assert</span> <span class="n">res_anchor</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">res_anchor</span><span class="p">,</span> <span class="n">res_new</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"patched, bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/patch_profile.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

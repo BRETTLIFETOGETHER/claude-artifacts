@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>parse_html.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Spiritual growth campaign titles with subtitles</div>
+<h1>parse_html.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">3 KB</span>
+<a class="btn" href="../../artifacts/Spiritual%20growth%20campaign%20titles%20with%20subtitles/parse_html.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Parser to extract collection/category/title/subtitle from all HTML collection files</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
+
+<span class="c1"># Map each HTML file to a canonical Collection name.</span>
+<span class="n">FILES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"top-100-flagship-campaigns.html"</span><span class="p">:</span>      <span class="s2">"Top 100 Flagship"</span><span class="p">,</span>
+    <span class="s2">"flagship-campaigns-expansion.html"</span><span class="p">:</span>    <span class="s2">"Top 100 Flagship"</span><span class="p">,</span>
+    <span class="s2">"flagship-campaigns-200-more.html"</span><span class="p">:</span>     <span class="s2">"Top 100 Flagship"</span><span class="p">,</span>
+    <span class="s2">"preaching-forecast-titles.html"</span><span class="p">:</span>       <span class="s2">"Preaching Forecast"</span><span class="p">,</span>
+    <span class="s2">"capital-campaign-100.html"</span><span class="p">:</span>            <span class="s2">"Capital Campaign"</span><span class="p">,</span>
+    <span class="s2">"discipleship-500.html"</span><span class="p">:</span>                <span class="s2">"Discipleship"</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">BASE</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/"</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">section_label</span><span class="p">(</span><span class="n">li</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Walk backwards to find the nearest category/band header for this &lt;li&gt;."""</span>
+    <span class="c1"># nearest ancestor &lt;section class=cat&gt; or preceding .cat-title / .band h2</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">li</span>
+    <span class="c1"># First, look for an enclosing section.cat with a .cat-title</span>
+    <span class="n">sec</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">find_parent</span><span class="p">(</span><span class="s2">"section"</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">"cat"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sec</span><span class="p">:</span>
+        <span class="n">ct</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">"cat-title"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ct</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ct</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Otherwise, find the nearest preceding .band h2 or .cat-title in document order</span>
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">li</span><span class="o">.</span><span class="n">find_all_previous</span><span class="p">([</span><span class="s2">"h2"</span><span class="p">]):</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"class"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">"cat-title"</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">el</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># band h2 lives inside div.band</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">find_parent</span><span class="p">(</span><span class="s2">"div"</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">"band"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">el</span> <span class="ow">is</span> <span class="n">parent</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"h2"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">el</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_file</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">BASE</span> <span class="o">+</span> <span class="n">fname</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s2">"html.parser"</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"ol.titles li"</span><span class="p">):</span>
+        <span class="n">name_el</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">"t-name"</span><span class="p">)</span>
+        <span class="n">sub_el</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">"t-sub"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_el</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">name_el</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="n">sub_el</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">sub_el</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">cat</span> <span class="o">=</span> <span class="n">section_label</span><span class="p">(</span><span class="n">li</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"category"</span><span class="p">:</span> <span class="n">cat</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s2">"subtitle"</span><span class="p">:</span> <span class="n">sub</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">rows</span>
+
+<span class="n">all_rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">coll</span> <span class="ow">in</span> <span class="n">FILES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">parse_file</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">[</span><span class="s2">"collection"</span><span class="p">]</span> <span class="o">=</span> <span class="n">coll</span>
+        <span class="n">r</span><span class="p">[</span><span class="s2">"source"</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname</span>
+    <span class="n">all_rows</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+    <span class="n">counts</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c</span><span class="si">:</span><span class="s2">&gt;4</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"TOTAL parsed:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_rows</span><span class="p">))</span>
+
+<span class="c1"># quick sanity: show a couple sample rows per file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/html_rows.json"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">all_rows</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># show 2 samples from discipleship + forecast to check category capture</span>
+<span class="k">for</span> <span class="n">coll</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"Discipleship"</span><span class="p">,</span><span class="s2">"Preaching Forecast"</span><span class="p">,</span><span class="s2">"Top 100 Flagship"</span><span class="p">,</span><span class="s2">"Capital Campaign"</span><span class="p">]:</span>
+    <span class="n">ex</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">all_rows</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"collection"</span><span class="p">]</span><span class="o">==</span><span class="n">coll</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [</span><span class="si">{</span><span class="n">coll</span><span class="si">}</span><span class="s2">] cat='</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'category'</span><span class="p">]</span><span class="si">}</span><span class="s2">' | </span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span><span class="si">}</span><span class="s2"> — </span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'subtitle'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/parse_html.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

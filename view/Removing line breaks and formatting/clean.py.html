@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>clean.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Removing line breaks and formatting</div>
+<h1>clean.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">2 KB</span>
+<a class="btn" href="../../artifacts/Removing%20line%20breaks%20and%20formatting/clean.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Cleanup script: strip emojis, merge split sentence, delete empty paragraphs (keeping page breaks)</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="s1">'unpacked/word/document.xml'</span>
+<span class="n">x</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">orig</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="c1"># ---- 1. strip emojis (and the space that follows them) inside &lt;w:t&gt; ----</span>
+<span class="n">EMOJI</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\U0001F3AC\U0001F449</span><span class="s1">'</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">strip_emoji</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">'['</span> <span class="o">+</span> <span class="n">EMOJI</span> <span class="o">+</span> <span class="s1">']</span><span class="se">\u0020</span><span class="s1">?'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">body</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'(&lt;w:t[^&gt;]*&gt;)(.*?)(&lt;/w:t&gt;)'</span><span class="p">,</span> <span class="n">strip_emoji</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+
+<span class="c1"># ---- 2. rejoin the sentence split across two paragraphs at the top ----</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+    <span class="s1">'BOOK 5 - MEETINGS - Design intentional family meetings that create rhythm, clarity,&lt;/w:t&gt;'</span><span class="p">,</span>
+    <span class="s1">'BOOK 5 - MEETINGS - Design intentional family meetings that create rhythm, clarity, '</span>
+    <span class="s1">'and shared direction over time.&lt;/w:t&gt;'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">paras</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;w:p\b(?:(?!&lt;w:p\b).)*?&lt;/w:p&gt;|&lt;w:p\b[^&gt;]*/&gt;'</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">text_of</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;w:t[^&gt;]*&gt;(.*?)&lt;/w:t&gt;'</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">))</span>
+
+
+<span class="c1"># remove the now-duplicated trailing half of that sentence</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paras</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">text_of</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'and shared direction over time.'</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">break</span>
+
+<span class="c1"># ---- 3. delete empty paragraphs, but keep any that carry a page break ----</span>
+<span class="n">paras</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;w:p\b(?:(?!&lt;w:p\b).)*?&lt;/w:p&gt;|&lt;w:p\b[^&gt;]*/&gt;'</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+<span class="n">removed</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">kept_pagebreaks</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paras</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">text_of</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="s1">'w:type="page"'</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+        <span class="n">kept_pagebreaks</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="s1">'&lt;w:drawing'</span> <span class="ow">in</span> <span class="n">p</span> <span class="ow">or</span> <span class="s1">'&lt;w:pict'</span> <span class="ow">in</span> <span class="n">p</span> <span class="ow">or</span> <span class="s1">'&lt;w:sectPr'</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">removed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># ---- 4. give paragraphs a little breathing room so removing blanks</span>
+<span class="c1">#         doesn't render as a solid wall of text ----</span>
+<span class="n">spath</span> <span class="o">=</span> <span class="s1">'unpacked/word/styles.xml'</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">spath</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;w:pPrDefault&gt;&lt;w:pPr&gt;&lt;w:spacing w:line="276" w:lineRule="auto"/&gt;&lt;/w:pPr&gt;&lt;/w:pPrDefault&gt;'</span><span class="p">,</span>
+              <span class="s1">'&lt;w:pPrDefault&gt;&lt;w:pPr&gt;&lt;w:spacing w:after="120" w:line="276" w:lineRule="auto"/&gt;&lt;/w:pPr&gt;&lt;/w:pPrDefault&gt;'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">spath</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">'empty paragraphs removed:'</span><span class="p">,</span> <span class="n">removed</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'page-break paragraphs preserved:'</span><span class="p">,</span> <span class="n">kept_pagebreaks</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'emoji remaining:'</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">EMOJI</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/clean.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>page_create.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>page_create.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">45 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/page_create.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the pastor sermon-to-curriculum flow with sample sermon, analysis confirmation, generation, editor, and export</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">shell</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+
+<span class="n">HEAD</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="s2">.cwrap{max-width:880px;margin:0 auto;padding:0 30px}</span>
+<span class="s2">.stage{display:none;padding:64px 0 90px;animation:fadeUp .55s var(--ease)}</span>
+<span class="s2">.stage.on{display:block}</span>
+<span class="s2">@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}</span>
+<span class="s2">.crumbs{display:flex;gap:8px;align-items:center;font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--mute);margin-bottom:30px;flex-wrap:wrap}</span>
+<span class="s2">.crumbs b{color:var(--gold-deep)}</span>
+<span class="s2">.crumbs i{font-style:normal;opacity:.4}</span>
+<span class="s2">/* landing */</span>
+<span class="s2">.cl-hero{padding:88px 0 80px}</span>
+<span class="s2">.cl-hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}</span>
+<span class="s2">.pull{background:var(--paper);border:1px solid var(--line-soft);border-radius:26px 26px 120px 26px;box-shadow:var(--shadow-lg);padding:38px 40px;position:relative}</span>
+<span class="s2">.pull .sun{position:absolute;top:-26px;right:34px;width:52px;height:52px;border-radius:26px 26px 10px 10px;background:var(--gold);display:flex;align-items:center;justify-content:center;color:#2B2008;font-size:22px;box-shadow:0 10px 24px rgba(156,114,40,.35)}</span>
+<span class="s2">.pull blockquote{font-family:var(--display);font-style:italic;font-size:21px;line-height:1.5;color:var(--ink)}</span>
+<span class="s2">.pull cite{display:block;font-style:normal;font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--mute);margin-top:16px}</span>
+<span class="s2">/* upload */</span>
+<span class="s2">.up{background:var(--paper);border:1.5px dashed #CBBF9C;border-radius:22px;padding:34px;transition:border-color .2s}</span>
+<span class="s2">.up:focus-within{border-color:var(--gold)}</span>
+<span class="s2">.up textarea{width:100%;min-height:260px;border:0;resize:vertical;font-family:var(--ui);font-size:15px;line-height:1.7;color:var(--ink);background:transparent}</span>
+<span class="s2">.up textarea:focus{outline:none}</span>
+<span class="s2">.up-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line-soft);padding-top:18px;margin-top:8px}</span>
+<span class="s2">.up-foot .wc{font-size:12.5px;color:var(--mute)}</span>
+<span class="s2">/* analyzing / generating */</span>
+<span class="s2">.proc{min-height:52vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}</span>
+<span class="s2">.proc .ring{width:104px;height:104px;border-radius:52px 52px 14px 14px;border:3px solid var(--gold-tint);border-top-color:var(--gold);animation:spin 1.1s linear infinite;margin-bottom:36px}</span>
+<span class="s2">@keyframes spin{to{transform:rotate(360deg)}}</span>
+<span class="s2">.proc .pline{font-family:var(--display);font-size:23px;font-weight:560;color:var(--ink);min-height:34px}</span>
+<span class="s2">/* analysis confirm */</span>
+<span class="s2">.an{display:flex;flex-direction:column;gap:18px;margin-top:8px}</span>
+<span class="s2">.an-card{background:var(--paper);border:1px solid var(--line-soft);border-radius:18px;padding:22px 26px;box-shadow:0 4px 14px rgba(20,53,42,.05)}</span>
+<span class="s2">.an-card .lbl{margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}</span>
+<span class="s2">.an-card .lbl .edit-note{font-size:11px;letter-spacing:.04em;text-transform:none;font-weight:600;color:var(--gold-deep)}</span>
+<span class="s2">.an-card [contenteditable]{font-size:16px;line-height:1.6;color:var(--ink);border-radius:8px;padding:2px 4px;margin:-2px -4px}</span>
+<span class="s2">.an-card [contenteditable]:hover{background:var(--gold-tint)}</span>
+<span class="s2">.an-card [contenteditable]:focus{outline:2px solid var(--gold);background:#FFFDF6}</span>
+<span class="s2">.an-card .vlist{display:flex;gap:9px;flex-wrap:wrap}</span>
+<span class="s2">.an-card .vchip{background:var(--green-tint);color:var(--green-deep);font-weight:650;font-size:13.5px;padding:7px 14px;border-radius:999px}</span>
+<span class="s2">.an-note{background:var(--gold-tint);border-radius:14px;padding:16px 20px;font-size:14px;color:#5E4A22;line-height:1.6}</span>
+<span class="s2">/* output selection */</span>
+<span class="s2">.outs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}</span>
+<span class="s2">.out{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line-soft);border-radius:18px;padding:26px 28px;transition:all .2s var(--ease)}</span>
+<span class="s2">.out.avail{cursor:pointer}</span>
+<span class="s2">.out.avail:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--shadow)}</span>
+<span class="s2">.out.soon</span><span class="si">{opacity:.62}</span>
+<span class="s2">.out .otag{position:absolute;top:16px;right:16px}</span>
+<span class="s2">.out b{display:block;font-family:var(--display);font-size:20px;font-weight:600;color:var(--ink);margin-bottom:6px}</span>
+<span class="s2">.out span{font-size:14px;color:var(--body);line-height:1.55}</span>
+<span class="s2">/* prefs */</span>
+<span class="s2">.prefs{display:flex;flex-direction:column;gap:26px;margin-top:30px}</span>
+<span class="s2">.prefs .row2{display:grid;grid-template-columns:1fr 1fr;gap:22px}</span>
+<span class="s2">/* editor */</span>
+<span class="s2">.ed{max-width:1150px;margin:0 auto;padding:0 30px}</span>
+<span class="s2">.ed-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px}</span>
+<span class="s2">.ed-top .meta{font-size:13px;color:var(--mute)}</span>
+<span class="s2">.ed-grid{display:grid;grid-template-columns:250px 1fr;gap:28px;align-items:start}</span>
+<span class="s2">.sess-tabs{display:flex;flex-direction:column;gap:8px;position:sticky;top:120px}</span>
+<span class="s2">.stab{text-align:left;background:var(--paper);border:1.5px solid var(--line-soft);border-radius:13px;padding:14px 16px;transition:all .18s}</span>
+<span class="s2">.stab:hover{border-color:var(--gold)}</span>
+<span class="s2">.stab.sel{border-color:var(--gold);background:#FFFCF3;box-shadow:0 6px 16px rgba(196,147,60,.14)}</span>
+<span class="s2">.stab .sn{font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--gold-deep)}</span>
+<span class="s2">.stab b{display:block;font-size:14px;color:var(--ink);margin-top:3px;line-height:1.3}</span>
+<span class="s2">.doc{background:var(--paper);border:1px solid var(--line-soft);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}</span>
+<span class="s2">.doc-head{background:linear-gradient(120deg,#F5EBD4,#FBF5E6);padding:28px 36px;border-bottom:1px solid var(--line-soft)}</span>
+<span class="s2">.doc-head .chip{margin-bottom:10px}</span>
+<span class="s2">.doc-head h3{font-size:26px}</span>
+<span class="s2">.doc-head .dsub{font-size:13px;color:var(--mute);margin-top:6px}</span>
+<span class="s2">.doc-body{padding:14px 36px 34px}</span>
+<span class="s2">.blk{padding:22px 0;border-bottom:1px solid var(--line-soft);position:relative}</span>
+<span class="s2">.blk:last-child</span><span class="si">{border:0}</span>
+<span class="s2">.blk .bh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}</span>
+<span class="s2">.blk .bh .lbl</span><span class="si">{margin:0}</span>
+<span class="s2">.regen{font-size:12px;font-weight:700;color:var(--gold-deep);background:var(--gold-tint);border-radius:999px;padding:6px 13px;transition:all .18s}</span>
+<span class="s2">.regen:hover{background:#EFDDB2}</span>
+<span class="s2">.regen.spun{animation:pulse .5s var(--ease)}</span>
+<span class="s2">@keyframes pulse{50%{transform:scale(.94)}}</span>
+<span class="s2">.blk [contenteditable]{font-size:15.5px;line-height:1.75;color:var(--body);border-radius:10px;padding:4px 8px;margin:-4px -8px;white-space:pre-wrap}</span>
+<span class="s2">.blk [contenteditable] b{color:var(--ink)}</span>
+<span class="s2">.blk [contenteditable]:hover{background:#FBF8EE}</span>
+<span class="s2">.blk [contenteditable]:focus{outline:2px solid var(--gold);background:#FFFDF6}</span>
+<span class="s2">.yw{display:inline-flex;align-items:center;gap:5px;background:var(--gold-tint);border-radius:6px;padding:1px 8px;color:var(--gold-deep);font-weight:650;font-size:12px;white-space:nowrap;vertical-align:1px}</span>
+<span class="s2">/* export */</span>
+<span class="s2">.exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px}</span>
+<span class="s2">.exp{background:var(--paper);border:1.5px solid var(--line-soft);border-radius:18px;padding:28px;text-align:center;transition:all .2s}</span>
+<span class="s2">.exp:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--shadow)}</span>
+<span class="s2">.exp .ei{width:54px;height:54px;border-radius:27px 27px 10px 10px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:22px}</span>
+<span class="s2">.exp b{display:block;font-size:16px;color:var(--ink);margin-bottom:5px}</span>
+<span class="s2">.exp span{font-size:13px;color:var(--body)}</span>
+<span class="s2">.next-cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}</span>
+<span class="s2">@media(max-width:920px){</span>
+<span class="s2">  .cl-hero .wrap,.outs,.prefs .row2,.exp-grid,.next-cards{grid-template-columns:1fr}</span>
+<span class="s2">  .ed-grid{grid-template-columns:1fr}</span>
+<span class="s2">  .sess-tabs{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px}</span>
+<span class="s2">  .stab{min-width:150px}</span>
+<span class="s2">}</span>
+<span class="s2">@media print{</span>
+<span class="s2">  .util,header.site,footer.site,.ed-top,.sess-tabs,.regen,.crumbs{display:none!important}</span>
+<span class="s2">  .stage{display:none!important}</span>
+<span class="s2">  #st-editor.on,#printAll{display:block!important}</span>
+<span class="s2">  .doc{box-shadow:none;border:0}</span>
+<span class="s2">  body{background:#fff}</span>
+<span class="s2">}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;!-- LANDING --&gt;</span>
+<span class="s2">&lt;section class="stage on" id="st-landing" style="padding:0"&gt;</span>
+<span class="s2">  &lt;div class="cl-hero"&gt;</span>
+<span class="s2">    &lt;div class="wrap"&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;span class="eyebrow" style="color:var(--gold-deep)"&gt;For Pastors &amp;amp; Leaders&lt;/span&gt;</span>
+<span class="s2">        &lt;h1 class="mt16" style="font-size:clamp(38px,4.8vw,56px)"&gt;Don&amp;rsquo;t let Sunday&lt;br&gt;&lt;em class="gold"&gt;end&lt;/em&gt; on Sunday.&lt;/h1&gt;</span>
+<span class="s2">        &lt;p class="lede mt24"&gt;You spent fifteen hours preparing that message. It deserves more than a Monday-morning fade. Upload one sermon and the platform builds the discipleship infrastructure around it — small group curriculum first, devotionals and full 40-day campaigns next — with your words kept visibly at the center.&lt;/p&gt;</span>
+<span class="s2">        &lt;div class="mt32" style="display:flex;gap:14px;flex-wrap:wrap"&gt;</span>
+<span class="s2">          &lt;button class="btn btn-gold btn-lg" onclick="go('upload')"&gt;Start with one sermon &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="btn btn-outline btn-lg" onclick="loadSample();go('upload')"&gt;Try it with a sample&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;p class="small mt16"&gt;Nothing is stored in this preview — it runs entirely on your device.&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="pull rv"&gt;</span>
+<span class="s2">        &lt;span class="sun"&gt;✎&lt;/span&gt;</span>
+<span class="s2">        &lt;blockquote&gt;&amp;ldquo;The sermon is the seed. The campaign is the field. Most churches plant on Sunday and never plow — this changes that.&amp;rdquo;&lt;/blockquote&gt;</span>
+<span class="s2">        &lt;cite&gt;The Lifetogether Method · 25 years of churchwide campaigns&lt;/cite&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- UPLOAD --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-upload"&gt;</span>
+<span class="s2">  &lt;div class="cwrap"&gt;</span>
+<span class="s2">    &lt;div class="crumbs"&gt;&lt;b&gt;1 · Upload&lt;/b&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;2 · Confirm&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;3 · Choose&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;4 · Shape&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;5 · Edit &amp;amp; export&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;Bring the message&lt;br&gt;you already &lt;em class="gold"&gt;preached&lt;/em&gt;.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="lede mt16"&gt;Paste a transcript, your manuscript, or even rough notes. The more of your voice we have, the more of your voice survives into the curriculum.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="up mt32"&gt;</span>
+<span class="s2">      &lt;textarea id="sermonTxt" placeholder="Paste your sermon here — transcript, manuscript, or notes…"&gt;&lt;/textarea&gt;</span>
+<span class="s2">      &lt;div class="up-foot"&gt;</span>
+<span class="s2">        &lt;span class="wc" id="wc"&gt;0 words&lt;/span&gt;</span>
+<span class="s2">        &lt;div style="display:flex;gap:12px;flex-wrap:wrap"&gt;</span>
+<span class="s2">          &lt;button class="btn btn-outline btn-sm" onclick="loadSample()"&gt;Use a sample sermon&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="btn btn-gold" id="analyzeBtn" onclick="analyze()"&gt;Read my sermon &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;p class="small mt16"&gt;Word docs, PDFs, and audio upload land with the full platform — this preview works from pasted text.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- ANALYZING --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-analyzing"&gt;</span>
+<span class="s2">  &lt;div class="cwrap proc"&gt;</span>
+<span class="s2">    &lt;div class="ring"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="pline" id="anLine"&gt;Reading your sermon…&lt;/p&gt;</span>
+<span class="s2">    &lt;p class="small mt16"&gt;We read for meaning before we build — big idea, scripture spine, your key points.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- ANALYSIS CONFIRM --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-analysis"&gt;</span>
+<span class="s2">  &lt;div class="cwrap"&gt;</span>
+<span class="s2">    &lt;div class="crumbs"&gt;&lt;span&gt;1 · Upload&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;b&gt;2 · Confirm&lt;/b&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;3 · Choose&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;4 · Shape&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;5 · Edit &amp;amp; export&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;Here&amp;rsquo;s what we &lt;em class="gold"&gt;heard&lt;/em&gt;.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="lede mt16"&gt;This is your teaching — correct anything we misread before we build on it. Every field is editable.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="an mt32"&gt;</span>
+<span class="s2">      &lt;div class="an-card"&gt;</span>
+<span class="s2">        &lt;div class="lbl"&gt;&lt;span&gt;The big idea&lt;/span&gt;&lt;span class="edit-note"&gt;✎ click to edit&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true" id="aBig"&gt;&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="an-card"&gt;</span>
+<span class="s2">        &lt;div class="lbl"&gt;&lt;span&gt;Scripture spine&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="vlist" id="aVerses"&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="an-card"&gt;</span>
+<span class="s2">        &lt;div class="lbl"&gt;&lt;span&gt;Your key points&lt;/span&gt;&lt;span class="edit-note"&gt;✎ click to edit&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div contenteditable="true" id="aPoints" style="font-size:16px;line-height:1.8;color:var(--ink)"&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="an-card"&gt;</span>
+<span class="s2">        &lt;div class="lbl"&gt;&lt;span&gt;Tone we&amp;rsquo;ll preserve&lt;/span&gt;&lt;span class="edit-note"&gt;✎ click to edit&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true" id="aTone"&gt;&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="an-note" id="anNote"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="stage-nav" style="display:flex;justify-content:space-between;margin-top:34px"&gt;</span>
+<span class="s2">      &lt;button class="btn btn-ghost" onclick="go('upload')"&gt;← Back&lt;/button&gt;</span>
+<span class="s2">      &lt;button class="btn btn-gold btn-lg" onclick="go('output')"&gt;Yes — that&amp;rsquo;s my message &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- OUTPUT SELECTION --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-output"&gt;</span>
+<span class="s2">  &lt;div class="cwrap"&gt;</span>
+<span class="s2">    &lt;div class="crumbs"&gt;&lt;span&gt;1 · Upload&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;2 · Confirm&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;b&gt;3 · Choose&lt;/b&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;4 · Shape&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;5 · Edit &amp;amp; export&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;What should this&lt;br&gt;message &lt;em class="gold"&gt;become&lt;/em&gt;?&lt;/h2&gt;</span>
+<span class="s2">    &lt;div class="outs"&gt;</span>
+<span class="s2">      &lt;button class="out avail" onclick="go('prefs')"&gt;</span>
+<span class="s2">        &lt;span class="otag chip gold"&gt;Ready now&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Small Group Curriculum&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Session-by-session guides with discussion questions, practices, and prayer — the fastest way for Sunday to reach the living room.&lt;/span&gt;</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;div class="out soon"&gt;</span>
+<span class="s2">        &lt;span class="otag chip ink"&gt;Coming soon&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Daily Devotional&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Your series as a daily reading plan — 7, 21, 30, or 40 days in your congregation&amp;rsquo;s hands.&lt;/span&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="out soon"&gt;</span>
+<span class="s2">        &lt;span class="otag chip ink"&gt;Coming soon&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Leader Guide &amp;amp; Training&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Host scripts, one-evening training, and care plans for the leaders you&amp;rsquo;re about to raise up.&lt;/span&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="out soon"&gt;</span>
+<span class="s2">        &lt;span class="otag chip ink"&gt;Coming soon&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Full 40-Day Campaign&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;The complete churchwide architecture — pulpit, groups, and daily reading aligned around your series.&lt;/span&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;p class="small mt24"&gt;&lt;button class="btn btn-ghost" onclick="go('analysis')" style="padding:0"&gt;← Back to what we heard&lt;/button&gt;&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- PREFS --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-prefs"&gt;</span>
+<span class="s2">  &lt;div class="cwrap"&gt;</span>
+<span class="s2">    &lt;div class="crumbs"&gt;&lt;span&gt;1 · Upload&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;2 · Confirm&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;3 · Choose&lt;/span&gt;&lt;i&gt;→&lt;/i&gt;&lt;b&gt;4 · Shape&lt;/b&gt;&lt;i&gt;→&lt;/i&gt;&lt;span&gt;5 · Edit &amp;amp; export&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;Shape it for&lt;br&gt;&lt;em class="gold"&gt;your&lt;/em&gt; church.&lt;/h2&gt;</span>
+<span class="s2">    &lt;div class="prefs"&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;label class="lbl"&gt;Number of sessions&lt;/label&gt;</span>
+<span class="s2">        &lt;div class="pills" id="pSess"&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="4"&gt;4 sessions&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill sel" data-v="5"&gt;5 sessions&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="6"&gt;6 sessions&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;label class="lbl"&gt;Primary audience&lt;/label&gt;</span>
+<span class="s2">        &lt;div class="pills" id="pAud"&gt;</span>
+<span class="s2">          &lt;button class="pill sel" data-v="Adult groups"&gt;Adults&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="Young adult groups"&gt;Young adults&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="Student groups"&gt;Students&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="Men&amp;rsquo;s groups"&gt;Men&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="Women&amp;rsquo;s groups"&gt;Women&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;label class="lbl"&gt;Voice of the guide&lt;/label&gt;</span>
+<span class="s2">        &lt;div class="pills" id="pTone"&gt;</span>
+<span class="s2">          &lt;button class="pill sel" data-v="warm"&gt;Warm &amp;amp; pastoral&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="direct"&gt;Direct &amp;amp; challenging&lt;/button&gt;</span>
+<span class="s2">          &lt;button class="pill" data-v="reflective"&gt;Reflective &amp;amp; contemplative&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="row2"&gt;</span>
+<span class="s2">        &lt;div&gt;&lt;label class="lbl"&gt;Church name&lt;/label&gt;&lt;input class="input" id="pChurch" placeholder="Grace Community Church" value="Grace Community Church"&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div&gt;&lt;label class="lbl"&gt;Pastor name&lt;/label&gt;&lt;input class="input" id="pPastor" placeholder="Pastor Dave Miller" value="Pastor Dave Miller"&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div style="display:flex;justify-content:space-between;margin-top:38px"&gt;</span>
+<span class="s2">      &lt;button class="btn btn-ghost" onclick="go('output')"&gt;← Back&lt;/button&gt;</span>
+<span class="s2">      &lt;button class="btn btn-gold btn-lg" onclick="generate()"&gt;Build my curriculum &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- GENERATING --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-generating"&gt;</span>
+<span class="s2">  &lt;div class="cwrap proc"&gt;</span>
+<span class="s2">    &lt;div class="ring"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="pline" id="genLine"&gt;Laying the scripture spine…&lt;/p&gt;</span>
+<span class="s2">    &lt;p class="small mt16"&gt;Built from your message and the Lifetogether session architecture — your words stay marked throughout.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- EDITOR --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-editor"&gt;</span>
+<span class="s2">  &lt;div class="ed"&gt;</span>
+<span class="s2">    &lt;div class="ed-top"&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;span class="eyebrow" style="color:var(--gold-deep)"&gt;5 · Edit &amp;amp; export&lt;/span&gt;</span>
+<span class="s2">        &lt;h2 style="font-size:clamp(26px,3vw,36px)" id="edTitle"&gt;&lt;/h2&gt;</span>
+<span class="s2">        &lt;p class="meta" id="edMeta"&gt;&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div style="display:flex;gap:12px;flex-wrap:wrap"&gt;</span>
+<span class="s2">        &lt;button class="btn btn-outline" onclick="go('prefs')"&gt;← Reshape&lt;/button&gt;</span>
+<span class="s2">        &lt;button class="btn btn-gold" onclick="finishEdit()"&gt;Looks right — export &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="ed-grid"&gt;</span>
+<span class="s2">      &lt;div class="sess-tabs" id="sessTabs"&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="doc" id="docPane"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div id="printAll" style="display:none"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;!-- EXPORT --&gt;</span>
+<span class="s2">&lt;section class="stage" id="st-export"&gt;</span>
+<span class="s2">  &lt;div class="cwrap"&gt;</span>
+<span class="s2">    &lt;span class="eyebrow" style="color:var(--gold-deep)"&gt;Ready to share&lt;/span&gt;</span>
+<span class="s2">    &lt;h2 class="mt16"&gt;Sunday just became&lt;br&gt;a &lt;em class="gold"&gt;season&lt;/em&gt;.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="lede mt16" id="expLede"&gt;&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="exp-grid"&gt;</span>
+<span class="s2">      &lt;button class="exp" onclick="downloadDoc()"&gt;</span>
+<span class="s2">        &lt;span class="ei" style="background:#E7EEF9;color:#2B5AA6"&gt;W&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Download for Word&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Editable .doc your team can brand and print.&lt;/span&gt;</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="exp" onclick="window.print()"&gt;</span>
+<span class="s2">        &lt;span class="ei" style="background:#FBEAE4;color:#B5502F"&gt;⎙&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Print / Save as PDF&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Every session, formatted for leader packets.&lt;/span&gt;</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="exp" onclick="alert('Canva hand-off connects in the full platform — your curriculum opens as a branded, editable design.')"&gt;</span>
+<span class="s2">        &lt;span class="ei" style="background:#EAF6F4;color:#1D8A7C"&gt;C&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Open in Canva&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Branded visuals in the full platform.&lt;/span&gt;</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="mt48"&gt;</span>
+<span class="s2">      &lt;h3&gt;What this message could become next&lt;/h3&gt;</span>
+<span class="s2">      &lt;div class="next-cards mt16"&gt;</span>
+<span class="s2">        &lt;div class="out soon" style="opacity:1;border-style:dashed"&gt;</span>
+<span class="s2">          &lt;b&gt;The 40-day campaign of this series&lt;/b&gt;</span>
+<span class="s2">          &lt;span&gt;Daily readings, youth &amp;amp; family editions, celebration Sunday — the full churchwide architecture. Rolling out to founding churches first.&lt;/span&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div class="out soon" style="opacity:1;border-style:dashed"&gt;</span>
+<span class="s2">          &lt;b&gt;Your church&amp;rsquo;s formation library&lt;/b&gt;</span>
+<span class="s2">          &lt;span&gt;Every series you&amp;rsquo;ve ever preached, transformed and searchable — a discipleship library in your own voice.&lt;/span&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="mt32" style="display:flex;gap:14px;flex-wrap:wrap"&gt;</span>
+<span class="s2">        &lt;a class="btn btn-gold btn-lg" href="pricing.html"&gt;See founding church pricing &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">        &lt;button class="btn btn-outline btn-lg" onclick="go('editor')"&gt;← Back to the editor&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="c1"># The interactive engine is large; kept in a separate JS string for clarity.</span>
+<span class="n">SCRIPTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">/* ================= SAMPLE SERMON ================= */</span>
+<span class="s2">const SAMPLE = `More Than a Job — Pastor Dave Miller, Grace Community Church</span>
+
+<span class="s2">Let me tell you about two carpenters. Both of them showed up to the same job site every morning for thirty years. Somebody once asked the first one what he did for a living, and he said, "I cut wood and drive nails." They asked the second one the same question, and he said, "I build homes where families grow up."</span>
+
+<span class="s2">Same tools. Same hours. Same sawdust in their hair at the end of the day. Completely different lives.</span>
+
+<span class="s2">Here is what I want you to hear this morning: you are not an accident looking for a reason. Paul writes in Ephesians 2:10 that we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do. Prepared in advance. Before you had a resume, God had an assignment.</span>
+
+<span class="s2">Most of us have been taught to divide our week — the sacred part on Sunday and the secular part Monday through Friday. But the Bible never makes that division. When God placed Adam in the garden, the very first thing He gave him was work — to tend it and keep it. Work came before the fall. Work is not the curse; it is part of the calling.</span>
+
+<span class="s2">So point one this morning: you are made on purpose, for purpose. Not the job title. The assignment underneath the job title.</span>
+
+<span class="s2">Point two: your work is worship. Colossians 3:23 — whatever you do, work at it with all your heart, as working for the Lord, not for human masters. Whatever you do. Paul was writing to servants doing work nobody applauded. He didn't say, quit and go do something spiritual. He said, do this — as worship.</span>
+
+<span class="s2">I think of Nancy, one of our members, a nurse over at St. Joseph's. Thirty-one years on the night shift. She told me once, "Pastor, I used to think I was just changing IV bags. Now I pray for every patient in every room I walk into. Same rooms. Different job." Nancy understands something the two carpenters teach us: the assignment underneath the assignment.</span>
+
+<span class="s2">Point three: your Monday is a mission field. Jesus said in Matthew 5:16, let your light shine before others, that they may see your good deeds and glorify your Father in heaven. The people you work with may never walk into this building. But every Monday, you walk into theirs.</span>
+
+<span class="s2">So here is my challenge this week. Don't change your job. Change your answer. When somebody asks what you do — and this week, somebody will — I want you to answer with the assignment, not the task. Ask God this simple question every morning before your feet hit the floor: who is on my schedule today that You have been waiting to love through me?</span>
+
+<span class="s2">You are God's handiwork. Created on purpose, for purpose, with work prepared in advance. Sunday is where we say it. Monday is where we prove it. Let's pray.`;</span>
+
+<span class="s2">/* ================= PRE-BAKED ANALYSIS ================= */</span>
+<span class="s2">const SAMPLE_ANALYSIS = {</span>
+<span class="s2">  big:'You are not an accident looking for a reason — God prepared your work, and your Monday, in advance.',</span>
+<span class="s2">  verses:['Ephesians 2:10','Colossians 3:23','Genesis 2:15','Matthew 5:16'],</span>
+<span class="s2">  points:['&lt;b&gt;1.&lt;/b&gt; You are made on purpose, for purpose — the assignment underneath the job title.&lt;br&gt;&lt;b&gt;2.&lt;/b&gt; Your work is worship — whatever you do, done for the Lord.&lt;br&gt;&lt;b&gt;3.&lt;/b&gt; Your Monday is a mission field — your coworkers may never enter the church, but you enter their world weekly.'],</span>
+<span class="s2">  tone:'Warm, direct, and story-driven — the two carpenters and Nancy the night-shift nurse carry the message.',</span>
+<span class="s2">  quotes:['You are not an accident looking for a reason.','Before you had a resume, God had an assignment.','Don\u2019t change your job. Change your answer.','Sunday is where we say it. Monday is where we prove it.']</span>
+<span class="s2">};</span>
+
+<span class="s2">/* ================= SESSION LIBRARY (built from the sermon) ================= */</span>
+<span class="s2">function sessionLib(q){ return [</span>
+<span class="s2"> {t:'Made on Purpose', v:'Ephesians 2:10', aim:'Discover that purpose precedes performance — God\u2019s assignment came before your resume.',</span>
+<span class="s2">  connect:[`Go around the circle: when you were ten years old, what did you want to be when you grew up? What happened to that answer?`,</span>
+<span class="s2">           `Share the story of a job you\u2019ve held — best or worst. What made it feel meaningful, or meaningless?`],</span>
+<span class="s2">  recap:`Pastor opened with the two carpenters — same tools, same hours, completely different lives — and anchored the series in Ephesians 2:10: we are God\u2019s handiwork, created in Christ Jesus to do good works, &lt;i&gt;prepared in advance&lt;/i&gt;. His line to carry into this session: &lt;span class="yw"&gt;✎ your words&lt;/span&gt; \u201C$</span><span class="si">{q[0]}</span><span class="s2">\u201D`,</span>
+<span class="s2">  discuss:[`Read Ephesians 2:10 aloud together. Which word or phrase lands hardest on you today — \u201Chandiwork,\u201D \u201Ccreated,\u201D or \u201Cprepared in advance\u201D? Why?`,</span>
+<span class="s2">   `The first carpenter said \u201CI cut wood and drive nails.\u201D The second said \u201CI build homes where families grow up.\u201D Which answer sounds more like the one you give — honestly?`,</span>
+<span class="s2">   `Pastor said, \u201C$</span><span class="si">{q[1]}</span><span class="s2">\u201D What would change this week if you actually believed that?`,</span>
+<span class="s2">   `Where is the line between healthy ambition and finding your identity in your work? How do you know when you\u2019ve crossed it?`,</span>
+<span class="s2">   `What is one \u201Cgood work prepared in advance\u201D that might already be sitting in your ordinary week?`],</span>
+<span class="s2">  practice:`Before your feet hit the floor each morning this week, ask one question: \u201CWho is on my schedule today that God has been waiting to love through me?\u201D Write down one name each day.`,</span>
+<span class="s2">  pray:{warm:`Close by thanking God for one specific person in the group and the work they do. Let gratitude set the tone for the week.`,</span>
+<span class="s2">        direct:`Have each person name their workplace out loud. Pray over each one as a mission field — by name, without hurry.`,</span>
+<span class="s2">        reflective:`Sit in ninety seconds of silence with Ephesians 2:10. Then let anyone who wishes finish this sentence in prayer: \u201CLord, You prepared\u2026\u201D`},</span>
+<span class="s2">  between:`Read Genesis 2:15 and Psalm 139:13–16. Note where work appears in the story before anything goes wrong.`},</span>
+<span class="s2"> {t:'Work as Worship', v:'Colossians 3:23', aim:'Reframe every task — applauded or invisible — as something offered to the Lord.',</span>
+<span class="s2">  connect:[`What is the most invisible task in your week — the one nobody would notice unless you stopped doing it?`,</span>
+<span class="s2">           `Who is the hardest \u201Chuman master\u201D you\u2019ve ever worked for? (No names required.) What did that season teach you?`],</span>
+<span class="s2">  recap:`Colossians 3:23 was written to people doing work nobody applauded — and Paul didn\u2019t tell them to escape it, but to offer it: whatever you do, work at it with all your heart, as working for the Lord. Pastor\u2019s summary: &lt;span class="yw"&gt;✎ your words&lt;/span&gt; \u201CSame rooms. Different job.\u201D — Nancy, thirty-one years on the night shift.`,</span>
+<span class="s2">  discuss:[`Read Colossians 3:22–24. Paul is writing to servants. How does that context change the weight of \u201Cwhatever you do\u201D?`,</span>
+<span class="s2">   `Nancy prays for every patient in every room. What would the \u201CNancy version\u201D of your job look like — concretely?`,</span>
+<span class="s2">   `Where do you most feel the difference between working \u201Cfor human masters\u201D and \u201Cfor the Lord\u201D? What triggers the switch?`,</span>
+<span class="s2">   `Is there a task you\u2019ve been doing resentfully that could be done as worship instead? What would need to change — the task, or you?`,</span>
+<span class="s2">   `What does \u201Cwith all your heart\u201D permit — and what does it not require? (Hint: it is not a verse about overwork.)`],</span>
+<span class="s2">  practice:`Choose your most invisible task this week. Each time you do it, offer it in a one-sentence silent prayer. Notice by Friday what has shifted.`,</span>
+<span class="s2">  pray:{warm:`Thank God together for work itself — even the parts that are hard — and for the people your work quietly serves.`,</span>
+<span class="s2">        direct:`Confess out loud, in a word or phrase, where each of you has been working for applause. Receive Colossians 3:24 as the group\u2019s answer.`,</span>
+<span class="s2">        reflective:`Read Colossians 3:23 three times slowly, with a minute of quiet between readings. Let the room stay unhurried.`},</span>
+<span class="s2">  between:`Read Colossians 3:22–4:1 in one sitting. Note every phrase addressed to the powerful, not just the servants.`},</span>
+<span class="s2"> {t:'The Original Job Description', v:'Genesis 2:15', aim:'See that work precedes the fall — it belongs to the blessing, not the curse.',</span>
+<span class="s2">  connect:[`If all your bills were permanently paid tomorrow, what would you still choose to do with your weekdays? What does your answer reveal?`,</span>
+<span class="s2">           `What\u2019s a piece of work — a meal, a garden, a spreadsheet, a repair — you\u2019ve finished and simply enjoyed looking at?`],</span>
+<span class="s2">  recap:`Before there was a fall, there was a garden — and a job. God placed Adam in Eden \u201Cto work it and take care of it.\u201D Pastor put it plainly: &lt;span class="yw"&gt;✎ your words&lt;/span&gt; \u201CWork came before the fall. Work is not the curse; it is part of the calling.\u201D`,</span>
+<span class="s2">  discuss:[`Read Genesis 2:15 and Genesis 3:17–19 side by side. What exactly changed about work at the fall — and what didn\u2019t?`,</span>
+<span class="s2">   `\u201CTend and keep\u201D is gardener\u2019s language. What are you tending in this season of life? What are you keeping?`,</span>
+<span class="s2">   `How does it change your Monday to know work was God\u2019s idea before it was an economic necessity?`,</span>
+<span class="s2">   `Where have you experienced the \u201Cthorns and thistles\u201D side of work most sharply? How do you keep that from having the last word?`,</span>
+<span class="s2">   `Sabbath is part of the same creation story. What does your pattern of rest say about who you believe holds the garden?`],</span>
+<span class="s2">  practice:`Do one piece of work this week slowly enough to enjoy it — then stop, look at it, and thank God for the strange gift of getting to make things.`,</span>
+<span class="s2">  pray:{warm:`Pray for each member\u2019s \u201Cgarden\u201D — the specific patch of the world entrusted to them this season.`,</span>
+<span class="s2">        direct:`Ask God plainly for endurance where work is thorny right now — naming the thorn out loud if you\u2019re willing.`,</span>
+<span class="s2">        reflective:`Picture your workplace in your mind\u2019s eye. Silently walk through it with Jesus for two minutes. Close with one sentence each.`},</span>
+<span class="s2">  between:`Read Ecclesiastes 2:24–25 and 3:12–13. Notice how often \u201Ceat, drink, and find satisfaction in work\u201D is called a gift of God.`},</span>
+<span class="s2"> {t:'Light in the Workplace', v:'Matthew 5:16', aim:'Recognize your Monday as a mission field — presence before persuasion.',</span>
+<span class="s2">  connect:[`Who was a \u201Clight\u201D in a workplace you\u2019ve been part of? What did they actually do — specifically?`,</span>
+<span class="s2">           `What percentage of your coworkers, honestly, do you think have a Christian they trust enough to talk to about faith?`,</span>
+<span class="s2">  ],</span>
+<span class="s2">  recap:`Jesus\u2019 image was a lamp on a stand — visible, useful, unhidden. Pastor\u2019s point: the people you work with may never walk into the church building, but every Monday you walk into theirs. &lt;span class="yw"&gt;✎ your words&lt;/span&gt; \u201CThe assignment underneath the assignment.\u201D`,</span>
+<span class="s2">  discuss:[`Read Matthew 5:14–16. Jesus says \u201Clet your light shine,\u201D not \u201Cmake your light shine.\u201D What\u2019s the difference in practice?`,</span>
+<span class="s2">   `\u201CThat they may see your good deeds\u201D — what good deeds are actually visible in your workplace? What would your coworkers say you\u2019re known for?`,</span>
+<span class="s2">   `Where is the line between shining and showing off? Between appropriate witness and workplace pressure?`,</span>
+<span class="s2">   `Who is one person on your schedule this week who seems far from God? What would loving them well — without an agenda — look like?`,</span>
+<span class="s2">   `Pastor\u2019s challenge was to change your answer, not your job: \u201C$</span><span class="si">{q[2]}</span><span class="s2">\u201D What is your new answer when someone asks what you do?`],</span>
+<span class="s2">  practice:`Write the new answer — the assignment, not the task — on a card. Use it at least once this week when someone asks what you do. Report back next session.`,</span>
+<span class="s2">  pray:{warm:`Pray by name (first names only) for one coworker each. Ask God to let each of you be safe light this week.`,</span>
+<span class="s2">        direct:`Ask God for one open door this week — and the courage to walk through it without pushing anyone else through theirs.`,</span>
+<span class="s2">        reflective:`Light a candle if you have one. Sit with Matthew 5:16 while it burns for two minutes. End with the Lord\u2019s Prayer together.`},</span>
+<span class="s2">  between:`Read 1 Peter 3:15–16 and Colossians 4:5–6. Note the seasoning: gentleness, respect, grace, salt.`},</span>
+<span class="s2"> {t:'The Long Obedience', v:'Galatians 6:9', aim:'Build the rhythms that keep purpose alive after the series ends.',</span>
+<span class="s2">  connect:[`What\u2019s something you once started with enthusiasm that quietly faded? What actually made the difference in the things that stuck?`,</span>
+<span class="s2">           `Which practice from the past month — the morning question, the invisible-task prayer, the new answer — has taken root the most?`],</span>
+<span class="s2">  recap:`Every campaign ends; the calling doesn\u2019t. Galatians 6:9 says let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up. This session turns four weeks of ideas into one sustainable rule of life.`,</span>
+<span class="s2">  discuss:[`Read Galatians 6:9–10. What does \u201Cthe proper time\u201D suggest about harvests you can\u2019t see yet?`,</span>
+<span class="s2">   `Which of this series\u2019 three points — made on purpose, work as worship, Monday as mission — most needs a structure in your life, not just a memory?`,</span>
+<span class="s2">   `What is one rhythm (daily question, weekly prayer walk, monthly check-in with a friend) you will commit to for the next ninety days?`,</span>
+<span class="s2">   `Who in this group will you give permission to ask you about it? Set it now, out loud.`,</span>
+<span class="s2">   `If this group kept meeting, what would you want to walk through next?`],</span>
+<span class="s2">  practice:`Write a one-sentence rule of life for your work: \u201CBecause I am God\u2019s handiwork, I will ____ every ____.\u201D Share it with your spiritual partner before Sunday.`,</span>
+<span class="s2">  pray:{warm:`Close the series by praying a blessing over each person\u2019s workplace, spoken by the person to their left.`,</span>
+<span class="s2">        direct:`Commission one another: stand, and speak Matthew 5:16 over the group as a sending, not a suggestion.`,</span>
+<span class="s2">        reflective:`End in unhurried silence, then pray the prayer of examen over the whole series: where was God? what is He asking now?`},</span>
+<span class="s2">  between:`Celebrate. Share a meal as a group before the next series begins — no curriculum, just the table.`},</span>
+<span class="s2"> {t:'Commissioned to Monday', v:'Matthew 28:19–20', aim:'Send the group — Sunday is where we say it; Monday is where we prove it.',</span>
+<span class="s2">  connect:[`As we close the series: what is one sentence you\u2019ll carry from these weeks? Go around the circle — no passing.`,</span>
+<span class="s2">           `What surprised you most about this group over these sessions?`],</span>
+<span class="s2">  recap:`The Great Commission was given to ordinary people heading back to ordinary places. Pastor\u2019s closing line is the group\u2019s sending: &lt;span class="yw"&gt;✎ your words&lt;/span&gt; \u201C$</span><span class="si">{q[3]}</span><span class="s2">\u201D`,</span>
+<span class="s2">  discuss:[`Read Matthew 28:16–20. Verse 17 says \u201Cbut some doubted\u201D — and Jesus commissioned them anyway. What does that make possible for you?`,</span>
+<span class="s2">   `\u201CAll authority\u201D comes before \u201Ctherefore go.\u201D How does the order of those sentences steady you for Monday?`,</span>
+<span class="s2">   `Where is your \u201Call nations\u201D — the specific hallway, job site, inbox, or classroom you\u2019re being sent to?`,</span>
+<span class="s2">   `What would it look like for this group to commission each other — practically, not just ceremonially?`,</span>
+<span class="s2">   `Ninety days from now, what do you hope is different because these weeks happened?`],</span>
+<span class="s2">  practice:`Each person names their Monday mission field out loud. The group responds together: \u201CAnd surely He is with you always.\u201D Then go — and this week, prove it.`,</span>
+<span class="s2">  pray:{warm:`Lay hands (or simply stretch a hand toward) each member in turn and pray a sending blessing over their week.`,</span>
+<span class="s2">        direct:`Pray Matthew 28:19–20 as a group charge, then each person answers aloud: \u201CSend me.\u201D`,</span>
+<span class="s2">        reflective:`Close with two minutes of gratitude in silence, then speak one word each: the word you\u2019re taking into Monday.`},</span>
+<span class="s2">  between:`This is the sending. Next step: pastor announces the next churchwide campaign — and this group signs up together.`}</span>
+<span class="s2">];}</span>
+
+<span class="s2">/* ================= STATE ================= */</span>
+<span class="s2">let analysis=null, isSample=false, cur=0;</span>
+<span class="s2">const prefs={sess:5,aud:'Adult groups',tone:'warm',church:'Grace Community Church',pastor:'Pastor Dave Miller'};</span>
+<span class="s2">let sessions=[];</span>
+
+<span class="s2">function show(id){document.querySelectorAll('.stage').forEach(s=&gt;s.classList.remove('on'));</span>
+<span class="s2">  document.getElementById(id).classList.add('on');window.scrollTo(</span><span class="si">{top:0}</span><span class="s2">);}</span>
+<span class="s2">function go(k){show('st-'+k)}</span>
+
+<span class="s2">function loadSample(){</span>
+<span class="s2">  document.getElementById('sermonTxt').value=SAMPLE;isSample=true;wcount();</span>
+<span class="s2">}</span>
+<span class="s2">document.addEventListener('DOMContentLoaded',()=&gt;{</span>
+<span class="s2">  const ta=document.getElementById('sermonTxt');</span>
+<span class="s2">  ta.addEventListener('input',()=&gt;{isSample=false;wcount()});</span>
+<span class="s2">  ['pSess','pAud','pTone'].forEach(id=&gt;{</span>
+<span class="s2">    document.querySelectorAll('#'+id+' .pill').forEach(p=&gt;p.addEventListener('click',()=&gt;{</span>
+<span class="s2">      document.querySelectorAll('#'+id+' .pill').forEach(x=&gt;x.classList.remove('sel'));</span>
+<span class="s2">      p.classList.add('sel');</span>
+<span class="s2">      if(id==='pSess')prefs.sess=+p.dataset.v;</span>
+<span class="s2">      if(id==='pAud')prefs.aud=p.dataset.v;</span>
+<span class="s2">      if(id==='pTone')prefs.tone=p.dataset.v;</span>
+<span class="s2">    }));</span>
+<span class="s2">  });</span>
+<span class="s2">});</span>
+<span class="s2">function wcount(){</span>
+<span class="s2">  const n=document.getElementById('sermonTxt').value.trim().split(/\s+/).filter(Boolean).length;</span>
+<span class="s2">  document.getElementById('wc').textContent=n+' words';</span>
+<span class="s2">}</span>
+
+<span class="s2">/* ================= ANALYSIS ================= */</span>
+<span class="s2">const BOOKS='Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|Samuel|Kings|Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|Psalms|Proverbs|Ecclesiastes|Song|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|Corinthians|Galatians|Ephesians|Philippians|Colossians|Thessalonians|Timothy|Titus|Philemon|Hebrews|James|Peter|Jude|Revelation';</span>
+<span class="s2">function analyze(){</span>
+<span class="s2">  const txt=document.getElementById('sermonTxt').value.trim();</span>
+<span class="s2">  if(txt.split(/\s+/).length&lt;40){alert('Give us a bit more to read — at least a paragraph or two of your message.');return;}</span>
+<span class="s2">  show('st-analyzing');</span>
+<span class="s2">  const lines=['Reading your sermon\u2026','Finding the big idea\u2026','Tracing the scripture spine\u2026','Listening for your voice\u2026'];</span>
+<span class="s2">  let i=0;const el=document.getElementById('anLine');</span>
+<span class="s2">  const t=setInterval(()=&gt;{i++;if(i&lt;lines.length){el.textContent=lines[i]}else{clearInterval(t);buildAnalysis(txt)}},900);</span>
+<span class="s2">}</span>
+<span class="s2">function buildAnalysis(txt){</span>
+<span class="s2">  if(isSample){analysis={...SAMPLE_ANALYSIS};}</span>
+<span class="s2">  else{</span>
+<span class="s2">    const vre=new RegExp('\\b((?:[1-3]\\s)?(?:'+BOOKS+'))\\s?(\\d+(?::\\d+(?:[\u2013-]\\d+)?)?)','g');</span>
+<span class="s2">    const verses=[...new Set([...txt.matchAll(vre)].map(m=&gt;m[1]+' '+m[2]))].slice(0,6);</span>
+<span class="s2">    const sents=txt.replace(/\s+/g,' ').split(/(?&lt;=[.!?])\s/).filter(s=&gt;s.length&gt;40&amp;&amp;s.length&lt;220);</span>
+<span class="s2">    const big=(sents.find(s=&gt;/\byou\b/i.test(s))||sents[0]||'The heart of your message.').trim();</span>
+<span class="s2">    const pts=sents.filter(s=&gt;/\b(God|Jesus|Christ|Lord)\b/.test(s)).slice(0,3);</span>
+<span class="s2">    analysis={big,verses:verses.length?verses:['Add your key passages'],</span>
+<span class="s2">      points:[pts.map((p,i)=&gt;`&lt;b&gt;${i+1}.&lt;/b&gt; $</span><span class="si">{p}</span><span class="s2">`).join('&lt;br&gt;')||'&lt;b&gt;1.&lt;/b&gt; Edit these to match your outline.'],</span>
+<span class="s2">      tone:'Warm and direct \u2014 refine this to match your voice.',</span>
+<span class="s2">      quotes:[big, sents[1]||big, sents[2]||big, sents[3]||big]};</span>
+<span class="s2">  }</span>
+<span class="s2">  document.getElementById('aBig').textContent=analysis.big;</span>
+<span class="s2">  document.getElementById('aVerses').innerHTML=analysis.verses.map(v=&gt;`&lt;span class="vchip"&gt;$</span><span class="si">{v}</span><span class="s2">&lt;/span&gt;`).join('');</span>
+<span class="s2">  document.getElementById('aPoints').innerHTML=analysis.points[0];</span>
+<span class="s2">  document.getElementById('aTone').textContent=analysis.tone;</span>
+<span class="s2">  document.getElementById('anNote').innerHTML=isSample</span>
+<span class="s2">    ?'&lt;b&gt;Sample mode.&lt;/b&gt; This is a demonstration sermon. In the full platform, the analysis runs on Lifetogether\u2019s formation engine and the scripture spine is verified against the licensed NIV corpus before anything is generated.'</span>
+<span class="s2">    :'&lt;b&gt;Prototype analysis.&lt;/b&gt; This preview reads your text with lightweight on-device logic. The full platform runs Lifetogether\u2019s formation engine \u2014 and always shows you this confirmation step before building.';</span>
+<span class="s2">  show('st-analysis');</span>
+<span class="s2">}</span>
+
+<span class="s2">/* ================= GENERATE ================= */</span>
+<span class="s2">function generate(){</span>
+<span class="s2">  prefs.church=document.getElementById('pChurch').value.trim()||'Your Church';</span>
+<span class="s2">  prefs.pastor=document.getElementById('pPastor').value.trim()||'Your Pastor';</span>
+<span class="s2">  analysis.big=document.getElementById('aBig').textContent.trim();</span>
+<span class="s2">  show('st-generating');</span>
+<span class="s2">  const lines=['Laying the scripture spine\u2026','Drafting sessions in your voice\u2026','Marking your words\u2026','Setting practices and prayers\u2026'];</span>
+<span class="s2">  let i=0;const el=document.getElementById('genLine');</span>
+<span class="s2">  const t=setInterval(()=&gt;{i++;if(i&lt;lines.length){el.textContent=lines[i]}else{clearInterval(t);buildDoc()}},900);</span>
+<span class="s2">}</span>
+<span class="s2">function buildDoc(){</span>
+<span class="s2">  const lib=sessionLib(analysis.quotes);</span>
+<span class="s2">  const pick={4:[0,1,3,5],5:[0,1,2,3,5],6:[0,1,2,3,4,5]}[prefs.sess];</span>
+<span class="s2">  sessions=pick.map(i=&gt;JSON.parse(JSON.stringify(lib[i])));</span>
+<span class="s2">  cur=0;</span>
+<span class="s2">  document.getElementById('edTitle').textContent='More Than a Job \u2014 Small Group Curriculum';</span>
+<span class="s2">  if(!isSample) document.getElementById('edTitle').textContent='Your Series \u2014 Small Group Curriculum';</span>
+<span class="s2">  document.getElementById('edMeta').textContent=`$</span><span class="si">{prefs.sess}</span><span class="s2"> sessions \u00b7 $</span><span class="si">{prefs.aud}</span><span class="s2"> \u00b7 $</span><span class="si">{prefs.church}</span><span class="s2"> \u00b7 from the teaching of $</span><span class="si">{prefs.pastor}</span><span class="s2">`;</span>
+<span class="s2">  renderTabs();renderSession();</span>
+<span class="s2">  show('st-editor');</span>
+<span class="s2">}</span>
+<span class="s2">function renderTabs(){</span>
+<span class="s2">  document.getElementById('sessTabs').innerHTML=sessions.map((s,i)=&gt;`</span>
+<span class="s2">    &lt;button class="stab ${i===cur?'sel':''}" onclick="cur=$</span><span class="si">{i}</span><span class="s2">;renderTabs();renderSession()"&gt;</span>
+<span class="s2">      &lt;span class="sn"&gt;SESSION ${i+1}&lt;/span&gt;&lt;b&gt;$</span><span class="si">{s.t}</span><span class="s2">&lt;/b&gt;</span>
+<span class="s2">    &lt;/button&gt;`).join('');</span>
+<span class="s2">}</span>
+<span class="s2">const altConnect=</span><span class="si">{}</span><span class="s2">;</span>
+<span class="s2">function renderSession(){</span>
+<span class="s2">  const s=sessions[cur];</span>
+<span class="s2">  const ci=altConnect[cur]||0;</span>
+<span class="s2">  document.getElementById('docPane').innerHTML=`</span>
+<span class="s2">    &lt;div class="doc-head"&gt;</span>
+<span class="s2">      &lt;span class="chip gold"&gt;Session ${cur+1} of $</span><span class="si">{sessions.length}</span><span class="s2"> \u00b7 $</span><span class="si">{s.v}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">      &lt;h3 contenteditable="true" onblur="sessions[$</span><span class="si">{cur}</span><span class="s2">].t=this.textContent"&gt;$</span><span class="si">{s.t}</span><span class="s2">&lt;/h3&gt;</span>
+<span class="s2">      &lt;p class="dsub"&gt;$</span><span class="si">{prefs.aud}</span><span class="s2"> \u00b7 $</span><span class="si">{prefs.church}</span><span class="s2"> \u00b7 from the teaching of $</span><span class="si">{prefs.pastor}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="doc-body"&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;The aim&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true" onblur="sessions[$</span><span class="si">{cur}</span><span class="s2">].aim=this.textContent"&gt;$</span><span class="si">{s.aim}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Connect · 10 min&lt;/label&gt;</span>
+<span class="s2">        &lt;button class="regen" onclick="regenConnect(this)"&gt;\u21bb Try another&lt;/button&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true" id="connectBlk"&gt;$</span><span class="si">{s.connect[ci%s.connect.length]}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;From Sunday · 5 min&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.recap}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Discuss · 35 min&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;${s.discuss.map((q,i)=&gt;`&lt;b&gt;${i+1}.&lt;/b&gt; $</span><span class="si">{q}</span><span class="s2">`).join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Practice · this week&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.practice}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Pray · 10 min&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.pray[prefs.tone]}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Between sessions&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.between}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;`;</span>
+<span class="s2">}</span>
+<span class="s2">function regenConnect(btn){</span>
+<span class="s2">  btn.classList.remove('spun');void btn.offsetWidth;btn.classList.add('spun');</span>
+<span class="s2">  altConnect[cur]=(altConnect[cur]||0)+1;</span>
+<span class="s2">  const s=sessions[cur];</span>
+<span class="s2">  document.getElementById('connectBlk').innerHTML=s.connect[altConnect[cur]</span><span class="si">%s</span><span class="s2">.connect.length];</span>
+<span class="s2">}</span>
+<span class="s2">function finishEdit(){</span>
+<span class="s2">  document.getElementById('expLede').textContent=</span>
+<span class="s2">    `$</span><span class="si">{sessions.length}</span><span class="s2"> sessions are ready for $</span><span class="si">{prefs.church}</span><span class="s2"> \u2014 built from ${prefs.pastor==='Your Pastor'?'your':'Pastor '+prefs.pastor.replace(/^Pastor\s+/i,'')+'\u2019s'} own message, edited by you, ready for your leaders.`;</span>
+<span class="s2">  buildPrint();</span>
+<span class="s2">  show('st-export');</span>
+<span class="s2">}</span>
+<span class="s2">/* print + word export */</span>
+<span class="s2">function docHTML(){</span>
+<span class="s2">  return sessions.map((s,i)=&gt;`</span>
+<span class="s2">    &lt;div style="page-break-after:always;font-family:Georgia,serif;max-width:680px;margin:0 auto 40px"&gt;</span>
+<span class="s2">      &lt;p style="font-size:11px;letter-spacing:2px;color:#9C7228;font-weight:bold"&gt;SESSION ${i+1} \u00b7 ${s.v.toUpperCase()}&lt;/p&gt;</span>
+<span class="s2">      &lt;h2 style="font-size:26px;color:#14352A;margin:6px 0 2px"&gt;$</span><span class="si">{s.t}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">      &lt;p style="font-size:12px;color:#777"&gt;$</span><span class="si">{prefs.aud}</span><span class="s2"> \u00b7 $</span><span class="si">{prefs.church}</span><span class="s2"> \u00b7 from the teaching of $</span><span class="si">{prefs.pastor}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#237A52"&gt;The aim&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.aim}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#237A52"&gt;Connect \u00b7 10 min&lt;/h4&gt;&lt;p&gt;${s.connect[(altConnect[i]||0)</span><span class="si">%s</span><span class="s2">.connect.length]}&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#237A52"&gt;From Sunday \u00b7 5 min&lt;/h4&gt;&lt;p&gt;${s.recap.replace(/&lt;span class="yw"&gt;[^&lt;]*&lt;\/span&gt;/g,'[your words] ')}&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#237A52"&gt;Discuss \u00b7 35 min&lt;/h4&gt;&lt;p&gt;${s.discuss.map((q,qi)=&gt;`&lt;b&gt;${qi+1}.&lt;/b&gt; $</span><span class="si">{q}</span><span class="s2">`).join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#237A52"&gt;Practice \u00b7 this week&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.practice}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#237A52"&gt;Pray \u00b7 10 min&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.pray[prefs.tone]}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#237A52"&gt;Between sessions&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.between}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;`).join('');</span>
+<span class="s2">}</span>
+<span class="s2">function buildPrint(){document.getElementById('printAll').innerHTML=docHTML();}</span>
+<span class="s2">function downloadDoc(){</span>
+<span class="s2">  const html=`&lt;html xmlns:w="urn:schemas-microsoft-com:office:word"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;Curriculum&lt;/title&gt;&lt;/head&gt;&lt;body&gt;${docHTML()}&lt;/body&gt;&lt;/html&gt;`;</span>
+<span class="s2">  const blob=new Blob(['\ufeff',html],{type:'application/msword'});</span>
+<span class="s2">  const a=document.createElement('a');</span>
+<span class="s2">  a.href=URL.createObjectURL(blob);</span>
+<span class="s2">  a.download='Small-Group-Curriculum.doc';a.click();URL.revokeObjectURL(a.href);</span>
+<span class="s2">}</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">write</span><span class="p">(</span><span class="s2">"create.html"</span><span class="p">,</span> <span class="s2">"For Pastors &amp; Leaders — Transform a Sermon | Lifetogether"</span><span class="p">,</span> <span class="n">BODY</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">"pastors"</span><span class="p">,</span> <span class="n">head</span><span class="o">=</span><span class="n">HEAD</span><span class="p">,</span> <span class="n">scripts</span><span class="o">=</span><span class="n">SCRIPTS</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/page_create.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Terry Parker Interviews</div>
+<h1>build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">14 KB</span>
+<a class="btn" href="../../artifacts/Terry%20Parker%20Interviews/build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build script converting markdown artifacts into styled HTML reading pages and rewiring all links</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">glob</span><span class="o">,</span><span class="w"> </span><span class="nn">markdown</span>
+
+<span class="n">OUT</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs"</span>
+
+<span class="c1"># title, subtitle, eyebrow, nav-section for each markdown source</span>
+<span class="n">META</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"The_Deep_Well_Family_Edition_Outline.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The Deep Well"</span><span class="p">,</span> <span class="s2">"Chapter outline and structure"</span><span class="p">,</span> <span class="s2">"Manuscript · Family Edition"</span><span class="p">),</span>
+ <span class="s2">"Deep_Well_Ch1_Ch5_Ch6.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Chapters One, Five &amp;amp; Six"</span><span class="p">,</span> <span class="s2">"The First Thirty Feet · Before the Dry Year · Dig Your Own"</span><span class="p">,</span> <span class="s2">"Manuscript · Drafted"</span><span class="p">),</span>
+ <span class="s2">"Deep_Well_Ch3_Amos.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Chapter Three"</span><span class="p">,</span> <span class="s2">"Amos Carried the Water"</span><span class="p">,</span> <span class="s2">"Manuscript · Drafted"</span><span class="p">),</span>
+ <span class="s2">"Deep_Well_Ch4_and_40_Day_Outline.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Chapter Four"</span><span class="p">,</span> <span class="s2">"What He Never Said, and the forty-day companion"</span><span class="p">,</span> <span class="s2">"Manuscript · Drafted"</span><span class="p">),</span>
+ <span class="s2">"Advisor_Book_Ch7_The_Conversation_That_Costs_You.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The Conversation That Costs You"</span><span class="p">,</span> <span class="s2">"A Different Kind of Advisor · sample chapter"</span><span class="p">,</span> <span class="s2">"Manuscript · Drafted"</span><span class="p">),</span>
+ <span class="s2">"Different_Kind_of_Advisor_Three_Editions.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"A Different Kind of Advisor"</span><span class="p">,</span> <span class="s2">"Six sessions, forty days, three editions"</span><span class="p">,</span> <span class="s2">"Architecture"</span><span class="p">),</span>
+ <span class="s2">"Two_Books_Instead_of_One_draft.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Two Books Instead of One"</span><span class="p">,</span> <span class="s2">"A fable about everything we try to keep"</span><span class="p">,</span> <span class="s2">"Manuscript · Drafted"</span><span class="p">),</span>
+ <span class="s2">"Deep_Well_Assessments_and_Tools.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The Assessments"</span><span class="p">,</span> <span class="s2">"Personal and family instruments, plus ten experiential tools"</span><span class="p">,</span> <span class="s2">"Instrument · Print-Ready"</span><span class="p">),</span>
+ <span class="s2">"Deep_Well_Toolbox_Expanded.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The Toolbox"</span><span class="p">,</span> <span class="s2">"Twenty-five tools, capture protocol, and journey catalog"</span><span class="p">,</span> <span class="s2">"Instrument · Complete"</span><span class="p">),</span>
+ <span class="s2">"Treasure_Principle_40_Day_Campaign_Proposal.md"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The Treasure Principle · 40 Days"</span><span class="p">,</span> <span class="s2">"A churchwide campaign proposal"</span><span class="p">,</span> <span class="s2">"Proposal · Unsent"</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">NAV</span> <span class="o">=</span> <span class="s2">"""&lt;nav class="main"&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Begin&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Start Here&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="index.html"&gt;The Archive&lt;/a&gt;&lt;a href="deep-well-brochure-navy.html"&gt;Find Your Starting Point&lt;/a&gt;&lt;a href="deep-well-platform.html"&gt;Platform Overview&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Manuscripts&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Written Work&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="The_Deep_Well_Family_Edition_Outline.html"&gt;The Deep Well · Outline&lt;/a&gt;&lt;a href="Deep_Well_Ch1_Ch5_Ch6.html"&gt;Chapters One, Five &amp;amp; Six&lt;/a&gt;&lt;a href="Deep_Well_Ch3_Amos.html"&gt;Chapter Three · Amos&lt;/a&gt;&lt;a href="Deep_Well_Ch4_and_40_Day_Outline.html"&gt;Chapter Four &amp;amp; Forty Days&lt;/a&gt;&lt;a href="Two_Books_Instead_of_One_draft.html"&gt;Two Books Instead of One&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Advisor&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Practitioner Edition&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="Different_Kind_of_Advisor_Three_Editions.html"&gt;Three Editions&lt;/a&gt;&lt;a href="Advisor_Book_Ch7_The_Conversation_That_Costs_You.html"&gt;The Conversation That Costs You&lt;/a&gt;&lt;a href="case-studies-and-voices.html"&gt;Case Studies &amp;amp; Voices&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Instruments&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Diagnostics &amp;amp; Tools&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="Deep_Well_Assessments_and_Tools.html"&gt;The Assessments&lt;/a&gt;&lt;a href="Deep_Well_Toolbox_Expanded.html"&gt;The Toolbox&lt;/a&gt;&lt;a href="family-library-interactive.html"&gt;Take the Assessment&lt;/a&gt;&lt;a href="family-library.html"&gt;The Family Library&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Operations&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Build &amp;amp; Partners&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="Treasure_Principle_40_Day_Campaign_Proposal.html"&gt;Treasure Principle Proposal&lt;/a&gt;&lt;a href="video-access-golive.html"&gt;Video, Access &amp;amp; Go-Live&lt;/a&gt;&lt;a href="deep-well-blue.html"&gt;Blue Prototype&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/nav&gt;"""</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">""":root{--ink:#080e16;--navy:#0b1726;--navy-2:#0e1d30;--panel:#132439;--panel-2:#16293f;--gold:#c9a35c;--gold-bright:#e3c186;--cream:#ece7d8;--muted:#8b94a5;--muted-dim:#5f6a7c;--ivory:#f4efe3;--line:rgba(255,255,255,.08);--line-gold:rgba(201,163,92,.22);--maxw:1280px}</span>
+<span class="s2">*{box-sizing:border-box}html{scroll-behavior:smooth}</span>
+<span class="s2">body{margin:0;background:var(--navy);color:var(--cream);font-family:'Spectral',Georgia,serif;font-size:18px;line-height:1.68;-webkit-font-smoothing:antialiased}</span>
+<span class="s2">.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}</span>
+<span class="s2">.read{max-width:760px;margin:0 auto;padding:0 32px}</span>
+<span class="s2">header{position:sticky;top:0;z-index:300;height:78px;background:rgba(11,23,38,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line-gold)}</span>
+<span class="s2">.hdr{display:flex;align-items:center;justify-content:space-between;height:78px;gap:24px}</span>
+<span class="s2">.brand{font-family:'Playfair Display',serif;font-weight:800;font-size:20px;letter-spacing:-.01em;color:var(--cream);text-decoration:none}</span>
+<span class="s2">.brand span{color:var(--gold)}</span>
+<span class="s2">nav.main{display:flex;align-items:center;gap:30px}</span>
+<span class="s2">.navitem{position:relative}</span>
+<span class="s2">.navlink{font-family:'Archivo',sans-serif;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;cursor:pointer;padding:28px 0;display:inline-block;transition:color .18s ease}</span>
+<span class="s2">.navitem:hover .navlink{color:var(--gold-bright)}</span>
+<span class="s2">.mega{position:absolute;top:70px;left:-24px;min-width:288px;background:var(--panel);border:1px solid var(--line-gold);border-radius:10px;padding:22px 24px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .18s ease,transform .18s ease,visibility .18s}</span>
+<span class="s2">.navitem:hover .mega{opacity:1;visibility:visible;transform:translateY(0)}</span>
+<span class="s2">.mega h5{font-family:'Archivo',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}</span>
+<span class="s2">.mega a{display:block;color:var(--cream);text-decoration:none;font-size:15px;padding:6px 0;opacity:.82}</span>
+<span class="s2">.mega a:hover{color:var(--gold-bright);opacity:1}</span>
+<span class="s2">.btn{font-family:'Archivo',sans-serif;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;background:var(--gold);color:var(--ink);border:none;padding:13px 22px;text-decoration:none;display:inline-block;cursor:pointer;transition:background .18s ease}</span>
+<span class="s2">.btn:hover{background:var(--gold-bright)}</span>
+<span class="s2">.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--line-gold)}</span>
+<span class="s2">.btn.ghost:hover{background:rgba(201,163,92,.06);color:var(--gold-bright)}</span>
+<span class="s2">.hero{padding:96px 0 76px;background:radial-gradient(80</span><span class="si">% 120%</span><span class="s2"> at 78</span><span class="si">% -10%</span><span class="s2">, rgba(201,163,92,.12), transparent 55%),linear-gradient(180deg,var(--navy-2),var(--navy));border-bottom:1px solid var(--line-gold)}</span>
+<span class="s2">.eyebrow{font-family:'Archivo',sans-serif;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 20px}</span>
+<span class="s2">.hero h1{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(40px,5.4vw,68px);line-height:1.04;letter-spacing:-.015em;color:var(--cream);margin:0 0 22px}</span>
+<span class="s2">.hero .sub{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:var(--gold-bright);margin:0}</span>
+<span class="s2">article{padding:80px 0 100px}</span>
+<span class="s2">article h1{font-family:'Playfair Display',serif;font-weight:800;font-size:38px;line-height:1.1;letter-spacing:-.015em;color:var(--cream);margin:64px 0 24px}</span>
+<span class="s2">article h2{font-family:'Playfair Display',serif;font-weight:700;font-size:30px;line-height:1.16;letter-spacing:-.012em;color:var(--cream);margin:56px 0 20px;padding-top:36px;border-top:1px solid var(--line-gold)}</span>
+<span class="s2">article h2:first-child{margin-top:0;padding-top:0;border-top:none}</span>
+<span class="s2">article h3{font-family:'Playfair Display',serif;font-weight:700;font-size:23px;line-height:1.24;color:var(--cream);margin:44px 0 14px}</span>
+<span class="s2">article h4{font-family:'Archivo',sans-serif;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:38px 0 14px}</span>
+<span class="s2">article p{margin:0 0 22px;opacity:.92}</span>
+<span class="s2">article em{color:var(--cream)}</span>
+<span class="s2">article strong{color:var(--cream);font-weight:600}</span>
+<span class="s2">article a{color:var(--gold-bright);text-decoration:none;border-bottom:1px solid var(--line-gold)}</span>
+<span class="s2">article ul,article ol{padding-left:22px;margin:0 0 24px}</span>
+<span class="s2">article li{margin-bottom:11px;opacity:.92}</span>
+<span class="s2">article li::marker{color:var(--gold)}</span>
+<span class="s2">article hr{border:none;height:1px;background:var(--line-gold);margin:52px 0}</span>
+<span class="s2">article blockquote{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;font-size:23px;line-height:1.44;color:var(--gold-bright);background:rgba(201,163,92,.06);border-left:2px solid var(--gold);padding:26px 30px;margin:36px 0}</span>
+<span class="s2">article blockquote p{margin:0;opacity:1}</span>
+<span class="s2">article table{width:100%;border-collapse:collapse;margin:8px 0 32px;font-size:16px}</span>
+<span class="s2">article th{font-family:'Archivo',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-align:left;padding:0 16px 13px 0;border-bottom:1px solid var(--line-gold)}</span>
+<span class="s2">article td{padding:14px 16px 14px 0;border-bottom:1px solid var(--line);vertical-align:top;opacity:.9}</span>
+<span class="s2">article code{font-family:'Archivo',sans-serif;font-size:14px;color:var(--gold-bright);background:rgba(201,163,92,.06);padding:2px 6px;border-radius:3px}</span>
+<span class="s2">.pager{border-top:1px solid var(--line-gold);background:var(--ink)}</span>
+<span class="s2">.pgrid2{display:grid;gap:1px;background:var(--line-gold);grid-template-columns:1fr 1fr}</span>
+<span class="s2">.pgrid2 a{background:var(--panel);padding:34px 32px;text-decoration:none;color:inherit;transition:background .16s}</span>
+<span class="s2">.pgrid2 a:hover{background:var(--panel-2)}</span>
+<span class="s2">.pgrid2 .dirn{font-family:'Archivo',sans-serif;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}</span>
+<span class="s2">.pgrid2 .ttl{font-family:'Playfair Display',serif;font-weight:700;font-size:21px;color:var(--cream)}</span>
+<span class="s2">.pgrid2 a.nxt{text-align:right}</span>
+<span class="s2">footer{background:var(--ink);border-top:1px solid var(--line-gold);padding:56px 0 44px}</span>
+<span class="s2">footer p{font-size:14px;color:var(--muted);margin:0 0 12px}</span>
+<span class="s2">@media(max-width:900px){nav.main{display:none}.wrap,.read{padding:0 22px}article{padding:56px 0 70px}.pgrid2{grid-template-columns:1fr}.pgrid2 a.nxt{text-align:left}}"""</span>
+
+<span class="n">HEAD</span> <span class="o">=</span> <span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;</span><span class="si">{title}</span><span class="s2"> — LifeTogether&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;0,900;1,500;1,600&amp;family=Spectral:ital,wght@0,400;0,500;0,600;1,400&amp;family=Archivo:wght@400;500;600;700&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{css}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">&lt;header&gt;&lt;div class="wrap hdr"&gt;</span>
+<span class="s2">  &lt;a class="brand" href="index.html"&gt;Life&lt;span&gt;together&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">  </span><span class="si">{nav}</span>
+<span class="s2">  &lt;a class="btn ghost" href="index.html"&gt;The Archive&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;</span>
+<span class="s2">&lt;div class="hero"&gt;&lt;div class="read"&gt;</span>
+<span class="s2">  &lt;p class="eyebrow"&gt;</span><span class="si">{eyebrow}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;h1&gt;</span><span class="si">{title}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">  &lt;p class="sub"&gt;</span><span class="si">{sub}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;article&gt;&lt;div class="read"&gt;</span>
+<span class="si">{body}</span>
+<span class="s2">&lt;/div&gt;&lt;/article&gt;</span>
+<span class="s2">&lt;div class="pager"&gt;&lt;div class="wrap"&gt;&lt;div class="pgrid2"&gt;</span>
+<span class="s2">  &lt;a href="</span><span class="si">{prev_href}</span><span class="s2">"&gt;&lt;div class="dirn"&gt;Previous&lt;/div&gt;&lt;div class="ttl"&gt;</span><span class="si">{prev_title}</span><span class="s2">&lt;/div&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;a class="nxt" href="</span><span class="si">{next_href}</span><span class="s2">"&gt;&lt;div class="dirn"&gt;Next&lt;/div&gt;&lt;div class="ttl"&gt;</span><span class="si">{next_title}</span><span class="s2">&lt;/div&gt;&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">  &lt;p style="font-family:'Playfair Display',serif;font-size:19px;color:var(--cream);margin-bottom:18px"&gt;LifeTogether &amp;nbsp;·&amp;nbsp; San Juan Capistrano&lt;/p&gt;</span>
+<span class="s2">  &lt;p&gt;Working document. Status language is deliberate: concept, exploratory, proposed, developing, pilot, active. Any quotation attributed to a named person is a draft written by us and approved by no one. Case studies are composites containing no real client detail. Third-party titles are unlicensed. Nothing here is tax or legal advice.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/footer&gt;</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;"""</span>
+
+<span class="c1"># reading order for prev/next</span>
+<span class="n">ORDER</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"index.html"</span><span class="p">,</span> <span class="s2">"The Archive"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"deep-well-brochure-navy.html"</span><span class="p">,</span> <span class="s2">"Find Your Starting Point"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"deep-well-platform.html"</span><span class="p">,</span> <span class="s2">"The Platform Overview"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The_Deep_Well_Family_Edition_Outline.html"</span><span class="p">,</span> <span class="s2">"The Deep Well · Outline"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Deep_Well_Ch1_Ch5_Ch6.html"</span><span class="p">,</span> <span class="s2">"Chapters One, Five &amp;amp; Six"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Deep_Well_Ch3_Amos.html"</span><span class="p">,</span> <span class="s2">"Chapter Three · Amos"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Deep_Well_Ch4_and_40_Day_Outline.html"</span><span class="p">,</span> <span class="s2">"Chapter Four &amp;amp; Forty Days"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Different_Kind_of_Advisor_Three_Editions.html"</span><span class="p">,</span> <span class="s2">"A Different Kind of Advisor"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Advisor_Book_Ch7_The_Conversation_That_Costs_You.html"</span><span class="p">,</span> <span class="s2">"The Conversation That Costs You"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Two_Books_Instead_of_One_draft.html"</span><span class="p">,</span> <span class="s2">"Two Books Instead of One"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Deep_Well_Assessments_and_Tools.html"</span><span class="p">,</span> <span class="s2">"The Assessments"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Deep_Well_Toolbox_Expanded.html"</span><span class="p">,</span> <span class="s2">"The Toolbox"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Treasure_Principle_40_Day_Campaign_Proposal.html"</span><span class="p">,</span> <span class="s2">"Treasure Principle · 40 Days"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"family-library.html"</span><span class="p">,</span> <span class="s2">"The Family Library"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"family-library-interactive.html"</span><span class="p">,</span> <span class="s2">"The Interactive Library"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"case-studies-and-voices.html"</span><span class="p">,</span> <span class="s2">"Case Studies &amp;amp; Voices"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"video-access-golive.html"</span><span class="p">,</span> <span class="s2">"Video, Access &amp;amp; Go-Live"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"deep-well-blue.html"</span><span class="p">,</span> <span class="s2">"Blue Prototype"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">IDX</span> <span class="o">=</span> <span class="p">{</span><span class="n">h</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ORDER</span><span class="p">)}</span>
+
+<span class="n">md</span> <span class="o">=</span> <span class="n">markdown</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"tables"</span><span class="p">,</span> <span class="s2">"attr_list"</span><span class="p">,</span> <span class="s2">"sane_lists"</span><span class="p">])</span>
+
+<span class="n">built</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">eyebrow</span><span class="p">)</span> <span class="ow">in</span> <span class="n">META</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"MISSING"</span><span class="p">,</span> <span class="n">src</span><span class="p">);</span> <span class="k">continue</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="c1"># drop the leading H1 and the following italic subtitle line; the hero carries them</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">lines</span> <span class="ow">and</span> <span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">""</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"# "</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"### "</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"### "</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"# "</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+    <span class="n">out_name</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".md"</span><span class="p">,</span> <span class="s2">".html"</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">IDX</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">out_name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">ORDER</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">ORDER</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">ORDER</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">ORDER</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">ORDER</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="n">HEAD</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">eyebrow</span><span class="o">=</span><span class="n">eyebrow</span><span class="p">,</span> <span class="n">css</span><span class="o">=</span><span class="n">CSS</span><span class="p">,</span> <span class="n">nav</span><span class="o">=</span><span class="n">NAV</span><span class="p">,</span>
+                       <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">prev_href</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">prev_title</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                       <span class="n">next_href</span><span class="o">=</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">next_title</span><span class="o">=</span><span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="n">out_name</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+    <span class="n">built</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_name</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"built"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">built</span><span class="p">),</span> <span class="s2">"reading pages"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">built</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"  "</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

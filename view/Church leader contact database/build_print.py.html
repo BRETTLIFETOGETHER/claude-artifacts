@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_print.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Church leader contact database</div>
+<h1>build_print.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">17 KB</span>
+<a class="btn" href="../../artifacts/Church%20leader%20contact%20database/build_print.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Print-edition builder: transforms the three navy/gold HTML files into ivory print layouts with navy covers, renders via WeasyPrint, and runs the page-discipline checks</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""Build print PDFs of the three Legacy Library documents.</span>
+<span class="sd">Ivory ground (palette token), navy full-bleed covers, real Playfair/Cormorant,</span>
+<span class="sd">grids flattened to blocks, interactivity replaced with print equivalents."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weasyprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pypdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">PdfReader</span>
+
+<span class="n">SRC</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/"</span>
+<span class="n">F</span> <span class="o">=</span> <span class="s2">"/home/claude/fonts/"</span>
+
+<span class="n">FONTS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">@font-face{font-family:'Playfair Display';src:url('</span><span class="si">%(f)s</span><span class="s2">PlayfairDisplay-VF.ttf');font-weight:100 900;font-style:normal;}</span>
+<span class="s2">@font-face{font-family:'Playfair Display';src:url('</span><span class="si">%(f)s</span><span class="s2">PlayfairDisplay-Italic-VF.ttf');font-weight:100 900;font-style:italic;}</span>
+<span class="s2">@font-face{font-family:'Cormorant Garamond';src:url('</span><span class="si">%(f)s</span><span class="s2">CormorantGaramond-VF.ttf');font-weight:100 900;font-style:normal;}</span>
+<span class="s2">@font-face{font-family:'Cormorant Garamond';src:url('</span><span class="si">%(f)s</span><span class="s2">CormorantGaramond-Italic-VF.ttf');font-weight:100 900;font-style:italic;}</span>
+<span class="s2">"""</span> <span class="o">%</span> <span class="p">{</span><span class="s2">"f"</span><span class="p">:</span> <span class="n">F</span><span class="p">}</span>
+
+<span class="n">BASE</span> <span class="o">=</span> <span class="n">FONTS</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">@page{size:letter;margin:0.8in 0.85in 0.95in;background:#f4efe3;</span>
+<span class="s2">  @bottom-left{content:"</span><span class="si">%(footleft)s</span><span class="s2">";font-family:'Cormorant Garamond';font-style:italic;font-size:8.5pt;color:#5f6a7c;}</span>
+<span class="s2">  @bottom-right{content:counter(page);font-family:'Playfair Display';font-size:9pt;color:#0b1726;}}</span>
+<span class="s2">@page cover{margin:0;background:#0b1726;@bottom-left{content:none}@bottom-right{content:none}}</span>
+<span class="s2">*{margin:0;padding:0;box-sizing:border-box;}</span>
+<span class="s2">body{background:#f4efe3;color:#0b1726;font-family:'Cormorant Garamond',serif;font-size:10.5pt;line-height:1.55;}</span>
+<span class="s2">.wrap{max-width:none;margin:0;padding:0;}</span>
+<span class="s2">a{color:#0b1726;text-decoration:none;border-bottom:none;}</span>
+<span class="s2">.cover{page:cover;width:8.5in;height:11in;padding:1.35in 1.15in;color:#ece7d8;page-break-after:always;position:relative;}</span>
+<span class="s2">.cover .eyebrow{color:#c9a35c;}</span>
+<span class="s2">.cover h1{font-family:'Playfair Display';font-weight:700;font-size:34pt;line-height:1.1;color:#ece7d8;margin:20pt 0 14pt;max-width:5.6in;}</span>
+<span class="s2">.cover h1 em{font-style:italic;font-weight:400;color:#e3c186;}</span>
+<span class="s2">.cover .rule{width:1.1in;height:2px;background:#c9a35c;margin:0 0 18pt;}</span>
+<span class="s2">.cover .sub{font-size:13pt;color:#ece7d8;max-width:5.4in;line-height:1.5;}</span>
+<span class="s2">.cover .date{position:absolute;bottom:1.15in;left:1.15in;font-size:9.5pt;color:#8b94a5;letter-spacing:.08em;}</span>
+<span class="s2">.eyebrow{font-family:'Playfair Display';font-size:7.5pt;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c9a35c;}</span>
+<span class="s2">h1{font-family:'Playfair Display';font-weight:700;font-size:20pt;line-height:1.15;margin:8pt 0 8pt;color:#0b1726;}</span>
+<span class="s2">h1 em{font-style:italic;font-weight:400;color:#a07f45;}</span>
+<span class="s2">h2{font-family:'Playfair Display';font-weight:600;font-size:14pt;margin-bottom:5pt;color:#0b1726;page-break-after:avoid;}</span>
+<span class="s2">h3{font-family:'Playfair Display';font-weight:600;font-size:10.5pt;color:#0b1726;margin-bottom:3pt;page-break-after:avoid;}</span>
+<span class="s2">.sub,.small,.note,.place,.who,.why,.contact{color:#5f6a7c;}</span>
+<span class="s2">.sechead{font-family:'Playfair Display';font-size:8.5pt;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#a07f45;padding:16pt 0 6pt;border-bottom:1.5px solid #c9a35c;margin-bottom:10pt;page-break-after:avoid;}</span>
+<span class="s2">section{padding:0;}</span>
+<span class="s2">.card{background:transparent;border:none;border-radius:0;border-top:1px solid rgba(160,127,69,.5);border-left:2px solid #c9a35c;padding:9pt 0 10pt 12pt;margin-top:10pt;page-break-inside:avoid;}</span>
+<span class="s2">.printlab{font-family:'Playfair Display';font-size:8pt;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#a07f45;margin:12pt 0 4pt;page-break-after:avoid;}</span>
+<span class="s2">table{width:100%;border-collapse:collapse;font-size:9pt;}</span>
+<span class="s2">th{font-family:'Playfair Display';font-size:7.5pt;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a07f45;text-align:left;padding:5pt 4pt;border-bottom:1.5px solid #c9a35c;}</span>
+<span class="s2">td{padding:5pt 4pt;border-bottom:0.75px solid rgba(95,106,124,.35);vertical-align:top;}</span>
+<span class="s2">footer{padding-top:14pt;color:#5f6a7c;font-size:8.5pt;border-top:1.5px solid #c9a35c;margin-top:16pt;}</span>
+<span class="s2">"""</span>
+
+<span class="n">OFFER_CSS</span> <span class="o">=</span> <span class="n">BASE</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">.hero{padding:0;}</span>
+<span class="s2">.hero p.lead{font-size:11.5pt;max-width:6.2in;margin-bottom:7pt;}</span>
+<span class="s2">.hero p.small{font-size:10pt;color:#5f6a7c;max-width:6.2in;}</span>
+<span class="s2">.seven,.doors,.tiers,.evi .grid{display:block;}</span>
+<span class="s2">.seven .card,.doors .card{margin-top:8pt;}</span>
+<span class="s2">.seven .n,.door .tag{font-family:'Playfair Display';font-size:7pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#a07f45;}</span>
+<span class="s2">.seven p,.door p{font-size:9.5pt;color:#5f6a7c;margin-top:2pt;}</span>
+<span class="s2">.boardcase p{font-size:10pt;margin-bottom:6pt;}</span>
+<span class="s2">.boardcase p strong{color:#0b1726;font-weight:600;}</span>
+<span class="s2">.quiz{margin-top:8pt;}</span>
+<span class="s2">.q{display:block;border:none;border-bottom:0.75px solid rgba(95,106,124,.35);padding:6pt 0;page-break-inside:avoid;}</span>
+<span class="s2">.q p{font-size:10pt;display:inline;}</span>
+<span class="s2">.cb{display:inline-block;width:10pt;height:10pt;border:1.25px solid #0b1726;vertical-align:-1.5pt;margin-right:8pt;}</span>
+<span class="s2">.scorekey{border-top:1px solid rgba(160,127,69,.5);border-left:2px solid #c9a35c;padding:8pt 0 8pt 12pt;margin-top:10pt;page-break-inside:avoid;}</span>
+<span class="s2">.scorekey p{font-size:10pt;margin-bottom:5pt;}</span>
+<span class="s2">.scorekey b{font-family:'Playfair Display';font-size:9.5pt;color:#0b1726;}</span>
+<span class="s2">.tier .from{font-family:'Playfair Display';font-size:7.5pt;color:#5f6a7c;text-transform:uppercase;letter-spacing:.18em;}</span>
+<span class="s2">.tier .price{font-family:'Playfair Display';font-size:17pt;font-weight:700;color:#0b1726;margin:2pt 0;}</span>
+<span class="s2">.tier ul{list-style:none;margin-top:6pt;}</span>
+<span class="s2">.tier li{font-size:9.5pt;padding:3.5pt 0 3.5pt 14pt;border-bottom:0.75px solid rgba(95,106,124,.3);position:relative;}</span>
+<span class="s2">.tier li:before{content:"";position:absolute;left:1pt;top:7.5pt;width:5pt;height:5pt;background:#c9a35c;}</span>
+<span class="s2">.tier li:last-child{border-bottom:none;}</span>
+<span class="s2">.tier .note{font-size:9pt;font-style:italic;margin-top:6pt;}</span>
+<span class="s2">.tier.flag{border-left-width:3px;}</span>
+<span class="s2">details{margin-top:6pt;border-top:0.75px solid rgba(160,127,69,.5);padding-top:5pt;}</span>
+<span class="s2">summary{font-family:'Playfair Display';font-size:8pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#a07f45;list-style:none;}</span>
+<span class="s2">details td.v{text-align:right;white-space:nowrap;font-family:'Playfair Display';font-size:8pt;color:#0b1726;}</span>
+<span class="s2">.mathline{margin-top:6pt;font-size:9.5pt;border:1px solid #c9a35c;padding:6pt 8pt;color:#0b1726;}</span>
+<span class="s2">.door .price{font-family:'Playfair Display';font-size:12pt;font-weight:700;color:#0b1726;margin:2pt 0 3pt;}</span>
+<span class="s2">.evi{border-top:1.5px solid #c9a35c;border-bottom:1.5px solid #c9a35c;padding:12pt 0;margin-top:14pt;}</span>
+<span class="s2">.evi p.intro{font-size:10.5pt;max-width:6.2in;margin-bottom:8pt;}</span>
+<span class="s2">.evi .item{border-left:2px solid #c9a35c;padding:2pt 0 2pt 10pt;margin-bottom:8pt;page-break-inside:avoid;}</span>
+<span class="s2">.evi .item b{display:block;font-family:'Playfair Display';font-size:10pt;font-weight:600;color:#0b1726;margin-bottom:2pt;}</span>
+<span class="s2">.evi .item p{font-size:9.5pt;color:#5f6a7c;}</span>
+<span class="s2">.why p{font-size:10.5pt;max-width:6.4in;margin-bottom:7pt;}</span>
+<span class="s2">.cta .card{text-align:left;border-left:3px solid #c9a35c;}</span>
+<span class="s2">.cta p{max-width:6.2in;margin:4pt 0 0;font-size:10.5pt;color:#5f6a7c;}</span>
+<span class="s2">.contact{margin-top:8pt;font-size:9.5pt;}</span>
+<span class="s2">"""</span>
+
+<span class="n">KIT_CSS</span> <span class="o">=</span> <span class="n">BASE</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">header{padding:0;}</span>
+<span class="s2">header p{max-width:6.4in;color:#5f6a7c;font-size:10.5pt;}</span>
+<span class="s2">h1{font-size:22pt;}</span>
+<span class="s2">.rules p{font-size:10pt;margin-bottom:6pt;}</span>
+<span class="s2">.rules b{color:#0b1726;font-weight:600;}</span>
+<span class="s2">.mail{border-left-width:3px;}</span>
+<span class="s2">.mail .meta{font-family:'Playfair Display';font-size:7.5pt;color:#a07f45;text-transform:uppercase;letter-spacing:.18em;font-weight:700;margin-bottom:2pt;}</span>
+<span class="s2">.subjects{border:1px solid rgba(160,127,69,.55);padding:6pt 9pt;margin:7pt 0;font-size:9.5pt;}</span>
+<span class="s2">.subjects b{font-family:'Playfair Display';color:#a07f45;display:block;margin-bottom:2pt;font-size:7pt;text-transform:uppercase;letter-spacing:.14em;}</span>
+<span class="s2">.body-block{border:0.75px solid rgba(95,106,124,.4);border-left:2px solid #c9a35c;padding:9pt 11pt;margin-top:6pt;font-size:9.8pt;background:transparent;page-break-inside:avoid;}</span>
+<span class="s2">.body-block p{margin-bottom:6pt;}</span>
+<span class="s2">.body-block p:last-child{margin-bottom:0;}</span>
+<span class="s2">.variant{font-family:'Playfair Display';font-size:7pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#a07f45;display:block;margin:8pt 0 2pt;}</span>
+<span class="s2">.note{font-size:9pt;font-style:italic;margin-top:6pt;}</span>
+<span class="s2">.flagbox{border:1px solid #a07f45;padding:6pt 9pt;font-size:9.5pt;color:#0b1726;margin-top:8pt;page-break-inside:avoid;}</span>
+<span class="s2">td.r{font-family:'Playfair Display';font-size:8pt;font-weight:600;color:#0b1726;white-space:nowrap;}</span>
+<span class="s2">td .why{display:block;font-size:8.5pt;color:#5f6a7c;margin-top:1pt;font-style:italic;}</span>
+<span class="s2">.legend{font-size:9.5pt;color:#5f6a7c;margin-top:8pt;}</span>
+<span class="s2">.legend b{color:#0b1726;}</span>
+<span class="s2">.legend code{border:0.75px solid rgba(160,127,69,.55);padding:0 3pt;font-size:8pt;color:#0b1726;font-family:'Playfair Display';}</span>
+<span class="s2">"""</span>
+
+<span class="n">DIR_CSS</span> <span class="o">=</span> <span class="n">BASE</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">header.m{padding:0;border-bottom:none;}</span>
+<span class="s2">.stand{font-size:11pt;max-width:6.4in;}</span>
+<span class="s2">.date{margin-top:8pt;font-size:9pt;color:#5f6a7c;letter-spacing:.04em;}</span>
+<span class="s2">.census{display:flex;border-top:1.5px solid #c9a35c;border-bottom:1.5px solid #c9a35c;margin-top:10pt;page-break-inside:avoid;}</span>
+<span class="s2">.census div{flex:1 1 25%;padding:8pt 8pt;border-right:0.75px solid rgba(160,127,69,.4);}</span>
+<span class="s2">.census div:last-child{border-right:none;}</span>
+<span class="s2">.census .n{font-family:'Playfair Display';font-size:16pt;color:#0b1726;display:block;line-height:1;}</span>
+<span class="s2">.census .l{font-size:7.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5f6a7c;margin-top:3pt;display:block;}</span>
+<span class="s2">.secintro{padding:4pt 0;font-size:10pt;max-width:6.4in;color:#5f6a7c;}</span>
+<span class="s2">article.e{padding:10pt 0 10pt 12pt;border-top:1px solid rgba(160,127,69,.5);border-left:2px solid #c9a35c;margin-top:10pt;page-break-inside:avoid;}</span>
+<span class="s2">.etop{display:block;}</span>
+<span class="s2">.num{font-family:'Playfair Display';font-size:8pt;color:#a07f45;letter-spacing:.1em;}</span>
+<span class="s2">h2{font-size:14pt;margin:3pt 0 1pt;}</span>
+<span class="s2">.who{font-size:9.5pt;margin-bottom:2pt;}</span>
+<span class="s2">.who b{color:#0b1726;font-weight:600;}</span>
+<span class="s2">.place{font-size:8pt;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6pt;}</span>
+<span class="s2">.lbl{font-family:'Playfair Display';font-size:7pt;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#a07f45;margin:8pt 0 3pt;page-break-after:avoid;}</span>
+<span class="s2">.rank{font-size:9.5pt;font-style:italic;padding-left:8pt;border-left:1.5px solid rgba(160,127,69,.6);margin-bottom:3pt;}</span>
+<span class="s2">table.lk td{padding:3.5pt 2pt;font-size:8.8pt;}</span>
+<span class="s2">table.lk td.k{width:40%;font-size:7.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5f6a7c;padding-right:8pt;}</span>
+<span class="s2">.bench{padding:8pt 0 2pt;}</span>
+<span class="s2">.bench h3{font-size:11pt;margin:8pt 0 2pt;}</span>
+<span class="s2">.bench p{font-size:9.5pt;color:#5f6a7c;max-width:6.4in;}</span>
+<span class="s2">.meth p{margin:7pt 0;font-size:10.5pt;max-width:6.5in;}</span>
+<span class="s2">.meth p b{font-family:'Playfair Display';font-size:10pt;color:#0b1726;}</span>
+<span class="s2">table.roster{margin:8pt 0;}</span>
+<span class="s2">table.roster td{font-size:8.8pt;padding:4pt 4pt;}</span>
+<span class="s2">td.att{font-family:'Playfair Display';font-size:8pt;color:#0b1726;white-space:nowrap;}</span>
+<span class="s2">td.st{font-size:7pt;letter-spacing:.08em;text-transform:uppercase;color:#5f6a7c;white-space:nowrap;}</span>
+<span class="s2">td.st.p{color:#a07f45;font-weight:700;}</span>
+<span class="s2">.contact{color:#5f6a7c;font-size:8.5pt;font-style:italic;}</span>
+<span class="s2">article.e{page-break-inside:auto;}</span>
+<span class="s2">article.e .lbl, article.e .rank, article.e table.lk{page-break-inside:avoid;}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cover_html</span><span class="p">(</span><span class="n">eyebrow</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s1">'&lt;div class="cover"&gt;&lt;span class="eyebrow"&gt;'</span> <span class="o">+</span> <span class="n">eyebrow</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;'</span>
+            <span class="s1">'&lt;h1&gt;'</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s1">'&lt;/h1&gt;&lt;div class="rule"&gt;&lt;/div&gt;'</span>
+            <span class="s1">'&lt;p class="sub"&gt;'</span> <span class="o">+</span> <span class="n">sub</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span>
+            <span class="s1">'&lt;div class="date"&gt;'</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">strip_scripts_links</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'script'</span><span class="p">):</span> <span class="n">t</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'link'</span><span class="p">):</span> <span class="n">t</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">css</span><span class="p">,</span> <span class="n">cover</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">transforms</span><span class="p">):</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">SRC</span> <span class="o">+</span> <span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">'html.parser'</span><span class="p">)</span>
+    <span class="n">strip_scripts_links</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'style'</span><span class="p">);</span> <span class="n">style</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="n">css</span>
+    <span class="n">transforms</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'body'</span><span class="p">)</span>
+    <span class="n">body</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">cover</span><span class="p">,</span> <span class="s1">'html.parser'</span><span class="p">))</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/print-'</span> <span class="o">+</span> <span class="n">fname</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+    <span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">html</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s1">'/home/claude/'</span><span class="p">)</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span><span class="n">SRC</span> <span class="o">+</span> <span class="n">out</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">PdfReader</span><span class="p">(</span><span class="n">SRC</span> <span class="o">+</span> <span class="n">out</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">pages</span><span class="p">)</span>
+    <span class="n">shorts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">pages</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">extract_text</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">''</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
+            <span class="n">shorts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">'| pages:'</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="s1">'| short interior pages:'</span><span class="p">,</span> <span class="n">shorts</span> <span class="k">if</span> <span class="n">shorts</span> <span class="k">else</span> <span class="s1">'none'</span><span class="p">)</span>
+
+<span class="c1"># ---------- OFFER ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">t_offer</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+    <span class="c1"># remove hero + CTA button rows; keep contact</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'.btnrow'</span><span class="p">):</span> <span class="n">d</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="c1"># remove segmentation buttons; show all audience blocks with labels</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'.seg'</span><span class="p">):</span> <span class="n">d</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'aud-pastor'</span><span class="p">:</span> <span class="s1">'For the Senior Pastor &amp;mdash; the seven things this preserves'</span><span class="p">,</span>
+              <span class="s1">'aud-board'</span><span class="p">:</span> <span class="s1">'For the Elder Board and Executive Pastor'</span><span class="p">,</span>
+              <span class="s1">'aud-funder'</span><span class="p">:</span> <span class="s1">'For the Legacy Funder'</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">aid</span><span class="p">,</span> <span class="n">lab</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">blk</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">aid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">blk</span><span class="p">:</span>
+            <span class="n">blk</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'aud'</span><span class="p">,</span> <span class="s1">'show'</span><span class="p">]</span>
+            <span class="n">blk</span><span class="p">[</span><span class="s1">'style'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'display:block'</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">new_tag</span><span class="p">(</span><span class="s1">'div'</span><span class="p">);</span> <span class="n">tag</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'printlab'</span>
+            <span class="n">tag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="s1">'html.parser'</span><span class="p">));</span> <span class="n">blk</span><span class="o">.</span><span class="n">insert_before</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+    <span class="n">sh</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'div'</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">'sechead'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sh</span> <span class="ow">and</span> <span class="s1">'Who'</span> <span class="ow">in</span> <span class="n">sh</span><span class="o">.</span><span class="n">get_text</span><span class="p">():</span> <span class="n">sh</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s1">'The Case, Seat by Seat'</span>
+    <span class="c1"># quiz: buttons -&gt; checkboxes; intro reword; score button + result -&gt; printed key</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'.q'</span><span class="p">):</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'button'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">new_tag</span><span class="p">(</span><span class="s1">'span'</span><span class="p">);</span> <span class="n">cb</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'cb'</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'p'</span><span class="p">);</span> <span class="n">p</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cb</span><span class="p">);</span> <span class="n">b</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="n">sub</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'#ready .sub'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sub</span><span class="p">:</span> <span class="n">sub</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">"Six honest questions. Check what's true, then read the key below."</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'button'</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">'btn'</span><span class="p">):</span> <span class="n">b</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'result'</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'&lt;div class="scorekey"&gt;&lt;p&gt;&lt;b&gt;Zero to two checks:&lt;/b&gt; start with a conversation. The library may still be forming, '</span>
+           <span class="s1">'or the season may not be right yet &amp;mdash; and if the honest answer is wait, we will say so.&lt;/p&gt;'</span>
+           <span class="s1">'&lt;p&gt;&lt;b&gt;Three or four:&lt;/b&gt; start with the Audit. Map exactly what exists, rank the top ten series, '</span>
+           <span class="s1">'take the roadmap &amp;mdash; with the fee credited toward anything built next.&lt;/p&gt;'</span>
+           <span class="s1">'&lt;p&gt;&lt;b&gt;Five or six:&lt;/b&gt; the full Architecture will not be too big for what you have. Begin with the Audit '</span>
+           <span class="s1">'as the on-ramp, but plan the conversation at the Architecture or Full System level.&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">res</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">'html.parser'</span><span class="p">))</span>
+    <span class="c1"># open the line-item details</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'details'</span><span class="p">):</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">'open'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'summary'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s1">'The line-item breakdown'</span>
+    <span class="c1"># mailto -&gt; plain</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'href'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'mailto'</span><span class="p">):</span> <span class="n">a</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="n">a</span><span class="p">[</span><span class="s1">'href'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'#'</span><span class="p">):</span> <span class="n">a</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+
+<span class="n">build</span><span class="p">(</span><span class="s1">'legacy-library-offer.html'</span><span class="p">,</span> <span class="n">OFFER_CSS</span><span class="p">,</span>
+      <span class="n">cover_html</span><span class="p">(</span><span class="s1">'LifeTogether &amp;middot; The Senior Pastor Legacy Library'</span><span class="p">,</span>
+                 <span class="s1">'Your Life Message Deserves More Than a &lt;em&gt;Retirement Party.&lt;/em&gt;'</span><span class="p">,</span>
+                 <span class="s1">'A complete engagement for senior pastors with fifteen or more years of ministry: capture, organize, publish, and multiply the library you have already built. Three tiers, six doors in, one roadmap.'</span><span class="p">,</span>
+                 <span class="s1">'Print edition &amp;middot; August 2026 &amp;middot; LifeTogether Ministries'</span><span class="p">),</span>
+      <span class="s1">'legacy-library-offer.pdf'</span><span class="p">,</span> <span class="n">t_offer</span><span class="p">)</span>
+
+<span class="c1"># ---------- KIT ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">t_kit</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'.copybtn'</span><span class="p">):</span> <span class="n">b</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+
+<span class="n">build</span><span class="p">(</span><span class="s1">'legacy-library-outreach-kit.html'</span><span class="p">,</span> <span class="n">KIT_CSS</span><span class="p">,</span>
+      <span class="n">cover_html</span><span class="p">(</span><span class="s1">'LifeTogether &amp;middot; The Legacy Library &amp;middot; Internal'</span><span class="p">,</span>
+                 <span class="s1">'The Outreach &lt;em&gt;Kit&lt;/em&gt;'</span><span class="p">,</span>
+                 <span class="s1">'Three emails, merge-ready &amp;mdash; the opening ask, the gatekeeper&amp;rsquo;s version, and the webinar invitation &amp;mdash; with the provenance rules and the record-by-record routing for the live list. Internal working document; the emails travel, this page does not.'</span><span class="p">,</span>
+                 <span class="s1">'Draft v1 &amp;middot; August 2026 &amp;middot; Not pastor-facing'</span><span class="p">),</span>
+      <span class="s1">'legacy-library-outreach-kit.pdf'</span><span class="p">,</span> <span class="n">t_kit</span><span class="p">)</span>
+
+<span class="c1"># ---------- DIRECTORY ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">t_dir</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+    <span class="c1"># strip back-to-index links</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">'up'</span><span class="p">):</span>
+        <span class="n">par</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">find_parent</span><span class="p">(</span><span class="s1">'p'</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">par</span> <span class="ow">or</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="c1"># companion-doc line instead of relative link</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'href'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'legacy-library-offer.html'</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="s1">'the companion document, The Legacy Library Offer'</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">a</span><span class="p">[</span><span class="s1">'href'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'#'</span><span class="p">):</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>  <span class="c1"># URLs already shown as text</span>
+    <span class="c1"># thead so roster headers repeat across pages</span>
+    <span class="k">for</span> <span class="n">tbl</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">'table'</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">'roster'</span><span class="p">):</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">tbl</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'tr'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="ow">and</span> <span class="n">first</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'th'</span><span class="p">):</span>
+            <span class="n">th</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">new_tag</span><span class="p">(</span><span class="s1">'thead'</span><span class="p">);</span> <span class="n">first</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+
+<span class="n">build</span><span class="p">(</span><span class="s1">'legacy-library-directory.html'</span><span class="p">,</span> <span class="n">DIR_CSS</span><span class="p">,</span>
+      <span class="n">cover_html</span><span class="p">(</span><span class="s1">'LifeTogether &amp;middot; Ministry Intelligence &amp;middot; Field Research &amp;middot; Volume II'</span><span class="p">,</span>
+                 <span class="s1">'The Legacy Library &lt;em&gt;Directory&lt;/em&gt;'</span><span class="p">,</span>
+                 <span class="s1">'The megachurch cut of the master file &amp;mdash; 101 records, 94 distinct churches, filed at 7,100 to 11,867 in weekend attendance. Nine productized libraries profiled with live sources; every church accounted for.'</span><span class="p">,</span>
+                 <span class="s1">'Compiled August 26, 2026 &amp;middot; Printed edition'</span><span class="p">),</span>
+      <span class="s1">'legacy-library-directory.pdf'</span><span class="p">,</span> <span class="n">t_dir</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">'done'</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_print.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

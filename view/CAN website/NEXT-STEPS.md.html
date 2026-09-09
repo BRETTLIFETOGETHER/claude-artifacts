@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>NEXT-STEPS.md</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; CAN website</div>
+<h1>NEXT-STEPS.md</h1>
+<div class="meta"><span class="ext e-md">md</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">7 KB</span>
+<a class="btn" href="../../artifacts/CAN%20website/NEXT-STEPS.md" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">The deployment and next-steps guide — the main document Brett will read</p>
+</div></header>
+<article class="doc"><h1 id="can-next-steps">CAN — Next Steps</h1>
+<p>Everything you need to take this from files in a chat to a live site at christianadvisornetwork.com.</p>
+<hr />
+<h2 id="straight-answers-first">Straight answers first</h2>
+<p><strong>Is this live like a website?</strong>
+No. What you have are self-contained HTML files. They render inside Claude, and the AI generation works there because Claude supplies the model connection. Put those same files on a web server unchanged and every screen still works — profile, sliders, the 225 journeys, the calendar, the .ics export — but every "Generate" button fails, because there is no API key on the other end. This repo fixes that with a small server-side function.</p>
+<p><strong>Can I set it up on christianadvisornetwork.com?</strong>
+No. I have no access to your domain, DNS, registrar, or hosting account, and I can't create accounts or push code on your behalf. You or a developer must do that. It is roughly 30 minutes of work and the steps are below.</p>
+<p><strong>Can I load it to GitHub?</strong>
+Same answer — I can't push to a repo I have no credentials for. What I have done is build the complete repo, ready to drag into GitHub. You'll be pushing existing files, not writing code.</p>
+<p><strong>One site or two?</strong>
+<strong>One site, two doors.</strong> Marketing pages at the root, the app at <code>/app</code> behind login. Reasons: one domain builds one brand and one SEO footprint; an RIA that reads the brochure is one tap from the demo; you run one analytics account and one deploy pipeline. Split into two sites only when the platform is sold under its own brand to firms that never hear the CAN story first. That is a year-two problem, not a launch problem.</p>
+<hr />
+<h2 id="the-30-minute-path-to-live">The 30-minute path to live</h2>
+<ol>
+<li><strong>Create the GitHub repo.</strong> github.com → New repository → name it <code>can-platform</code> → Private. On the next screen use "uploading an existing file" and drag in everything from this folder.</li>
+<li><strong>Create a Vercel account</strong> at vercel.com and sign in with GitHub. Free tier is fine to start.</li>
+<li><strong>Import the repo.</strong> Vercel → Add New → Project → pick <code>can-platform</code> → Deploy. No build settings to change.</li>
+<li><strong>Add the API key.</strong> Vercel → your project → Settings → Environment Variables → add <code>ANTHROPIC_API_KEY</code> with a key from console.anthropic.com. Redeploy.</li>
+<li><strong>Point the domain.</strong> Vercel → Settings → Domains → add <code>christianadvisornetwork.com</code>. Vercel shows you two DNS records. Add them at your registrar (GoDaddy, Namecheap, wherever the domain lives). Propagation is usually under an hour.</li>
+<li><strong>Test.</strong> Visit the domain. Open <code>/app</code>. Press one Generate button. If it returns text, you are live.</li>
+</ol>
+<p>At the end of this you have a public marketing site and a working demo. What you do <strong>not</strong> have yet: logins, saved data per advisor, or billing. Those are the MVP, not the demo.</p>
+<hr />
+<h2 id="what-is-still-missing-for-a-real-product">What is still missing for a real product</h2>
+<table>
+<thead>
+<tr>
+<th>Gap</th>
+<th>Why it matters</th>
+<th>Typical answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authentication</td>
+<td>Advisors need private accounts</td>
+<td>Clerk or Auth0</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>Right now a profile lives in one browser</td>
+<td>Supabase or Neon (Postgres)</td>
+</tr>
+<tr>
+<td>Multi-family</td>
+<td>One advisor has 100 households, not one</td>
+<td>Households table + list view</td>
+</tr>
+<tr>
+<td>Firm rollup</td>
+<td>The Firm tab is one household extrapolated</td>
+<td>Real aggregate queries</td>
+</tr>
+<tr>
+<td>Billing</td>
+<td>No revenue without it</td>
+<td>Stripe</td>
+</tr>
+<tr>
+<td>Compliance</td>
+<td>Advisor-facing output touches SEC marketing and books-and-records rules</td>
+<td>Securities attorney + archiving</td>
+</tr>
+<tr>
+<td>Security review</td>
+<td>No RIA enterprise buys without it</td>
+<td>SOC 2 via Vanta or Drata</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="adding-the-15000-title-library">Adding the 15,000-title library</h2>
+<p>Do <strong>not</strong> paste 15,000 rows into an HTML file. Past roughly 2,000 records the page gets slow to load and impossible to edit.</p>
+<p>The included script handles it. Tested on 15,000 synthetic rows: <strong>30 shards, a 200 KB index, a 556 KB search file, 3.1 MB total.</strong></p>
+<pre><code class="language-bash"># 1. Export your catalog to data/library.csv with this header:
+#    id,category,title,subtitle,format,audience,tags
+# 2. Run:
+node scripts/build-library.mjs data/library.csv public/data
+</code></pre>
+<p>You get:
+- <code>index.json</code> — categories and counts, loaded first, renders the browse screen instantly
+- <code>search.json</code> — title/category pairs for instant client-side search across all 15,000
+- <code>shard-N.json</code> — 500 full records each, fetched only when a category is opened</p>
+<p>The page loads in under a second and never holds more than a few hundred records in memory. When you outgrow this — when advisors need to save favorites, or you want per-firm catalogs — move the same CSV into Postgres. The shape does not change.</p>
+<p><strong>One thing to confirm:</strong> I assumed the 15,000 is the LifeTogether campaign catalog. If it is something else, the header row above is the only thing that changes.</p>
+<hr />
+<h2 id="seven-calls-for-monday">Seven calls for Monday</h2>
+<p>I'm naming firms and roles rather than individuals — I can't verify who is available or any specific person's current situation, and a name I invented would waste your Monday.</p>
+<p><strong>1. A senior full-stack contractor</strong> — Gun.io, A.Team, or Toptal.
+The ask: <em>"Next.js and Postgres. I have a working front end and a defined data model. I need auth, a households table, and Stripe in ten days."</em> Expect $10–20k for that scope. This is your single most important call.</p>
+<p><strong>2. Vercel</strong> (vercel.com, sales or partner directory).
+Ask for their agency partner list if call #1 goes nowhere. Also confirms hosting is a non-issue.</p>
+<p><strong>3. Clerk</strong> (clerk.com).
+Auth for multi-tenant B2B — advisors inside firms. A day of work, not a week. Confirm their organizations feature fits an RIA with 40 advisors.</p>
+<p><strong>4. Supabase or Neon.</strong>
+Postgres with an instant API. Ask about row-level security so one firm can never read another firm's households. This is the question an RIA's diligence will ask you.</p>
+<p><strong>5. A securities regulatory attorney</strong> — someone who does investment adviser compliance, not general corporate.
+Ask specifically about the SEC Marketing Rule and books-and-records when AI drafts client-facing material. Get this opinion <em>before</em> the first firm pilots, not after. Your state's investment adviser association or a Kingdom Advisors referral is the fastest route.</p>
+<p><strong>6. Vanta or Drata.</strong>
+SOC 2 readiness. You do not need the certificate to pilot, but enterprise RIAs will ask, and starting the clock early is cheap.</p>
+<p><strong>7. Your design-partner RIA.</strong>
+Not a vendor — a friendly firm willing to be customer zero. You already know who this is. The ask: <em>"Ten of your families, ninety days, free, in exchange for telling me everything that's wrong with it."</em> Nothing on this list matters if that call doesn't happen.</p>
+<hr />
+<h2 id="what-a-real-10-day-mvp-looks-like">What a real 10-day MVP looks like</h2>
+<ul>
+<li><strong>Days 1–2</strong> — repo live on the domain, auth working, one advisor can log in</li>
+<li><strong>Days 3–5</strong> — households in a database; an advisor creates and switches between families</li>
+<li><strong>Days 6–7</strong> — generation persisted, so a document survives a refresh; the 15,000-title library loaded</li>
+<li><strong>Days 8–9</strong> — firm view over real households; Stripe for one plan</li>
+<li><strong>Day 10</strong> — design-partner walkthrough</li>
+</ul>
+<p>Realistic with one strong contractor. Tight with two. Impossible with a committee.</p>
+<p><strong>Do first, before any of it:</strong> make call #7. A pilot firm on the calendar changes every other decision on this page.</p></article>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/can-site/NEXT-STEPS.md</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

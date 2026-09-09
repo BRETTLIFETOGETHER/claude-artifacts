@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_home.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Export all project chats as linked pages</div>
+<h1>build_home.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">20 KB</span>
+<a class="btn" href="../../artifacts/Export%20all%20project%20chats%20as%20linked%20pages/build_home.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Builder for the 40 Day Campaigns home page — self-contained, fully anchor-linked, brand fonts embedded</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""Build the 40daycampaigns.com home page — self-contained single file, every nav link working."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">FONTS</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/fonts"</span><span class="p">)</span>
+<span class="n">OUT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/home_build"</span><span class="p">)</span>
+<span class="n">OUT</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">b64</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">FONTS</span> <span class="o">/</span> <span class="n">name</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+
+<span class="n">hk</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Hanken.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Spectral.ttf"</span><span class="p">)</span>
+<span class="n">font_css</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">if</span> <span class="n">hk</span><span class="p">:</span> <span class="n">font_css</span> <span class="o">+=</span> <span class="s2">"@font-face{font-family:'Hanken Grotesk';src:url(data:font/ttf;base64,</span><span class="si">%s</span><span class="s2">);font-weight:100 900;}"</span> <span class="o">%</span> <span class="n">hk</span>
+<span class="k">if</span> <span class="n">sp</span><span class="p">:</span> <span class="n">font_css</span> <span class="o">+=</span> <span class="s2">"@font-face{font-family:'Spectral';src:url(data:font/ttf;base64,</span><span class="si">%s</span><span class="s2">);font-weight:400;}"</span> <span class="o">%</span> <span class="n">sp</span>
+
+<span class="n">CATS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Finances"</span><span class="p">,</span> <span class="s2">"#0E7490"</span><span class="p">,</span> <span class="s2">"#67E8F9"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Peace &amp; Emotional Health"</span><span class="p">,</span> <span class="s2">"#4338CA"</span><span class="p">,</span> <span class="s2">"#A5B4FC"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Stewardship"</span><span class="p">,</span> <span class="s2">"#B45309"</span><span class="p">,</span> <span class="s2">"#FCD34D"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Generosity"</span><span class="p">,</span> <span class="s2">"#BE185D"</span><span class="p">,</span> <span class="s2">"#F9A8D4"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Relationships"</span><span class="p">,</span> <span class="s2">"#B91C1C"</span><span class="p">,</span> <span class="s2">"#FCA5A5"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Purpose"</span><span class="p">,</span> <span class="s2">"#6D28D9"</span><span class="p">,</span> <span class="s2">"#C4B5FD"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Whole Life Health"</span><span class="p">,</span> <span class="s2">"#047857"</span><span class="p">,</span> <span class="s2">"#6EE7B7"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Marketplace"</span><span class="p">,</span> <span class="s2">"#1D4ED8"</span><span class="p">,</span> <span class="s2">"#93C5FD"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Prayer"</span><span class="p">,</span> <span class="s2">"#7C2D12"</span><span class="p">,</span> <span class="s2">"#FDBA74"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Hope &amp; Healing"</span><span class="p">,</span> <span class="s2">"#9D174D"</span><span class="p">,</span> <span class="s2">"#FBCFE8"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">cat_cards</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;a class="cat" href="#cta" style="background:linear-gradient(135deg,</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1"> 0%,</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1"> 130%);"&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;div class="cat-count"&gt;1,000 campaigns&lt;/div&gt;&lt;div class="cat-name"&gt;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;div class="cat-tab"&gt;&lt;/div&gt;&lt;/a&gt;'</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">CATS</span><span class="p">)</span>
+
+<span class="n">FEATURED</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"God Owns It All"</span><span class="p">,</span> <span class="s2">"Stewardship"</span><span class="p">,</span> <span class="s2">"#B45309"</span><span class="p">,</span> <span class="s2">"#FCD34D"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Finding Peace"</span><span class="p">,</span> <span class="s2">"Peace &amp; Emotional Health"</span><span class="p">,</span> <span class="s2">"#4338CA"</span><span class="p">,</span> <span class="s2">"#A5B4FC"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Money Wise"</span><span class="p">,</span> <span class="s2">"Finances"</span><span class="p">,</span> <span class="s2">"#0E7490"</span><span class="p">,</span> <span class="s2">"#67E8F9"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Made to Give"</span><span class="p">,</span> <span class="s2">"Generosity"</span><span class="p">,</span> <span class="s2">"#BE185D"</span><span class="p">,</span> <span class="s2">"#F9A8D4"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hope Rising"</span><span class="p">,</span> <span class="s2">"Hope &amp; Healing"</span><span class="p">,</span> <span class="s2">"#9D174D"</span><span class="p">,</span> <span class="s2">"#FBCFE8"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Flourish"</span><span class="p">,</span> <span class="s2">"Whole Life Health"</span><span class="p">,</span> <span class="s2">"#047857"</span><span class="p">,</span> <span class="s2">"#6EE7B7"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">feat_cards</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;a class="feat" href="#cta"&gt;&lt;div class="feat-cover" style="background:linear-gradient(150deg,</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1"> 0%,</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1"> 140%);"&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;span class="feat-days"&gt;40 DAYS&lt;/span&gt;&lt;span class="feat-title"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;div class="feat-meta"&gt;</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/a&gt;'</span>
+    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">FEATURED</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="UTF-8"&gt;&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">&lt;title&gt;40 Day Campaigns — The World's Largest Christian Campaign Platform&lt;/title&gt;</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="si">{</span><span class="n">font_css</span><span class="si">}</span>
+<span class="s2">:root</span><span class="se">{{</span><span class="s2">--orange:#F26C1E;--gold:#E4AC43;--ink:#1F2430;--soft:#5B6472;--paper:#FFFFFF;--wash:#FFF7F0;--wash2:#F4F7FB;--line:#ECE7DF;</span><span class="se">}}</span>
+<span class="s2">*</span><span class="se">{{</span><span class="s2">margin:0;padding:0;box-sizing:border-box;</span><span class="se">}}</span>
+<span class="s2">html</span><span class="se">{{</span><span class="s2">scroll-behavior:smooth;</span><span class="se">}}</span>
+<span class="s2">body</span><span class="se">{{</span><span class="s2">font-family:'Hanken Grotesk',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;</span><span class="se">}}</span>
+<span class="s2">a</span><span class="se">{{</span><span class="s2">text-decoration:none;color:inherit;</span><span class="se">}}</span>
+<span class="s2">.wrap</span><span class="se">{{</span><span class="s2">max-width:1180px;margin:0 auto;padding:0 22px;</span><span class="se">}}</span>
+<span class="s2">.eyebrow</span><span class="se">{{</span><span class="s2">font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);</span><span class="se">}}</span>
+<span class="s2">h2</span><span class="se">{{</span><span class="s2">font-size:36px;font-weight:800;letter-spacing:-.6px;line-height:1.15;margin:10px 0 14px;</span><span class="se">}}</span>
+<span class="s2">.lede</span><span class="se">{{</span><span class="s2">font-family:'Spectral',Georgia,serif;font-size:18px;color:var(--soft);max-width:640px;</span><span class="se">}}</span>
+<span class="s2">.btn</span><span class="se">{{</span><span class="s2">display:inline-block;background:var(--orange);color:#fff;font-weight:700;font-size:15.5px;padding:14px 28px;border-radius:999px;transition:all .2s;box-shadow:0 6px 18px rgba(242,108,30,.28);</span><span class="se">}}</span>
+<span class="s2">.btn:hover</span><span class="se">{{</span><span class="s2">transform:translateY(-2px);box-shadow:0 10px 24px rgba(242,108,30,.36);</span><span class="se">}}</span>
+<span class="s2">.btn.ghost</span><span class="se">{{</span><span class="s2">background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;</span><span class="se">}}</span>
+<span class="s2">.btn.ghost:hover</span><span class="se">{{</span><span class="s2">border-color:var(--orange);color:var(--orange);</span><span class="se">}}</span>
+<span class="s2">/* nav */</span>
+<span class="s2">.nav</span><span class="se">{{</span><span class="s2">position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);</span><span class="se">}}</span>
+<span class="s2">.nav-in</span><span class="se">{{</span><span class="s2">max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:28px;padding:14px 22px;</span><span class="se">}}</span>
+<span class="s2">.logo</span><span class="se">{{</span><span class="s2">font-weight:800;font-size:19px;letter-spacing:-.3px;</span><span class="se">}}</span>
+<span class="s2">.logo em</span><span class="se">{{</span><span class="s2">font-style:normal;color:var(--orange);</span><span class="se">}}</span>
+<span class="s2">.nav-links</span><span class="se">{{</span><span class="s2">display:flex;gap:24px;flex:1;justify-content:center;</span><span class="se">}}</span>
+<span class="s2">.nav-links a</span><span class="se">{{</span><span class="s2">font-size:14.5px;font-weight:600;color:var(--soft);</span><span class="se">}}</span>
+<span class="s2">.nav-links a:hover</span><span class="se">{{</span><span class="s2">color:var(--orange);</span><span class="se">}}</span>
+<span class="s2">.nav .btn</span><span class="se">{{</span><span class="s2">padding:10px 20px;font-size:14px;</span><span class="se">}}</span>
+<span class="s2">/* hero */</span>
+<span class="s2">.hero</span><span class="se">{{</span><span class="s2">background:radial-gradient(1100px 520px at 15% -10%, var(--wash) 0%, transparent 60%),radial-gradient(900px 480px at 95% 0%, var(--wash2) 0%, transparent 55%);padding:84px 0 30px;</span><span class="se">}}</span>
+<span class="s2">.hero-grid</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;</span><span class="se">}}</span>
+<span class="s2">.hero h1</span><span class="se">{{</span><span class="s2">font-size:54px;font-weight:800;letter-spacing:-1.4px;line-height:1.06;margin:14px 0 18px;</span><span class="se">}}</span>
+<span class="s2">.hero h1 em</span><span class="se">{{</span><span class="s2">font-style:normal;color:var(--orange);</span><span class="se">}}</span>
+<span class="s2">.hero .lede</span><span class="se">{{</span><span class="s2">margin-bottom:26px;</span><span class="se">}}</span>
+<span class="s2">.hero-ctas</span><span class="se">{{</span><span class="s2">display:flex;gap:14px;flex-wrap:wrap;</span><span class="se">}}</span>
+<span class="s2">.hero-art</span><span class="se">{{</span><span class="s2">position:relative;height:420px;</span><span class="se">}}</span>
+<span class="s2">.hcard</span><span class="se">{{</span><span class="s2">position:absolute;width:200px;height:265px;border-radius:14px;box-shadow:0 18px 40px rgba(31,36,48,.22);display:flex;flex-direction:column;justify-content:flex-end;padding:16px;color:#fff;overflow:hidden;</span><span class="se">}}</span>
+<span class="s2">.hcard .d</span><span class="se">{{</span><span class="s2">font-size:10.5px;font-weight:800;letter-spacing:2px;opacity:.85;</span><span class="se">}}</span>
+<span class="s2">.hcard .t</span><span class="se">{{</span><span class="s2">font-size:19px;font-weight:800;line-height:1.15;letter-spacing:-.3px;</span><span class="se">}}</span>
+<span class="s2">.hcard::after</span><span class="se">{{</span><span class="s2">content:'';position:absolute;left:0;right:0;bottom:0;height:8px;background:var(--orange);border-radius:0 8px 0 0;width:46%;</span><span class="se">}}</span>
+<span class="s2">/* stats */</span>
+<span class="s2">.stats</span><span class="se">{{</span><span class="s2">border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff;</span><span class="se">}}</span>
+<span class="s2">.stats-in</span><span class="se">{{</span><span class="s2">max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;padding:26px 22px;gap:18px;</span><span class="se">}}</span>
+<span class="s2">.stat b</span><span class="se">{{</span><span class="s2">display:block;font-size:30px;font-weight:800;letter-spacing:-.8px;color:var(--ink);</span><span class="se">}}</span>
+<span class="s2">.stat span</span><span class="se">{{</span><span class="s2">font-size:12.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--soft);</span><span class="se">}}</span>
+<span class="s2">section</span><span class="se">{{</span><span class="s2">padding:74px 0;</span><span class="se">}}</span>
+<span class="s2">.alt</span><span class="se">{{</span><span class="s2">background:var(--wash2);</span><span class="se">}}</span>
+<span class="s2">.warm</span><span class="se">{{</span><span class="s2">background:var(--wash);</span><span class="se">}}</span>
+<span class="s2">/* categories */</span>
+<span class="s2">.cat-grid</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:26px;</span><span class="se">}}</span>
+<span class="s2">.cat</span><span class="se">{{</span><span class="s2">position:relative;border-radius:14px;min-height:150px;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;overflow:hidden;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 20px rgba(31,36,48,.14);</span><span class="se">}}</span>
+<span class="s2">.cat:hover</span><span class="se">{{</span><span class="s2">transform:translateY(-4px);box-shadow:0 14px 30px rgba(31,36,48,.22);</span><span class="se">}}</span>
+<span class="s2">.cat-count</span><span class="se">{{</span><span class="s2">font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;opacity:.85;</span><span class="se">}}</span>
+<span class="s2">.cat-name</span><span class="se">{{</span><span class="s2">font-size:18px;font-weight:800;letter-spacing:-.3px;line-height:1.2;</span><span class="se">}}</span>
+<span class="s2">.cat-tab</span><span class="se">{{</span><span class="s2">position:absolute;top:0;left:0;width:44%;height:7px;background:rgba(255,255,255,.85);border-radius:0 0 8px 0;</span><span class="se">}}</span>
+<span class="s2">/* funnel */</span>
+<span class="s2">.split</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;</span><span class="se">}}</span>
+<span class="s2">.quote</span><span class="se">{{</span><span class="s2">font-family:'Spectral',Georgia,serif;font-size:23px;line-height:1.5;color:var(--ink);border-left:4px solid var(--gold);padding-left:22px;</span><span class="se">}}</span>
+<span class="s2">.quote small</span><span class="se">{{</span><span class="s2">display:block;margin-top:12px;font-family:'Hanken Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--soft);</span><span class="se">}}</span>
+<span class="s2">/* formats */</span>
+<span class="s2">.fmt-grid</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px;</span><span class="se">}}</span>
+<span class="s2">.fmt</span><span class="se">{{</span><span class="s2">background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px;box-shadow:0 8px 22px rgba(31,36,48,.07);</span><span class="se">}}</span>
+<span class="s2">.fmt .tag</span><span class="se">{{</span><span class="s2">display:inline-block;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;background:var(--orange);border-radius:999px;padding:6px 14px;margin-bottom:14px;</span><span class="se">}}</span>
+<span class="s2">.fmt.gold .tag</span><span class="se">{{</span><span class="s2">background:var(--gold);color:var(--ink);</span><span class="se">}}</span>
+<span class="s2">.fmt h3</span><span class="se">{{</span><span class="s2">font-size:25px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;</span><span class="se">}}</span>
+<span class="s2">.fmt p</span><span class="se">{{</span><span class="s2">font-size:15px;color:var(--soft);margin-bottom:14px;</span><span class="se">}}</span>
+<span class="s2">.fmt ul</span><span class="se">{{</span><span class="s2">list-style:none;</span><span class="se">}}</span>
+<span class="s2">.fmt li</span><span class="se">{{</span><span class="s2">font-size:14.5px;padding:7px 0 7px 26px;position:relative;border-top:1px dashed var(--line);</span><span class="se">}}</span>
+<span class="s2">.fmt li::before</span><span class="se">{{</span><span class="s2">content:'✓';position:absolute;left:2px;color:var(--orange);font-weight:800;</span><span class="se">}}</span>
+<span class="s2">.fmt.gold li::before</span><span class="se">{{</span><span class="s2">color:var(--gold);</span><span class="se">}}</span>
+<span class="s2">/* includes */</span>
+<span class="s2">.inc-grid</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px;</span><span class="se">}}</span>
+<span class="s2">.inc</span><span class="se">{{</span><span class="s2">background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 6px 16px rgba(31,36,48,.06);</span><span class="se">}}</span>
+<span class="s2">.inc b</span><span class="se">{{</span><span class="s2">display:block;font-size:16.5px;font-weight:800;margin-bottom:5px;</span><span class="se">}}</span>
+<span class="s2">.inc span</span><span class="se">{{</span><span class="s2">font-size:14px;color:var(--soft);</span><span class="se">}}</span>
+<span class="s2">/* featured */</span>
+<span class="s2">.feat-row</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:26px;</span><span class="se">}}</span>
+<span class="s2">.feat-cover</span><span class="se">{{</span><span class="s2">aspect-ratio:3/4;border-radius:12px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;color:#fff;box-shadow:0 10px 22px rgba(31,36,48,.16);transition:transform .2s;position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s2">.feat:hover .feat-cover</span><span class="se">{{</span><span class="s2">transform:translateY(-5px);</span><span class="se">}}</span>
+<span class="s2">.feat-days</span><span class="se">{{</span><span class="s2">font-size:9.5px;font-weight:800;letter-spacing:2px;opacity:.85;</span><span class="se">}}</span>
+<span class="s2">.feat-title</span><span class="se">{{</span><span class="s2">font-size:16.5px;font-weight:800;line-height:1.15;letter-spacing:-.3px;</span><span class="se">}}</span>
+<span class="s2">.feat-meta</span><span class="se">{{</span><span class="s2">font-size:12.5px;font-weight:700;color:var(--soft);margin-top:9px;</span><span class="se">}}</span>
+<span class="s2">/* packages */</span>
+<span class="s2">.pack</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px;</span><span class="se">}}</span>
+<span class="s2">.price-card</span><span class="se">{{</span><span class="s2">background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:30px;text-align:left;</span><span class="se">}}</span>
+<span class="s2">.price-card.hot</span><span class="se">{{</span><span class="s2">border-color:var(--orange);box-shadow:0 12px 30px rgba(242,108,30,.16);</span><span class="se">}}</span>
+<span class="s2">.price-card .pc-tag</span><span class="se">{{</span><span class="s2">font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--orange);</span><span class="se">}}</span>
+<span class="s2">.price-card h3</span><span class="se">{{</span><span class="s2">font-size:23px;font-weight:800;margin:8px 0 4px;</span><span class="se">}}</span>
+<span class="s2">.price-card .amt</span><span class="se">{{</span><span class="s2">font-size:34px;font-weight:800;letter-spacing:-1px;</span><span class="se">}}</span>
+<span class="s2">.price-card .amt small</span><span class="se">{{</span><span class="s2">font-size:14px;font-weight:600;color:var(--soft);</span><span class="se">}}</span>
+<span class="s2">.price-card p</span><span class="se">{{</span><span class="s2">font-size:14.5px;color:var(--soft);margin:10px 0 0;</span><span class="se">}}</span>
+<span class="s2">/* heritage */</span>
+<span class="s2">.her</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1.1fr .9fr;gap:46px;align-items:center;</span><span class="se">}}</span>
+<span class="s2">.her-stats</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1fr 1fr;gap:14px;</span><span class="se">}}</span>
+<span class="s2">.hstat</span><span class="se">{{</span><span class="s2">background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;text-align:center;</span><span class="se">}}</span>
+<span class="s2">.hstat b</span><span class="se">{{</span><span class="s2">display:block;font-size:30px;font-weight:800;color:var(--orange);letter-spacing:-.8px;</span><span class="se">}}</span>
+<span class="s2">.hstat span</span><span class="se">{{</span><span class="s2">font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--soft);</span><span class="se">}}</span>
+<span class="s2">/* faq */</span>
+<span class="s2">details</span><span class="se">{{</span><span class="s2">background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-top:12px;</span><span class="se">}}</span>
+<span class="s2">summary</span><span class="se">{{</span><span class="s2">cursor:pointer;font-weight:700;font-size:16px;list-style:none;position:relative;padding-right:28px;</span><span class="se">}}</span>
+<span class="s2">summary::after</span><span class="se">{{</span><span class="s2">content:'+';position:absolute;right:2px;top:-2px;font-size:22px;color:var(--orange);</span><span class="se">}}</span>
+<span class="s2">details[open] summary::after</span><span class="se">{{</span><span class="s2">content:'–';</span><span class="se">}}</span>
+<span class="s2">details p</span><span class="se">{{</span><span class="s2">margin-top:10px;font-size:15px;color:var(--soft);</span><span class="se">}}</span>
+<span class="s2">/* cta */</span>
+<span class="s2">.cta</span><span class="se">{{</span><span class="s2">background:linear-gradient(135deg,#20140C 0%, #3A2312 60%, #6E3A12 130%);color:#fff;text-align:center;padding:84px 0;</span><span class="se">}}</span>
+<span class="s2">.cta h2</span><span class="se">{{</span><span class="s2">color:#fff;font-size:40px;</span><span class="se">}}</span>
+<span class="s2">.cta .lede</span><span class="se">{{</span><span class="s2">color:rgba(255,255,255,.82);margin:0 auto 28px;</span><span class="se">}}</span>
+<span class="s2">.cta .btn</span><span class="se">{{</span><span class="s2">background:var(--gold);color:var(--ink);</span><span class="se">}}</span>
+<span class="s2">.footer</span><span class="se">{{</span><span class="s2">background:#14100C;color:rgba(255,255,255,.75);padding:34px 0;font-size:14px;</span><span class="se">}}</span>
+<span class="s2">.foot-in</span><span class="se">{{</span><span class="s2">max-width:1180px;margin:0 auto;padding:0 22px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;</span><span class="se">}}</span>
+<span class="s2">.foot-in b</span><span class="se">{{</span><span class="s2">color:#fff;</span><span class="se">}}</span>
+<span class="s2">@media(max-width:960px)</span><span class="se">{{</span><span class="s2">.hero-grid,.split,.fmt-grid,.her,.pack</span><span class="se">{{</span><span class="s2">grid-template-columns:1fr;</span><span class="se">}}</span><span class="s2">.hero-art</span><span class="se">{{</span><span class="s2">display:none;</span><span class="se">}}</span><span class="s2">.cat-grid</span><span class="se">{{</span><span class="s2">grid-template-columns:repeat(2,1fr);</span><span class="se">}}</span><span class="s2">.feat-row</span><span class="se">{{</span><span class="s2">grid-template-columns:repeat(3,1fr);</span><span class="se">}}</span><span class="s2">.inc-grid</span><span class="se">{{</span><span class="s2">grid-template-columns:1fr 1fr;</span><span class="se">}}</span><span class="s2">.hero h1</span><span class="se">{{</span><span class="s2">font-size:38px;</span><span class="se">}}</span><span class="s2">h2</span><span class="se">{{</span><span class="s2">font-size:29px;</span><span class="se">}}}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+
+<span class="s2">&lt;nav class="nav"&gt;&lt;div class="nav-in"&gt;</span>
+<span class="s2">&lt;a class="logo" href="#top"&gt;40 &lt;em&gt;Day&lt;/em&gt; Campaigns&lt;/a&gt;</span>
+<span class="s2">&lt;div class="nav-links"&gt;</span>
+<span class="s2">&lt;a href="#categories"&gt;Browse&lt;/a&gt;&lt;a href="#formats"&gt;Formats&lt;/a&gt;&lt;a href="#includes"&gt;What's Included&lt;/a&gt;&lt;a href="#packages"&gt;Packages&lt;/a&gt;&lt;a href="#heritage"&gt;About&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;a class="btn" href="#cta"&gt;Get Access&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/nav&gt;</span>
+
+<span class="s2">&lt;header class="hero" id="top"&gt;&lt;div class="wrap"&gt;&lt;div class="hero-grid"&gt;</span>
+<span class="s2">&lt;div&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;The World's Largest Christian Campaign Platform&lt;/div&gt;</span>
+<span class="s2">&lt;h1&gt;10,000 campaigns.&lt;br&gt;One church-wide &lt;em&gt;movement.&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;The only platform that reaches your senior pastor, your small group leaders, your students, your children, and your families — all in the same campaign, all in the same week, all in your church's voice.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="hero-ctas"&gt;&lt;a class="btn" href="#categories"&gt;Browse the Library&lt;/a&gt;&lt;a class="btn ghost" href="#formats"&gt;See How It Works&lt;/a&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="hero-art"&gt;</span>
+<span class="s2">&lt;div class="hcard" style="left:6%;top:8%;transform:rotate(-6deg);background:linear-gradient(150deg,#B45309,#FCD34D);"&gt;&lt;span class="d"&gt;40 DAYS&lt;/span&gt;&lt;span class="t"&gt;God Owns It All&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="hcard" style="left:38%;top:22%;transform:rotate(3deg);background:linear-gradient(150deg,#4338CA,#A5B4FC);"&gt;&lt;span class="d"&gt;40 DAYS&lt;/span&gt;&lt;span class="t"&gt;Finding Peace&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="hcard" style="left:66%;top:2%;transform:rotate(8deg);background:linear-gradient(150deg,#047857,#6EE7B7);"&gt;&lt;span class="d"&gt;40 DAYS&lt;/span&gt;&lt;span class="t"&gt;Flourish&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/header&gt;</span>
+
+<span class="s2">&lt;div class="stats"&gt;&lt;div class="stats-in"&gt;</span>
+<span class="s2">&lt;div class="stat"&gt;&lt;b&gt;10,000&lt;/b&gt;&lt;span&gt;Campaigns&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="stat"&gt;&lt;b&gt;100&lt;/b&gt;&lt;span&gt;Themes&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="stat"&gt;&lt;b&gt;10&lt;/b&gt;&lt;span&gt;Categories&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="stat"&gt;&lt;b&gt;500+&lt;/b&gt;&lt;span&gt;Church Partnerships&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="stat"&gt;&lt;b&gt;25+&lt;/b&gt;&lt;span&gt;Years of Campaigns&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;section id="categories"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Browse the Library&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;Every felt need. Every season. Every church.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Ten categories, one hundred themes, and a thousand campaigns behind every door — each one a complete 40-day journey for your whole congregation.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="cat-grid"&gt;</span><span class="si">{</span><span class="n">cat_cards</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="alt" id="funnel"&gt;&lt;div class="wrap"&gt;&lt;div class="split"&gt;</span>
+<span class="s2">&lt;div&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;The Spiritual Funnel&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;Don't launch your next series cold.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Most sermon series lose momentum after launch Sunday. A campaign does the opposite — it creates momentum before week two even begins, moving people from awareness to engagement, from engagement to relationship, from relationship to testimony, and from testimony to response.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="quote"&gt;"Every ministry initiative needs a funnel. The campaign is that funnel — the spark that starts a congregation moving, and the engine that sustains a season of transformation."&lt;small&gt;The Lifetogether Campaign Architecture&lt;/small&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="formats"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Two Formats · One Platform&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;The spark, and the engine.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;The Seven Day Experience and the 40-Day Campaign are not competing products. They are partners. Every church can start somewhere. Every church can go further.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="fmt-grid"&gt;</span>
+<span class="s2">&lt;div class="fmt"&gt;&lt;span class="tag"&gt;The Spark · Start Here&lt;/span&gt;&lt;h3&gt;The Seven Day Experience&lt;/h3&gt;</span>
+<span class="s2">&lt;p&gt;Kickoff Sunday to Celebration Sunday — eight days total. A low-barrier, finishable experience any church can execute, powered by Each One Ask One activation.&lt;/p&gt;</span>
+<span class="s2">&lt;ul&gt;&lt;li&gt;Anyone can say yes to one week&lt;/li&gt;&lt;li&gt;Stories and engagement visible within seven days&lt;/li&gt;&lt;li&gt;Attaches to any sermon series, holiday, or season&lt;/li&gt;&lt;li&gt;Adult, Youth, and Children's + Family editions — simultaneously&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="fmt gold"&gt;&lt;span class="tag"&gt;The Engine · Go Deeper&lt;/span&gt;&lt;h3&gt;The 40-Day Campaign&lt;/h3&gt;</span>
+<span class="s2">&lt;p&gt;A defined six-week season of transformation — fall, spring, or Lent — with formats at 7, 21, 30, or 40 days to fit your calendar.&lt;/p&gt;</span>
+<span class="s2">&lt;ul&gt;&lt;li&gt;Deep formation across weeks and months&lt;/li&gt;&lt;li&gt;Six-session small group study built in&lt;/li&gt;&lt;li&gt;Church-wide alignment from pulpit to living room&lt;/li&gt;&lt;li&gt;Ten categories of felt-need themes to choose from&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="warm" id="includes"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;What's Included&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;Every campaign. Every person. Every day.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Complete campaign ecosystems — fully branded for your church, print-ready, and built on 25 years of campaign architecture.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="inc-grid"&gt;</span>
+<span class="s2">&lt;div class="inc"&gt;&lt;b&gt;Daily Devotionals&lt;/b&gt;&lt;span&gt;A complete 40-day reading journey for every adult in your church.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="inc"&gt;&lt;b&gt;Six-Session Group Study&lt;/b&gt;&lt;span&gt;Small group curriculum with discussion questions and weekly practices.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="inc"&gt;&lt;b&gt;Six Full Sermons&lt;/b&gt;&lt;span&gt;Complete message outlines, preaching ideas, and supporting texts for the pulpit.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="inc"&gt;&lt;b&gt;Youth Edition&lt;/b&gt;&lt;span&gt;Six student sessions translating the theme for the next generation.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="inc"&gt;&lt;b&gt;Children's Edition&lt;/b&gt;&lt;span&gt;Bible-story lessons with activities and parent send-homes.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="inc"&gt;&lt;b&gt;Leader Training Kit&lt;/b&gt;&lt;span&gt;Host training, ask scripts, launch timeline, and recruitment tools.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="featured"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Featured Campaigns&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;Start with a flagship.&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="feat-row"&gt;</span><span class="si">{</span><span class="n">feat_cards</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="alt" id="packages"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Campaign Packages&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;Four tiers. Four formats. Everything your church needs.&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="pack"&gt;</span>
+<span class="s2">&lt;div class="price-card"&gt;&lt;div class="pc-tag"&gt;Start Here&lt;/div&gt;&lt;h3&gt;Seven Day Experience&lt;/h3&gt;</span>
+<span class="s2">&lt;div class="amt"&gt;From $199 &lt;small&gt;Starter · $599 Custom · $1,499 Premium Pathway&lt;/small&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;p&gt;The low-risk pilot before 40 days — a series launch or capital campaign runway your whole church can finish.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="price-card hot"&gt;&lt;div class="pc-tag"&gt;Most Popular&lt;/div&gt;&lt;h3&gt;Digital Essentials&lt;/h3&gt;</span>
+<span class="s2">&lt;div class="amt"&gt;$1,499 &lt;small&gt;one-time&lt;/small&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;p&gt;Tier one of four complete campaign ecosystems — adult, youth, children, and family editions, fully branded for your church and print-ready.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="heritage"&gt;&lt;div class="wrap"&gt;&lt;div class="her"&gt;</span>
+<span class="s2">&lt;div&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;The Lifetogether Heritage&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;Built on the campaigns that shaped a generation.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;From Willow Creek to Saddleback and the Purpose Driven Life campaign rooms, this platform carries twenty-five years of churchwide campaign architecture — the same model that helped hundreds of churches move an entire congregation in the same direction at the same time. Now it's yours, at a scale never possible before.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="her-stats"&gt;</span>
+<span class="s2">&lt;div class="hstat"&gt;&lt;b&gt;25+&lt;/b&gt;&lt;span&gt;Years&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="hstat"&gt;&lt;b&gt;500+&lt;/b&gt;&lt;span&gt;Churches&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="hstat"&gt;&lt;b&gt;4&lt;/b&gt;&lt;span&gt;Editions per Campaign&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="hstat"&gt;&lt;b&gt;40&lt;/b&gt;&lt;span&gt;Days of Formation&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="warm" id="faq"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Questions&lt;/div&gt;</span>
+<span class="s2">&lt;h2&gt;What pastors ask first.&lt;/h2&gt;</span>
+<span class="s2">&lt;details open&gt;&lt;summary&gt;How is this different from buying a study off the shelf?&lt;/summary&gt;&lt;p&gt;A study serves a group. A campaign moves a church — pulpit, groups, students, children, and homes aligned around one theme for one season, in your church's voice.&lt;/p&gt;&lt;/details&gt;</span>
+<span class="s2">&lt;details&gt;&lt;summary&gt;We've never run a churchwide campaign. Where do we start?&lt;/summary&gt;&lt;p&gt;Start with the Seven Day Experience. It's a finishable, low-barrier week that builds momentum and proves the model before you commit to a full 40-day season.&lt;/p&gt;&lt;/details&gt;</span>
+<span class="s2">&lt;details&gt;&lt;summary&gt;Can we brand the materials for our church?&lt;/summary&gt;&lt;p&gt;Yes — every package includes fully branded, print-ready editions across adult, youth, children's, and family formats.&lt;/p&gt;&lt;/details&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="cta" id="cta"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;h2&gt;Your next 40 days can change everything.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Join the churches building movements, not just sermon series.&lt;/p&gt;</span>
+<span class="s2">&lt;a class="btn" href="mailto:brett@lifetogether.com"&gt;Get Access&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;footer class="footer"&gt;&lt;div class="foot-in"&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;40 Day Campaigns&lt;/b&gt; · A Lifetogether Platform&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;brett@lifetogether.com · 40daycampaigns.com&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/footer&gt;</span>
+
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;"""</span>
+
+<span class="p">(</span><span class="n">OUT</span> <span class="o">/</span> <span class="s2">"index.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Home page written: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> KB, fonts embedded: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">(</span><span class="n">hk</span><span class="p">,</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">/2"</span><span class="p">)</span>
+
+<span class="c1"># Verify every internal anchor resolves</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">hrefs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'href="#([^"]+)"'</span><span class="p">,</span> <span class="n">html</span><span class="p">))</span>
+<span class="n">ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'id="([^"]+)"'</span><span class="p">,</span> <span class="n">html</span><span class="p">))</span>
+<span class="n">missing</span> <span class="o">=</span> <span class="n">hrefs</span> <span class="o">-</span> <span class="n">ids</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">missing</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Broken anchors: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Anchor check: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hrefs</span><span class="p">)</span><span class="si">}</span><span class="s2"> internal links, all resolve to page sections"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_home.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

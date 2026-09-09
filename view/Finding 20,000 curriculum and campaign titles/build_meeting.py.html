@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_meeting.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_meeting.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">27 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_meeting.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the staff meeting finder and builder</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">meeting_lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">CATS</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">meeting_meta</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">M</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"cats"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"n"</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"s"</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">"w"</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+           <span class="s2">"ss"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"t"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"sub"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">"oq"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">"sc"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s2">"qs"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                   <span class="s2">"turn"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="s2">"act"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="s2">"note"</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="mi">7</span><span class="p">]}</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]]}</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CATS</span><span class="p">],</span>
+ <span class="s2">"thesis"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">THESIS</span><span class="p">,</span> <span class="s2">"why"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">WHY</span><span class="p">,</span> <span class="s2">"struct"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">STRUCTURE</span><span class="p">,</span> <span class="s2">"structnote"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">STRUCTURE_NOTE</span><span class="p">,</span>
+ <span class="s2">"lq"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">LEADER_Q</span><span class="p">,</span> <span class="s2">"lb"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">LEADER_BANDS</span><span class="p">,</span> <span class="s2">"survey"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">STAFF_SURVEY</span><span class="p">,</span>
+ <span class="s2">"cal"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">CAL52</span><span class="p">,</span> <span class="s2">"calrules"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">CAL_RULES</span><span class="p">,</span> <span class="s2">"retreat"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">RETREAT</span><span class="p">,</span>
+ <span class="s2">"toolbox"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">TOOLBOX</span><span class="p">,</span> <span class="s2">"journeys"</span><span class="p">:</span> <span class="n">M</span><span class="o">.</span><span class="n">JOURNEYS</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">NSESS</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"ss"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"cats"</span><span class="p">])</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""*{box-sizing:border-box;margin:0;padding:0}</span>
+<span class="s2">:root{--blue:#1d4ed8;--blue-d:#1e3a8a;--blue-l:#3b82f6;--blue-p:#eff6ff;--blue-b:#dbeafe;</span>
+<span class="s2">--ink:#0f172a;--body:#334155;--mute:#64748b;--faint:#94a3b8;</span>
+<span class="s2">--line:#e2e8f0;--bg:#f8fafc;--white:#fff;--max:1160px;</span>
+<span class="s2">--sh:0 1px 2px rgba(15,23,42,.04),0 4px 12px rgba(15,23,42,.05);</span>
+<span class="s2">--sh-l:0 2px 4px rgba(15,23,42,.04),0 12px 32px rgba(15,23,42,.08)}</span>
+<span class="s2">html{scroll-behavior:smooth}</span>
+<span class="s2">body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--body);</span>
+<span class="s2">line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased}</span>
+<span class="s2">.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}</span>
+<span class="s2">h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-.022em;font-weight:700}</span>
+<span class="s2">section{padding:76px 0}</span>
+<span class="s2">.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}</span>
+<span class="s2">h2.sh{font-size:34px}</span>
+<span class="s2">p.lede{font-size:18px;color:var(--mute);margin-top:12px;max-width:66ch}</span>
+<span class="s2">header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.95);</span>
+<span class="s2">backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.nav{display:flex;align-items:center;gap:24px;height:62px}</span>
+<span class="s2">.brand{font-weight:800;font-size:16px;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}</span>
+<span class="s2">.brand span{color:var(--blue)}</span>
+<span class="s2">.nav nav{display:flex;gap:20px;margin-left:auto;overflow-x:auto;scrollbar-width:none}</span>
+<span class="s2">.nav nav::-webkit-scrollbar{display:none}</span>
+<span class="s2">.nav a{color:var(--mute);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;cursor:pointer}</span>
+<span class="s2">.nav a:hover{color:var(--blue)}</span>
+<span class="s2">.hero{background:var(--white);border-bottom:1px solid var(--line);padding:84px 0 68px}</span>
+<span class="s2">.hero h1{font-size:54px;font-weight:800;letter-spacing:-.035em;max-width:17ch}</span>
+<span class="s2">.hero h1 em{font-style:normal;color:var(--blue)}</span>
+<span class="s2">.hero .l2{font-size:20px;color:var(--mute);margin-top:22px;max-width:64ch}</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;margin-top:32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.stats&gt;div{flex:1 1 140px;padding:19px 18px 19px 0}</span>
+<span class="s2">.stats b{display:block;font-size:28px;color:var(--blue);font-weight:800;letter-spacing:-.03em}</span>
+<span class="s2">.stats span{font-size:13.5px;color:var(--mute);display:block;margin-top:3px}</span>
+<span class="s2">.wrow{display:flex;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.wrow .wk2{font-size:16.5px;color:var(--ink);font-weight:600;min-width:280px;flex-shrink:0}</span>
+<span class="s2">.wrow .wv{flex:1;font-size:16px;color:var(--mute)}</span>
+<span class="s2">.s3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}</span>
+<span class="s2">.s3c{border:1px solid var(--line);border-radius:12px;padding:22px 20px;background:var(--white)}</span>
+<span class="s2">.s3c:first-child{border-color:var(--blue);border-width:2px;padding:21px 19px;background:var(--blue-p)}</span>
+<span class="s2">.s3c .t3{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}</span>
+<span class="s2">.s3c h4{font-size:20px;margin-top:6px}</span>
+<span class="s2">.s3c .l3{font-size:13.5px;color:var(--blue-l);font-weight:600;margin-top:2px}</span>
+<span class="s2">.s3c p{font-size:15.5px;color:var(--mute);margin-top:9px}</span>
+<span class="s2">.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}</span>
+<span class="s2">.cc{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px 20px;</span>
+<span class="s2">cursor:pointer;text-align:left;font-family:inherit;transition:all .18s}</span>
+<span class="s2">.cc:hover{border-color:var(--blue-l);box-shadow:var(--sh-l);transform:translateY(-2px)}</span>
+<span class="s2">.cc .cn{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}</span>
+<span class="s2">.cc h4{font-size:20px;margin-top:6px}</span>
+<span class="s2">.cc .cs2{font-size:14.5px;color:var(--blue);font-weight:600;margin-top:3px}</span>
+<span class="s2">.cc p{font-size:15px;color:var(--mute);margin-top:9px;line-height:1.55}</span>
+<span class="s2">.back{background:none;border:0;color:var(--blue);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0;margin-bottom:16px}</span>
+<span class="s2">.slist{margin-top:16px}</span>
+<span class="s2">.sr{display:flex;gap:14px;padding:15px 2px;border-bottom:1px solid var(--line);cursor:pointer;</span>
+<span class="s2">align-items:baseline;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font-family:inherit;color:inherit}</span>
+<span class="s2">.sr:hover .st{color:var(--blue)}</span>
+<span class="s2">.sr .sn{font-size:12px;font-weight:700;color:var(--blue);min-width:26px;flex-shrink:0}</span>
+<span class="s2">.sr .sb2</span><span class="si">{flex:1}</span>
+<span class="s2">.sr .st{font-size:18px;color:var(--ink);font-weight:600;display:block}</span>
+<span class="s2">.sr .ss{font-size:15px;color:var(--mute);margin-top:3px;display:block}</span>
+<span class="s2">.sr .add{font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-p);border:1px solid var(--blue-b);</span>
+<span class="s2">padding:5px 10px;border-radius:6px;flex-shrink:0}</span>
+<span class="s2">.sr .add.in{background:var(--blue);color:#fff;border-color:var(--blue)}</span>
+<span class="s2">.guide{background:var(--white);border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:var(--sh);margin-top:16px}</span>
+<span class="s2">.gh{padding:28px 32px;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.gh .gc{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}</span>
+<span class="s2">.gh h3{font-size:28px;margin-top:8px}</span>
+<span class="s2">.gh .gs{font-size:18px;color:var(--mute);margin-top:5px;font-style:italic}</span>
+<span class="s2">.gsec{padding:22px 32px;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.gsec:last-child{border-bottom:0}</span>
+<span class="s2">.gsec .gl{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:9px}</span>
+<span class="s2">.gsec .gq{font-size:20px;color:var(--ink);font-weight:600;letter-spacing:-.02em;line-height:1.35}</span>
+<span class="s2">.gsec ol{margin-left:18px;color:var(--body)}</span>
+<span class="s2">.gsec li{font-size:17px;margin-bottom:8px}</span>
+<span class="s2">.gsec .gt{font-size:18px;color:var(--blue-d);font-weight:600;font-style:italic;line-height:1.5}</span>
+<span class="s2">.gsec p{font-size:17px;color:var(--body)}</span>
+<span class="s2">.gnote{padding:22px 32px;background:#fffbeb;border-top:1px solid #fde68a}</span>
+<span class="s2">.gnote .gl{color:#b45309}</span>
+<span class="s2">.gnote p{font-size:16px;color:#78350f}</span>
+<span class="s2">.assess{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-l);overflow:hidden;margin-top:24px}</span>
+<span class="s2">.ahead{padding:24px 30px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}</span>
+<span class="s2">.ahead h3{font-size:21px}</span>
+<span class="s2">.prog{display:flex;align-items:center;gap:12px}</span>
+<span class="s2">.ptrk{width:120px;height:6px;background:var(--line);border-radius:99px;overflow:hidden}</span>
+<span class="s2">.pfil{height:100%;background:var(--blue);width:0;border-radius:99px;transition:width .3s}</span>
+<span class="s2">.pct{font-size:13px;font-weight:700;color:var(--blue);min-width:52px;text-align:right}</span>
+<span class="s2">.qs{padding:8px 30px 4px}</span>
+<span class="s2">.qrow{padding:15px 0;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.qrow:last-child{border-bottom:0}</span>
+<span class="s2">.qt{font-size:16.5px;color:var(--ink);font-weight:500;margin-bottom:10px}</span>
+<span class="s2">.opts{display:flex;gap:7px;flex-wrap:wrap}</span>
+<span class="s2">.opt{border:1px solid var(--line);background:var(--white);border-radius:8px;padding:8px 14px;</span>
+<span class="s2">font-family:inherit;font-size:14px;color:var(--body);cursor:pointer;font-weight:500}</span>
+<span class="s2">.opt:hover{border-color:var(--blue-l);color:var(--blue)}</span>
+<span class="s2">.opt.on{background:var(--blue);border-color:var(--blue);color:#fff}</span>
+<span class="s2">.afoot{padding:20px 30px;background:var(--bg);border-top:1px solid var(--line);display:flex;</span>
+<span class="s2">justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}</span>
+<span class="s2">.afoot .note{font-size:14px;color:var(--mute)}</span>
+<span class="s2">.btn{background:var(--blue);color:#fff;border:0;border-radius:9px;padding:12px 22px;</span>
+<span class="s2">font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}</span>
+<span class="s2">.btn:hover{background:var(--blue-d)}</span>
+<span class="s2">.btn:disabled{background:var(--line);color:var(--faint);cursor:not-allowed}</span>
+<span class="s2">.btn.ghost{background:var(--white);color:var(--blue);border:1px solid var(--blue)}</span>
+<span class="s2">.res{margin-top:18px;background:var(--white);border:2px solid var(--blue);border-radius:16px;overflow:hidden}</span>
+<span class="s2">.rh{padding:28px 30px;background:var(--blue);color:#fff}</span>
+<span class="s2">.rh .rl{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.85}</span>
+<span class="s2">.rh .sc{font-size:42px;font-weight:800;letter-spacing:-.03em;margin-top:5px}</span>
+<span class="s2">.rh h3{color:#fff;font-size:25px;margin-top:3px}</span>
+<span class="s2">.rh p{font-size:17px;margin-top:9px;opacity:.92;max-width:62ch}</span>
+<span class="s2">.rb{padding:24px 30px}</span>
+<span class="s2">.bandrow{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.bandrow:last-child{border-bottom:0}</span>
+<span class="s2">.bandrow.hit{background:var(--blue-p);margin:0 -10px;padding:12px 10px}</span>
+<span class="s2">.bandrow .bn{font-size:14.5px;font-weight:700;color:var(--blue);min-width:70px}</span>
+<span class="s2">.bandrow .bt{font-size:16.5px;font-weight:600;color:var(--ink);min-width:210px}</span>
+<span class="s2">.bandrow .bd{flex:1;font-size:15.5px;color:var(--mute)}</span>
+<span class="s2">.svq{padding:16px 0;border-bottom:1px solid var(--line)}</span>
+<span class="s2">.svq:last-child{border-bottom:0}</span>
+<span class="s2">.svq .sq{font-size:16.5px;color:var(--ink);font-weight:600;margin-bottom:9px}</span>
+<span class="s2">.svq textarea{width:100%;min-height:60px;background:var(--bg);border:1px solid var(--line);border-radius:8px;</span>
+<span class="s2">padding:10px 12px;font-family:inherit;font-size:15px;color:var(--ink);resize:vertical}</span>
+<span class="s2">.svq textarea:focus,.svq input:focus{outline:none;border-color:var(--blue)}</span>
+<span class="s2">.cal{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}</span>
+<span class="s2">.mo{border:1px solid var(--line);border-radius:12px;padding:18px 16px;background:var(--white)}</span>
+<span class="s2">.mo .mh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}</span>
+<span class="s2">.mo h4{font-size:18px}</span>
+<span class="s2">.mo .tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:5px}</span>
+<span class="s2">.mo .tag.t1{background:var(--blue);color:#fff}</span>
+<span class="s2">.mo .tag.t2{background:var(--bg);color:var(--mute);border:1px solid var(--line)}</span>
+<span class="s2">.mo .mt{font-size:13.5px;color:var(--blue);font-weight:600;margin-top:3px}</span>
+<span class="s2">.mo ul{list-style:none;margin-top:11px}</span>
+<span class="s2">.mo li{font-size:14px;color:var(--body);padding:5px 0 5px 15px;position:relative;line-height:1.4}</span>
+<span class="s2">.mo li::before{content:"";position:absolute;left:0;top:12px;width:5px;height:5px;border-radius:99px;background:var(--blue-b)}</span>
+<span class="s2">.plan{background:var(--white);border:2px solid var(--blue);border-radius:14px;padding:24px 28px;margin-top:22px}</span>
+<span class="s2">.plan h3{font-size:22px}</span>
+<span class="s2">.plan .pc2{font-size:15px;color:var(--mute);margin-top:5px}</span>
+<span class="s2">.plan .picked{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}</span>
+<span class="s2">.plan .picked span{font-size:14px;background:var(--blue-p);color:var(--blue-d);border:1px solid var(--blue-b);</span>
+<span class="s2">padding:7px 12px;border-radius:7px}</span>
+<span class="s2">.plan .empty{font-size:15.5px;color:var(--faint);margin-top:12px;font-style:italic}</span>
+<span class="s2">.rtr{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);align-items:baseline}</span>
+<span class="s2">.rtr .rt2{font-size:14px;font-weight:700;color:var(--blue);min-width:52px;flex-shrink:0}</span>
+<span class="s2">.rtr .rn{font-size:17px;color:var(--ink);font-weight:600;min-width:200px;flex-shrink:0}</span>
+<span class="s2">.rtr .rd{font-size:12.5px;color:var(--faint);min-width:56px;flex-shrink:0}</span>
+<span class="s2">.rtr .rv{flex:1;font-size:15.5px;color:var(--mute)}</span>
+<span class="s2">.jr{border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-top:12px;background:var(--white)}</span>
+<span class="s2">.jr .jh{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}</span>
+<span class="s2">.jr h4{font-size:20px}</span>
+<span class="s2">.jr .jc{font-size:12.5px;font-weight:700;color:var(--blue)}</span>
+<span class="s2">.jr p{font-size:15.5px;color:var(--mute);margin-top:7px}</span>
+<span class="s2">.jr .jl{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}</span>
+<span class="s2">.jr .jl span{font-size:13.5px;background:var(--bg);border:1px solid var(--line);padding:6px 11px;border-radius:6px}</span>
+<span class="s2">.note2{background:#fffbeb;border:1px solid #fde68a;border-left:3px solid #f59e0b;border-radius:0 10px 10px 0;</span>
+<span class="s2">padding:16px 20px;margin-top:18px;font-size:15.5px;color:#78350f}</span>
+<span class="s2">.big{background:var(--white);border-left:3px solid var(--blue);padding:22px 26px;margin-top:24px;</span>
+<span class="s2">font-size:21px;color:var(--ink);font-weight:600;letter-spacing:-.02em;border-radius:0 12px 12px 0}</span>
+<span class="s2">.cta{background:var(--blue-d);color:#fff;text-align:center;padding:70px 0}</span>
+<span class="s2">.cta h2{color:#fff;font-size:34px;letter-spacing:-.03em}</span>
+<span class="s2">.cta p{color:#bfdbfe;font-size:18px;margin-top:14px;max-width:58ch;margin-left:auto;margin-right:auto}</span>
+<span class="s2">footer{background:var(--ink);color:var(--faint);padding:28px 0;font-size:14px}</span>
+<span class="s2">@media(max-width:1000px){.cal{grid-template-columns:repeat(2,1fr)}.cgrid{grid-template-columns:1fr}</span>
+<span class="s2">.s3{grid-template-columns:1fr}.hero h1{font-size:38px}}</span>
+<span class="s2">@media(max-width:640px){section{padding:50px 0}.hero{padding:50px 0 42px}.hero h1{font-size:30px}</span>
+<span class="s2">.hero .l2{font-size:18px}h2.sh{font-size:25px}.cal{grid-template-columns:1fr}</span>
+<span class="s2">.gh,.gsec,.gnote,.qs,.ahead,.afoot,.rb,.rh{padding-left:20px;padding-right:20px}</span>
+<span class="s2">.wrow,.rtr,.bandrow{flex-direction:column;gap:4px}.wrow .wk2,.rtr .rn,.bandrow .bt{min-width:0}</span>
+<span class="s2">.sr{flex-wrap:wrap}.cta h2{font-size:25px}}</span>
+<span class="s2">@media(prefers-reduced-motion:reduce){*{transition:none!important}}"""</span>
+
+<span class="n">BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;header&gt;&lt;div class="wrap nav"&gt;&lt;div class="brand"&gt;Staff Meeting &lt;span&gt;Builder&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;nav&gt;&lt;a data-j="why"&gt;Why&lt;/a&gt;&lt;a data-j="find"&gt;Find a Session&lt;/a&gt;&lt;a data-j="check"&gt;Meeting Check&lt;/a&gt;</span>
+<span class="s2">&lt;a data-j="survey"&gt;Staff Survey&lt;/a&gt;&lt;a data-j="calendar"&gt;52 Weeks&lt;/a&gt;&lt;a data-j="journeys"&gt;Journeys&lt;/a&gt;</span>
+<span class="s2">&lt;a data-j="retreat"&gt;Retreats&lt;/a&gt;&lt;a data-j="tools"&gt;Toolbox&lt;/a&gt;&lt;/nav&gt;&lt;/div&gt;&lt;/header&gt;</span>
+
+<span class="s2">&lt;div class="hero"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Church Staff Meeting Finder &amp;amp; Builder&lt;/div&gt;</span>
+<span class="s2">&lt;h1&gt;Your staff meeting is the &lt;em&gt;best small group&lt;/em&gt; in your church. Or it is a status report.&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="l2" id="thesis"&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;div class="stats"&gt;&lt;div&gt;&lt;b&gt;10&lt;/b&gt;&lt;span&gt;categories&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;100&lt;/b&gt;&lt;span&gt;sessions&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;52&lt;/b&gt;&lt;span&gt;week calendar&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;6&lt;/b&gt;&lt;span&gt;journeys&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;b&gt;4&lt;/b&gt;&lt;span&gt;quarterly retreats&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;section id="why"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Case&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Five reasons this is the most important hour of your week.&lt;/h2&gt;</span>
+<span class="s2">&lt;div id="why2" style="margin-top:22px"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="eyebrow" style="margin-top:44px"&gt;The Shape&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Sixty minutes, in this order.&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="s3" id="struct"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="big" id="structnote"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="find" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"&gt;</span>
+<span class="s2">&lt;div class="wrap"&gt;&lt;div id="findhead"&gt;&lt;div class="eyebrow"&gt;The Library&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Ten categories. One hundred sessions.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Every session is a twenty-minute conversation with an opening question, a passage, three questions, the turn, an action and leader notes. Anyone on staff can run one with no preparation.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cgrid" id="cgrid"&gt;&lt;/div&gt;&lt;div id="detail"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="plan" id="plan"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="check"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;For the Leader&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Is your staff meeting worth their time?&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Ten questions for whoever runs the meeting. Answer honestly rather than aspirationally.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="assessbox"&gt;&lt;/div&gt;&lt;div id="resbox"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="survey" style="background:var(--white);border-top:1px solid var(--line)"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;For the Staff&lt;/div&gt;&lt;h2 class="sh"&gt;Ask them what they need.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede" id="svwhy"&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;div class="note2" id="svrules"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="assess" style="margin-top:22px"&gt;&lt;div class="ahead"&gt;&lt;h3&gt;Annual staff survey&lt;/h3&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="qs" id="svqs"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="afoot"&gt;&lt;div class="note"&gt;Anonymous. Results build next year's calendar.&lt;/div&gt;</span>
+<span class="s2">&lt;button class="btn ghost" id="svclear"&gt;Clear&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="calendar"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;The Year&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Twelve timely months. Forty timeless weeks.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;The twelve anchored to the church calendar are fixed. The rest rotate by what the staff survey asked for.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="cal" id="cal"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="eyebrow" style="margin-top:44px"&gt;Rules&lt;/div&gt;</span>
+<span class="s2">&lt;h3 style="font-size:22px"&gt;Six things that keep a calendar alive past March.&lt;/h3&gt;</span>
+<span class="s2">&lt;div id="calrules" style="margin-top:14px"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="journeys" style="background:var(--white);border-top:1px solid var(--line)"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Journeys&lt;/div&gt;&lt;h2 class="sh"&gt;Six twelve-session arcs for a particular season.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Pre-sequenced for a specific situation. Order matters more than content in every one of these.&lt;/p&gt;</span>
+<span class="s2">&lt;div id="jrn"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="retreat"&gt;&lt;div class="wrap"&gt;&lt;div class="eyebrow"&gt;Quarterly&lt;/div&gt;</span>
+<span class="s2">&lt;h2 class="sh"&gt;Four one-days beat one three-day.&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="lede" id="rtwhy"&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;div id="rt" style="margin-top:22px"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="note2" id="rtrules"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section id="tools" style="background:var(--white);border-top:1px solid var(--line)"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;div class="eyebrow"&gt;Toolbox&lt;/div&gt;&lt;h2 class="sh"&gt;Ten templates.&lt;/h2&gt;</span>
+<span class="s2">&lt;div id="tb" style="margin-top:20px"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;div class="cta"&gt;&lt;div class="wrap"&gt;&lt;h2&gt;Design the hour that designs everything else.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;Fifty meetings a year with the people who set the culture. It is the highest-leverage room in the building.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;Church Staff Meeting Finder &amp;amp; Builder &amp;middot; 10 categories &amp;middot; 100 sessions &amp;middot; 52-week calendar&lt;/div&gt;&lt;/footer&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">var D=__DATA__;var st={cat:null,sess:null,ans:</span><span class="si">{}</span><span class="s2">,shown:false,picked:[],sv:</span><span class="si">{}</span><span class="s2">};</span>
+<span class="s2">function el(i){return document.getElementById(i);}</span>
+<span class="s2">function esc(s){return String(s).replace(/"/g,"&amp;quot;");}</span>
+
+<span class="s2">el("thesis").innerHTML=D.thesis;</span>
+<span class="s2">el("structnote").innerHTML=D.structnote;</span>
+<span class="s2">el("svwhy").innerHTML=D.survey.why;</span>
+<span class="s2">el("rtwhy").innerHTML=D.retreat.why;</span>
+
+<span class="s2">function rWhy(){var h="",i;for(i=0;i&lt;D.why.length;i++){</span>
+<span class="s2">h+='&lt;div class="wrow"&gt;&lt;span class="wk2"&gt;'+D.why[i][0]+'&lt;/span&gt;&lt;span class="wv"&gt;'+D.why[i][1]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("why2").innerHTML=h;</span>
+<span class="s2">h="";for(i=0;i&lt;D.struct.length;i++){h+='&lt;div class="s3c"&gt;&lt;div class="t3"&gt;'+D.struct[i][1]+'&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;h4&gt;'+D.struct[i][0]+'&lt;/h4&gt;&lt;p&gt;'+D.struct[i][2]+'&lt;/p&gt;&lt;/div&gt;';}el("struct").innerHTML=h;}</span>
+
+<span class="s2">function rCats(){</span>
+<span class="s2">if(st.cat!==null){el("cgrid").innerHTML="";return;}</span>
+<span class="s2">el("findhead").style.display="block";</span>
+<span class="s2">var h="",i;for(i=0;i&lt;D.cats.length;i++){var c=D.cats[i];</span>
+<span class="s2">h+='&lt;button class="cc" data-c="'+i+'"&gt;&lt;div class="cn"&gt;'+c.ss.length+' sessions&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;h4&gt;'+c.n+'&lt;/h4&gt;&lt;div class="cs2"&gt;'+c.s+'&lt;/div&gt;&lt;p&gt;'+c.w+'&lt;/p&gt;&lt;/button&gt;';}</span>
+<span class="s2">el("cgrid").innerHTML=h;</span>
+<span class="s2">var b=document.querySelectorAll(".cc");for(i=0;i&lt;b.length;i++){b[i].onclick=function(){</span>
+<span class="s2">st.cat=parseInt(this.getAttribute("data-c"),10);st.sess=null;rAll();};}}</span>
+
+<span class="s2">function rDetail(){</span>
+<span class="s2">var box=el("detail");</span>
+<span class="s2">if(st.cat===null){box.innerHTML="";return;}</span>
+<span class="s2">el("findhead").style.display="none";</span>
+<span class="s2">var c=D.cats[st.cat],i,h='&lt;button class="back" id="bk"&gt;&amp;larr; All ten categories&lt;/button&gt;';</span>
+<span class="s2">if(st.sess===null){</span>
+<span class="s2"> h+='&lt;div class="eyebrow"&gt;'+c.s+'&lt;/div&gt;&lt;h2 class="sh"&gt;'+c.n+'&lt;/h2&gt;&lt;p class="lede"&gt;'+c.w+'&lt;/p&gt;&lt;div class="slist"&gt;';</span>
+<span class="s2"> for(i=0;i&lt;c.ss.length;i++){var s=c.ss[i];</span>
+<span class="s2">  var inp=st.picked.indexOf(c.n+" :: "+s.t)!==-1;</span>
+<span class="s2">  h+='&lt;button class="sr" data-s="'+i+'"&gt;&lt;span class="sn"&gt;'+(i&lt;9?"0":"")+(i+1)+'&lt;/span&gt;&lt;span class="sb2"&gt;';</span>
+<span class="s2">  h+='&lt;span class="st"&gt;'+s.t+'&lt;/span&gt;&lt;span class="ss"&gt;'+s.sub+'&lt;/span&gt;&lt;/span&gt;';</span>
+<span class="s2">  h+='&lt;span class="add'+(inp?" in":"")+'" data-add="'+i+'"&gt;'+(inp?"In the plan":"Add")+'&lt;/span&gt;&lt;/button&gt;';}</span>
+<span class="s2"> h+='&lt;/div&gt;';</span>
+<span class="s2">}else{</span>
+<span class="s2"> var s=c.ss[st.sess];</span>
+<span class="s2"> h+='&lt;div class="guide"&gt;&lt;div class="gh"&gt;&lt;div class="gc"&gt;'+c.n+'&lt;/div&gt;&lt;h3&gt;'+s.t+'&lt;/h3&gt;';</span>
+<span class="s2"> h+='&lt;div class="gs"&gt;'+s.sub+'&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="gsec"&gt;&lt;div class="gl"&gt;Open with this &amp;mdash; before any content&lt;/div&gt;&lt;div class="gq"&gt;'+s.oq+'&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="gsec"&gt;&lt;div class="gl"&gt;Scripture&lt;/div&gt;&lt;p&gt;'+s.sc+'&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="gsec"&gt;&lt;div class="gl"&gt;Three questions&lt;/div&gt;&lt;ol&gt;';</span>
+<span class="s2"> for(i=0;i&lt;s.qs.length;i++){h+='&lt;li&gt;'+s.qs[i]+'&lt;/li&gt;';}</span>
+<span class="s2"> h+='&lt;/ol&gt;&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="gsec"&gt;&lt;div class="gl"&gt;The turn &amp;mdash; say this when the conversation flattens&lt;/div&gt;&lt;div class="gt"&gt;'+s.turn+'&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="gsec"&gt;&lt;div class="gl"&gt;This week&lt;/div&gt;&lt;p&gt;'+s.act+'&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2"> h+='&lt;div class="gnote"&gt;&lt;div class="gl"&gt;Leader notes&lt;/div&gt;&lt;p&gt;'+s.note+'&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2"> var inp2=st.picked.indexOf(c.n+" :: "+s.t)!==-1;</span>
+<span class="s2"> h+='&lt;p style="margin-top:16px"&gt;&lt;button class="btn'+(inp2?" ghost":"")+'" id="addone"&gt;'+(inp2?"Remove from plan":"Add to the year")+'&lt;/button&gt;&lt;/p&gt;';</span>
+<span class="s2">}</span>
+<span class="s2">box.innerHTML=h;</span>
+<span class="s2">el("bk").onclick=function(){if(st.sess!==null){st.sess=null;}else{st.cat=null;}rAll();};</span>
+<span class="s2">var sr=document.querySelectorAll(".sr");</span>
+<span class="s2">for(i=0;i&lt;sr.length;i++){sr[i].onclick=function(ev){</span>
+<span class="s2"> var t=ev.target;</span>
+<span class="s2"> if(t.getAttribute("data-add")!==null){</span>
+<span class="s2">  var ix=parseInt(t.getAttribute("data-add"),10);toggle(st.cat,ix);rAll();return;}</span>
+<span class="s2"> st.sess=parseInt(this.getAttribute("data-s"),10);rAll();};}</span>
+<span class="s2">var a1=el("addone");</span>
+<span class="s2">if(a1){a1.onclick=function(){toggle(st.cat,st.sess);rAll();};}}</span>
+
+<span class="s2">function toggle(ci,si){var key=D.cats[ci].n+" :: "+D.cats[ci].ss[si].t;</span>
+<span class="s2">var at=st.picked.indexOf(key);if(at===-1){st.picked.push(key);}else{st.picked.splice(at,1);}}</span>
+
+<span class="s2">function rPlan(){var h='&lt;h3&gt;Your year&lt;/h3&gt;';</span>
+<span class="s2">h+='&lt;div class="pc2"&gt;'+st.picked.length+' of 52 weeks planned. Add sessions from any category and leave four weeks empty for the ones that get cancelled.&lt;/div&gt;';</span>
+<span class="s2">if(st.picked.length){h+='&lt;div class="picked"&gt;';</span>
+<span class="s2"> for(var i=0;i&lt;st.picked.length;i++){h+='&lt;span&gt;'+st.picked[i].split(" :: ")[1]+'&lt;/span&gt;';}</span>
+<span class="s2"> h+='&lt;/div&gt;&lt;p style="margin-top:16px"&gt;&lt;button class="btn ghost" id="clr"&gt;Clear the plan&lt;/button&gt;&lt;/p&gt;';</span>
+<span class="s2">}else{h+='&lt;div class="empty"&gt;Nothing selected yet. Open a category and press Add on any session.&lt;/div&gt;';}</span>
+<span class="s2">el("plan").innerHTML=h;</span>
+<span class="s2">var c=el("clr");if(c){c.onclick=function(){st.picked=[];rAll();};}}</span>
+
+<span class="s2">function nA(){var n=0,i;for(i=0;i&lt;D.lq.length;i++){if(st.ans[i]!==undefined)n++;}return n;}</span>
+<span class="s2">function sc(){var s=0,i;for(i=0;i&lt;D.lq.length;i++){if(st.ans[i]!==undefined)s+=(4-st.ans[i]);}return s;}</span>
+<span class="s2">function rAssess(){var i,j,n=nA(),t=D.lq.length,p=Math.round(n/t*100);</span>
+<span class="s2">var h='&lt;div class="assess"&gt;&lt;div class="ahead"&gt;&lt;h3&gt;Meeting health check&lt;/h3&gt;&lt;div class="prog"&gt;';</span>
+<span class="s2">h+='&lt;div class="ptrk"&gt;&lt;div class="pfil" style="width:'+p+'%"&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="pct"&gt;'+n+' of '+t+'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="qs"&gt;';</span>
+<span class="s2">for(i=0;i&lt;D.lq.length;i++){h+='&lt;div class="qrow"&gt;&lt;div class="qt"&gt;'+(i+1)+'. '+D.lq[i][0]+'&lt;/div&gt;&lt;div class="opts"&gt;';</span>
+<span class="s2">for(j=0;j&lt;D.lq[i][1].length;j++){h+='&lt;button class="opt'+(st.ans[i]===j?" on":"")+'" data-q="'+i+'" data-o="'+j+'"&gt;'+D.lq[i][1][j]+'&lt;/button&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;&lt;/div&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;&lt;div class="afoot"&gt;&lt;div class="note"&gt;Answer all ten for an accurate band.&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;button class="btn" id="see"'+(n&lt;t?" disabled":"")+'&gt;See the result&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">el("assessbox").innerHTML=h;</span>
+<span class="s2">var o=document.querySelectorAll("#assessbox .opt");for(i=0;i&lt;o.length;i++){o[i].onclick=function(){</span>
+<span class="s2">var q=parseInt(this.getAttribute("data-q"),10),v=parseInt(this.getAttribute("data-o"),10);</span>
+<span class="s2">if(st.ans[q]===v){delete st.ans[q];}else{st.ans[q]=v;}rAssess();if(st.shown)rRes();};}</span>
+<span class="s2">var s=el("see");if(s){s.onclick=function(){st.shown=true;rRes();};}}</span>
+<span class="s2">function rRes(){var box=el("resbox");if(!st.shown){box.innerHTML="";return;}</span>
+<span class="s2">var v=sc(),i,hit=0;</span>
+<span class="s2">for(i=0;i&lt;D.lb.length;i++){var r=D.lb[i][0].split(" to ");if(v&gt;=parseInt(r[0],10)&amp;&amp;v&lt;=parseInt(r[1],10))hit=i;}</span>
+<span class="s2">var h='&lt;div class="res"&gt;&lt;div class="rh"&gt;&lt;div class="rl"&gt;Your score&lt;/div&gt;&lt;div class="sc"&gt;'+v+' / 40&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;h3&gt;'+D.lb[hit][1]+'&lt;/h3&gt;&lt;p&gt;'+D.lb[hit][2]+'&lt;/p&gt;&lt;/div&gt;&lt;div class="rb"&gt;';</span>
+<span class="s2">for(i=0;i&lt;D.lb.length;i++){h+='&lt;div class="bandrow'+(i===hit?" hit":"")+'"&gt;&lt;span class="bn"&gt;'+D.lb[i][0]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="bt"&gt;'+D.lb[i][1]+'&lt;/span&gt;&lt;span class="bd"&gt;'+D.lb[i][2]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">box.innerHTML=h+'&lt;/div&gt;&lt;/div&gt;';}</span>
+
+<span class="s2">function rSurvey(){var h="",i,j;</span>
+<span class="s2">var r="&lt;strong&gt;How to run it.&lt;/strong&gt; ";</span>
+<span class="s2">for(i=0;i&lt;D.survey.rules.length;i++){r+=(i?" &amp;middot; ":"")+D.survey.rules[i];}</span>
+<span class="s2">el("svrules").innerHTML=r;</span>
+<span class="s2">for(i=0;i&lt;D.survey.qs.length;i++){var q=D.survey.qs[i];</span>
+<span class="s2">h+='&lt;div class="svq"&gt;&lt;div class="sq"&gt;'+(i+1)+'. '+q[0]+'&lt;/div&gt;';</span>
+<span class="s2">if(q[1]==="open"){h+='&lt;textarea placeholder="Their answer"&gt;&lt;/textarea&gt;';}</span>
+<span class="s2">else{h+='&lt;div class="opts"&gt;';</span>
+<span class="s2"> for(j=0;j&lt;q[2].length;j++){var on=(q[1]==="multi")?((st.sv[i]||[]).indexOf(j)!==-1):(st.sv[i]===j);</span>
+<span class="s2">  h+='&lt;button class="opt'+(on?" on":"")+'" data-sq="'+i+'" data-so="'+j+'" data-m="'+(q[1]==="multi"?1:0)+'"&gt;'+q[2][j]+'&lt;/button&gt;';}</span>
+<span class="s2"> h+='&lt;/div&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;';}</span>
+<span class="s2">el("svqs").innerHTML=h;</span>
+<span class="s2">var b=document.querySelectorAll("[data-sq]");for(i=0;i&lt;b.length;i++){b[i].onclick=function(){</span>
+<span class="s2">var q=parseInt(this.getAttribute("data-sq"),10),o=parseInt(this.getAttribute("data-so"),10);</span>
+<span class="s2">if(this.getAttribute("data-m")==="1"){var a=st.sv[q]||[];var at=a.indexOf(o);</span>
+<span class="s2"> if(at===-1){a.push(o);}else{a.splice(at,1);}st.sv[q]=a;}</span>
+<span class="s2">else{st.sv[q]=(st.sv[q]===o)?undefined:o;}rSurvey();};}</span>
+<span class="s2">var c=el("svclear");if(c){c.onclick=function(){st.sv=</span><span class="si">{}</span><span class="s2">;rSurvey();};}}</span>
+
+<span class="s2">function rCal(){var h="",i,j;for(i=0;i&lt;D.cal.length;i++){var m=D.cal[i];</span>
+<span class="s2">h+='&lt;div class="mo"&gt;&lt;div class="mh"&gt;&lt;h4&gt;'+m[0]+'&lt;/h4&gt;&lt;span class="tag '+(m[1]==="Timely"?"t1":"t2")+'"&gt;'+m[1]+'&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;div class="mt"&gt;'+m[2]+'&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">for(j=0;j&lt;m[3].length;j++){h+='&lt;li&gt;'+m[3][j]+'&lt;/li&gt;';}</span>
+<span class="s2">h+='&lt;/ul&gt;&lt;/div&gt;';}el("cal").innerHTML=h;</span>
+<span class="s2">h="";for(i=0;i&lt;D.calrules.length;i++){</span>
+<span class="s2">h+='&lt;div class="wrow"&gt;&lt;span class="wk2"&gt;'+D.calrules[i][0]+'&lt;/span&gt;&lt;span class="wv"&gt;'+D.calrules[i][1]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("calrules").innerHTML=h;}</span>
+
+<span class="s2">function rJourneys(){var h="",i,j;for(i=0;i&lt;D.journeys.length;i++){var J=D.journeys[i];</span>
+<span class="s2">h+='&lt;div class="jr"&gt;&lt;div class="jh"&gt;&lt;h4&gt;'+J[0]+'&lt;/h4&gt;&lt;span class="jc"&gt;'+J[1]+'&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">h+='&lt;p&gt;'+J[2]+'&lt;/p&gt;&lt;div class="jl"&gt;';</span>
+<span class="s2">for(j=0;j&lt;J[3].length;j++){h+='&lt;span&gt;'+(j+1)+'. '+J[3][j]+'&lt;/span&gt;';}</span>
+<span class="s2">h+='&lt;/div&gt;&lt;/div&gt;';}el("jrn").innerHTML=h;}</span>
+
+<span class="s2">function rRetreat(){var h="",i;for(i=0;i&lt;D.retreat.shape.length;i++){var R=D.retreat.shape[i];</span>
+<span class="s2">h+='&lt;div class="rtr"&gt;&lt;span class="rt2"&gt;'+R[0]+'&lt;/span&gt;&lt;span class="rn"&gt;'+R[1]+'&lt;/span&gt;';</span>
+<span class="s2">h+='&lt;span class="rd"&gt;'+R[2]+'&lt;/span&gt;&lt;span class="rv"&gt;'+R[3]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("rt").innerHTML=h;</span>
+<span class="s2">var r="&lt;strong&gt;Six rules.&lt;/strong&gt; ";</span>
+<span class="s2">for(i=0;i&lt;D.retreat.rules.length;i++){r+=(i?" &amp;middot; ":"")+D.retreat.rules[i];}</span>
+<span class="s2">el("rtrules").innerHTML=r;}</span>
+
+<span class="s2">function rTools(){var h="",i;for(i=0;i&lt;D.toolbox.length;i++){</span>
+<span class="s2">h+='&lt;div class="wrow"&gt;&lt;span class="wk2"&gt;'+D.toolbox[i][0]+'&lt;/span&gt;&lt;span class="wv"&gt;'+D.toolbox[i][1]+'&lt;/span&gt;&lt;/div&gt;';}</span>
+<span class="s2">el("tb").innerHTML=h;}</span>
+
+<span class="s2">function rAll(){rCats();rDetail();rPlan();}</span>
+<span class="s2">rWhy();rAll();rAssess();rRes();rSurvey();rCal();rJourneys();rRetreat();rTools();</span>
+<span class="s2">var jl=document.querySelectorAll("[data-j]");for(var z=0;z&lt;jl.length;z++){jl[z].onclick=function(){</span>
+<span class="s2">var t=this.getAttribute("data-j");</span>
+<span class="s2">if(t==="find"){st.cat=null;st.sess=null;rAll();}</span>
+<span class="s2">el(t).scrollIntoView({block:"start"});};}</span>
+<span class="s2">"""</span>
+
+<span class="n">SHELL</span> <span class="o">=</span> <span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;Church Staff Meeting Finder &amp;amp; Builder&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;__CSS__&lt;/style&gt;&lt;/head&gt;&lt;body&gt;__BODY__&lt;script&gt;__JS__&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"""</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">SHELL</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__CSS__"</span><span class="p">,</span> <span class="n">CSS</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__BODY__"</span><span class="p">,</span> <span class="n">BODY</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__JS__"</span><span class="p">,</span> <span class="n">JS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__DATA__"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">","</span><span class="p">,</span> <span class="s2">":"</span><span class="p">))))</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/staff-meeting-builder.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sessions:"</span><span class="p">,</span> <span class="n">NSESS</span><span class="p">,</span> <span class="s2">"| KB:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_meeting.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

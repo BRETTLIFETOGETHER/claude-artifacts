@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>restyle.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>restyle.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">10 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/restyle.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Bulk restyle script: targeted patches per page plus global color and radius remapping</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="n">PAGES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"page_home.py"</span><span class="p">,</span><span class="s2">"page_assessment.py"</span><span class="p">,</span><span class="s2">"page_create.py"</span><span class="p">,</span><span class="s2">"page_reader.py"</span><span class="p">,</span>
+         <span class="s2">"page_browse_campaign.py"</span><span class="p">,</span><span class="s2">"page_rest.py"</span><span class="p">]</span>
+
+<span class="c1"># ---------- generic hex remap (old palette → navy/orange) ----------</span>
+<span class="n">HEXMAP</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1"># violets → navy family</span>
+  <span class="s2">"#6A63CF"</span><span class="p">:</span><span class="s2">"#155377"</span><span class="p">,</span> <span class="s2">"#5A53B8"</span><span class="p">:</span><span class="s2">"#155377"</span><span class="p">,</span> <span class="s2">"#4A44A8"</span><span class="p">:</span><span class="s2">"#0E3A57"</span><span class="p">,</span> <span class="s2">"#403A9E"</span><span class="p">:</span><span class="s2">"#0E3A57"</span><span class="p">,</span>
+  <span class="s2">"#EAE8F8"</span><span class="p">:</span><span class="s2">"#E8F0F7"</span><span class="p">,</span> <span class="s2">"#F8F7FD"</span><span class="p">:</span><span class="s2">"#F4F8FB"</span><span class="p">,</span> <span class="s2">"#DBD8F0"</span><span class="p">:</span><span class="s2">"#D4E2ED"</span><span class="p">,</span> <span class="s2">"#7A75C4"</span><span class="p">:</span><span class="s2">"#5C86A5"</span><span class="p">,</span>
+  <span class="s2">"#4A4B6E"</span><span class="p">:</span><span class="s2">"#3E5468"</span><span class="p">,</span> <span class="s2">"#F1EFFB"</span><span class="p">:</span><span class="s2">"#E8F0F7"</span><span class="p">,</span> <span class="s2">"#EFEDFA"</span><span class="p">:</span><span class="s2">"#E8F0F7"</span><span class="p">,</span> <span class="s2">"#B7A9E0"</span><span class="p">:</span><span class="s2">"#8FB3CC"</span><span class="p">,</span>
+  <span class="s2">"#DDD9F1"</span><span class="p">:</span><span class="s2">"#D4E2ED"</span><span class="p">,</span> <span class="s2">"#FBFAFE"</span><span class="p">:</span><span class="s2">"#F7FAFC"</span><span class="p">,</span>
+  <span class="c1"># greens → navy family (structural art) / light tints</span>
+  <span class="s2">"#237A52"</span><span class="p">:</span><span class="s2">"#155377"</span><span class="p">,</span> <span class="s2">"#2E8A5F"</span><span class="p">:</span><span class="s2">"#1A6392"</span><span class="p">,</span> <span class="s2">"#1B5C3F"</span><span class="p">:</span><span class="s2">"#0E3A57"</span><span class="p">,</span>
+  <span class="s2">"#EDF4EA"</span><span class="p">:</span><span class="s2">"#F1F6FA"</span><span class="p">,</span> <span class="s2">"#F8F3E3"</span><span class="p">:</span><span class="s2">"#FDEFDC"</span><span class="p">,</span> <span class="s2">"#DDE7D6"</span><span class="p">:</span><span class="s2">"#D4E2ED"</span><span class="p">,</span> <span class="s2">"#D7E6D4"</span><span class="p">:</span><span class="s2">"#D4E2ED"</span><span class="p">,</span>
+  <span class="s2">"#D6E5D3"</span><span class="p">:</span><span class="s2">"#D4E2ED"</span><span class="p">,</span> <span class="s2">"#E7F1E6"</span><span class="p">:</span><span class="s2">"#E8F0F7"</span><span class="p">,</span> <span class="s2">"#F7FBF4"</span><span class="p">:</span><span class="s2">"#F7FAFC"</span><span class="p">,</span> <span class="s2">"#FAFCF6"</span><span class="p">:</span><span class="s2">"#F7FAFC"</span><span class="p">,</span>
+  <span class="s2">"#5F8F6C"</span><span class="p">:</span><span class="s2">"#5C86A5"</span><span class="p">,</span> <span class="s2">"#3E5A48"</span><span class="p">:</span><span class="s2">"#3E5468"</span><span class="p">,</span> <span class="s2">"#BFE3C6"</span><span class="p">:</span><span class="s2">"#9CC8E8"</span><span class="p">,</span> <span class="s2">"#DCEBDD"</span><span class="p">:</span><span class="s2">"#C6D9E8"</span><span class="p">,</span>
+  <span class="c1"># golds → orange family</span>
+  <span class="s2">"#C4933C"</span><span class="p">:</span><span class="s2">"#F6A928"</span><span class="p">,</span> <span class="s2">"#9C7228"</span><span class="p">:</span><span class="s2">"#D18410"</span><span class="p">,</span> <span class="s2">"#E3C88A"</span><span class="p">:</span><span class="s2">"#FFC97A"</span><span class="p">,</span> <span class="s2">"#C9A45A"</span><span class="p">:</span><span class="s2">"#F6A928"</span><span class="p">,</span>
+  <span class="s2">"#E8D9AE"</span><span class="p">:</span><span class="s2">"#FFC97A"</span><span class="p">,</span> <span class="s2">"#B5852F"</span><span class="p">:</span><span class="s2">"#D6820A"</span><span class="p">,</span> <span class="s2">"#B08A45"</span><span class="p">:</span><span class="s2">"#E29A3B"</span><span class="p">,</span> <span class="s2">"#EBDDBE"</span><span class="p">:</span><span class="s2">"#F8DFB8"</span><span class="p">,</span>
+  <span class="s2">"#F5EBD4"</span><span class="p">:</span><span class="s2">"#FDEFDC"</span><span class="p">,</span> <span class="s2">"#FBF5E6"</span><span class="p">:</span><span class="s2">"#FFF7EA"</span><span class="p">,</span> <span class="s2">"#EFDDB2"</span><span class="p">:</span><span class="s2">"#FBE3BE"</span><span class="p">,</span> <span class="s2">"#F7ECD8"</span><span class="p">:</span><span class="s2">"#FDEFDC"</span><span class="p">,</span>
+  <span class="s2">"#FCF8EE"</span><span class="p">:</span><span class="s2">"#FFF7EA"</span><span class="p">,</span> <span class="s2">"#5E4E2E"</span><span class="p">:</span><span class="s2">"#7A5310"</span><span class="p">,</span> <span class="s2">"#5E4A22"</span><span class="p">:</span><span class="s2">"#7A5310"</span><span class="p">,</span>
+  <span class="c1"># terracotta / misc</span>
+  <span class="s2">"#B45A38"</span><span class="p">:</span><span class="s2">"#CD6A05"</span><span class="p">,</span> <span class="s2">"#FBEAE4"</span><span class="p">:</span><span class="s2">"#FDEFDC"</span><span class="p">,</span> <span class="s2">"#B5502F"</span><span class="p">:</span><span class="s2">"#CD6A05"</span><span class="p">,</span>
+  <span class="c1"># old ink green-black → navy</span>
+  <span class="s2">"#14352A"</span><span class="p">:</span><span class="s2">"#0E3A57"</span><span class="p">,</span> <span class="s2">"#2B2008"</span><span class="p">:</span><span class="s2">"#4A2E00"</span><span class="p">,</span>
+  <span class="c1"># old greens in rgba shadows</span>
+  <span class="s2">"rgba(35,122,82"</span><span class="p">:</span><span class="s2">"rgba(238,128,16"</span><span class="p">,</span> <span class="s2">"rgba(106,99,207"</span><span class="p">:</span><span class="s2">"rgba(21,83,119"</span><span class="p">,</span>
+  <span class="s2">"rgba(90,83,184"</span><span class="p">:</span><span class="s2">"rgba(238,128,16"</span><span class="p">,</span> <span class="s2">"rgba(196,147,60"</span><span class="p">:</span><span class="s2">"rgba(238,128,16"</span><span class="p">,</span>
+  <span class="s2">"rgba(156,114,40"</span><span class="p">:</span><span class="s2">"rgba(216,132,16"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generic</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="c1"># arch radii → rounded</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'border-radius:\d+px \d+px \d+px \d+px'</span><span class="p">,</span> <span class="s1">'border-radius:14px'</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'border-radius:50</span><span class="si">% 50%</span><span class="s1"> \d+px \d+px'</span><span class="p">,</span> <span class="s1">'border-radius:50%'</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+  <span class="c1"># italic display voice → normal (Archivo has no italic)</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"font-style:italic"</span><span class="p">,</span> <span class="s2">"font-style:normal"</span><span class="p">)</span>
+  <span class="c1"># Fraunces variation settings are meaningless for Archivo</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"font-variation-settings:'SOFT' 40,'WONK' 0,'opsz' \d+;"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">HEXMAP</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s</span>
+
+<span class="c1"># ---------- targeted patches (run BEFORE generic where colors must diverge) ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">patch_home</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="c1"># door-path art strokes/fills → light blue on navy card</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'stroke="#6A63CF"'</span><span class="p">,</span> <span class="s1">'stroke="#6FB6E4"'</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'fill="#6A63CF"'</span><span class="p">,</span> <span class="s1">'fill="#6FB6E4"'</span><span class="p">)</span>
+  <span class="c1"># door-create art → white on orange card</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'stroke="#C4933C"'</span><span class="p">,</span> <span class="s1">'stroke="#FFFFFF"'</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'fill="#C4933C"'</span><span class="p">,</span> <span class="s1">'fill="#FFFFFF"'</span><span class="p">)</span>
+  <span class="c1"># split panel buttons: strip inline violet style; navy button on orange panel</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'class="btn btn-primary btn-lg" style="background:#5A53B8;box-shadow:0 8px 22px rgba(90,83,184,.3)"'</span><span class="p">,</span>
+                <span class="s1">'class="btn btn-primary btn-lg"'</span><span class="p">)</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;a class="btn btn-primary btn-lg" href="create.html"&gt;Transform a sermon&lt;/a&gt;'</span><span class="p">,</span>
+                <span class="s1">'&lt;a class="btn btn-ink btn-lg" style="background:#0E3A57" href="create.html"&gt;Transform a sermon&lt;/a&gt;'</span><span class="p">)</span>
+  <span class="c1"># v2 overrides appended to the page style block</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_HOME</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s</span>
+
+<span class="n">OVR_HOME</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 navy/orange overrides ===== */</span>
+<span class="s2">.hero{background:linear-gradient(150deg,#092B42 0%,#0E3A57 52%,#175A85 100%);padding:92px 0 86px;color:#B8CBDA;position:relative;overflow:hidden}</span>
+<span class="s2">.hero::before{content:'';position:absolute;right:-220px;top:-220px;width:640px;height:640px;border-radius:50%;</span>
+<span class="s2">  border:2px solid rgba(255,255,255,.06);box-shadow:0 0 0 80px rgba(255,255,255,.03),0 0 0 170px rgba(255,255,255,.02)}</span>
+<span class="s2">.hero h1{color:#fff}</span>
+<span class="s2">.hero .lede{color:#C6D9E8}</span>
+<span class="s2">.hero .eyebrow{color:#F6A928}</span>
+<span class="s2">.hero-quiet{color:#8FA9BE}.hero-quiet a{color:#F6A928;border-color:rgba(246,169,40,.45)}</span>
+<span class="s2">.hero .btn-outline{border-color:rgba(255,255,255,.42);color:#fff}</span>
+<span class="s2">.hero .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.07);color:#fff}</span>
+<span class="s2">.stats{border-top:1px solid rgba(255,255,255,.16)}</span>
+<span class="s2">.stats b{color:#fff}.stats span{color:#7FA0B8}</span>
+<span class="s2">.fan .halo{background:radial-gradient(closest-side,rgba(246,169,40,.22),transparent 70%)}</span>
+<span class="s2">.fan .fc{box-shadow:0 32px 70px rgba(0,0,0,.4);border-radius:16px;border-width:4px}</span>
+<span class="s2">.partners{background:#fff;border:0;padding:48px 0 52px}</span>
+<span class="s2">.door{border-radius:18px;min-height:400px}</span>
+<span class="s2">.door-find{background:#fff;border:1px solid var(--line-soft)}</span>
+<span class="s2">.door-find h3{color:var(--ink)}.door-find .dlink{color:var(--green-deep)}.door-find .dtag{color:var(--mute)}.door-find p{color:var(--body)}</span>
+<span class="s2">.door-path{background:linear-gradient(160deg,#0E3A57,#155377);border:0}</span>
+<span class="s2">.door-path h3{color:#fff}.door-path .dtag{color:#7FC0E8}.door-path p{color:#B8CBDA}.door-path .dlink{color:#F6A928}</span>
+<span class="s2">.door-create{background:linear-gradient(135deg,#F6A928,#E8780C);border:0}</span>
+<span class="s2">.door-create h3,.door-create .dlink{color:#fff}.door-create .dtag{color:#FFE3B8}.door-create p{color:#FFF3E2}</span>
+<span class="s2">.scale button.sel{background:var(--grad);border-color:transparent;color:#fff;box-shadow:var(--shadow-o)}</span>
+<span class="s2">.sampler .sdone{background:#FDEFDC;color:#7A5310}</span>
+<span class="s2">.sampler .sdone a{color:#CD6A05!important}</span>
+<span class="s2">.spanel{border-radius:18px;padding:56px 42px 46px}</span>
+<span class="s2">.sp-you{background:linear-gradient(160deg,#0E3A57,#155377);border:0}</span>
+<span class="s2">.sp-you h3{color:#fff}.sp-you p{color:#B8CBDA}</span>
+<span class="s2">.sp-church{background:linear-gradient(135deg,#F6A928,#E8780C);border:0}</span>
+<span class="s2">.sp-church h3{color:#fff}.sp-church p{color:#FFF3E2}</span>
+<span class="s2">.mock-head{background:linear-gradient(120deg,#FDEFDC,#FFF7EA)}</span>
+<span class="s2">.tsti-feature .avatar{background:linear-gradient(140deg,#0E3A57,#1A6392);border-radius:50%}</span>
+<span class="s2">.her .dots40{color:#F6A928}</span>
+<span class="s2">.fmt-card .fname{color:#FFC97A}</span>
+<span class="s2">.stp .num{border-radius:12px}</span>
+<span class="s2">.door .dart</span><span class="si">{opacity:.85}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">patch_assessment</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_ASSESS</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s</span>
+
+<span class="n">OVR_ASSESS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.prog i{border-radius:8px;width:26px;height:12px}</span>
+<span class="s2">.prog i.done{background:var(--grad);border-color:transparent}</span>
+<span class="s2">.prog i.cur{background:var(--green-tint);border-color:var(--green)}</span>
+<span class="s2">.ig i{border-radius:10px}</span>
+<span class="s2">.proc .parch{width:110px;height:110px}</span>
+<span class="s2">.proc .parch::before,.proc .parch::after{border-radius:22px}</span>
+<span class="s2">.area{border-radius:16px}</span>
+<span class="s2">.path-cta{border-radius:18px}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">patch_create</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_CREATE</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s</span>
+
+<span class="n">OVR_CREATE</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.pull{border-radius:20px}</span>
+<span class="s2">.pull .sun{border-radius:14px}</span>
+<span class="s2">.proc .ring{border-radius:50%;border-width:4px}</span>
+<span class="s2">.stab{border-radius:12px}</span>
+<span class="s2">.exp .ei{border-radius:14px}</span>
+<span class="s2">.doc{border-radius:18px}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">patch_reader</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_READER</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s</span>
+
+<span class="n">OVR_READER</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.dayarch{border-radius:10px}</span>
+<span class="s2">.dayarch.done{background:var(--grad);border-color:transparent}</span>
+<span class="s2">.rd-camp .mini{border-radius:9px}</span>
+<span class="s2">.verse{border-left-width:4px}</span>
+<span class="s2">.rq{border-radius:16px}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">patch_browse_campaign</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_BROWSE</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># browse head</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_CAMPAIGN</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>        <span class="c1"># campaign head (second occurrence)</span>
+  <span class="k">return</span> <span class="n">s</span>
+
+<span class="n">OVR_BROWSE</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.chtile{border-radius:14px}</span>
+<span class="s2">.chtile .swash{height:4px}</span>
+<span class="s2">.search input{border-radius:999px}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_CAMPAIGN</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.cd-cover{border-radius:20px;border-width:5px}</span>
+<span class="s2">.ph .pnum{border-radius:12px;color:#fff}</span>
+<span class="s2">.ed-card{border-radius:16px}</span>
+<span class="s2">.frame{border-radius:18px}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">patch_rest</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="c1"># pricing tier rework: navy cards, orange featured</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_HOW</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>     <span class="c1"># how-it-works head</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_PRICING</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># pricing head</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="n">OVR_ABOUT</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;</span><span class="se">\n\"\"\"</span><span class="s2">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># about head</span>
+  <span class="k">return</span> <span class="n">s</span>
+
+<span class="n">OVR_HOW</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.an-card .ai{border-radius:12px}</span>
+<span class="s2">.ph .pnum{border-radius:12px;background:var(--grad);color:#fff}</span>
+<span class="s2">.lw .wk{border-radius:12px}</span>
+<span class="s2">.ft{border-radius:16px}</span>
+<span class="s2">.fq{border-radius:14px}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_PRICING</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.tier{background:linear-gradient(165deg,#0F3E5F,#0B3049);border:0;color:#B8CBDA;border-radius:18px}</span>
+<span class="s2">.tier .tname{color:#fff}.tier .tfor{color:#7FA0B8}</span>
+<span class="s2">.tier .price{color:#fff}.tier .per{color:#7FA0B8}</span>
+<span class="s2">.tier li{color:#C6D9E8}.tier li::before{color:#F6A928}</span>
+<span class="s2">.tier li.plus::before{color:#FFC97A}</span>
+<span class="s2">.tier .btn-outline{border-color:rgba(255,255,255,.42);color:#fff}</span>
+<span class="s2">.tier .btn-outline:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,.07)}</span>
+<span class="s2">.tier.hot{background:linear-gradient(150deg,#F6A928,#E8780C);box-shadow:0 26px 60px rgba(238,128,16,.35);border:0}</span>
+<span class="s2">.tier.hot .tname,.tier.hot .price{color:#fff}</span>
+<span class="s2">.tier.hot .tfor,.tier.hot .per{color:#FFE3B8}</span>
+<span class="s2">.tier.hot li{color:#FFF3E2}.tier.hot li::before{color:#fff}</span>
+<span class="s2">.tier.hot .btn{background:#0E3A57;color:#fff;box-shadow:none}</span>
+<span class="s2">.tier.hot .btn:hover{background:#092B42}</span>
+<span class="s2">.tier .pop{background:#0E3A57;color:#FFC97A}</span>
+<span class="s2">.alt-card{border-radius:18px}</span>
+<span class="s2">.guarantee{border-radius:18px}</span>
+<span class="s2">.guarantee .gi{border-radius:14px;background:var(--grad)}</span>
+<span class="s2">"""</span>
+
+<span class="n">OVR_ABOUT</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* ===== v2 overrides ===== */</span>
+<span class="s2">.tl-item::before{border-radius:5px}</span>
+<span class="s2">.tsti-feature .avatar{background:linear-gradient(140deg,#0E3A57,#1A6392);border-radius:50%}</span>
+<span class="s2">.tcard .avatar{border-radius:50%}</span>
+<span class="s2">.contact{border-radius:20px}</span>
+<span class="s2">.contact .cline i{border-radius:12px}</span>
+<span class="s2">.tc{border-radius:16px}</span>
+<span class="s2">"""</span>
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">PAGES</span><span class="p">:</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_home.py"</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="n">patch_home</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_assessment.py"</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="n">patch_assessment</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_create.py"</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="n">patch_create</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_reader.py"</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="n">patch_reader</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_browse_campaign.py"</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="n">patch_browse_campaign</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">"page_rest.py"</span><span class="p">:</span> <span class="n">s</span> <span class="o">=</span> <span class="n">patch_rest</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">generic</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">"restyled"</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/restyle.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

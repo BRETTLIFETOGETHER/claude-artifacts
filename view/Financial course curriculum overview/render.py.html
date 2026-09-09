@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>render.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Financial course curriculum overview</div>
+<h1>render.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">520 B</span>
+<a class="btn" href="../../artifacts/Financial%20course%20curriculum%20overview/render.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Playwright render script: catalog.html → PDF</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">playwright.sync_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">sync_playwright</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"catalog.html"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<span class="n">OUT</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"Finances_Campaign_Catalog.pdf"</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">sync_playwright</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+    <span class="n">browser</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">chromium</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">new_page</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="sa">f</span><span class="s2">"file://</span><span class="si">{</span><span class="n">HTML</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">wait_until</span><span class="o">=</span><span class="s2">"networkidle"</span><span class="p">)</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">OUT</span><span class="p">),</span>
+        <span class="n">prefer_css_page_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">print_background</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="n">OUT</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="o">//</span> <span class="mi">1024</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PDF rendered: </span><span class="si">{</span><span class="n">OUT</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> KB"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/finances_catalog/render.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

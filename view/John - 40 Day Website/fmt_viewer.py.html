@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>fmt_viewer.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; John - 40 Day Website</div>
+<h1>fmt_viewer.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">6 KB</span>
+<a class="btn" href="../../artifacts/John%20-%2040%20Day%20Website/fmt_viewer.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Stage the curriculum viewer renderers for all eight new formats plus the expanded chip list</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/site/curriculum.html'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># 1) chips: two-tier format list</span>
+<span class="n">old</span> <span class="o">=</span> <span class="s2">"const FMTS=['40-Day','30-Day','21-Day','7-Day','6-Week','Youth','Kids','Leader Kit'];"</span>
+<span class="k">assert</span> <span class="n">old</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="n">new</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"const LENGTHS=['40-Day','30-Day','21-Day','7-Day'];</span><span class="se">\n</span><span class="s2">"</span>
+       <span class="s2">"const FMTS=[...LENGTHS,'6-Week','Youth','Kids','Leader Kit','Book','Course','Leader Training','Family Guide','Podcast','Video Course','Print-on-Demand','Digital Library'];"</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+
+<span class="c1"># 2) renderers: insert before the Leader Kit branch's closing else-chain end. Find 'else if(fmt===\'Leader Kit\')' block end by anchoring on the final `}` before NOTICE append? Safer: append new branches right after the Kids branch closing. Anchor on the Leader Kit branch start and insert BEFORE it new branches.</span>
+<span class="n">anchor</span> <span class="o">=</span> <span class="s2">"else if(fmt==='Leader Kit'){"</span>
+<span class="k">assert</span> <span class="n">anchor</span> <span class="ow">in</span> <span class="n">s</span>
+<span class="n">branches</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''else if(fmt==='Book'){</span>
+<span class="s1">  const bk=Engine.book(C);</span>
+<span class="s1">  h=cover('The Book \u00b7 '+bk.pagesEst+' pages');</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;div class="lbl"&gt;How to read this book&lt;/div&gt;&lt;p&gt;$</span><span class="si">{bk.howto}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  bk.chapters.forEach(ch=&gt;{</span>
+<span class="s1">    h+=`&lt;div class="day"&gt;&lt;div class="dn"&gt;CHAPTER $</span><span class="si">{ch.n}</span><span class="s1">&lt;/div&gt;&lt;h2&gt;$</span><span class="si">{ch.title}</span><span class="s1">&lt;/h2&gt;&lt;p&gt;&lt;em&gt;$</span><span class="si">{ch.intro}</span><span class="s1">&lt;/em&gt;&lt;/p&gt;`;</span>
+<span class="s1">    ch.sections.forEach(sec=&gt;{ h+=`&lt;h3 style="margin:16px 0 4px"&gt;$</span><span class="si">{sec.h}</span><span class="s1">&lt;/h3&gt;&lt;div class="scrx" style="margin-bottom:6px"&gt;$</span><span class="si">{sec.scr}</span><span class="s1">&lt;/div&gt;$</span><span class="si">{sec.body}</span><span class="s1">`; });</span>
+<span class="s1">    h+=`&lt;/div&gt;`;</span>
+<span class="s1">  });</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;div class="lbl"&gt;Epilogue&lt;/div&gt;&lt;p&gt;$</span><span class="si">{bk.epilogue}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">}</span>
+<span class="s1">else if(fmt==='Course'){</span>
+<span class="s1">  const cr=Engine.course(C);</span>
+<span class="s1">  h=cover('Membership Course \u00b7 '+cr.modules.length+' modules');</span>
+<span class="s1">  cr.modules.forEach(md=&gt;{</span>
+<span class="s1">    h+=`&lt;div class="day"&gt;&lt;div class="dn"&gt;MODULE $</span><span class="si">{md.n}</span><span class="s1">&lt;/div&gt;&lt;h2&gt;$</span><span class="si">{md.title}</span><span class="s1">&lt;/h2&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;You will&lt;/div&gt;&lt;ul class="plain"&gt;${md.objectives.map(o=&gt;`&lt;li&gt;$</span><span class="si">{o}</span><span class="s1">&lt;/li&gt;`).join('')}&lt;/ul&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Lessons&lt;/div&gt;&lt;ul class="plain"&gt;${md.lessons.map(l=&gt;`&lt;li&gt;&lt;b&gt;$</span><span class="si">{l.t}</span><span class="s1">&lt;/b&gt; \u00b7 $</span><span class="si">{l.scr}</span><span class="s1">&lt;br&gt;&lt;span style="color:#5E5E6B"&gt;$</span><span class="si">{l.key}</span><span class="s1">&lt;/span&gt;&lt;/li&gt;`).join('')}&lt;/ul&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Check yourself&lt;/div&gt;&lt;ol&gt;${md.quiz.map(q=&gt;`&lt;li&gt;$</span><span class="si">{q}</span><span class="s1">&lt;/li&gt;`).join('')}&lt;/ol&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Module challenge&lt;/div&gt;&lt;p&gt;$</span><span class="si">{md.challenge}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  });</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;p&gt;$</span><span class="si">{cr.completion}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">}</span>
+<span class="s1">else if(fmt==='Leader Training'){</span>
+<span class="s1">  const lt=Engine.leaderTraining(C);</span>
+<span class="s1">  h=cover('Facilitator Course');</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;div class="lbl"&gt;The sessions you will lead&lt;/div&gt;&lt;ul class="plain"&gt;${lt.sessions.map((t,i)=&gt;`&lt;li&gt;Session ${i+1} \u2014 $</span><span class="si">{t}</span><span class="s1">&lt;/li&gt;`).join('')}&lt;/ul&gt;&lt;p&gt;&lt;em&gt;$</span><span class="si">{lt.promise}</span><span class="s1">&lt;/em&gt;&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  lt.modules.forEach(md=&gt;{</span>
+<span class="s1">    h+=`&lt;div class="day"&gt;&lt;div class="dn"&gt;TRAINING $</span><span class="si">{md.n}</span><span class="s1">&lt;/div&gt;&lt;h2&gt;$</span><span class="si">{md.title}</span><span class="s1">&lt;/h2&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Aims&lt;/div&gt;&lt;ul class="plain"&gt;${md.aims.map(a=&gt;`&lt;li&gt;$</span><span class="si">{a}</span><span class="s1">&lt;/li&gt;`).join('')}&lt;/ul&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Field note&lt;/div&gt;&lt;p&gt;$</span><span class="si">{md.note}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Your practice&lt;/div&gt;&lt;p&gt;$</span><span class="si">{md.practice}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  });</span>
+<span class="s1">}</span>
+<span class="s1">else if(fmt==='Family Guide'){</span>
+<span class="s1">  const fg=Engine.family(C);</span>
+<span class="s1">  h=cover('Family Guide');</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;p&gt;$</span><span class="si">{fg.note}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  fg.weeks.forEach(w=&gt;{</span>
+<span class="s1">    h+=`&lt;div class="day"&gt;&lt;div class="dn"&gt;WEEK $</span><span class="si">{w.week}</span><span class="s1">&lt;/div&gt;&lt;h2&gt;Around the table&lt;/h2&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Memory verse&lt;/div&gt;&lt;p&gt;\u201C$</span><span class="si">{w.verse.v}</span><span class="s1">\u201D \u2014 $</span><span class="si">{w.verse.ref}</span><span class="s1"> (KJV)&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Table talk&lt;/div&gt;&lt;ol&gt;&lt;li&gt;$</span><span class="si">{w.tableTalk[0]}</span><span class="s1">&lt;/li&gt;&lt;li&gt;$</span><span class="si">{w.tableTalk[1]}</span><span class="s1">&lt;/li&gt;&lt;/ol&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;This week\u2019s activity&lt;/div&gt;&lt;p&gt;$</span><span class="si">{w.activity}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Family prayer&lt;/div&gt;&lt;p&gt;$</span><span class="si">{w.prayer}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Bedtime blessing&lt;/div&gt;&lt;p&gt;$</span><span class="si">{w.blessing}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  });</span>
+<span class="s1">}</span>
+<span class="s1">else if(fmt==='Podcast'){</span>
+<span class="s1">  const pc=Engine.podcast(C);</span>
+<span class="s1">  h=cover('Podcast Series \u00b7 '+pc.episodes.length+' episodes');</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;div class="lbl"&gt;Trailer&lt;/div&gt;&lt;p&gt;$</span><span class="si">{pc.trailer.script}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  pc.episodes.forEach(ep=&gt;{</span>
+<span class="s1">    h+=`&lt;div class="day"&gt;&lt;div class="dn"&gt;EPISODE $</span><span class="si">{ep.ep}</span><span class="s1"> \u00b7 $</span><span class="si">{ep.runtime}</span><span class="s1">&lt;/div&gt;&lt;h2&gt;$</span><span class="si">{ep.title}</span><span class="s1">&lt;/h2&gt;</span>
+<span class="s1">    &lt;div class="lbl"&gt;Cold open&lt;/div&gt;&lt;p&gt;$</span><span class="si">{ep.coldOpen}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">    ${ep.segments.map(sg=&gt;`&lt;div class="lbl"&gt;$</span><span class="si">{sg.h}</span><span class="s1">&lt;/div&gt;&lt;p&gt;$</span><span class="si">{sg.body}</span><span class="s1">&lt;/p&gt;`).join('')}</span>
+<span class="s1">    &lt;div class="lbl"&gt;Outro&lt;/div&gt;&lt;p&gt;$</span><span class="si">{ep.outro}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  });</span>
+<span class="s1">}</span>
+<span class="s1">else if(fmt==='Video Course'){</span>
+<span class="s1">  const vc=Engine.videoCourse(C);</span>
+<span class="s1">  h=cover('Video Course \u00b7 '+vc.lessons.length+' lessons');</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;p&gt;$</span><span class="si">{vc.production}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">  vc.lessons.forEach(ls=&gt;{</span>
+<span class="s1">    h+=`&lt;div class="day"&gt;&lt;div class="dn"&gt;LESSON $</span><span class="si">{ls.n}</span><span class="s1"> \u00b7 $</span><span class="si">{ls.runtime}</span><span class="s1">&lt;/div&gt;&lt;h2&gt;$</span><span class="si">{ls.title}</span><span class="s1">&lt;/h2&gt;</span>
+<span class="s1">    ${ls.lowerThirds.length?`&lt;div class="lbl"&gt;Lower thirds&lt;/div&gt;&lt;ul class="plain"&gt;${ls.lowerThirds.map(x=&gt;`&lt;li&gt;$</span><span class="si">{x}</span><span class="s1">&lt;/li&gt;`).join('')}&lt;/ul&gt;`:''}</span>
+<span class="s1">    ${ls.beats.map(b=&gt;`&lt;div class="lbl"&gt;$</span><span class="si">{b.b}</span><span class="s1">&lt;/div&gt;&lt;p&gt;$</span><span class="si">{b.s}</span><span class="s1">&lt;/p&gt;`).join('')}&lt;/div&gt;`;</span>
+<span class="s1">  });</span>
+<span class="s1">}</span>
+<span class="s1">else if(fmt==='Print-on-Demand'){</span>
+<span class="s1">  const pd=Engine.printOnDemand(C);</span>
+<span class="s1">  h=cover('Print-on-Demand Edition');</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;div class="lbl"&gt;Specification&lt;/div&gt;&lt;ul class="plain"&gt;</span>
+<span class="s1">    &lt;li&gt;&lt;b&gt;Trim&lt;/b&gt; \u00b7 $</span><span class="si">{pd.trim}</span><span class="s1">&lt;/li&gt;&lt;li&gt;&lt;b&gt;Pages&lt;/b&gt; \u00b7 $</span><span class="si">{pd.pages}</span><span class="s1">&lt;/li&gt;&lt;li&gt;&lt;b&gt;Paper&lt;/b&gt; \u00b7 $</span><span class="si">{pd.paper}</span><span class="s1">&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cover&lt;/b&gt; \u00b7 $</span><span class="si">{pd.cover}</span><span class="s1">&lt;/li&gt;&lt;/ul&gt;</span>
+<span class="s1">  &lt;div class="lbl"&gt;Interior order&lt;/div&gt;&lt;ol&gt;${pd.interior.map(x=&gt;`&lt;li&gt;$</span><span class="si">{x}</span><span class="s1">&lt;/li&gt;`).join('')}&lt;/ol&gt;</span>
+<span class="s1">  &lt;div class="lbl"&gt;Back-cover copy&lt;/div&gt;&lt;p&gt;$</span><span class="si">{pd.backCover}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">  &lt;p&gt;&lt;em&gt;$</span><span class="si">{pd.note}</span><span class="s1">&lt;/em&gt;&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">}</span>
+<span class="s1">else if(fmt==='Digital Library'){</span>
+<span class="s1">  const dl=Engine.library(C);</span>
+<span class="s1">  h=cover('Complete Digital Library');</span>
+<span class="s1">  h+=`&lt;div class="se"&gt;&lt;div class="lbl"&gt;Every file in this campaign&lt;/div&gt;&lt;ul class="plain"&gt;${dl.items.map(it=&gt;`&lt;li&gt;&lt;b&gt;$</span><span class="si">{it.format}</span><span class="s1">&lt;/b&gt; \u00b7 &lt;span style="color:#5E5E6B"&gt;$</span><span class="si">{it.file}</span><span class="s1">&lt;/span&gt;&lt;/li&gt;`).join('')}&lt;/ul&gt;</span>
+<span class="s1">  &lt;p&gt;$</span><span class="si">{dl.license}</span><span class="s1">&lt;/p&gt;&lt;p&gt;&lt;em&gt;$</span><span class="si">{dl.delivery}</span><span class="s1">&lt;/em&gt;&lt;/p&gt;&lt;/div&gt;`;</span>
+<span class="s1">}</span>
+<span class="s1">'''</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">branches</span> <span class="o">+</span> <span class="n">anchor</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/site/curriculum.html'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"curriculum viewer: 8 new renderers + chips"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/fmt_viewer.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

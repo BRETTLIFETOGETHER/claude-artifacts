@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>master_data.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>master_data.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">4 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/master_data.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the unified master file by importing every category dataset already produced</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">data</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">v1</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">calendar_data</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">v2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">vol4_data</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">v4</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">vol5_data</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">v5</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">preview_data</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">master_content</span><span class="w"> </span><span class="kn">import</span> <span class="n">DRAFTS</span><span class="p">,</span> <span class="n">DELIVERY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">build_index2</span><span class="w"> </span><span class="kn">import</span> <span class="n">VOLUMES</span> <span class="k">as</span> <span class="n">IDX</span>
+
+<span class="c1"># ---- explainer + experience lookup, keyed by category name ----</span>
+<span class="n">LOOK</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">vname</span><span class="p">,</span> <span class="n">vfile</span><span class="p">,</span> <span class="n">cats</span> <span class="ow">in</span> <span class="n">IDX</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">anc</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">note</span><span class="p">,</span> <span class="n">expl</span><span class="p">,</span> <span class="n">exper</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;amp;"</span><span class="p">,</span> <span class="s2">"and"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;mdash;"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;rsquo;"</span><span class="p">,</span> <span class="s2">"'"</span><span class="p">)</span>
+        <span class="n">LOOK</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">expl</span><span class="p">,</span> <span class="n">exper</span><span class="p">,</span> <span class="n">note</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">look</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"and"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">"'"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="n">LOOK</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kk</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">"'"</span><span class="p">)</span> <span class="o">==</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">LOOK</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span>
+    <span class="c1"># tolerant match on first word cluster</span>
+    <span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="n">LOOK</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kk</span><span class="o">.</span><span class="n">lower</span><span class="p">()[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()[:</span><span class="mi">14</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">LOOK</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+
+<span class="n">CATS</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">vol</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">hinge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">e</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">note</span> <span class="o">=</span> <span class="n">look</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">CATS</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s2">"n"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"v"</span><span class="p">:</span> <span class="n">vol</span><span class="p">,</span>
+        <span class="s2">"e"</span><span class="p">:</span> <span class="n">expl</span> <span class="ow">or</span> <span class="n">e</span> <span class="ow">or</span> <span class="n">blurb</span><span class="p">,</span>
+        <span class="s2">"x"</span><span class="p">:</span> <span class="n">exper</span> <span class="ow">or</span> <span class="n">x</span><span class="p">,</span>
+        <span class="s2">"h"</span><span class="p">:</span> <span class="n">hinge</span><span class="p">,</span>
+        <span class="s2">"t"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"n"</span><span class="p">:</span> <span class="n">tn</span><span class="p">,</span> <span class="s2">"i"</span><span class="p">:</span> <span class="p">[[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]}</span> <span class="k">for</span> <span class="n">tn</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">],</span>
+    <span class="p">})</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">v1</span><span class="o">.</span><span class="n">EASTER</span> <span class="o">+</span> <span class="n">v1</span><span class="o">.</span><span class="n">CHRISTMAS</span><span class="p">:</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">"Easter and Christmas"</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="n">items</span><span class="p">)])</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">hinge</span><span class="p">,</span> <span class="n">tracks</span> <span class="ow">in</span> <span class="n">v2</span><span class="o">.</span><span class="n">LOCKS</span><span class="p">:</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">"Calendar Locks"</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">hinge</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">hinge</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">v2</span><span class="o">.</span><span class="n">STRATEGIC</span><span class="p">:</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">"Strategic Weekends"</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="n">items</span><span class="p">)],</span> <span class="n">hinge</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">hinge</span><span class="p">,</span> <span class="n">tracks</span> <span class="ow">in</span> <span class="n">v4</span><span class="o">.</span><span class="n">CATS</span><span class="p">:</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">"The Working Calendar"</span><span class="p">,</span> <span class="n">blurb</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">hinge</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">expl</span><span class="p">,</span> <span class="n">exper</span><span class="p">,</span> <span class="n">hinge</span><span class="p">,</span> <span class="n">tracks</span> <span class="ow">in</span> <span class="n">v5</span><span class="o">.</span><span class="n">CATS</span><span class="p">:</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">"The Challenge Library"</span><span class="p">,</span> <span class="n">expl</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">hinge</span><span class="p">,</span> <span class="n">expl</span><span class="p">,</span> <span class="n">exper</span><span class="p">)</span>
+
+<span class="c1"># new categories from this turn</span>
+<span class="n">add</span><span class="p">(</span><span class="s2">"10-Day Jumpstart"</span><span class="p">,</span> <span class="s2">"New Formats"</span><span class="p">,</span>
+    <span class="s2">"Ten weekdays. Monday through Friday, twice, with the weekends left alone."</span><span class="p">,</span>
+    <span class="p">[(</span><span class="s2">"The John Edition, day by day"</span><span class="p">,</span> <span class="p">[(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="s2">". "</span> <span class="o">+</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="s2">" &amp;mdash; "</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pv</span><span class="o">.</span><span class="n">JOHN10</span><span class="p">]),</span>
+     <span class="p">(</span><span class="s2">"Twenty jumpstart editions"</span><span class="p">,</span> <span class="n">pv</span><span class="o">.</span><span class="n">JUMPSTART</span><span class="p">)],</span>
+    <span class="p">{</span><span class="s2">"roll"</span><span class="p">:</span><span class="s2">"A two-week runway between a launch Sunday and a Celebration Sunday."</span><span class="p">,</span>
+     <span class="s2">"give"</span><span class="p">:</span><span class="s2">"Journals and the printed jumpstart guide."</span><span class="p">,</span>
+     <span class="s2">"gospel"</span><span class="p">:</span><span class="s2">"Short enough that a not-yet-believing spouse will do it alongside someone."</span><span class="p">,</span>
+     <span class="s2">"act"</span><span class="p">:</span><span class="s2">"Take the journal, start Monday morning."</span><span class="p">},</span>
+    <span class="s2">"Ten weekdays rather than fourteen days, because every daily plan dies on the weekend. Saturday scatters people and Sunday already carries a spiritual obligation, so a seven-consecutive-day plan is quietly asking for two acts of obedience it never named. Ten weekdays asks for the commute, the lunch break, or the ten minutes before the house wakes up."</span><span class="p">,</span>
+    <span class="s2">"Hand out the printed journal on the launch Sunday with a tracker grid on page three. Then run the Celebration Sunday exactly fourteen days later, while the momentum is still live."</span><span class="p">)</span>
+
+<span class="n">add</span><span class="p">(</span><span class="s2">"Friends Day"</span><span class="p">,</span> <span class="s2">"New Formats"</span><span class="p">,</span>
+    <span class="s2">"Two categories, not one: the messages preached on the day, and the messages that motivate the ask beforehand."</span><span class="p">,</span>
+    <span class="p">[(</span><span class="s2">"On the day &amp;mdash; guest-facing"</span><span class="p">,</span> <span class="n">pv</span><span class="o">.</span><span class="n">FRIENDS_DAY</span><span class="p">),</span>
+     <span class="p">(</span><span class="s2">"Before the day &amp;mdash; motivating the ask"</span><span class="p">,</span> <span class="n">pv</span><span class="o">.</span><span class="n">FRIENDS_MOTIVATE</span><span class="p">)],</span>
+    <span class="p">{</span><span class="s2">"roll"</span><span class="p">:</span><span class="s2">"A three-week runway, then the day itself, then the series that follows it."</span><span class="p">,</span>
+     <span class="s2">"give"</span><span class="p">:</span><span class="s2">"Invite cards, bulletin inserts, and outreach production."</span><span class="p">,</span>
+     <span class="s2">"gospel"</span><span class="p">:</span><span class="s2">"The highest invite density of the year. Preach for the guest who has not arrived yet."</span><span class="p">,</span>
+     <span class="s2">"act"</span><span class="p">:</span><span class="s2">"Map your circles, write one name, send the text during the service."</span><span class="p">},</span>
+    <span class="s2">"Most churches build the guest-facing message and skip the four weeks of congregational motivation that fill the room, then wonder why attendance looks the same. Friends Day is a runway, not a Sunday."</span><span class="p">,</span>
+    <span class="s2">"Three weeks out, map the circles with the bulletin insert. Two weeks out, pray for the name. One week out, phones out during the service and send the text. Then preach to the person who came because somebody asked."</span><span class="p">)</span>
+
+<span class="n">SERMONS</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pv</span><span class="o">.</span><span class="n">SERMONS</span><span class="p">:</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">d</span><span class="p">[</span><span class="s2">"draft"</span><span class="p">]</span> <span class="o">=</span> <span class="n">DRAFTS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"t"</span><span class="p">],</span> <span class="p">[])</span>
+    <span class="n">SERMONS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+<span class="n">NTIT</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s2">"i"</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s2">"t"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CATS</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"categories:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">CATS</span><span class="p">),</span> <span class="s2">"titles:"</span><span class="p">,</span> <span class="n">NTIT</span><span class="p">,</span> <span class="s2">"sermons with drafts:"</span><span class="p">,</span>
+      <span class="nb">len</span><span class="p">([</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SERMONS</span> <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s2">"draft"</span><span class="p">]]))</span>
+
+<span class="n">DATA</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cats"</span><span class="p">:</span> <span class="n">CATS</span><span class="p">,</span> <span class="s2">"sermons"</span><span class="p">:</span> <span class="n">SERMONS</span><span class="p">,</span> <span class="s2">"delivery"</span><span class="p">:</span> <span class="n">DELIVERY</span><span class="p">}</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/home/claude/work/master_payload.json'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">DATA</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"payload bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">DATA</span><span class="p">)))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/master_data.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

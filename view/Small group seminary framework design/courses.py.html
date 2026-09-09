@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>courses.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>courses.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">33 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/courses.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Course data: 20 disciplines x 20 courses = 400 course titles with subtitles</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""SmallGroupSeminary.com course catalog data.</span>
+<span class="sd">20 disciplines x 20 courses = 400 courses.</span>
+<span class="sd">Within each discipline: 6 Foundation (1xx), 8 Core (2xx), 6 Advanced (3xx).</span>
+<span class="sd">"""</span>
+
+<span class="c1"># (code_prefix, discipline name, status) status: "existing" | "new"</span>
+<span class="n">DISCIPLINES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"ST"</span><span class="p">,</span>   <span class="s2">"Systematic Theology"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"OT"</span><span class="p">,</span>   <span class="s2">"Old Testament"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"NT"</span><span class="p">,</span>   <span class="s2">"New Testament"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"CH"</span><span class="p">,</span>   <span class="s2">"Church History"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"HERM"</span><span class="p">,</span> <span class="s2">"Hermeneutics &amp;amp; Bible Study Methods"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"APOL"</span><span class="p">,</span> <span class="s2">"Apologetics"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"HOM"</span><span class="p">,</span>  <span class="s2">"Homiletics &amp;amp; Teaching"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"PC"</span><span class="p">,</span>   <span class="s2">"Pastoral Care &amp;amp; Counseling"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"ETH"</span><span class="p">,</span>  <span class="s2">"Christian Ethics &amp;amp; Worldview"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"LEAD"</span><span class="p">,</span> <span class="s2">"Church Leadership &amp;amp; Missiology"</span><span class="p">,</span> <span class="s2">"existing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"BT"</span><span class="p">,</span>   <span class="s2">"Biblical Theology &amp;amp; Redemptive History"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"SF"</span><span class="p">,</span>   <span class="s2">"Spiritual Formation &amp;amp; the Disciplines"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"WOR"</span><span class="p">,</span>  <span class="s2">"Worship &amp;amp; the Life of the Church"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"DIS"</span><span class="p">,</span>  <span class="s2">"Discipleship &amp;amp; Small Group Multiplication"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"EV"</span><span class="p">,</span>   <span class="s2">"Evangelism &amp;amp; Personal Witness"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"FAM"</span><span class="p">,</span>  <span class="s2">"Marriage, Family &amp;amp; Household Discipleship"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"STW"</span><span class="p">,</span>  <span class="s2">"Money, Work &amp;amp; Vocation"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"WR"</span><span class="p">,</span>   <span class="s2">"World Religions &amp;amp; Comparative Belief"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"CT"</span><span class="p">,</span>   <span class="s2">"Christian Thought &amp;amp; the Great Tradition"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"CULT"</span><span class="p">,</span> <span class="s2">"Culture, Technology &amp;amp; Digital Discernment"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">BLURBS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"ST"</span><span class="p">:</span> <span class="s2">"Doctrine as the church has confessed it, taught so an ordinary member can hold it, defend it, and pass it on."</span><span class="p">,</span>
+    <span class="s2">"OT"</span><span class="p">:</span> <span class="s2">"Thirty-nine books, one story. Survey first, then book by book, then the theology that holds it together."</span><span class="p">,</span>
+    <span class="s2">"NT"</span><span class="p">:</span> <span class="s2">"From the world Jesus entered to the last vision of Revelation, with every major book given its own course."</span><span class="p">,</span>
+    <span class="s2">"CH"</span><span class="p">:</span> <span class="s2">"Twenty centuries of the church's memory, from the martyrs to the global south, read through primary sources."</span><span class="p">,</span>
+    <span class="s2">"HERM"</span><span class="p">:</span> <span class="s2">"The competence that makes every other discipline possible: reading a passage well and knowing why."</span><span class="p">,</span>
+    <span class="s2">"APOL"</span><span class="p">:</span> <span class="s2">"Honest answers to the objections your members are already hearing, taught with gentleness and respect."</span><span class="p">,</span>
+    <span class="s2">"HOM"</span><span class="p">:</span> <span class="s2">"Preparation and delivery for pulpit, classroom, and living room. Teaching is a craft, and it can be learned."</span><span class="p">,</span>
+    <span class="s2">"PC"</span><span class="p">:</span> <span class="s2">"The bedside, the kitchen table, and the crisis call. Care that is warm, wise, and knows its own limits."</span><span class="p">,</span>
+    <span class="s2">"ETH"</span><span class="p">:</span> <span class="s2">"How Christians decide, applied to the questions that actually reach a pastor's desk."</span><span class="p">,</span>
+    <span class="s2">"LEAD"</span><span class="p">:</span> <span class="s2">"Governance, vision, teams, and mission, from the elder board to the unreached peoples list."</span><span class="p">,</span>
+    <span class="s2">"BT"</span><span class="p">:</span> <span class="s2">"The whole Bible read as one unfolding story, and the interpretive discipline that makes that reading responsible."</span><span class="p">,</span>
+    <span class="s2">"SF"</span><span class="p">:</span> <span class="s2">"The practices by which a person is actually changed, drawn from Scripture and the historic traditions."</span><span class="p">,</span>
+    <span class="s2">"WOR"</span><span class="p">:</span> <span class="s2">"What happens when the church gathers, why it is ordered that way, and how to lead it well."</span><span class="p">,</span>
+    <span class="s2">"DIS"</span><span class="p">:</span> <span class="s2">"The LifeTogether core discipline: making disciples in community, and multiplying leaders who do the same."</span><span class="p">,</span>
+    <span class="s2">"EV"</span><span class="p">:</span> <span class="s2">"Telling the good news in an ordinary week, and training a congregation to do it without fear."</span><span class="p">,</span>
+    <span class="s2">"FAM"</span><span class="p">:</span> <span class="s2">"Marriage, parenting, singleness, and the household as the first place discipleship happens."</span><span class="p">,</span>
+    <span class="s2">"STW"</span><span class="p">:</span> <span class="s2">"Ownership, work, calling, and generosity: the theology and the practice of money and vocation."</span><span class="p">,</span>
+    <span class="s2">"WR"</span><span class="p">:</span> <span class="s2">"What the world's major religions and the newer secular faiths actually teach, and how to engage them fairly."</span><span class="p">,</span>
+    <span class="s2">"CT"</span><span class="p">:</span> <span class="s2">"The Christian intellectual tradition, read slowly and in company, from Augustine to the modern self."</span><span class="p">,</span>
+    <span class="s2">"CULT"</span><span class="p">:</span> <span class="s2">"Discernment for a screen-shaped age: attention, technology, artificial intelligence, and the digital household."</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">COURSES</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"ST"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"What Is Doctrine For?"</span><span class="p">,</span> <span class="s2">"Why theology belongs to the whole church, not just the academy"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Doctrine of Scripture"</span><span class="p">,</span> <span class="s2">"Inspiration, authority, sufficiency, and how we got the Bible"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Who God Is"</span><span class="p">,</span> <span class="s2">"The attributes and character of God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Trinity"</span><span class="p">,</span> <span class="s2">"One God, three persons, and why it matters on a Monday"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Creation and Providence"</span><span class="p">,</span> <span class="s2">"God's world, God's ongoing rule, and human freedom"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Made in His Image"</span><span class="p">,</span> <span class="s2">"A Christian doctrine of the human person"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Sin and the Fall"</span><span class="p">,</span> <span class="s2">"What went wrong, and how deep it goes"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Person of Christ"</span><span class="p">,</span> <span class="s2">"Fully God, fully man, one Lord"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Work of Christ"</span><span class="p">,</span> <span class="s2">"Atonement, resurrection, and what the cross accomplished"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Holy Spirit"</span><span class="p">,</span> <span class="s2">"Person, presence, and power in the believer"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Salvation Applied"</span><span class="p">,</span> <span class="s2">"Calling, justification, adoption, and sanctification"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Doctrine of the Church"</span><span class="p">,</span> <span class="s2">"Marks, membership, and mission"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Baptism and the Lord's Supper"</span><span class="p">,</span> <span class="s2">"The ordinances as the traditions have understood them"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Last Things"</span><span class="p">,</span> <span class="s2">"Death, return, judgment, and the new creation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Reading the Confessions"</span><span class="p">,</span> <span class="s2">"Nicaea to Westminster, and why creeds still guard the church"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Denominational Distinctives Side by Side"</span><span class="p">,</span> <span class="s2">"Where faithful Christians disagree, and why"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Calvinism and Arminianism"</span><span class="p">,</span> <span class="s2">"A charitable walk through the oldest argument in evangelicalism"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Covenant, Dispensation, and Kingdom"</span><span class="p">,</span> <span class="s2">"Three ways of reading the whole Bible"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Theological Method"</span><span class="p">,</span> <span class="s2">"How to build a doctrine and test it against Scripture"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching Doctrine to a Congregation"</span><span class="p">,</span> <span class="s2">"Turning systematic theology into a teaching series"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"OT"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"The Story of the Old Testament"</span><span class="p">,</span> <span class="s2">"One narrative from Eden to exile and back"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Genesis 1 to 11"</span><span class="p">,</span> <span class="s2">"Creation, fall, flood, and the nations"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Patriarchs"</span><span class="p">,</span> <span class="s2">"Abraham, Isaac, Jacob, and the promise"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Exodus and Sinai"</span><span class="p">,</span> <span class="s2">"Rescue, covenant, and the law given"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Israel in the Land"</span><span class="p">,</span> <span class="s2">"Joshua, Judges, and the cost of compromise"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Kings and Chronicles"</span><span class="p">,</span> <span class="s2">"The rise and ruin of the monarchy"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Torah in Depth"</span><span class="p">,</span> <span class="s2">"Leviticus, Numbers, and Deuteronomy for the ordinary reader"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Psalms"</span><span class="p">,</span> <span class="s2">"Praying the full range of human emotion"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Wisdom Literature"</span><span class="p">,</span> <span class="s2">"Proverbs, Ecclesiastes, and the fear of the Lord"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Job and the Problem of Suffering"</span><span class="p">,</span> <span class="s2">"Wrestling honestly with God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Isaiah"</span><span class="p">,</span> <span class="s2">"The holiness of God and the servant who saves"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Jeremiah and Lamentations"</span><span class="p">,</span> <span class="s2">"Prophecy, judgment, and grief"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Ezekiel and Daniel"</span><span class="p">,</span> <span class="s2">"Visions in exile"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Twelve"</span><span class="p">,</span> <span class="s2">"Hosea through Malachi in a single course"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Exile and Return"</span><span class="p">,</span> <span class="s2">"Ezra, Nehemiah, Esther, and rebuilding a people"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Old Testament Theology"</span><span class="p">,</span> <span class="s2">"Covenant, kingdom, temple, and presence as unifying threads"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Prophets and Justice"</span><span class="p">,</span> <span class="s2">"What the prophets actually demanded of God's people"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Ancient Near Eastern Background"</span><span class="p">,</span> <span class="s2">"Culture, geography, and archaeology behind the text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Christ in the Old Testament"</span><span class="p">,</span> <span class="s2">"Typology done carefully"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching the Old Testament"</span><span class="p">,</span> <span class="s2">"Handling hard texts without flinching"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"NT"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"The Story of the New Testament"</span><span class="p">,</span> <span class="s2">"From the manger to the new Jerusalem"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The World Jesus Entered"</span><span class="p">,</span> <span class="s2">"Second temple Judaism, Rome, and Greek culture"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Mark"</span><span class="p">,</span> <span class="s2">"The shortest gospel and the servant King"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Matthew"</span><span class="p">,</span> <span class="s2">"The promised King and the new Israel"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Luke"</span><span class="p">,</span> <span class="s2">"Good news for those on the edges"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"John"</span><span class="p">,</span> <span class="s2">"Believing in the Word made flesh"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Life of Christ Harmonized"</span><span class="p">,</span> <span class="s2">"All four gospels in one chronology"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Parables"</span><span class="p">,</span> <span class="s2">"How Jesus taught, and how to teach them"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Sermon on the Mount"</span><span class="p">,</span> <span class="s2">"The ethics of the kingdom"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Acts"</span><span class="p">,</span> <span class="s2">"How the church actually spread"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Romans"</span><span class="p">,</span> <span class="s2">"The gospel explained"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"First and Second Corinthians"</span><span class="p">,</span> <span class="s2">"A messy church and a patient apostle"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Prison and Freedom Letters"</span><span class="p">,</span> <span class="s2">"Galatians, Ephesians, Philippians, Colossians"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Pastoral Epistles"</span><span class="p">,</span> <span class="s2">"Leadership, order, and sound doctrine"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hebrews"</span><span class="p">,</span> <span class="s2">"Better than everything that came before"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"James, Peter, John, and Jude"</span><span class="p">,</span> <span class="s2">"Faith that works and truth that guards"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Revelation"</span><span class="p">,</span> <span class="s2">"Reading apocalyptic literature without fear or fantasy"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Paul: Life, Mission, and Theology"</span><span class="p">,</span> <span class="s2">"The man behind thirteen letters"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"New Testament Theology"</span><span class="p">,</span> <span class="s2">"Kingdom, cross, Spirit, and church as unifying threads"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Text and Canon"</span><span class="p">,</span> <span class="s2">"Manuscripts, translation, and why we can trust it"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"CH"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Why History Matters for Discipleship"</span><span class="p">,</span> <span class="s2">"Learning from the church that went before you"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Apostolic Church"</span><span class="p">,</span> <span class="s2">"AD 30 to 150"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Martyrs and Apologists"</span><span class="p">,</span> <span class="s2">"Faith under an empire"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Councils"</span><span class="p">,</span> <span class="s2">"Nicaea, Constantinople, Chalcedon, and orthodoxy defined"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Augustine"</span><span class="p">,</span> <span class="s2">"The mind that shaped the Western church"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Medieval Church"</span><span class="p">,</span> <span class="s2">"Monasteries, scholastics, and popular faith"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Great Schism"</span><span class="p">,</span> <span class="s2">"How East and West divided"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Reformation: Luther"</span><span class="p">,</span> <span class="s2">"Justification recovered"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Reformation: Calvin and Geneva"</span><span class="p">,</span> <span class="s2">"A city, a system, and a pastor"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Radical Reformation"</span><span class="p">,</span> <span class="s2">"Believer's baptism and costly conviction"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Catholic Reformation"</span><span class="p">,</span> <span class="s2">"Trent, the Jesuits, and the response"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Puritans and Pietists"</span><span class="p">,</span> <span class="s2">"Heart religion in England and Germany"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Great Awakenings"</span><span class="p">,</span> <span class="s2">"Edwards, Wesley, Whitefield, and revival"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Modern Missionary Movement"</span><span class="p">,</span> <span class="s2">"Carey to the twentieth century"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The American Church"</span><span class="p">,</span> <span class="s2">"Frontier, denomination, and revivalism"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Fundamentalism and Evangelicalism"</span><span class="p">,</span> <span class="s2">"Battles, splits, and the shaping of an identity"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Global Church Today"</span><span class="p">,</span> <span class="s2">"Africa, Asia, and Latin America at the center"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Persecuted Church"</span><span class="p">,</span> <span class="s2">"Then and now"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Women in Church History"</span><span class="p">,</span> <span class="s2">"Recovering the record"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Working with Primary Sources"</span><span class="p">,</span> <span class="s2">"Reading history in its own words"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"HERM"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"How to Read the Bible for Yourself"</span><span class="p">,</span> <span class="s2">"Observation, interpretation, application"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Context Is King"</span><span class="p">,</span> <span class="s2">"Historical, literary, and canonical setting"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Genre Matters"</span><span class="p">,</span> <span class="s2">"Reading narrative, poetry, law, letter, and prophecy differently"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Inductive Method"</span><span class="p">,</span> <span class="s2">"A repeatable process for any passage"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Word Studies Without Greek"</span><span class="p">,</span> <span class="s2">"Using the tools honestly and avoiding the common errors"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Choosing and Comparing Translations"</span><span class="p">,</span> <span class="s2">"Why versions differ and which to use when"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Interpreting Old Testament Narrative"</span><span class="p">,</span> <span class="s2">"Story, character, and theology"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Interpreting Poetry and Psalms"</span><span class="p">,</span> <span class="s2">"Parallelism, imagery, and emotion"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Interpreting the Prophets"</span><span class="p">,</span> <span class="s2">"Near and far horizons"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Interpreting the Gospels"</span><span class="p">,</span> <span class="s2">"What Jesus meant then, and what it means now"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Interpreting the Epistles"</span><span class="p">,</span> <span class="s2">"Argument, occasion, and audience"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Interpreting Apocalyptic"</span><span class="p">,</span> <span class="s2">"Symbols, numbers, and restraint"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"From Text to Today"</span><span class="p">,</span> <span class="s2">"Building a responsible bridge to application"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Common Interpretive Mistakes"</span><span class="p">,</span> <span class="s2">"Proof-texting, allegorizing, and reading yourself into the text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Greek Toolkit for the Layperson"</span><span class="p">,</span> <span class="s2">"Alphabet, lexicons, and interlinears without a grammar course"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hebrew Toolkit for the Layperson"</span><span class="p">,</span> <span class="s2">"Enough to use the tools well and know their limits"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Biblical Theology as a Lens"</span><span class="p">,</span> <span class="s2">"Reading any passage inside the whole story"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Difficult and Disputed Passages"</span><span class="p">,</span> <span class="s2">"Working carefully where the church disagrees"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building Your Study Library"</span><span class="p">,</span> <span class="s2">"Commentaries, dictionaries, and software worth owning"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching Others to Study"</span><span class="p">,</span> <span class="s2">"Multiplying interpretive skill inside your group"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"APOL"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Why Apologetics Is for Everyone"</span><span class="p">,</span> <span class="s2">"Giving a reason, with gentleness and respect"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Does God Exist?"</span><span class="p">,</span> <span class="s2">"The classic arguments in plain language"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Is the Bible Reliable?"</span><span class="p">,</span> <span class="s2">"Manuscripts, archaeology, and honest questions"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Did the Resurrection Happen?"</span><span class="p">,</span> <span class="s2">"Evidence and explanation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Problem of Evil and Suffering"</span><span class="p">,</span> <span class="s2">"The hardest objection there is"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith and Doubt"</span><span class="p">,</span> <span class="s2">"Making room for honest questions inside the church"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Science and Christian Faith"</span><span class="p">,</span> <span class="s2">"Where the real conflicts are, and are not"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Creation, Age, and Origins"</span><span class="p">,</span> <span class="s2">"Mapping the Christian positions charitably"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Miracles"</span><span class="p">,</span> <span class="s2">"Can a rational person believe them?"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Exclusivity of Christ"</span><span class="p">,</span> <span class="s2">"One way among many religions?"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Answering the New Atheism"</span><span class="p">,</span> <span class="s2">"Engaging the popular critics"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Sexuality and the Christian Ethic"</span><span class="p">,</span> <span class="s2">"Explaining conviction with compassion"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Church's Failures as an Objection"</span><span class="p">,</span> <span class="s2">"Hypocrisy, abuse, and history"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Cultural Apologetics"</span><span class="p">,</span> <span class="s2">"Meeting the longings underneath the arguments"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Apologetic Methods Compared"</span><span class="p">,</span> <span class="s2">"Classical, evidential, and presuppositional"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Conversational Apologetics"</span><span class="p">,</span> <span class="s2">"Asking better questions than you answer"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Apologetics with Skeptical Family"</span><span class="p">,</span> <span class="s2">"The hardest audience, and the one you love most"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Answering Deconstruction"</span><span class="p">,</span> <span class="s2">"Walking with those on the way out"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Objections from Other Faiths"</span><span class="p">,</span> <span class="s2">"Islam, Judaism, and Eastern thought"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building an Apologetics Ministry"</span><span class="p">,</span> <span class="s2">"Forums, classes, and a church that welcomes questions"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"HOM"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Anyone Can Teach the Bible"</span><span class="p">,</span> <span class="s2">"Calling, confidence, and competence"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"From Passage to Point"</span><span class="p">,</span> <span class="s2">"Finding the one thing the text says"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Structuring a Lesson"</span><span class="p">,</span> <span class="s2">"Opening, movement, and landing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Illustration and Story"</span><span class="p">,</span> <span class="s2">"Making truth visible"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Application That Lands"</span><span class="p">,</span> <span class="s2">"Moving people from information to obedience"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Delivery Basics"</span><span class="p">,</span> <span class="s2">"Voice, presence, notes, and nerves"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Expository Preaching"</span><span class="p">,</span> <span class="s2">"Letting the text set the agenda"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Preaching Narrative"</span><span class="p">,</span> <span class="s2">"Teaching a story as a story"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Preaching Psalms and Poetry"</span><span class="p">,</span> <span class="s2">"Teaching to the affections"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Preaching the Epistles"</span><span class="p">,</span> <span class="s2">"Making an argument clear"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Topical Teaching Done Faithfully"</span><span class="p">,</span> <span class="s2">"Starting where people live and ending in the text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building a Series"</span><span class="p">,</span> <span class="s2">"Arc, pacing, and a year of teaching"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching in Small Groups"</span><span class="p">,</span> <span class="s2">"Facilitation is not lecturing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading a Discussion"</span><span class="p">,</span> <span class="s2">"Questions that open a room"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Preaching Christ from All of Scripture"</span><span class="p">,</span> <span class="s2">"Redemptive-historical teaching"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Preaching Hard Subjects"</span><span class="p">,</span> <span class="s2">"Judgment, sexuality, money, and suffering"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching Across Generations"</span><span class="p">,</span> <span class="s2">"One text, three audiences"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Getting Feedback and Getting Better"</span><span class="p">,</span> <span class="s2">"Manuscript review, peer critique, and film"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching Online and Hybrid"</span><span class="p">,</span> <span class="s2">"Camera, chat, and cohort"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Developing Other Teachers"</span><span class="p">,</span> <span class="s2">"An apprenticeship model for your church"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"PC"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"The Ministry of Presence"</span><span class="p">,</span> <span class="s2">"Showing up before you have answers"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Listening Well"</span><span class="p">,</span> <span class="s2">"The most underused pastoral skill"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"A Theology of Suffering"</span><span class="p">,</span> <span class="s2">"What God is doing in pain"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Grief and Loss"</span><span class="p">,</span> <span class="s2">"Walking with the bereaved"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Praying with People"</span><span class="p">,</span> <span class="s2">"In hospitals, kitchens, and crises"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Knowing Your Limits"</span><span class="p">,</span> <span class="s2">"When to hand off to a licensed professional"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Biblical Counseling Foundations"</span><span class="p">,</span> <span class="s2">"Scripture, the heart, and how change happens"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Anxiety and Depression"</span><span class="p">,</span> <span class="s2">"Care that honors body and soul"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Marriage Crisis Care"</span><span class="p">,</span> <span class="s2">"The first conversations when a marriage is failing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Coming Alongside Overwhelmed Parents"</span><span class="p">,</span> <span class="s2">"Care for families under strain"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Addiction and Recovery"</span><span class="p">,</span> <span class="s2">"Understanding compulsion and supporting change"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Trauma-Informed Care"</span><span class="p">,</span> <span class="s2">"Doing no further harm"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Conflict and Reconciliation"</span><span class="p">,</span> <span class="s2">"Confession, forgiveness, and restored relationship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Crisis Response Protocol"</span><span class="p">,</span> <span class="s2">"Presence, safety, and immediate professional partnership"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hospital, Hospice, and End of Life"</span><span class="p">,</span> <span class="s2">"The bedside ministry"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Protecting the Vulnerable"</span><span class="p">,</span> <span class="s2">"Disclosure, reporting duties, and putting safety first"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Caring for the Caregiver"</span><span class="p">,</span> <span class="s2">"Sustaining the people who carry others"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Boundaries and Confidentiality in Lay Care"</span><span class="p">,</span> <span class="s2">"Where the lines are and why they hold"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building a Congregational Care Team"</span><span class="p">,</span> <span class="s2">"Structure, training, and oversight"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Supervised Care Practicum"</span><span class="p">,</span> <span class="s2">"Real cases, real supervision, real feedback"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"ETH"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"What Is a Worldview?"</span><span class="p">,</span> <span class="s2">"The story you are already living in"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"How Christians Decide"</span><span class="p">,</span> <span class="s2">"Scripture, wisdom, conscience, and community"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Ten Commandments Today"</span><span class="p">,</span> <span class="s2">"Ancient law, present obedience"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Competing Worldviews"</span><span class="p">,</span> <span class="s2">"Naturalism, individualism, and the therapeutic self"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Truth, Honesty, and Integrity"</span><span class="p">,</span> <span class="s2">"Ordinary ethics in ordinary life"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Conscience"</span><span class="p">,</span> <span class="s2">"Living with conviction and charity at the same time"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Sanctity of Life"</span><span class="p">,</span> <span class="s2">"Beginning-of-life questions"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"End-of-Life Ethics"</span><span class="p">,</span> <span class="s2">"Dying well in a medical age"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Sexual Ethics"</span><span class="p">,</span> <span class="s2">"Singleness, marriage, desire, and faithfulness"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Marriage, Divorce, and Remarriage"</span><span class="p">,</span> <span class="s2">"The pastoral and ethical map"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Wealth, Poverty, and Justice"</span><span class="p">,</span> <span class="s2">"What Scripture asks of the comfortable"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Race and Reconciliation"</span><span class="p">,</span> <span class="s2">"History, Scripture, and honest conversation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Work, Rest, and Sabbath"</span><span class="p">,</span> <span class="s2">"Ordering a life"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Christians and Government"</span><span class="p">,</span> <span class="s2">"Citizenship, authority, and conscience"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Bioethics and Emerging Technology"</span><span class="p">,</span> <span class="s2">"Genetics, fertility, and enhancement"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"War, Violence, and Peacemaking"</span><span class="p">,</span> <span class="s2">"Just war, pacifism, and self-defense"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Creation Care"</span><span class="p">,</span> <span class="s2">"Dominion and stewardship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Business Ethics"</span><span class="p">,</span> <span class="s2">"Profit, people, and integrity under pressure"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Political Theology Across Traditions"</span><span class="p">,</span> <span class="s2">"Comparing the major Christian positions charitably"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Case Study Ethics Lab"</span><span class="p">,</span> <span class="s2">"Reasoning through real dilemmas in cohort"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"LEAD"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Servant Leadership"</span><span class="p">,</span> <span class="s2">"Character before competence"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Elders, Deacons, and Governance"</span><span class="p">,</span> <span class="s2">"What the New Testament says and how traditions differ"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Church's Mission"</span><span class="p">,</span> <span class="s2">"Why the church exists at all"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Membership and Discipline"</span><span class="p">,</span> <span class="s2">"Belonging that means something"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Volunteers and Spiritual Gifts"</span><span class="p">,</span> <span class="s2">"The right people in the right place"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Meetings, Decisions, and Discernment"</span><span class="p">,</span> <span class="s2">"Leading a group toward a decision"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Vision, Values, and Strategy"</span><span class="p">,</span> <span class="s2">"Naming where you are going"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading Change"</span><span class="p">,</span> <span class="s2">"Bringing a congregation with you"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Conflict in the Church"</span><span class="p">,</span> <span class="s2">"Diagnosing it and resolving it"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Church Finances and Stewardship Leadership"</span><span class="p">,</span> <span class="s2">"Budgets, generosity, and trust"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Staff, Team, and Culture"</span><span class="p">,</span> <span class="s2">"Building a healthy ministry team"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Church Planting Foundations"</span><span class="p">,</span> <span class="s2">"From launch team to first birthday"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Missions Strategy for the Local Church"</span><span class="p">,</span> <span class="s2">"Partnership over tourism"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Contextualization"</span><span class="p">,</span> <span class="s2">"The gospel in every culture without compromise"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Unreached Peoples and Global Strategy"</span><span class="p">,</span> <span class="s2">"Where the church is not yet"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Short-Term Missions Done Right"</span><span class="p">,</span> <span class="s2">"Helping without hurting"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Urban and Multiethnic Ministry"</span><span class="p">,</span> <span class="s2">"Leading in a mixed city"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Succession and Legacy"</span><span class="p">,</span> <span class="s2">"Handing off well"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leadership Failure and Restoration"</span><span class="p">,</span> <span class="s2">"Accountability, power, and repentance"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Supervised Leadership Practicum"</span><span class="p">,</span> <span class="s2">"A real project, a real mentor, a real evaluation"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"BT"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"The Whole Bible in One Story"</span><span class="p">,</span> <span class="s2">"Creation, fall, redemption, restoration"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Covenants"</span><span class="p">,</span> <span class="s2">"The spine of Scripture"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Kingdom of God"</span><span class="p">,</span> <span class="s2">"Already and not yet"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Temple, Presence, and Dwelling"</span><span class="p">,</span> <span class="s2">"God with his people"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Promise and Fulfillment"</span><span class="p">,</span> <span class="s2">"How the New Testament reads the Old"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Christ at the Center"</span><span class="p">,</span> <span class="s2">"Luke 24 as a reading method"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Eden and New Creation"</span><span class="p">,</span> <span class="s2">"The Bible's two bookends"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Exile and Homecoming"</span><span class="p">,</span> <span class="s2">"A pattern that runs the whole canon"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Sacrifice and Priesthood"</span><span class="p">,</span> <span class="s2">"From Leviticus to Hebrews"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Kingship and Messiah"</span><span class="p">,</span> <span class="s2">"David's throne and its heir"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Law and Gospel"</span><span class="p">,</span> <span class="s2">"Continuity, discontinuity, and the Christian and the law"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Israel and the Church"</span><span class="p">,</span> <span class="s2">"One people or two?"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Wisdom Across the Canon"</span><span class="p">,</span> <span class="s2">"Proverbs to Christ the wisdom of God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Spirit Across the Canon"</span><span class="p">,</span> <span class="s2">"From Genesis to Pentecost and beyond"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Typology Done Carefully"</span><span class="p">,</span> <span class="s2">"Finding Christ without inventing him"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Themes You Can Teach"</span><span class="p">,</span> <span class="s2">"Building a biblical theology series"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Biblical and Systematic Theology Together"</span><span class="p">,</span> <span class="s2">"How the two disciplines serve each other"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Bible in a Year, With Understanding"</span><span class="p">,</span> <span class="s2">"A guided canonical journey"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Schools of Biblical Theology"</span><span class="p">,</span> <span class="s2">"Covenantal, dispensational, progressive covenantal, new covenant"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching the Storyline to a Church"</span><span class="p">,</span> <span class="s2">"Making the whole Bible feel like one book"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"SF"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"What Formation Is"</span><span class="p">,</span> <span class="s2">"Becoming like Christ over a lifetime"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Scripture Intake"</span><span class="p">,</span> <span class="s2">"Reading, meditating, memorizing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Prayer"</span><span class="p">,</span> <span class="s2">"Learning to talk with God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Silence, Solitude, and Stillness"</span><span class="p">,</span> <span class="s2">"Practices for a loud life"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Fasting and Simplicity"</span><span class="p">,</span> <span class="s2">"Saying no in order to say yes"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Worship as a Daily Practice"</span><span class="p">,</span> <span class="s2">"Ordering the ordinary"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Fruit of the Spirit"</span><span class="p">,</span> <span class="s2">"Character as the real evidence"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Confession and Repentance"</span><span class="p">,</span> <span class="s2">"The practice that keeps a heart soft"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Sabbath and Rest"</span><span class="p">,</span> <span class="s2">"Rhythm as discipleship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Generosity as a Discipline"</span><span class="p">,</span> <span class="s2">"What money does to a heart"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hospitality and Service"</span><span class="p">,</span> <span class="s2">"Formation that only happens with others"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Gratitude and Lament"</span><span class="p">,</span> <span class="s2">"Two practices most Christians only do halfway"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Discernment"</span><span class="p">,</span> <span class="s2">"Hearing God without only hearing yourself"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Temptation and Spiritual Warfare"</span><span class="p">,</span> <span class="s2">"Realism without obsession"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Classics of Christian Devotion"</span><span class="p">,</span> <span class="s2">"Augustine, Bernard, a Kempis, Teresa, Baxter"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Traditions of Formation"</span><span class="p">,</span> <span class="s2">"Contemplative, holiness, charismatic, evangelical, incarnational"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Spiritual Dryness"</span><span class="p">,</span> <span class="s2">"When God feels absent"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Writing a Rule of Life"</span><span class="p">,</span> <span class="s2">"Naming your practices and keeping them"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Spiritual Direction and Soul Friendship"</span><span class="p">,</span> <span class="s2">"Accompanying another person's formation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Formation in Community"</span><span class="p">,</span> <span class="s2">"Designing a group that actually forms people"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"WOR"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"A Theology of Worship"</span><span class="p">,</span> <span class="s2">"Who we gather for, and why"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Shape of a Service"</span><span class="p">,</span> <span class="s2">"Why the order matters"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Scripture in Worship"</span><span class="p">,</span> <span class="s2">"Reading, praying, and singing the Bible"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Corporate Prayer"</span><span class="p">,</span> <span class="s2">"Leading a room to God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Music and the Congregation"</span><span class="p">,</span> <span class="s2">"Choosing songs that teach"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Baptism and the Table in Practice"</span><span class="p">,</span> <span class="s2">"Administering the ordinances well"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Church Calendar"</span><span class="p">,</span> <span class="s2">"Advent to Pentecost as a formation tool"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Preaching and Worship Together"</span><span class="p">,</span> <span class="s2">"One service, one aim"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Lament in Worship"</span><span class="p">,</span> <span class="s2">"Making room for grief in the gathering"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Worship Across Cultures"</span><span class="p">,</span> <span class="s2">"Global song in a local congregation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Weddings"</span><span class="p">,</span> <span class="s2">"Theology, planning, and the ceremony"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Funerals"</span><span class="p">,</span> <span class="s2">"Grieving with hope"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Membership and Baptism Classes"</span><span class="p">,</span> <span class="s2">"Teaching the entry points"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Technology in Worship"</span><span class="p">,</span> <span class="s2">"Sound, screens, and streaming without distraction"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The History of Christian Worship"</span><span class="p">,</span> <span class="s2">"Synagogue to livestream"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hymnody and Theology"</span><span class="p">,</span> <span class="s2">"What the church has sung, and why"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building a Worship Team"</span><span class="p">,</span> <span class="s2">"Auditions, rehearsals, and pastoral care"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Liturgy for Homes and Small Groups"</span><span class="p">,</span> <span class="s2">"Table and household worship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Worship and Formation"</span><span class="p">,</span> <span class="s2">"How gathered practice shapes belief"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Planning a Year of Worship"</span><span class="p">,</span> <span class="s2">"Series, seasons, and rhythms"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"DIS"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"What a Disciple Is"</span><span class="p">,</span> <span class="s2">"Jesus' definition, not ours"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Great Commission as Church Strategy"</span><span class="p">,</span> <span class="s2">"Making disciples, not attenders"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Life Together"</span><span class="p">,</span> <span class="s2">"The biblical case for small groups"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading Your First Group"</span><span class="p">,</span> <span class="s2">"The first six weeks"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Asking Good Questions"</span><span class="p">,</span> <span class="s2">"The core skill of a group leader"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Group Covenant"</span><span class="p">,</span> <span class="s2">"Agreements that make honesty possible"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Five Biblical Purposes in a Group"</span><span class="p">,</span> <span class="s2">"Fellowship, discipleship, ministry, evangelism, worship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Group Dynamics"</span><span class="p">,</span> <span class="s2">"Silence, dominance, conflict, and drift"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Discipling One to One"</span><span class="p">,</span> <span class="s2">"The pair as the smallest classroom"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Apprenticeship"</span><span class="p">,</span> <span class="s2">"Raising the next leader from inside the group"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Multiplication"</span><span class="p">,</span> <span class="s2">"Birthing a group without breaking a group"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Choosing and Adapting Curriculum"</span><span class="p">,</span> <span class="s2">"Picking a study and making it fit"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Care Within the Group"</span><span class="p">,</span> <span class="s2">"When a member's life falls apart"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Groups and the Church"</span><span class="p">,</span> <span class="s2">"Alignment, reporting, and coaching structures"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Church-Wide Campaigns"</span><span class="p">,</span> <span class="s2">"Aligning the pulpit, the group, and the home"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Coaching Group Leaders"</span><span class="p">,</span> <span class="s2">"Building a coaching layer that lasts"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Groups by Life Stage"</span><span class="p">,</span> <span class="s2">"Men, women, couples, singles, seniors, students"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Missional Groups"</span><span class="p">,</span> <span class="s2">"Groups that serve outward"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Assessing Discipleship"</span><span class="p">,</span> <span class="s2">"Measuring what actually matters"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building a Group System from Scratch"</span><span class="p">,</span> <span class="s2">"A twelve-month plan for a church"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"EV"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Why We Tell"</span><span class="p">,</span> <span class="s2">"A theology of evangelism"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Your Story"</span><span class="p">,</span> <span class="s2">"Learning to tell it in three minutes"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Gospel in Plain Words"</span><span class="p">,</span> <span class="s2">"Explaining it without jargon"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Everyday Evangelism"</span><span class="p">,</span> <span class="s2">"Neighbors, coworkers, and an ordinary week"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Praying for the Lost"</span><span class="p">,</span> <span class="s2">"Persistence and hope"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Getting Past the Freeze"</span><span class="p">,</span> <span class="s2">"Fear, awkwardness, and the first sentence"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Conversational Evangelism"</span><span class="p">,</span> <span class="s2">"Listening your way to the gospel"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Five Objections You Will Hear Most"</span><span class="p">,</span> <span class="s2">"Answers you can actually remember"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Evangelism and Hospitality"</span><span class="p">,</span> <span class="s2">"The table as an open door"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Reaching the Nominally Christian"</span><span class="p">,</span> <span class="s2">"People who think they already believe"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Reaching the De-Churched"</span><span class="p">,</span> <span class="s2">"Those who left, and why"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Cross-Cultural Witness at Home"</span><span class="p">,</span> <span class="s2">"The nations in your neighborhood"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Word and Deed Together"</span><span class="p">,</span> <span class="s2">"Evangelism and mercy ministry"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading Someone to Christ"</span><span class="p">,</span> <span class="s2">"The conversation, and what comes next"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Discipling a New Believer"</span><span class="p">,</span> <span class="s2">"The first ninety days"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Evangelism Through Groups"</span><span class="p">,</span> <span class="s2">"Open groups and a culture of invitation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Digital Witness"</span><span class="p">,</span> <span class="s2">"Sharing faith online without becoming a caricature"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Workplace Witness"</span><span class="p">,</span> <span class="s2">"Integrity, wisdom, and appropriate boundaries"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Training a Church to Share Its Faith"</span><span class="p">,</span> <span class="s2">"Building a culture, not an event"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Supervised Outreach Practicum"</span><span class="p">,</span> <span class="s2">"Real conversations with real feedback"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"FAM"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"A Theology of Marriage"</span><span class="p">,</span> <span class="s2">"Covenant, not contract"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"A Theology of the Family"</span><span class="p">,</span> <span class="s2">"The household as the first church"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Communication and Conflict in Marriage"</span><span class="p">,</span> <span class="s2">"Skill and repentance together"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Intimacy and Faithfulness"</span><span class="p">,</span> <span class="s2">"Guarding a marriage"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Money in Marriage"</span><span class="p">,</span> <span class="s2">"The most common fight"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Parenting Foundations"</span><span class="p">,</span> <span class="s2">"Discipline, discipleship, and grace"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Family Worship"</span><span class="p">,</span> <span class="s2">"Simple practices that actually last"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Discipling Young Children"</span><span class="p">,</span> <span class="s2">"Teaching a five-year-old about God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Discipling Teenagers"</span><span class="p">,</span> <span class="s2">"Presence, autonomy, and honest faith"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Launching Adult Children"</span><span class="p">,</span> <span class="s2">"Letting go well"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Singleness"</span><span class="p">,</span> <span class="s2">"A full life and a full calling"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Blended and Step Families"</span><span class="p">,</span> <span class="s2">"Complexity, patience, and grace"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Divorce and Separation"</span><span class="p">,</span> <span class="s2">"Pastoral care in the ruins"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Caring for Aging Parents"</span><span class="p">,</span> <span class="s2">"The sandwich decade"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Infertility, Miscarriage, and Adoption"</span><span class="p">,</span> <span class="s2">"Ministering in the hardest family grief"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Family Systems and Generational Patterns"</span><span class="p">,</span> <span class="s2">"What gets passed down"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Family Legacy Conversation"</span><span class="p">,</span> <span class="s2">"Values, story, and blessing across generations"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Marriage Mentoring"</span><span class="p">,</span> <span class="s2">"Training couples to help couples"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Premarital Counseling"</span><span class="p">,</span> <span class="s2">"Leading a couple through preparation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building a Family Ministry"</span><span class="p">,</span> <span class="s2">"Aligning church, home, and next generation"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"STW"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"God Owns It All"</span><span class="p">,</span> <span class="s2">"A theology of ownership and stewardship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"A Theology of Work"</span><span class="p">,</span> <span class="s2">"Why your job matters to God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Calling and Vocation"</span><span class="p">,</span> <span class="s2">"Discerning what you are for"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Money Basics for Christians"</span><span class="p">,</span> <span class="s2">"Earning, giving, saving, spending, owing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Generosity"</span><span class="p">,</span> <span class="s2">"The joy and the discipline"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Contentment"</span><span class="p">,</span> <span class="s2">"Fighting comparison and consumer desire"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Debt and Freedom"</span><span class="p">,</span> <span class="s2">"Getting out and staying out"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Budgeting and Household Planning"</span><span class="p">,</span> <span class="s2">"A plan you will actually follow"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Saving, Investing, and Risk"</span><span class="p">,</span> <span class="s2">"Wisdom rather than speculation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Giving Beyond the Tithe"</span><span class="p">,</span> <span class="s2">"Percentage, planned, and spontaneous"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Work and Rest"</span><span class="p">,</span> <span class="s2">"Ambition, burnout, and sabbath"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Integrity at Work"</span><span class="p">,</span> <span class="s2">"Pressure, compromise, and courage"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Business as Ministry"</span><span class="p">,</span> <span class="s2">"Redemptive work in the marketplace"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Ambition Without Losing Your Soul"</span><span class="p">,</span> <span class="s2">"Wanting more, rightly"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Wealth and the Soul"</span><span class="p">,</span> <span class="s2">"Pastoral care for the prosperous"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Inheritance and Legacy Giving"</span><span class="p">,</span> <span class="s2">"Passing on both money and values"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Poverty, Charity, and Development"</span><span class="p">,</span> <span class="s2">"Helping without hurting"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Church Stewardship Campaigns"</span><span class="p">,</span> <span class="s2">"Teaching generosity to a congregation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Financial Coaching Skills"</span><span class="p">,</span> <span class="s2">"Sitting down with a household in trouble"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Vocation Across a Lifetime"</span><span class="p">,</span> <span class="s2">"Career change, retirement, and the second half"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"WR"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"How to Study Another Religion"</span><span class="p">,</span> <span class="s2">"Fairly, accurately, and without fear"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Judaism"</span><span class="p">,</span> <span class="s2">"Roots, relationship, and respect"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Islam"</span><span class="p">,</span> <span class="s2">"Beliefs, practices, and conversation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hinduism"</span><span class="p">,</span> <span class="s2">"Many gods, many paths"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Buddhism"</span><span class="p">,</span> <span class="s2">"Suffering, desire, and the self"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Secularism and the Nones"</span><span class="p">,</span> <span class="s2">"The fastest-growing group in the West"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Mormonism"</span><span class="p">,</span> <span class="s2">"History, doctrine, and points of contact"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Jehovah's Witnesses"</span><span class="p">,</span> <span class="s2">"Doctrine and conversation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Spirituality Without Religion"</span><span class="p">,</span> <span class="s2">"The sacred self and the new spiritualities"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Folk Religion and Syncretism"</span><span class="p">,</span> <span class="s2">"What people actually practice"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"High-Control Groups"</span><span class="p">,</span> <span class="s2">"Recognizing them and caring for those leaving"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Atheism and Agnosticism"</span><span class="p">,</span> <span class="s2">"The varieties of unbelief"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Orthodoxy and Roman Catholicism"</span><span class="p">,</span> <span class="s2">"Understanding other Christian traditions honestly"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Progressive Christianity"</span><span class="p">,</span> <span class="s2">"Where the disagreements actually lie"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Comparative Theology"</span><span class="p">,</span> <span class="s2">"God, salvation, and scripture side by side"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Interfaith Dialogue"</span><span class="p">,</span> <span class="s2">"Conviction and civility together"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Religion, Culture, and Public Life"</span><span class="p">,</span> <span class="s2">"Where belief meets politics"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Reaching Immigrant Communities"</span><span class="p">,</span> <span class="s2">"Hospitality across religions"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Befriending Your Muslim, Jewish, and Hindu Neighbors"</span><span class="p">,</span> <span class="s2">"Practical friendship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teaching World Religions in the Church"</span><span class="p">,</span> <span class="s2">"A course your congregation needs"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"CT"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Why Christians Should Think"</span><span class="p">,</span> <span class="s2">"Loving God with your mind"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Logic and Clear Thinking"</span><span class="p">,</span> <span class="s2">"Arguments, fallacies, and charity"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Big Questions"</span><span class="p">,</span> <span class="s2">"Truth, beauty, goodness, being"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Greek Philosophy and the Church"</span><span class="p">,</span> <span class="s2">"Plato, Aristotle, and Christian borrowing"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Augustine's Confessions"</span><span class="p">,</span> <span class="s2">"Reading one classic slowly"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith Seeking Understanding"</span><span class="p">,</span> <span class="s2">"Boethius, Anselm, and Aquinas"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Reformation Thought"</span><span class="p">,</span> <span class="s2">"Luther, Calvin, and the recovery of Scripture"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Enlightenment and Its Challenge"</span><span class="p">,</span> <span class="s2">"Reason, autonomy, and doubt"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Pascal"</span><span class="p">,</span> <span class="s2">"The heart, the wager, and the human condition"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Kierkegaard"</span><span class="p">,</span> <span class="s2">"Anxiety, leap, and sincerity"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Modernism, Postmodernism, and Truth"</span><span class="p">,</span> <span class="s2">"How we got here"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"C. S. Lewis"</span><span class="p">,</span> <span class="s2">"Apologist, storyteller, moralist"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Bonhoeffer"</span><span class="p">,</span> <span class="s2">"Costly discipleship under tyranny"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Christian Imagination"</span><span class="p">,</span> <span class="s2">"Chesterton, Sayers, and wit as witness"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Christianity and the Arts"</span><span class="p">,</span> <span class="s2">"Beauty as theology"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Literature as Formation"</span><span class="p">,</span> <span class="s2">"Dante, Dostoevsky, O'Connor, Eliot"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Philosophy of Religion"</span><span class="p">,</span> <span class="s2">"Knowledge, faith, and rationality"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Expressive Individualism"</span><span class="p">,</span> <span class="s2">"The modern self and the church's answer"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Reading Difficult Books Together"</span><span class="p">,</span> <span class="s2">"A method for cohort reading"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"A Christian Intellectual Life"</span><span class="p">,</span> <span class="s2">"Habits of a thinking believer"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">COURSES</span><span class="p">[</span><span class="s2">"CULT"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Reading the Culture"</span><span class="p">,</span> <span class="s2">"Discernment as a discipleship skill"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Attention"</span><span class="p">,</span> <span class="s2">"The most contested resource of your life"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Social Media and the Soul"</span><span class="p">,</span> <span class="s2">"Comparison, outrage, and identity"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Smartphones and the Household"</span><span class="p">,</span> <span class="s2">"Practices for a connected family"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Truth, Misinformation, and Outrage"</span><span class="p">,</span> <span class="s2">"Christian honesty online"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Christian Presence Online"</span><span class="p">,</span> <span class="s2">"Witness without warfare"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Artificial Intelligence: What It Is"</span><span class="p">,</span> <span class="s2">"A plain-language primer for the church"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"AI and the Image of God"</span><span class="p">,</span> <span class="s2">"What makes a person a person"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"AI as a Ministry Tool"</span><span class="p">,</span> <span class="s2">"Stewardship, honesty, and disclosure"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Screens and Children"</span><span class="p">,</span> <span class="s2">"Ages, stages, and limits"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Pornography and Digital Sexuality"</span><span class="p">,</span> <span class="s2">"Understanding, care, and recovery"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Gaming, Streaming, and Leisure"</span><span class="p">,</span> <span class="s2">"Rest, escape, and moderation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Loneliness in a Connected Age"</span><span class="p">,</span> <span class="s2">"The church as the antidote"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Privacy, Surveillance, and Data"</span><span class="p">,</span> <span class="s2">"Christian ethics for a tracked life"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Technology and the Body"</span><span class="p">,</span> <span class="s2">"Presence, place, and the incarnation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Media Literacy for Disciples"</span><span class="p">,</span> <span class="s2">"Evaluating what you consume"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Digital Ministry Strategy"</span><span class="p">,</span> <span class="s2">"Online church, hybrid groups, and their limits"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Transhumanism and Enhancement"</span><span class="p">,</span> <span class="s2">"The next ethical frontier"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Work, Automation, and Vocation"</span><span class="p">,</span> <span class="s2">"When jobs change fast"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading a Digital Discernment Class"</span><span class="p">,</span> <span class="s2">"Teaching your church to think about technology"</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">codes_for</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the 20 course codes in registrar order."""</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="mi">101</span> <span class="o">+</span> <span class="n">i</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="mi">201</span> <span class="o">+</span> <span class="n">i</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="mi">301</span> <span class="o">+</span> <span class="n">i</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="n">TIERS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Foundation"</span><span class="p">]</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">+</span> <span class="p">[</span><span class="s2">"Core"</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="s2">"Advanced"</span><span class="p">]</span> <span class="o">*</span> <span class="mi">6</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">DISCIPLINES</span><span class="p">)</span> <span class="o">==</span> <span class="mi">20</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DISCIPLINES</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">DISCIPLINES</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">COURSES</span><span class="p">,</span> <span class="s2">"missing </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">prefix</span>
+        <span class="k">assert</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">BLURBS</span><span class="p">,</span> <span class="s2">"missing blurb </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">prefix</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">COURSES</span><span class="p">[</span><span class="n">prefix</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"</span><span class="si">%s</span><span class="s2"> has </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">total</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"disciplines:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DISCIPLINES</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"courses:"</span><span class="p">,</span> <span class="n">validate</span><span class="p">())</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DISCIPLINES</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"new"</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"new disciplines:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/courses.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

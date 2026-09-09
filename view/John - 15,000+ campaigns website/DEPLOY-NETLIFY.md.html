@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>DEPLOY-NETLIFY.md</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; John - 15,000+ campaigns website</div>
+<h1>DEPLOY-NETLIFY.md</h1>
+<div class="meta"><span class="ext e-md">md</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">3 KB</span>
+<a class="btn" href="../../artifacts/John%20-%2015%2C000%2B%20campaigns%20website/DEPLOY-NETLIFY.md" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Step-by-step Netlify deployment guide</p>
+</div></header>
+<article class="doc"><h1 id="deploying-40daycampaignscom-to-netlify">Deploying 40daycampaigns.com to Netlify</h1>
+<p>This site is static HTML plus two small serverless functions (a Claude proxy and a
+Stripe checkout creator). Netlify hosts both from this one folder. Nothing needs to be
+built first — the site ships ready.</p>
+<h2 id="1-put-the-folder-on-netlify">1. Put the folder on Netlify</h2>
+<p>Easiest: at app.netlify.com choose <strong>Add new site → Deploy manually</strong> and drag this
+entire folder (the one containing <code>index.html</code>, <code>netlify.toml</code>, and <code>netlify/</code>) onto the
+drop zone. Netlify reads <code>netlify.toml</code>, publishes the static files, and bundles the
+functions automatically.</p>
+<p>For ongoing edits, connect the folder to a Git repo instead and Netlify will redeploy on
+every push. Leave the build command empty and the publish directory as <code>.</code> — both are
+already set in <code>netlify.toml</code>.</p>
+<h2 id="2-set-four-environment-variables">2. Set four environment variables</h2>
+<p>Site settings → <strong>Environment variables</strong> → Add:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td><code>sk-ant-…</code> (from console.anthropic.com)</td>
+<td>Claude "Enhance" in the Builder</td>
+</tr>
+<tr>
+<td><code>STRIPE_SECRET_KEY</code></td>
+<td><code>sk_live_…</code> (or <code>sk_test_…</code> to trial)</td>
+<td>Card checkout</td>
+</tr>
+<tr>
+<td><code>SITE_URL</code></td>
+<td><code>https://YOURSITE.netlify.app</code> (or your domain)</td>
+<td>Stripe success/cancel redirects</td>
+</tr>
+<tr>
+<td><code>ALLOWED_ORIGIN</code></td>
+<td>same as SITE_URL (optional; locks the functions to your domain)</td>
+<td>both functions</td>
+</tr>
+</tbody>
+</table>
+<p>Redeploy once after setting them (Deploys → Trigger deploy) so the functions pick them up.</p>
+<h2 id="3-point-your-domain-optional">3. Point your domain (optional)</h2>
+<p>Domain settings → add <code>40daycampaigns.com</code>. Netlify issues the HTTPS certificate
+automatically. Update <code>SITE_URL</code> to the custom domain afterward.</p>
+<h2 id="4-stripe-receipts-optional-but-recommended">4. Stripe receipts (optional but recommended)</h2>
+<p>Card payments already work after step 2. To record paid orders and send real receipts,
+create a webhook in the Stripe dashboard pointing at
+<code>https://YOURSITE/.netlify/functions/stripe-webhook</code> for the event
+<code>checkout.session.completed</code>, then add <code>STRIPE_WEBHOOK_SECRET = whsec_…</code> to your Netlify
+env vars. The fulfillment hook is stubbed in <code>netlify/functions/stripe-webhook.js</code>.</p>
+<h2 id="how-it-behaves-before-the-keys-are-set">How it behaves before the keys are set</h2>
+<p>The site is fully usable the moment it's deployed. Until <code>ANTHROPIC_API_KEY</code> exists, the
+Builder's three tools still generate complete drafts from the built-in Lifetogether engine
+and simply skip the "Enhance with Claude" step with a clear message. Until
+<code>STRIPE_SECRET_KEY</code> exists, card checkout records the order and shows the confirmation page
+with its starter downloads. So you can launch, then switch on AI and payments whenever the
+keys are ready — no code changes.</p>
+<h2 id="whats-where">What's where</h2>
+<ul>
+<li><code>netlify.toml</code> — publish dir, functions dir, <code>/api/*</code> routes, cache headers.</li>
+<li><code>netlify/functions/claude.js</code> — server-side Anthropic proxy (whitelists model/tokens,
+  never exposes the key).</li>
+<li><code>netlify/functions/create-checkout-session.js</code> — re-prices the cart server-side and opens
+  a Stripe Checkout session (client-sent amounts are ignored, so prices can't be tampered).</li>
+<li><code>netlify/functions/stripe-webhook.js</code> — optional signed fulfillment hook.</li>
+<li><code>netlify/functions/package.json</code> — declares <code>stripe</code>; Netlify installs it on deploy.</li>
+</ul>
+<h2 id="security-notes">Security notes</h2>
+<ul>
+<li>API keys live only in Netlify env vars and only the functions read them; the browser
+  never sees them.</li>
+<li>The checkout function recomputes every line's price from its own table, so a modified
+  cart in the browser cannot change what Stripe charges.</li>
+<li>Set <code>ALLOWED_ORIGIN</code> to your domain to stop other sites from calling your functions.</li>
+</ul></article>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/site/DEPLOY-NETLIFY.md</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

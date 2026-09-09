@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_v2.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Financial course curriculum overview</div>
+<h1>build_v2.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">6 KB</span>
+<a class="btn" href="../../artifacts/Financial%20course%20curriculum%20overview/build_v2.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Volume 2 build engine: reuses V1 design system, adds cover + dividers + architecture pages</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Finances Campaign Architecture — Volume 2 build (reuses Volume 1 engine)."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">build</span><span class="w"> </span><span class="kn">import</span> <span class="n">FONT_CSS</span><span class="p">,</span> <span class="n">CSS</span><span class="p">,</span> <span class="n">esc</span><span class="p">,</span> <span class="n">sprig</span>          <span class="c1"># reuse V1 design system</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_v2_batch1</span><span class="w"> </span><span class="kn">import</span> <span class="n">ARCH</span><span class="p">,</span> <span class="n">GROUP_DESC</span>
+
+<span class="c1"># ---- additional CSS just for Volume 2 elements -------------------------------</span>
+<span class="n">EXTRA_CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">/* scriptural backbone chips */</span>
+<span class="s2">.bb{display:flex;gap:6px;flex-wrap:wrap;}</span>
+<span class="s2">.bb-chip{font-family:'Archivo',sans-serif;font-weight:600;font-size:7.6px;letter-spacing:.04em;</span>
+<span class="s2"> background:var(--ever-pale);color:var(--ever);padding:3px 8px;border-radius:3px;}</span>
+<span class="s2">/* group divider */</span>
+<span class="s2">.divider{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}</span>
+<span class="s2">.divider .dk{font-family:'Archivo',sans-serif;font-weight:700;letter-spacing:.3em;font-size:8.5px;</span>
+<span class="s2"> text-transform:uppercase;color:var(--gold-deep);}</span>
+<span class="s2">.divider .dnum{font-family:'Playfair',serif;font-weight:800;font-size:64px;color:var(--ever-pale);</span>
+<span class="s2"> line-height:1;margin:6px 0 2px;}</span>
+<span class="s2">.divider .dt{font-family:'Playfair',serif;font-weight:800;font-size:38px;color:var(--ever);</span>
+<span class="s2"> line-height:1.05;max-width:6in;}</span>
+<span class="s2">.divider .drule{width:90px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);</span>
+<span class="s2"> margin:20px auto;}</span>
+<span class="s2">.divider .dd{font-family:'Spectral',serif;font-style:italic;font-size:13.5px;line-height:1.6;</span>
+<span class="s2"> color:var(--ink2);max-width:5in;}</span>
+<span class="s2">.divider .dcount{margin-top:22px;font-family:'Archivo',sans-serif;font-weight:700;font-size:8.5px;</span>
+<span class="s2"> letter-spacing:.24em;text-transform:uppercase;color:var(--cream);background:var(--ever);</span>
+<span class="s2"> padding:7px 16px;border-radius:2px;}</span>
+<span class="s2">.divider .dsprig{margin-bottom:14px;}</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ---- pages -------------------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cover_v2</span><span class="p">():</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="page cover"&gt;</span>
+<span class="s2">  &lt;div class="frame"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="topkick"&gt;A LifeTogether Campaign Catalog &amp;nbsp;&amp;middot;&amp;nbsp; Volume Two&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="inner"&gt;</span>
+<span class="s2">    &lt;div class="sprigwrap"&gt;</span><span class="si">{</span><span class="n">sprig</span><span class="p">(</span><span class="s1">'#c9a35c'</span><span class="p">,</span><span class="mi">34</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;h1&gt;Finances&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class="sub1"&gt;Campaign Architecture&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="rule"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="blurb"&gt;Expanded one-page blueprints for the campaigns behind the library &amp;mdash; positioning, six-session structure, and a scriptural backbone for every title.&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="count"&gt;Part One &amp;nbsp;&amp;middot;&amp;nbsp; 21 Campaign Blueprints&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="wm"&gt;</span>
+<span class="s2">    &lt;div class="lt"&gt;LifeTogether&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="tag"&gt;Churchwide &amp;amp; Workplace Campaigns&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">group_divider</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">pg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="page divider"&gt;</span>
+<span class="s2">  &lt;div class="dsprig"&gt;</span><span class="si">{</span><span class="n">sprig</span><span class="p">(</span><span class="s1">'var(--ever)'</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dk"&gt;Section </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> &amp;nbsp;&amp;middot;&amp;nbsp; The Complete Library, Expanded&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dnum"&gt;</span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dt"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="drule"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dd"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">GROUP_DESC</span><span class="p">[</span><span class="n">group</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dcount"&gt;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> Campaigns&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="foot-mark"&gt;LifeTogether &amp;middot; Finances Campaign Catalog&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pgnum"&gt;</span><span class="si">{</span><span class="n">pg</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">campaign_arch_page</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">pg</span><span class="p">):</span>
+    <span class="n">badge_cls</span> <span class="o">=</span> <span class="s1">'t2'</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">'tier'</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'Tier 2'</span><span class="p">)</span> <span class="k">else</span> <span class="s1">'t1'</span>
+    <span class="n">formats</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="pill"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s1">'formats'</span><span class="p">])</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"The Felt Need"</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s1">'felt_need'</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"Why It Matters"</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s1">'why_matters'</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"The Core Problem"</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s1">'problem'</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"The Transformation"</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s1">'transformation'</span><span class="p">]),</span>
+    <span class="p">]</span>
+    <span class="n">info_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;div class="info-card"&gt;&lt;div class="lab"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;'</span>
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info</span><span class="p">)</span>
+    <span class="n">sess</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">sd</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'sessions'</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">sess</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="sess"&gt;&lt;div class="n"&gt;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div&gt;'</span>
+                 <span class="sa">f</span><span class="s1">'&lt;div class="st"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="sd"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">sd</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">chips</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="bb-chip"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s1">'scriptures'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="page"&gt;</span>
+<span class="s2">  &lt;div class="c-top"&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'group'</span><span class="p">])</span><span class="si">}</span><span class="s2"> &amp;nbsp;&amp;middot;&amp;nbsp; N&lt;sup&gt;o&lt;/sup&gt; </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'num'</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;span class="badge </span><span class="si">{</span><span class="n">badge_cls</span><span class="si">}</span><span class="s2">"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'tier'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;hr class="grule" style="margin:6px 0 12px;"&gt;</span>
+<span class="s2">  &lt;h1 class="c-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'title'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">  &lt;div class="c-tag"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'tagline'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="scrip" style="margin:13px 0 13px;"&gt;</span>
+<span class="s2">    &lt;div class="q"&gt;&amp;ldquo;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'core_text'</span><span class="p">])</span><span class="si">}</span><span class="s2">&amp;rdquo;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="r"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'core_ref'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p class="c-lead" style="margin-bottom:13px;"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'marketing'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="info2" style="margin-bottom:14px;"&gt;</span><span class="si">{</span><span class="n">info_html</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="sec-h" style="margin-bottom:9px;"&gt;The Six-Session Small-Group Journey&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="sess-grid" style="margin-bottom:13px;"&gt;</span><span class="si">{</span><span class="n">sess</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="sec-h" style="margin-bottom:8px;"&gt;Scriptural Backbone&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="bb" style="margin-bottom:14px;"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;hr class="hair" style="margin:0 0 11px;"&gt;</span>
+<span class="s2">  &lt;div class="foot-row"&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;div style="font-family:'Archivo';font-weight:700;letter-spacing:.16em;font-size:7.2px;text-transform:uppercase;color:var(--ever2);margin-bottom:5px;"&gt;Available Formats&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="pills"&gt;</span><span class="si">{</span><span class="n">formats</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="aud-line"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'audience'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="foot-mark"&gt;LifeTogether &amp;middot; Finances Campaign Catalog&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pgnum"&gt;</span><span class="si">{</span><span class="n">pg</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_html</span><span class="p">():</span>
+    <span class="c1"># group order as it appears in ARCH</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ARCH</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">'group'</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'group'</span><span class="p">])</span>
+    <span class="n">pages</span> <span class="o">=</span> <span class="p">[</span><span class="n">cover_v2</span><span class="p">()]</span>
+    <span class="n">pg</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ARCH</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">'group'</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="p">]</span>
+        <span class="n">pages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_divider</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">members</span><span class="p">),</span> <span class="n">idx</span><span class="p">,</span> <span class="n">pg</span><span class="p">));</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+            <span class="n">pages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">campaign_arch_page</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">pg</span><span class="p">));</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1"># last page: stop trailing blank</span>
+    <span class="n">pages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'class="page"'</span><span class="p">,</span> <span class="s1">'class="page last"'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pages</span><span class="p">)</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset='utf-8'&gt;"</span>
+            <span class="sa">f</span><span class="s2">"&lt;style&gt;</span><span class="si">{</span><span class="n">FONT_CSS</span><span class="si">}{</span><span class="n">CSS</span><span class="si">}{</span><span class="n">EXTRA_CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;&lt;/head&gt;&lt;body&gt;</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&lt;/body&gt;&lt;/html&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">html</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pages</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">html</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">build_html</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">'catalog_v2.html'</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HTML written: </span><span class="si">{</span><span class="n">out</span><span class="si">}</span><span class="s2"> | pages composed: </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> | size </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">)</span><span class="o">//</span><span class="mi">1024</span><span class="si">}</span><span class="s2"> KB"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/finances_catalog/build_v2.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

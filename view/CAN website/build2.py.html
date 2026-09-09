@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build2.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; CAN website</div>
+<h1>build2.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">2 edits</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">13 KB</span>
+<a class="btn" href="../../artifacts/CAN%20website/build2.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Builder for the family workspace — reuses the 225-journey data and adds the 25 toolbox templates</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="n">src</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/can-library-clickable.html"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">grab</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^var "</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">" = (.*);$"</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">ENTRIES</span> <span class="o">=</span> <span class="n">grab</span><span class="p">(</span><span class="s2">"ENTRIES"</span><span class="p">)</span>
+<span class="n">CATS</span> <span class="o">=</span> <span class="n">grab</span><span class="p">(</span><span class="s2">"CATS"</span><span class="p">)</span>
+<span class="n">JOURNEYS</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ENTRIES</span> <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"journey"</span><span class="p">]</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">JOURNEYS</span><span class="p">)</span> <span class="o">==</span> <span class="mi">225</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">JOURNEYS</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">CATS</span><span class="p">)</span> <span class="o">==</span> <span class="mi">15</span>
+
+<span class="c1"># ---------------- the 25 family toolbox templates ----------------</span>
+<span class="c1"># Each is drawn from Brett's own 125-tool ecosystem; "who" lists the customization</span>
+<span class="c1"># audiences offered in the dropdown; "ins" is the generation instruction.</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Family Stewardship Assessment"</span><span class="p">,</span>
+  <span class="s2">"Scores the family across wealth, wisdom, relationships, values, generosity, succession, and legacy."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Each adult child"</span><span class="p">],</span>
+  <span class="s2">"Build the assessment: 7 dimensions x 4 statements, each rated 1 to 5, with a /20 per dimension and /140 total. Then give four score bands with what each band means and the first move it implies. Statements must reflect this family's actual concerns."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Couple Alignment Assessment"</span><span class="p">,</span>
+  <span class="s2">"Reveals where spouses agree and differ around money, children, giving, inheritance, and legacy."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Write 20 statements each spouse answers privately, grouped in five areas. Then give the comparison key: what strong agreement, possible misunderstanding, and different priorities each look like, and the three questions to bring to the advisor."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"What's in Your Hand? Inventory"</span><span class="p">,</span>
+  <span class="s2">"Inventories time, talent, treasure, relationships, influence, experiences, and opportunities."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Each adult child"</span><span class="p">],</span>
+  <span class="s2">"Build the seven-part inventory with prompts under each heading, sized so a family can complete it in one sitting. Close with three questions that turn the inventory into a decision."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Values Builder"</span><span class="p">,</span>
+  <span class="s2">"Turns selected values into observable family behaviors."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Give a working list of candidate values drawn from this family's stated aspirations, a selection exercise, and then for the likely final five, translate each into one observable behavior a grandchild could recognize."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Mission Builder"</span><span class="p">,</span>
+  <span class="s2">"Produces a concise family mission statement."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Give the four questions that produce a mission statement, a worked example built from this family's own profile, and two alternative draft statements they can edit rather than start from blank."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Purpose Statement"</span><span class="p">,</span>
+  <span class="s2">"Answers what the family hopes its resources ultimately accomplish."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Produce a one-page instrument: three framing questions, a drafting frame, and two draft purpose statements specific to this family's business, giving, and generational situation."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Enough Calculator &amp; Conversation"</span><span class="p">,</span>
+  <span class="s2">"Helps distinguish lifestyle needs, security, inheritance, and surplus."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Build the four-bucket conversation: lifestyle, security, inheritance, surplus. Give the questions that define each bucket for this family and the decision the conversation is meant to produce. Use no specific dollar figures and give no investment or tax advice."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Wealth Purpose Map"</span><span class="p">,</span>
+  <span class="s2">"Assigns purposes to pools of capital."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Give a mapping worksheet that assigns a stated purpose, a time horizon, and an intended beneficiary to each pool of family capital. Name the pools generically; do not invent balances."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Generosity Map"</span><span class="p">,</span>
+  <span class="s2">"Maps causes, ministries, geography, passions, and giving vehicles."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Each adult child"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Build the mapping exercise across causes, geography, passions, and vehicles, with prompts that surface why each matters to this family, and a final step that turns the map into one giving decision for this year."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Legacy Statement"</span><span class="p">,</span>
+  <span class="s2">"Defines what the family hopes to pass beyond financial assets."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Give the prompts that surface story, values, faith, and wisdom, then a 120-word draft legacy statement in the parents' voice that they can edit."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Stewardship Priority Map"</span><span class="p">,</span>
+  <span class="s2">"Ranks the family's issues into Now, Next, and Later."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Advisor"</span><span class="p">],</span>
+  <span class="s2">"Rank this family's actual issues into ## Now, ## Next, and ## Later. Under each item give one line on why it sits there and what would move it. Be decisive rather than comprehensive."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Couple Conversation Guide"</span><span class="p">,</span>
+  <span class="s2">"Structured spouse discussion before wider family conversations."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Write the guide in six sections: Our Life, Our Wealth, Our Children, Our Giving, Our Future, Our Legacy. Three questions under each, specific to this family. Close with how to compare answers without turning it into an argument."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Conversation Cards"</span><span class="p">,</span>
+  <span class="s2">"Questions around wealth, values, faith, inheritance, generosity, and relationships."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Each adult child"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Grandchildren"</span><span class="p">],</span>
+  <span class="s2">"Write 18 conversation cards grouped in six categories, each a single question short enough to print on a card. Vary emotional depth so a family can start shallow and go deeper."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Inheritance Conversation Guide"</span><span class="p">,</span>
+  <span class="s2">"Helps parents communicate intentions without disclosing every financial detail."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Give the guide in three parts: what to say, what not to say yet, and how to answer the four questions adult children most often ask. Include language for declining to share a number without sounding evasive."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Next-Generation Conversation Guide"</span><span class="p">,</span>
+  <span class="s2">"Gives parents and adult children a structured pathway into responsibility."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Each adult child"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Write a conversation pathway with an opening the parent can read aloud, five questions, and the responsibility milestone the conversation is meant to reach. Frame it around who they are becoming, never around amounts."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Meeting Kit"</span><span class="p">,</span>
+  <span class="s2">"Invitation, pre-work, agenda, exercises, facilitation, decisions, and follow-up."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Build the full kit: invitation text, purpose statement, two pieces of pre-work, a timed two-hour agenda, an opening exercise, five conversation questions, the decision worksheet items, and the follow-up note."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Difficult Conversation Planner"</span><span class="p">,</span>
+  <span class="s2">"Prepares the family for conflict, inequity, entitlement, or relational strain."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Advisor"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Plan one difficult conversation this family actually faces. Sections: what is really at stake, what each person likely fears, the opening sentence, what to avoid saying, how to end well, and what to do if it goes badly."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Sibling Stewardship Guide"</span><span class="p">,</span>
+  <span class="s2">"Helps siblings prepare for shared assets and decision authority."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Each adult child"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Write the guide for siblings who will one day decide together: the agreements to reach before they inherit, the four flashpoints to expect, and a simple decision protocol they can adopt now."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Grandparent Conversation Guide"</span><span class="p">,</span>
+  <span class="s2">"Helps grandparents intentionally transfer wisdom and story."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Grandchildren"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Write age-appropriate prompts for grandparents in three age bands, plus a short script for asking permission from the middle generation first."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Legacy Letter Builder"</span><span class="p">,</span>
+  <span class="s2">"Helps parents and grandparents write personal legacy letters."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Each adult child"</span><span class="p">,</span> <span class="s2">"Grandchildren"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Give five prompts drawn from this family's own history, then a 120-word draft opening in the parents' voice addressed to the named recipient, written to be edited rather than sent as is."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Story Capture"</span><span class="p">,</span>
+  <span class="s2">"Interview prompts converted into written family stories."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Grandchildren"</span><span class="p">],</span>
+  <span class="s2">"Give 12 interview prompts across childhood, marriage, business, faith, money, failure, and turning points, plus recording instructions and the one follow-up question that gets past a rehearsed answer."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Ready to Receive Workbook"</span><span class="p">,</span>
+  <span class="s2">"Prepares heirs for increasing responsibility."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Each adult child"</span><span class="p">],</span>
+  <span class="s2">"Build a short workbook for the named heir: a self-assessment across work, money, character, giving, and leadership, then three practices for the next 90 days and the conversation to have with their parents at the end."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Blessing &amp; Commissioning Guide"</span><span class="p">,</span>
+  <span class="s2">"Helps parents intentionally affirm and commission the next generation."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Each adult child"</span><span class="p">,</span> <span class="s2">"Whole family"</span><span class="p">],</span>
+  <span class="s2">"Give the structure of a blessing: what is seen in them, what is entrusted to them, and what is hoped for them. Include a spoken draft for the named recipient of roughly 120 words."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Decision Worksheet"</span><span class="p">,</span>
+  <span class="s2">"Integrates values, relationships, finances, professional counsel, and decision criteria."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">],</span>
+  <span class="s2">"Produce the worksheet for this family's most pressing open decision: the decision, why now, options A B and C with honest trade-offs, who is affected, values at stake, professional advice needed, and a review date."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Family Stewardship Action Plan"</span><span class="p">,</span>
+  <span class="s2">"Converts discussion into 30-day, 90-day, and annual commitments."</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Whole family"</span><span class="p">,</span> <span class="s2">"Couple"</span><span class="p">,</span> <span class="s2">"Advisor"</span><span class="p">],</span>
+  <span class="s2">"Build the plan across three horizons, each item with an owner, a deadline, the support needed, the professional involved, and the advisor follow-up. Three items per horizon, no more."</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">TEMPLATES</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">purpose</span><span class="p">,</span> <span class="n">who</span><span class="p">,</span> <span class="n">ins</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="n">TEMPLATES</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"id"</span><span class="p">:</span> <span class="s2">"x"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"n"</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"purpose"</span><span class="p">:</span> <span class="n">purpose</span><span class="p">,</span>
+                      <span class="s2">"who"</span><span class="p">:</span> <span class="n">who</span><span class="p">,</span> <span class="s2">"ins"</span><span class="p">:</span> <span class="n">ins</span><span class="p">})</span>
+
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">TEMPLATES</span><span class="p">)</span> <span class="o">==</span> <span class="mi">25</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">TEMPLATES</span><span class="p">)</span>
+
+<span class="c1"># ---------------- the top-10 interview instruments ----------------</span>
+<span class="c1"># src 1 = in Brett's Family Legacy Intelligence instrument set; src 0 = added here.</span>
+<span class="c1"># aud drives the subject dropdown, filled from the live family profile.</span>
+
+<span class="n">I</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Couple Legacy Interview"</span><span class="p">,</span> <span class="s2">"couple"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">"Both spouses, together, recorded. The transcript is the primary source material for everything else CAN builds."</span><span class="p">,</span>
+  <span class="s2">"a shared three-part statement: what we received, what we built, what we want carried forward"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Patriarch Legacy Interview"</span><span class="p">,</span> <span class="s2">"g1both"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">"One elder, alone, on the story behind the decisions."</span><span class="p">,</span>
+  <span class="s2">"a three-part legacy statement in his own words"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Matriarch Legacy Interview"</span><span class="p">,</span> <span class="s2">"g1both"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">"One elder, alone, on the story behind the decisions."</span><span class="p">,</span>
+  <span class="s2">"a three-part legacy statement in her own words"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Next-Generation Legacy Interview"</span><span class="p">,</span> <span class="s2">"children"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">"Ten questions the adult child asks the elders, not ten questions asked of them."</span><span class="p">,</span>
+  <span class="s2">"a four-part reflection written after the conversation"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Grandchild Legacy Interview"</span><span class="p">,</span> <span class="s2">"g3"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s2">"Age-appropriate questions a grandchild can ask a grandparent, with permission from the middle generation first."</span><span class="p">,</span>
+  <span class="s2">"one story recorded and one question they still want answered"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Business Successor Interview"</span><span class="p">,</span> <span class="s2">"children"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s2">"For the family member expected to carry the enterprise."</span><span class="p">,</span>
+  <span class="s2">"a three-part statement on what they are taking on, and what they are not"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Sibling Alignment Interview"</span><span class="p">,</span> <span class="s2">"childrenGroup"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s2">"All adult children together, before they ever have to decide together."</span><span class="p">,</span>
+  <span class="s2">"three agreements the siblings make with each other now"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Surviving Spouse Readiness Interview"</span><span class="p">,</span> <span class="s2">"g1both"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s2">"The conversation that assumes one spouse will one day lead alone."</span><span class="p">,</span>
+  <span class="s2">"a readiness statement naming what is understood and what is not yet"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Spouse-of-Heir Interview"</span><span class="p">,</span> <span class="s2">"inlaws"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s2">"The person who married into the family and will shape how wealth is received."</span><span class="p">,</span>
+  <span class="s2">"a three-part statement on what they hope for their own household"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Advisor Discovery Interview"</span><span class="p">,</span> <span class="s2">"family"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s2">"The ten questions the advisor asks to learn the family's story beyond the financial data."</span><span class="p">,</span>
+  <span class="s2">"the advisor's private discovery brief, never shown to the family as written"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">INSTRUMENTS</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">aud</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">purpose</span><span class="p">,</span> <span class="n">closing</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">I</span><span class="p">):</span>
+    <span class="n">INSTRUMENTS</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"id"</span><span class="p">:</span> <span class="s2">"i"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"n"</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"aud"</span><span class="p">:</span> <span class="n">aud</span><span class="p">,</span>
+                        <span class="s2">"src"</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span> <span class="s2">"purpose"</span><span class="p">:</span> <span class="n">purpose</span><span class="p">,</span> <span class="s2">"closing"</span><span class="p">:</span> <span class="n">closing</span><span class="p">})</span>
+
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">INSTRUMENTS</span><span class="p">)</span> <span class="o">==</span> <span class="mi">10</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">INSTRUMENTS</span><span class="p">)</span>
+
+<span class="n">STATS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"journeys"</span><span class="p">:</span> <span class="mi">225</span><span class="p">,</span> <span class="s2">"cats"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s2">"templates"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">"days"</span><span class="p">:</span> <span class="mi">225</span> <span class="o">*</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">"sessions"</span><span class="p">:</span> <span class="mi">225</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+         <span class="s2">"instruments"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">INSTRUMENTS</span><span class="p">),</span> <span class="s2">"questions"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">INSTRUMENTS</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">}</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/template2.html"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/*__ENTRIES__*/"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">JOURNEYS</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/*__CATS__*/"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">CATS</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/*__TEMPLATES__*/"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">TEMPLATES</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/*__INSTRUMENTS__*/"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">INSTRUMENTS</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/*__STATS__*/"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">STATS</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/can-family-workspace.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"journeys"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">JOURNEYS</span><span class="p">),</span> <span class="s2">"cats"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">CATS</span><span class="p">),</span> <span class="s2">"templates"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">TEMPLATES</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"wrote"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">),</span> <span class="s2">"bytes"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build2.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

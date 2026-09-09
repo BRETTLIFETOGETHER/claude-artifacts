@@ -1,7 +1,22 @@
 # Claude Artifacts
 
-Extracted from a Claude.ai data export (`conversations.json`, 301 conversations).
-**1088 artifacts** recovered across **130 conversations**; 118 had incremental edits replayed onto them.
+A browsable archive of every artifact reconstructed from a Claude.ai data export.
+
+## Browse the site
+
+| Page | What's on it |
+|---|---|
+| **`index.html`** — Deliverables | 549 finished, front-facing documents: live web pages, rendered writing, graphics |
+| **`source.html`** — Source & Build | 539 scripts, builders, and data files that produced them |
+| **`all.html`** — Everything | All 1,088 artifacts, unfiltered |
+
+Markdown is pre-rendered to HTML and code is syntax-highlighted at build time, so
+every page is fully static — it works from disk (just open `index.html`) and from
+a web host identically, with no CDN or JavaScript required to read anything.
+
+Search covers filenames *and* file contents. Press `/` to focus the search box.
+
+---
 
 ## Index
 

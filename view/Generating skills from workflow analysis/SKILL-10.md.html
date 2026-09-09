@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SKILL-10.md</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Generating skills from workflow analysis</div>
+<h1>SKILL-10.md</h1>
+<div class="meta"><span class="ext e-md">md</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">4 KB</span>
+<a class="btn" href="../../artifacts/Generating%20skills%20from%20workflow%20analysis/SKILL-10.md" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Skill 10: print-pdf-producer</p>
+</div></header>
+<article class="doc"><hr />
+<p>name: print-pdf-producer
+description: Produce designed, print-ready PDFs — proposals, offers, prospectuses, print editions of HTML deliverables — using Brett's verified WeasyPrint page-discipline system. Use whenever Brett asks for a PDF, a printable version, a print edition, "make this printable," or a designed document to send or hand to someone. Encodes hard-won technical rules; never build a designed PDF from scratch without this skill.</p>
+<hr />
+<h1 id="print-pdf-producer">Print PDF Producer</h1>
+<h2 id="page-discipline-author-pages-dont-flow-them">Page discipline — author pages, don't flow them</h2>
+<p>Author <strong>one <code>.pg</code> div per sheet</strong> and fill each deliberately. The container that works (do not improvise):</p>
+<pre><code class="language-css">@page{size:8.5in 11in;margin:0}
+.pg{width:8.5in;height:11in;padding:0.72in 0.92in 1.15in;position:relative;
+    overflow:hidden;display:block;page-break-after:always;break-after:page}
+.foot{position:absolute;left:.92in;right:.92in;bottom:.52in;border-top:1px solid /*line color*/}
+</code></pre>
+<p><strong>Never use flex for the page container</strong> — flex + fixed height lets the body overflow and drags footers onto the next sheet, cascading. Screen-only <code>margin-bottom</code> on <code>.pg</code> is fine with <code>@media print{.pg{margin:0}}</code>.</p>
+<h2 id="verification-loop-run-every-render">Verification loop — run every render</h2>
+<ol>
+<li>Count <code>.pg</code> divs in source; render; <strong>assert PDF page count matches.</strong> Mismatch = an overflowing page.</li>
+<li>Rasterize at 50dpi (<code>pdftoppm -png -r 50</code>); per page, measure the gap from footer rule up to last inked row. Over ~0.85in of bottom whitespace → add copy (~250 characters of prose per inch at 11pt/1.62); page-count growth → cut copy.</li>
+<li>Extract text per page with pypdf; a page under ~650 characters is a spillover orphan — tighten the source page above it. Remove any global <code>break-inside:avoid</code>.</li>
+<li>Deliberately centered pages (covers, closers) get balanced top padding so the gap reads intentional.</li>
+</ol>
+<h2 id="design-rules">Design rules</h2>
+<ul>
+<li><strong>Every page gets a ground</strong> — never black type on bare white sheets; run a color rhythm across the spread.</li>
+<li><strong>Never introduce a color outside the client's palette</strong> (an invented cream reads generic instantly). <strong>Never nest a filled panel on a colored ground</strong> — use rules, space, and a left accent bar instead.</li>
+<li>"Looks like a template" = a visible repeating system: one header pattern every page (eyebrow, accent rule, headline with second half in accent, large pale section numeral top-right), one grid, one footer, one type scale.</li>
+<li>Default identity for pastor/partner/buyer documents is the <strong>navy/gold system</strong> (tokens live in the brochure-builder skill / lifetogether site source of record).</li>
+<li>Photography of people: full color, no filter.</li>
+<li><strong>Never end a document on the invoice</strong> — price second-to-last, the ask and the vision last.</li>
+<li>Fill every [NAME]/[EMAIL]-style placeholder before a PDF travels, or flag it loudly.</li>
+</ul>
+<h2 id="weasyprint-technicals">WeasyPrint technicals</h2>
+<ul>
+<li>Install: <code>pip install --default-timeout=120 weasyprint --break-system-packages</code>. Don't use wkhtmltopdf (old WebKit breaks flex/grid).</li>
+<li><strong>Fonts:</strong> Google Fonts CSS host is unreachable from the sandbox, but the real variable TTFs are: fetch <code>raw.githubusercontent.com/google/fonts/main/ofl/&lt;family&gt;/&lt;Family&gt;%5Bwght%5D.ttf</code> (plus <code>-Italic</code>) for Playfair Display and Cormorant Garamond; register via <code>@font-face</code> with <code>font-weight:100 900</code>. Fallbacks installed: Lora, Carlito.</li>
+<li><strong>Full-bleed covers:</strong> body background paints over every page and silently hides a named <code>@page cover</code> background — keep body transparent, paper color on <code>@page</code>, cover div its own 8.5×11in background with <code>@page cover{margin:0}</code>.</li>
+<li>WeasyPrint treats flex containers as atomic (whole block jumps pages); flowed content needs <code>display:block</code> all the way down.</li>
+<li>Merge multiple designed documents at the file level with <code>pypdf.PdfWriter</code> — never splice HTML.</li>
+<li>Crashes on <code>::first-letter{float:left}</code> in flex — use an inline span drop initial. Absolutely-positioned progress fills don't render in flex — block fill inside <code>overflow:hidden</code> track. QR-style graphics as <strong>inline SVG</strong>, not CSS gradients. Two-column lists: <code>flex-wrap</code> with 50% items, not <code>column-count</code>.</li>
+</ul>
+<h2 id="delivery">Delivery</h2>
+<p>Render, run the full verification loop, report page count and per-page whitespace check results in one line, save to outputs, present the file.</p></article>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/skills/print-pdf-producer/SKILL.md</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

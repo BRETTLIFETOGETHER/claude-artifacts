@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; John - FLBD website continued</div>
+<h1>build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">43 KB</span>
+<a class="btn" href="../../artifacts/John%20-%20FLBD%20website%20continued/build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Week One build script: full design system CSS plus all authored content for Days 2–7, Session One, and the Week One hub</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Family Legacy Campaign - Week One content build</span>
+<span class="c1"># Days 2-7 + Session One + Week One hub. Drop-in pages for the existing FLBD site.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">pathlib</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span>
+
+<span class="n">F</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/flbd/fonts"</span><span class="p">)</span>
+<span class="n">OUT</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/flbd/site"</span><span class="p">)</span>
+<span class="n">OUT</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">b64</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">((</span><span class="n">F</span> <span class="o">/</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="n">FACES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Besley"</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"Besley-400.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Besley"</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"Besley-700.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Besley"</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"Besley-800.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Besley"</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">"italic"</span><span class="p">,</span> <span class="s2">"BesleyItalic-400.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Archivo"</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"Archivo-400.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Archivo"</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"Archivo-500.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Archivo"</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"Archivo-600.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Archivo"</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"Archivo-700.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"EB Garamond"</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"EBGaramond-400.sub.woff2"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"EB Garamond"</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">"italic"</span><span class="p">,</span> <span class="s2">"EBGaramondItalic-400.sub.woff2"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">fontcss</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"@font-face</span><span class="se">{{</span><span class="s2">font-family:'</span><span class="si">{</span><span class="n">fam</span><span class="si">}</span><span class="s2">';font-weight:</span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">;font-style:</span><span class="si">{</span><span class="n">st</span><span class="si">}</span><span class="s2">;font-display:swap;"</span>
+    <span class="sa">f</span><span class="s2">"src:url(data:font/woff2;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('woff2');</span><span class="se">}}</span><span class="s2">"</span>
+    <span class="k">for</span> <span class="n">fam</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">FACES</span>
+<span class="p">)</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="n">fontcss</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">:root{</span>
+<span class="s2">  --cream:#F4EFE3; --paper:#FCF9F1; --ink:#26251E; --muted:#6E6A5B;</span>
+<span class="s2">  --green:#1C3A2D; --green-deep:#152E23; --gold:#B4872C; --gold-soft:#D8B45F;</span>
+<span class="s2">  --line:#E3DAC3;</span>
+<span class="s2">}</span>
+<span class="s2">*{margin:0;padding:0;box-sizing:border-box}</span>
+<span class="s2">html{font-size:16px;scroll-padding-top:84px}</span>
+<span class="s2">body{background:var(--cream);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}</span>
+<span class="s2">img,svg{max-width:100%}</span>
+<span class="s2">a{color:var(--green);text-decoration-thickness:1px;text-underline-offset:3px}</span>
+<span class="s2">a:hover{color:var(--green-deep)}</span>
+<span class="s2">:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:2px}</span>
+<span class="s2">.skip{position:absolute;left:-9999px;top:0;background:var(--green);color:var(--paper);padding:.6rem 1rem;z-index:99;border-radius:0 0 8px 0}</span>
+<span class="s2">.skip:focus</span><span class="si">{left:0}</span>
+<span class="s2">@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}</span>
+
+<span class="s2">/* ---------- header ---------- */</span>
+<span class="s2">header.site{background:var(--cream);border-bottom:1px solid var(--line)}</span>
+<span class="s2">.bar{max-width:1060px;margin:0 auto;padding:.9rem 1.25rem;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap}</span>
+<span class="s2">.mark{display:flex;align-items:baseline;gap:.5rem;text-decoration:none}</span>
+<span class="s2">.mark b{font-family:'Besley',serif;font-weight:800;font-size:1.16rem;color:var(--green-deep);letter-spacing:-.01em}</span>
+<span class="s2">.mark span{font-size:.8rem;font-weight:600;color:var(--gold);letter-spacing:.06em}</span>
+<span class="s2">nav.top{display:flex;gap:1.1rem;margin-left:auto;align-items:center}</span>
+<span class="s2">nav.top a{font-weight:600;font-size:.92rem;text-decoration:none;color:var(--ink);padding:.25rem 0;border-bottom:2px solid transparent}</span>
+<span class="s2">nav.top a:hover{border-bottom-color:var(--gold)}</span>
+<span class="s2">nav.top a[aria-current="page"]{border-bottom-color:var(--gold);color:var(--green-deep)}</span>
+<span class="s2">.daychip{font-size:.8rem;font-weight:700;color:var(--paper);background:var(--green);padding:.34rem .7rem;border-radius:999px;white-space:nowrap}</span>
+
+<span class="s2">/* ---------- day ribbon (signature) ---------- */</span>
+<span class="s2">.ribbonwrap{max-width:1060px;margin:0 auto;padding:.8rem 1.25rem .2rem;display:flex;align-items:flex-end;gap:1rem}</span>
+<span class="s2">.ribbon{display:flex;align-items:flex-end;gap:3px;flex:1;height:22px}</span>
+<span class="s2">.ribbon i{display:block;width:100%;max-width:14px;height:9px;border-radius:2px;background:var(--line)}</span>
+<span class="s2">.ribbon i.done{background:var(--green)}</span>
+<span class="s2">.ribbon i.now{background:var(--gold);height:20px}</span>
+<span class="s2">.ribbon i.wk{margin-left:8px}</span>
+<span class="s2">.riblabel{font-size:.74rem;font-weight:700;color:var(--muted);letter-spacing:.08em;white-space:nowrap;padding-bottom:1px}</span>
+
+<span class="s2">/* ---------- layout ---------- */</span>
+<span class="s2">main{max-width:1060px;margin:0 auto;padding:2.4rem 1.25rem 3rem}</span>
+<span class="s2">.col{max-width:720px}</span>
+<span class="s2">.kicker{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem}</span>
+<span class="s2">h1{font-family:'Besley',serif;font-weight:800;font-size:clamp(2.1rem,5.4vw,3.25rem);line-height:1.07;letter-spacing:-.012em;color:var(--green-deep)}</span>
+<span class="s2">.dek{font-family:'Besley',serif;font-style:italic;font-weight:400;font-size:clamp(1.12rem,2.4vw,1.32rem);line-height:1.5;color:#4A4638;margin:1rem 0 0}</span>
+<span class="s2">.rule{height:1px;background:var(--line);margin:1.9rem 0}</span>
+
+<span class="s2">/* scripture plate */</span>
+<span class="s2">.scripture{background:var(--paper);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:1.4rem 1.6rem;margin:0 0 2rem}</span>
+<span class="s2">.scripture p{font-family:'EB Garamond',serif;font-size:clamp(1.22rem,2.6vw,1.42rem);line-height:1.55;color:#2C2A22}</span>
+<span class="s2">.scripture .ref{display:block;margin-top:.8rem;font-family:'Archivo',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}</span>
+
+<span class="s2">/* reading prose */</span>
+<span class="s2">.reading p{font-family:'Besley',serif;font-weight:400;font-size:1.155rem;line-height:1.82;margin:0 0 1.35rem;color:var(--ink)}</span>
+<span class="s2">.reading p:last-child{margin-bottom:0}</span>
+
+<span class="s2">/* practice blocks */</span>
+<span class="s2">.block{border-radius:12px;padding:1.35rem 1.5rem;margin:1.4rem 0}</span>
+<span class="s2">.block .lab{font-size:.76rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;margin-bottom:.55rem}</span>
+<span class="s2">.q{border:1.5px solid var(--green);background:transparent}</span>
+<span class="s2">.q .lab{color:var(--green)}</span>
+<span class="s2">.q p{font-family:'Besley',serif;font-size:1.18rem;line-height:1.55;color:var(--green-deep)}</span>
+<span class="s2">.s{background:var(--paper);border-left:4px solid var(--gold);border-radius:0 12px 12px 0}</span>
+<span class="s2">.s .lab{color:var(--gold)}</span>
+<span class="s2">.s p{font-size:1.02rem;line-height:1.7}</span>
+<span class="s2">.pr{border-top:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0;padding:1.5rem .2rem}</span>
+<span class="s2">.pr .lab{color:var(--muted)}</span>
+<span class="s2">.pr p{font-family:'EB Garamond',serif;font-style:italic;font-size:1.28rem;line-height:1.6;color:#33312A}</span>
+
+<span class="s2">/* advisor band */</span>
+<span class="s2">.advisor{background:var(--green-deep);color:#EFE9D8;margin:2.6rem 0 0;border-radius:14px;padding:1.8rem 1.7rem}</span>
+<span class="s2">.advisor .lab{font-size:.76rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:.7rem}</span>
+<span class="s2">.advisor p{font-size:1rem;line-height:1.75;max-width:62ch}</span>
+<span class="s2">.advisor .ask{font-family:'EB Garamond',serif;font-style:italic;font-size:1.22rem;line-height:1.5;color:var(--gold-soft);margin-top:1rem}</span>
+
+<span class="s2">/* prev/next */</span>
+<span class="s2">.pn{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.6rem}</span>
+<span class="s2">.pn a{display:block;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem;text-decoration:none;color:var(--ink);transition:transform .15s ease,border-color .15s ease}</span>
+<span class="s2">.pn a:hover{transform:translateY(-2px);border-color:var(--gold)}</span>
+<span class="s2">.pn .dir{font-size:.74rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}</span>
+<span class="s2">.pn .ttl{font-family:'Besley',serif;font-weight:700;font-size:1.12rem;color:var(--green-deep);margin-top:.25rem}</span>
+<span class="s2">.pn a.next{text-align:right}</span>
+<span class="s2">@media(max-width:640px){.pn{grid-template-columns:1fr}.pn a.next{text-align:left}}</span>
+
+<span class="s2">/* buttons */</span>
+<span class="s2">.btn{display:inline-block;background:var(--green);color:var(--paper);font-weight:600;font-size:1rem;padding:.78rem 1.35rem;border-radius:10px;text-decoration:none}</span>
+<span class="s2">.btn:hover{background:var(--green-deep);color:var(--paper)}</span>
+<span class="s2">.btn.gold{background:var(--gold);color:#241D0E}</span>
+<span class="s2">.btn.gold:hover{background:#9E7524;color:var(--paper)}</span>
+
+<span class="s2">/* session page */</span>
+<span class="s2">.seg{display:grid;grid-template-columns:78px 1fr;gap:1.2rem;margin:1.9rem 0;align-items:start}</span>
+<span class="s2">.seg .min{background:var(--paper);border:1px solid var(--line);border-radius:10px;text-align:center;padding:.55rem .3rem;font-weight:700;font-size:.82rem;color:var(--green-deep)}</span>
+<span class="s2">.seg .min b{display:block;font-family:'Besley',serif;font-size:1.3rem;line-height:1.1}</span>
+<span class="s2">.seg h3{font-family:'Besley',serif;font-weight:700;font-size:1.42rem;color:var(--green-deep);margin-bottom:.5rem}</span>
+<span class="s2">.seg p{font-size:1.02rem;line-height:1.7;margin-bottom:.8rem;max-width:62ch}</span>
+<span class="s2">.say{background:var(--paper);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:1rem 1.2rem;margin:.6rem 0}</span>
+<span class="s2">.say p{font-family:'Besley',serif;font-style:italic;font-size:1.08rem;line-height:1.6;margin:0}</span>
+<span class="s2">.qs{counter-reset:tq;margin:.4rem 0 0;max-width:62ch}</span>
+<span class="s2">.qs div{counter-increment:tq;display:grid;grid-template-columns:34px 1fr;gap:.7rem;padding:.75rem 0;border-bottom:1px solid var(--line);align-items:start}</span>
+<span class="s2">.qs div:last-child{border-bottom:0}</span>
+<span class="s2">.qs div::before{content:counter(tq);font-family:'Besley',serif;font-weight:800;color:var(--gold);font-size:1.15rem;line-height:1.35}</span>
+<span class="s2">.qs p{font-family:'Besley',serif;font-size:1.12rem;line-height:1.5;color:var(--ink)}</span>
+<span class="s2">.ground{display:grid;gap:.6rem;margin:.6rem 0 0;max-width:62ch}</span>
+<span class="s2">.ground div{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;font-size:.98rem;line-height:1.55}</span>
+<span class="s2">.ground b{color:var(--green-deep)}</span>
+<span class="s2">@media(max-width:560px){.seg{grid-template-columns:1fr}.seg .min{display:inline-block;padding:.4rem .8rem}.seg .min b{display:inline;font-size:1rem;margin-right:.3rem}}</span>
+
+<span class="s2">/* hub */</span>
+<span class="s2">.rhythm{display:flex;gap:.9rem;flex-wrap:wrap;margin:1.6rem 0 0}</span>
+<span class="s2">.rhythm span{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:.5rem 1rem;font-weight:600;font-size:.92rem}</span>
+<span class="s2">.engine{font-family:'Besley',serif;font-style:italic;font-size:1.15rem;color:#4A4638;margin-top:1rem}</span>
+<span class="s2">.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:1rem;margin-top:2rem}</span>
+<span class="s2">.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.2rem;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:.4rem;transition:transform .15s ease,border-color .15s ease}</span>
+<span class="s2">.card:hover{transform:translateY(-2px);border-color:var(--gold)}</span>
+<span class="s2">.card .dn{display:flex;align-items:center;gap:.6rem;font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}</span>
+<span class="s2">.card .start{background:var(--gold);color:#241D0E;border-radius:999px;padding:.14rem .6rem;letter-spacing:.06em}</span>
+<span class="s2">.card h3{font-family:'Besley',serif;font-weight:700;font-size:1.22rem;color:var(--green-deep)}</span>
+<span class="s2">.card p{font-size:.95rem;line-height:1.55;color:#4A4638}</span>
+<span class="s2">.card .sref{margin-top:auto;font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}</span>
+<span class="s2">.card.session{grid-column:1/-1;background:var(--green-deep);border-color:var(--green-deep);color:#EFE9D8}</span>
+<span class="s2">.card.session h3{color:var(--paper);font-size:1.5rem}</span>
+<span class="s2">.card.session p{color:#D8D2BE;max-width:62ch}</span>
+<span class="s2">.card.session .dn{color:var(--gold-soft)}</span>
+<span class="s2">.card.session .go{margin-top:.4rem;color:var(--gold-soft);font-weight:600}</span>
+
+<span class="s2">/* footer */</span>
+<span class="s2">footer.site{border-top:1px solid var(--line);margin-top:3rem}</span>
+<span class="s2">.foot{max-width:1060px;margin:0 auto;padding:1.6rem 1.25rem 2.2rem;display:flex;flex-wrap:wrap;gap:.9rem 2rem;align-items:baseline;font-size:.88rem;color:var(--muted)}</span>
+<span class="s2">.foot b{font-family:'Besley',serif;color:var(--green-deep);font-weight:700}</span>
+<span class="s2">.foot a{color:var(--green)}</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ----------------------------------------------------------------------------</span>
+<span class="n">FAV</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'</span><span class="si">%3E</span><span class="s2">"</span>
+       <span class="s2">"%3Crect width='32' height='32' rx='7' fill='</span><span class="si">%23152E</span><span class="s2">23'/</span><span class="si">%3E</span><span class="s2">"</span>
+       <span class="s2">"%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia,serif' font-weight='700' "</span>
+       <span class="s2">"font-size='17' fill='%23D8B45F'</span><span class="si">%3E</span><span class="s2">FL%3C/text</span><span class="si">%3E</span><span class="s2">%3C/svg</span><span class="si">%3E</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ribbon</span><span class="p">(</span><span class="n">day</span><span class="p">):</span>
+    <span class="n">ticks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">41</span><span class="p">):</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">day</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">day</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"now"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">36</span><span class="p">):</span> <span class="bp">cls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"wk"</span><span class="p">)</span>
+        <span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;i class="</span><span class="si">{</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="si">}</span><span class="s1">"&gt;&lt;/i&gt;'</span> <span class="k">if</span> <span class="bp">cls</span> <span class="k">else</span> <span class="s2">"&lt;i&gt;&lt;/i&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="ribbonwrap" aria-hidden="true"&gt;&lt;div class="ribbon"&gt;</span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+            <span class="sa">f</span><span class="s1">'&lt;div class="riblabel"&gt;DAY </span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="s1"> OF 40&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">shell</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">chip</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">rib</span> <span class="o">=</span> <span class="n">ribbon</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="k">if</span> <span class="n">day</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cur</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="k">return</span> <span class="s1">' aria-current="page"'</span> <span class="k">if</span> <span class="n">active</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="UTF-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">&lt;title&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&lt;/title&gt;</span>
+<span class="s2">&lt;meta name="description" content="</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">&lt;meta property="og:title" content="</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">&lt;meta property="og:description" content="</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">&lt;meta property="og:type" content="website"&gt;</span>
+<span class="s2">&lt;link rel="icon" href="</span><span class="si">{</span><span class="n">FAV</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">&lt;link rel="stylesheet" href="flbd-weekone.css"&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">&lt;a class="skip" href="#main"&gt;Skip to content&lt;/a&gt;</span>
+<span class="s2">&lt;header class="site"&gt;</span>
+<span class="s2">  &lt;div class="bar"&gt;</span>
+<span class="s2">    &lt;a class="mark" href="index.html"&gt;&lt;b&gt;Family Legacy&lt;/b&gt;&lt;span&gt;by Design&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">    &lt;nav class="top" aria-label="Site"&gt;</span>
+<span class="s2">      &lt;a href="index.html"&gt;Home&lt;/a&gt;</span>
+<span class="s2">      &lt;a href="Week_One_Family_Legacy.html"</span><span class="si">{</span><span class="n">cur</span><span class="p">(</span><span class="s2">"week"</span><span class="p">)</span><span class="si">}</span><span class="s2">&gt;Week One&lt;/a&gt;</span>
+<span class="s2">    &lt;/nav&gt;</span>
+<span class="s2">    &lt;span class="daychip"&gt;</span><span class="si">{</span><span class="n">chip</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+<span class="si">{</span><span class="n">rib</span><span class="si">}</span>
+<span class="s2">&lt;main id="main"&gt;</span>
+<span class="si">{</span><span class="n">body</span><span class="si">}</span>
+<span class="s2">&lt;/main&gt;</span>
+<span class="s2">&lt;footer class="site"&gt;</span>
+<span class="s2">  &lt;div class="foot"&gt;</span>
+<span class="s2">    &lt;span&gt;&lt;b&gt;The Family Legacy Campaign&lt;/b&gt; &amp;nbsp;·&amp;nbsp; Family Legacy by Design × Lifetogether&lt;/span&gt;</span>
+<span class="s2">    &lt;span&gt;&lt;a href="mailto:brett@lifetogether.com"&gt;brett@lifetogether.com&lt;/a&gt;&lt;/span&gt;</span>
+<span class="s2">    &lt;span&gt;Scripture quotations are from the King James Version.&lt;/span&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/footer&gt;</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;"""</span>
+
+<span class="c1"># ----------------------------------------------------------------------------</span>
+<span class="c1"># WEEK ONE CONTENT</span>
+<span class="c1"># ----------------------------------------------------------------------------</span>
+<span class="n">DAYS</span> <span class="o">=</span> <span class="p">{</span>
+<span class="mi">2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+ <span class="n">slug</span><span class="o">=</span><span class="s2">"Day_Two_Family_Legacy.html"</span><span class="p">,</span>
+ <span class="n">title</span><span class="o">=</span><span class="s2">"Already in Motion"</span><span class="p">,</span>
+ <span class="n">dek</span><span class="o">=</span><span class="s2">"You are not deciding whether to leave a legacy. You are deciding whether to notice the one you</span><span class="se">\u2019</span><span class="s2">re leaving."</span><span class="p">,</span>
+ <span class="n">sv</span><span class="o">=</span><span class="s2">"One generation shall praise thy works to another, and shall declare thy mighty acts."</span><span class="p">,</span>
+ <span class="n">sref</span><span class="o">=</span><span class="s2">"Psalm 145:4 · KJV"</span><span class="p">,</span>
+ <span class="n">card</span><span class="o">=</span><span class="s2">"Legacy doesn</span><span class="se">\u2019</span><span class="s2">t wait for someday — it posts entries every day, in the ordinary hours."</span><span class="p">,</span>
+ <span class="n">body</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Most families file legacy under someday. Someday, when the estate plan is finished. Someday, when the kids are older, when the business sells, when life slows down enough to think. I understand the instinct — I</span><span class="se">\u2019</span><span class="s2">m a CPA by training, and someday is the most common entry I never found on a balance sheet. But years at family tables have taught me this: legacy doesn</span><span class="se">\u2019</span><span class="s2">t wait for someday. It keeps its own books, and it posts entries every day."</span><span class="p">,</span>
+<span class="s2">"It posted one this morning, in how breakfast went. It posts one in the car on the way to school, in what you talk about and what you never talk about. It posts one in the way an apology gets made in your house — or doesn</span><span class="se">\u2019</span><span class="s2">t. In what gets celebrated at your table, and what gets quietly ignored. None of these entries feel important on the day they</span><span class="se">\u2019</span><span class="s2">re recorded. All of them compound."</span><span class="p">,</span>
+<span class="s2">"Children are natural auditors. They don</span><span class="se">\u2019</span><span class="s2">t take our word for what the family values; they reconcile the statements against the transactions. We say faith matters, and they check the ledger. We say people come before money, and they check the ledger. Long before anyone reads a will, our families have read us — and what they catch will always outweigh what they were taught."</span><span class="p">,</span>
+<span class="s2">"This is why I say every family already has a legacy in motion. The only question is whether it</span><span class="se">\u2019</span><span class="s2">s moving by design or by default. And hear me — default is not the villain of this story. Some of what your family hands down by habit is beautiful, and you</span><span class="se">\u2019</span><span class="s2">ll want to keep it. Default simply means unexamined. It means the most important transfer your family will ever make is happening without anyone watching the wire."</span><span class="p">,</span>
+<span class="s2">"So today</span><span class="se">\u2019</span><span class="s2">s work is not to fix anything. It is simply to open the books — to notice. Yesterday you saw where this journey ends: forty days from now, at a family meeting, with commitments named out loud. Today begins the quiet inventory that will make that meeting honest."</span><span class="p">,</span>
+ <span class="p">],</span>
+ <span class="n">q</span><span class="o">=</span><span class="s2">"What is your family passing down right now that no one ever decided to pass down?"</span><span class="p">,</span>
+ <span class="n">step</span><span class="o">=</span><span class="s2">"Write down two things you caught — not were taught — in the home you grew up in: one you want to keep handing forward, and one you</span><span class="se">\u2019</span><span class="s2">re ready to retire. Keep the paper. It comes back to the table this week."</span><span class="p">,</span>
+ <span class="n">prayer</span><span class="o">=</span><span class="s2">"Father, open my eyes to the inheritance already moving through my house. Show me what we</span><span class="se">\u2019</span><span class="s2">re handing down in the ordinary hours — and give me the courage to look at it honestly. Amen."</span><span class="p">,</span>
+ <span class="n">adv</span><span class="o">=</span><span class="s2">"In your meetings this week, listen for the word someday — </span><span class="se">\u201c</span><span class="s2">someday we</span><span class="se">\u2019</span><span class="s2">ll sit down with the kids.</span><span class="se">\u201d</span><span class="s2"> Someday is the sound of a legacy running on default. When you hear it, don</span><span class="se">\u2019</span><span class="s2">t correct it. Just note the family</span><span class="se">\u2019</span><span class="s2">s name; by the end of this week you</span><span class="se">\u2019</span><span class="s2">ll know exactly what to offer them."</span><span class="p">,</span>
+ <span class="n">ask</span><span class="o">=</span><span class="s2">"Ask one couple: </span><span class="se">\u201c</span><span class="s2">If nothing changed, what would your family inherit from you besides money?</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">),</span>
+<span class="mi">3</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+ <span class="n">slug</span><span class="o">=</span><span class="s2">"Day_Three_Family_Legacy.html"</span><span class="p">,</span>
+ <span class="n">title</span><span class="o">=</span><span class="s2">"More Than Money"</span><span class="p">,</span>
+ <span class="n">dek</span><span class="o">=</span><span class="s2">"The largest wealth transfer in history is underway. The most valuable things crossing the table won</span><span class="se">\u2019</span><span class="s2">t appear on a statement."</span><span class="p">,</span>
+ <span class="n">sv</span><span class="o">=</span><span class="s2">"Take heed, and beware of covetousness: for a man</span><span class="se">\u2019</span><span class="s2">s life consisteth not in the abundance of the things which he possesseth."</span><span class="p">,</span>
+ <span class="n">sref</span><span class="o">=</span><span class="s2">"Luke 12:15 · KJV"</span><span class="p">,</span>
+ <span class="n">card</span><span class="o">=</span><span class="s2">"Legacy lives in five areas, not one — and money is a single seat at a five-seat table."</span><span class="p">,</span>
+ <span class="n">body</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"We are living through the largest transfer of wealth the world has ever seen. Trillions of dollars are moving from one generation to the next, and an entire industry — my industry — has built itself around moving that money well. Here is what the industry is slower to say: wealth alone has never made a family wise, and it has never once made a family whole."</span><span class="p">,</span>
+<span class="s2">"When I ask parents what they want to leave their children, the first answers are usually numbers — the house, the accounts, the business. But if we sit long enough, a different list surfaces. Their faith. Their name, and what it stands for. The stories that explain who this family is. A way of treating people. No one</span><span class="se">\u2019</span><span class="s2">s deepest hope for their grandchildren is a clean transfer of assets. It</span><span class="se">\u2019</span><span class="s2">s that the things that matter most would actually arrive."</span><span class="p">,</span>
+<span class="s2">"That is why I teach families to see legacy in five areas, not one: personal, family, financial, business, and charitable. Money is one seat at a five-seat table. It is an important seat — I have spent my working life helping families steward it — but give it the only chair, and the household falls out of balance. Jesus said it plainly: a life does not consist in the abundance of possessions. A full barn and a quiet table is not a legacy. It is just a full barn."</span><span class="p">,</span>
+<span class="s2">"And here is the door this opens. If legacy lives in five areas, then this journey is not reserved for the wealthy. Every family — whatever the balance sheet says — holds a personal legacy, a family legacy, a charitable legacy. Some of the richest inheritances I have ever watched change hands came with modest estates attached. The wealth transfer makes headlines. The wisdom transfer makes families."</span><span class="p">,</span>
+<span class="s2">"Today, simply take the measure. Five areas. One honest look."</span><span class="p">,</span>
+ <span class="p">],</span>
+ <span class="n">q</span><span class="o">=</span><span class="s2">"Which of the five areas has received the most of your attention — and which has received the least?"</span><span class="p">,</span>
+ <span class="n">step</span><span class="o">=</span><span class="s2">"On paper, rank the five areas — personal, family, financial, business, charitable — from most tended to least tended in your family right now. No fixing today. Clarity first."</span><span class="p">,</span>
+ <span class="n">prayer</span><span class="o">=</span><span class="s2">"Lord, You have entrusted our family with more than money. Show us the whole inheritance — and keep us from polishing one seat at the table while the others sit empty. Amen."</span><span class="p">,</span>
+ <span class="n">adv</span><span class="o">=</span><span class="s2">"Your client</span><span class="se">\u2019</span><span class="s2">s statement reports one area of the five. In your next review, ask about a second one by name — </span><span class="se">\u201c</span><span class="s2">Can I ask how the family side of your legacy is doing?</span><span class="se">\u201d</span><span class="s2"> — and watch what happens to the meeting. Few advisors ever ask. The ones who do become a different kind of advisor to that family."</span><span class="p">,</span>
+ <span class="n">ask</span><span class="o">=</span><span class="s2">"Ask one client: </span><span class="se">\u201c</span><span class="s2">Of the five areas of your legacy — personal, family, financial, business, charitable — which one keeps you up at night?</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">),</span>
+<span class="mi">4</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+ <span class="n">slug</span><span class="o">=</span><span class="s2">"Day_Four_Family_Legacy.html"</span><span class="p">,</span>
+ <span class="n">title</span><span class="o">=</span><span class="s2">"Why Strong Families Drift"</span><span class="p">,</span>
+ <span class="n">dek</span><span class="o">=</span><span class="s2">"The numbers behind failed inheritances are sobering — and almost none of them are about money."</span><span class="p">,</span>
+ <span class="n">sv</span><span class="o">=</span><span class="s2">"And there arose another generation after them, which knew not the LORD, nor yet the works which he had done for Israel."</span><span class="p">,</span>
+ <span class="n">sref</span><span class="o">=</span><span class="s2">"Judges 2:10 · KJV"</span><span class="p">,</span>
+ <span class="n">card</span><span class="o">=</span><span class="s2">"Seven of ten transfers fail by the second generation — and the causes live in the living room, not the portfolio."</span><span class="p">,</span>
+ <span class="n">body</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"I want to be honest with you today, and I want you to hear it the way it is meant — not as a verdict on your family, but as the reason this journey exists. The research our field has watched for decades says the same thing again and again: roughly seven of ten wealth transfers fail by the second generation. By the third, it is closer to nine of ten. The inheritance arrives, and the family it was meant to bless comes apart around it."</span><span class="p">,</span>
+<span class="s2">"When people hear those numbers, they assume the failures are technical — bad documents, bad tax planning, bad investments. That is not what I have found at the tables where I have sat. The clear majority of these breakdowns trace to broken trust and poor communication. About a quarter trace to heirs who were never prepared for what they received. Only a sliver — the smallest slice — comes down to financial mistakes. Which means most families spend most of their money guarding the smallest risk."</span><span class="p">,</span>
+<span class="s2">"Scripture shows us how the drift happens, and the verse is quieter than you would expect. Judges says a generation arose </span><span class="se">\u201c</span><span class="s2">which knew not the LORD, nor yet the works which he had done.</span><span class="se">\u201d</span><span class="s2"> It does not say they rebelled. It does not say they rejected anything. It says they did not know — because somewhere along the line, the telling stopped. Drift is rarely a decision. It is a silence, repeated."</span><span class="p">,</span>
+<span class="s2">"Maybe you feel the ache of that in your own house — the conversation that has been easier to postpone than to have, the story that never quite gets told, the tension everyone has learned to step around. Hear me clearly: that ache is not condemnation. It is invitation. Families do not drift because they are bad; they drift because no one showed them how to steer. Tomorrow is about grace, and I mean that. Today is only about telling the truth."</span><span class="p">,</span>
+<span class="s2">"You do not have to hold the conversation today. You only have to stop pretending it is not there."</span><span class="p">,</span>
+ <span class="p">],</span>
+ <span class="n">q</span><span class="o">=</span><span class="s2">"Where has silence felt safer than conversation in your family?"</span><span class="p">,</span>
+ <span class="n">step</span><span class="o">=</span><span class="s2">"Privately, on paper, name one conversation your family has been postponing. You are not committing to have it this week. You are simply done pretending it does not exist."</span><span class="p">,</span>
+ <span class="n">prayer</span><span class="o">=</span><span class="s2">"Father, You know the rooms in our family where the telling stopped. Give me the honesty to name what we have avoided — and the hope to believe that silence does not get the last word. Amen."</span><span class="p">,</span>
+ <span class="n">adv</span><span class="o">=</span><span class="s2">"The greatest threat to your clients</span><span class="se">\u2019</span><span class="s2"> plans is not in the portfolio. It is an unheld conversation. The documents guard the smallest slice of the risk; the living room holds the rest. Think of one family on your book whose plan is excellent and whose communication is thin — that gap is where your next real work is."</span><span class="p">,</span>
+ <span class="n">ask</span><span class="o">=</span><span class="s2">"Ask them: </span><span class="se">\u201c</span><span class="s2">Your plan says what you want done. Does your family know why?</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">),</span>
+<span class="mi">5</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+ <span class="n">slug</span><span class="o">=</span><span class="s2">"Day_Five_Family_Legacy.html"</span><span class="p">,</span>
+ <span class="n">title</span><span class="o">=</span><span class="s2">"It</span><span class="se">\u2019</span><span class="s2">s Not Too Late"</span><span class="p">,</span>
+ <span class="n">dek</span><span class="o">=</span><span class="s2">"Whatever yesterday stirred up, today is for this: God restores years, and design can begin anywhere."</span><span class="p">,</span>
+ <span class="n">sv</span><span class="o">=</span><span class="s2">"And I will restore to you the years that the locust hath eaten</span><span class="se">\u2026</span><span class="s2">"</span><span class="p">,</span>
+ <span class="n">sref</span><span class="o">=</span><span class="s2">"Joel 2:25 · KJV"</span><span class="p">,</span>
+ <span class="n">card</span><span class="o">=</span><span class="s2">"You don</span><span class="se">\u2019</span><span class="s2">t need an advisor, a big estate, or a perfect plan to begin. You need a small yes."</span><span class="p">,</span>
+ <span class="n">body</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"If yesterday</span><span class="se">\u2019</span><span class="s2">s reading landed with a thud somewhere in your chest, this page is for you. Maybe the numbers sounded like your family</span><span class="se">\u2019</span><span class="s2">s story already half-written. Maybe there is distance between you and a child, a parent, a sibling — and it has been there so long it feels structural. Maybe your family has never once prayed together, and starting now feels like walking into church for the first time and sitting in the front row."</span><span class="p">,</span>
+<span class="s2">"So let me say what I have learned to say early and often: it is not too late. Restoring years is one of God</span><span class="se">\u2019</span><span class="s2">s specialties — </span><span class="se">\u201c</span><span class="s2">I will restore to you the years that the locust hath eaten.</span><span class="se">\u201d</span><span class="s2"> He does not say He will explain the years, or excuse them. He says He will restore them. Design does not require a blank page. God has been writing new chapters in used books for a very long time."</span><span class="p">,</span>
+<span class="s2">"And you do not need much to begin. You do not need an advisor. You do not need a large estate. You certainly do not need a perfect plan or a perfect family — no one at this table has one, including the man writing these words. What you need is a small yes. One noticing, like Day Two</span><span class="se">\u2019</span><span class="s2">s. One honest ranking, like Day Three</span><span class="se">\u2019</span><span class="s2">s. One named conversation, like yesterday</span><span class="se">\u2019</span><span class="s2">s. That is how a legacy turns from default toward design — not in a leap, but in a series of small yeses."</span><span class="p">,</span>
+<span class="s2">"One more word, gently. Some family wounds are heavier than a forty-day journey is built to carry — deep estrangement, old harm, grief that still has weight. If that is your house, walking this road with a pastor or a counselor beside you is not a detour from the journey. It is wisdom, and it may be the most by-design decision you make all year. Go slow. Grace sets the pace here."</span><span class="p">,</span>
+<span class="s2">"Passing on wealth without preparing hearts can leave confusion behind it. But the reverse is just as true, and it is today</span><span class="se">\u2019</span><span class="s2">s good news: hearts can begin being prepared tonight — whatever the balance sheet says, and whatever the last ten years have said."</span><span class="p">,</span>
+ <span class="p">],</span>
+ <span class="n">q</span><span class="o">=</span><span class="s2">"What would it look like to trade one regret for one beginning this week?"</span><span class="p">,</span>
+ <span class="n">step</span><span class="o">=</span><span class="s2">"Finish this sentence on paper: </span><span class="se">\u201c</span><span class="s2">It is not too late for ______.</span><span class="se">\u201d</span><span class="s2"> Fold it. Bring it to this week</span><span class="se">\u2019</span><span class="s2">s family conversation — sharing it is optional; carrying it is the point."</span><span class="p">,</span>
+ <span class="n">prayer</span><span class="o">=</span><span class="s2">"Lord of restored years, take what the locusts have eaten in our family and begin giving it back. I bring You my small yes today. Amen."</span><span class="p">,</span>
+ <span class="n">adv</span><span class="o">=</span><span class="s2">"Somewhere on your book is a family quietly convinced they have already failed — the estrangement, the inheritance that went badly once before. They do not need a grade from you; they need a guide. Restoration is a service no custodian offers, and it is the one this family will never forget."</span><span class="p">,</span>
+ <span class="n">ask</span><span class="o">=</span><span class="s2">"Call one of them this week: </span><span class="se">\u201c</span><span class="s2">Would you be open to a fresh conversation about the family side of your plan — no documents, just the family?</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">),</span>
+<span class="mi">6</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+ <span class="n">slug</span><span class="o">=</span><span class="s2">"Day_Six_Family_Legacy.html"</span><span class="p">,</span>
+ <span class="n">title</span><span class="o">=</span><span class="s2">"The Table"</span><span class="p">,</span>
+ <span class="n">dek</span><span class="o">=</span><span class="s2">"Legacy travels at the speed of conversation. This is the week your family</span><span class="se">\u2019</span><span class="s2">s table gets its job back."</span><span class="p">,</span>
+ <span class="n">sv</span><span class="o">=</span><span class="s2">"And thou shalt teach them diligently unto thy children, and shalt talk of them when thou sittest in thine house, and when thou walkest by the way, and when thou liest down, and when thou risest up."</span><span class="p">,</span>
+ <span class="n">sref</span><span class="o">=</span><span class="s2">"Deuteronomy 6:7 · KJV"</span><span class="p">,</span>
+ <span class="n">card</span><span class="o">=</span><span class="s2">"Daily inspiration plus weekly conversation leads to family transformation — set the first table this week."</span><span class="p">,</span>
+ <span class="n">body</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"If the first five days have been about seeing — the legacy already in motion, the five areas, the honest numbers, the grace to begin — today is about the delivery system. Because a legacy, whatever else it is, has to travel. And God</span><span class="se">\u2019</span><span class="s2">s design for how it travels is almost embarrassingly ordinary: talking. At the table. In the car. At bedtime and at breakfast. Deuteronomy does not prescribe a seminar. It describes a rhythm."</span><span class="p">,</span>
+<span class="s2">"That rhythm is the engine of the whole forty days, and it is simple enough to say in one line: daily inspiration plus weekly conversation leads to family transformation. A short reading each day — that is the inspiration; you are holding it now. One unhurried conversation each week — that is where the reading becomes the family</span><span class="se">\u2019</span><span class="s2">s. Day after day, week after week, the ordinary rhythm does what no single dramatic moment can."</span><span class="p">,</span>
+<span class="s2">"The table matters more here than we tend to admit. It is the family</span><span class="se">\u2019</span><span class="s2">s original meeting room — older than any boardroom, and more consequential. What your family</span><span class="se">\u2019</span><span class="s2">s calendar honors, your family becomes. Most households can find forty-five minutes for a practice, a show, a scroll. This week, the table gets forty-five of those minutes back."</span><span class="p">,</span>
+<span class="s2">"So here is this week</span><span class="se">\u2019</span><span class="s2">s assignment, and it is the most practical one yet: set the first Family Conversation. Pick the night. Pick the table. Then invite each person — not a group text; an actual invitation, by name. </span><span class="se">\u201c</span><span class="s2">I</span><span class="se">\u2019</span><span class="s2">d love you at the table Thursday. It matters to me that you</span><span class="se">\u2019</span><span class="s2">re there.</span><span class="se">\u201d</span><span class="s2"> You will find the whole conversation laid out for you in Session One — the questions, the reading, the ground rules. Your only job today is to get it on the calendar."</span><span class="p">,</span>
+<span class="s2">"And remember where this road ends. Day Forty is a family meeting, where commitments are named out loud. The weekly table is where you rehearse for it — one honest conversation at a time."</span><span class="p">,</span>
+ <span class="p">],</span>
+ <span class="n">q</span><span class="o">=</span><span class="s2">"When did your family last have an unhurried conversation — no screens, no agenda except each other?"</span><span class="p">,</span>
+ <span class="n">step</span><span class="o">=</span><span class="s2">"Set the day, time, and place for Session One this week. Then invite each person by name, personally. What gets scheduled gets to happen."</span><span class="p">,</span>
+ <span class="n">prayer</span><span class="o">=</span><span class="s2">"Father, give our table its job back. Set a time this week, guard it from the calendar</span><span class="se">\u2019</span><span class="s2">s noise, and meet us there. Amen."</span><span class="p">,</span>
+ <span class="n">adv</span><span class="o">=</span><span class="s2">"What gets scheduled gets to happen — and some families need borrowed ground to schedule it on. Offering your conference room and a date can do more for a client family this week than any allocation change. Neutral territory plus a trusted witness is often the whole unlock."</span><span class="p">,</span>
+ <span class="n">ask</span><span class="o">=</span><span class="s2">"Offer it plainly: </span><span class="se">\u201c</span><span class="s2">Would it help if the first family conversation happened at my office? I</span><span class="se">\u2019</span><span class="s2">ll hold Thursday evening for you.</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">),</span>
+<span class="mi">7</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+ <span class="n">slug</span><span class="o">=</span><span class="s2">"Day_Seven_Family_Legacy.html"</span><span class="p">,</span>
+ <span class="n">title</span><span class="o">=</span><span class="s2">"Before You Speak"</span><span class="p">,</span>
+ <span class="n">dek</span><span class="o">=</span><span class="s2">"The first conversation isn</span><span class="se">\u2019</span><span class="s2">t won by the best speech at the table. It</span><span class="se">\u2019</span><span class="s2">s won by the best listening."</span><span class="p">,</span>
+ <span class="n">sv</span><span class="o">=</span><span class="s2">"Wherefore, my beloved brethren, let every man be swift to hear, slow to speak, slow to wrath."</span><span class="p">,</span>
+ <span class="n">sref</span><span class="o">=</span><span class="s2">"James 1:19 · KJV"</span><span class="p">,</span>
+ <span class="n">card</span><span class="o">=</span><span class="s2">"Clarity begins in the ear — lower the bar on purpose, and let every voice be heard."</span><span class="p">,</span>
+ <span class="n">body</span><span class="o">=</span><span class="p">[</span>
+<span class="s2">"Tonight, or sometime this week, your family sits down for Session One. So today</span><span class="se">\u2019</span><span class="s2">s reading is short on new ideas and long on posture — because the first conversation will rise or fall on one thing, and it is not eloquence."</span><span class="p">,</span>
+<span class="s2">"In our work with families we come back to three words: clarity, alignment, communication. Everyone assumes communication means talking. It does not — not at first. Communication begins in the ear. Before a family can align around anything, every voice has to actually be heard, and heard all the way to the end. James gives the order of operations: swift to hear, slow to speak. Notice which one comes first."</span><span class="p">,</span>
+<span class="s2">"So lower the bar for tonight, on purpose. The goal of the first conversation is not agreement. It is not solving the thing you named on Day Four. It is not a breakthrough — though don</span><span class="se">\u2019</span><span class="s2">t be surprised if one wanders in anyway. The goal is simpler, and rarer: everyone leaves the table having been heard. Hearts before spreadsheets, always. Some voices in your family have been waiting years for that. One of them may be yours."</span><span class="p">,</span>
+<span class="s2">"Make one private resolution before you sit down: no one leaves the table smaller. Blessing outranks correction tonight. If a teenager says something half-formed, it gets received, not graded. If a grandparent circles an old story again, it gets honored — old stories circle because they carry cargo. You are not editing each other tonight. You are hearing each other."</span><span class="p">,</span>
+<span class="s2">"Bring your papers — Day Two</span><span class="se">\u2019</span><span class="s2">s caught-not-taught list, Day Five</span><span class="se">\u2019</span><span class="s2">s folded sentence. Share what you choose; carry the rest. Then take a breath and remember the horizon this whole journey walks toward: not a tidy estate, but a family that hears </span><span class="se">\u201c</span><span class="s2">well done.</span><span class="se">\u201d</span><span class="s2"> That is worth forty-five careful minutes."</span><span class="p">,</span>
+ <span class="p">],</span>
+ <span class="n">q</span><span class="o">=</span><span class="s2">"What do you hope to hear at the table this week? Not say — hear."</span><span class="p">,</span>
+ <span class="n">step</span><span class="o">=</span><span class="s2">"Before the conversation, write down one question you will ask, and one thing you will not bring up on this first night. Restraint is a gift you give the room."</span><span class="p">,</span>
+ <span class="n">prayer</span><span class="o">=</span><span class="s2">"Lord, make me swift to hear at my own table. Guard my tongue, soften my ears, and let every person You have placed in this family leave our first conversation larger, not smaller. Amen."</span><span class="p">,</span>
+ <span class="n">adv</span><span class="o">=</span><span class="s2">"If you are facilitating Session One this week, your instrument is the question mark. Aim for the family doing four-fifths of the talking, and write down their exact phrases — verbatim family language is the raw material the Day Forty meeting is built from."</span><span class="p">,</span>
+ <span class="n">ask</span><span class="o">=</span><span class="s2">"Open the evening with: </span><span class="se">\u201c</span><span class="s2">My job tonight is to ask and to listen. This table belongs to your family.</span><span class="se">\u201d</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">NAV_CHAIN</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Day_One_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Day One · The Choice"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Day_Two_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Day Two · Already in Motion"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Day_Three_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Day Three · More Than Money"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Day_Four_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Day Four · Why Strong Families Drift"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Day_Five_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Day Five · It</span><span class="se">\u2019</span><span class="s2">s Not Too Late"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Day_Six_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Day Six · The Table"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Day_Seven_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Day Seven · Before You Speak"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Session_One_Family_Legacy.html"</span><span class="p">,</span> <span class="s2">"Session One · By Design"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">day_page</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># index in NAV_CHAIN</span>
+    <span class="n">prev_href</span><span class="p">,</span> <span class="n">prev_ttl</span> <span class="o">=</span> <span class="n">NAV_CHAIN</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">next_href</span><span class="p">,</span> <span class="n">next_ttl</span> <span class="o">=</span> <span class="n">NAV_CHAIN</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">paras</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">&lt;/p&gt;"</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">"body"</span><span class="p">])</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="col"&gt;</span>
+<span class="s2">  &lt;div class="kicker"&gt;Week One · Waking Up to Legacy&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">  &lt;p class="dek"&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'dek'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="rule"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;figure class="scripture"&gt;</span>
+<span class="s2">    &lt;p&gt;</span><span class="se">\u201c</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'sv'</span><span class="p">]</span><span class="si">}</span><span class="se">\u201d</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;span class="ref"&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'sref'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">  &lt;/figure&gt;</span>
+<span class="s2">  &lt;div class="reading"&gt;</span>
+<span class="si">{</span><span class="n">paras</span><span class="si">}</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="block q"&gt;&lt;div class="lab"&gt;Today</span><span class="se">\u2019</span><span class="s2">s question&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'q'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="block s"&gt;&lt;div class="lab"&gt;Today</span><span class="se">\u2019</span><span class="s2">s step&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'step'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="block pr"&gt;&lt;div class="lab"&gt;Prayer&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'prayer'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;section class="advisor" aria-label="For the advisor at the table"&gt;</span>
+<span class="s2">    &lt;div class="lab"&gt;For the advisor at the table&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'adv'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;p class="ask"&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'ask'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;/section&gt;</span>
+<span class="s2">  &lt;nav class="pn" aria-label="Day navigation"&gt;</span>
+<span class="s2">    &lt;a href="</span><span class="si">{</span><span class="n">prev_href</span><span class="si">}</span><span class="s2">"&gt;&lt;span class="dir"&gt;</span><span class="se">\u2190</span><span class="s2"> Previous&lt;/span&gt;&lt;span class="ttl"&gt;</span><span class="si">{</span><span class="n">prev_ttl</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">    &lt;a class="next" href="</span><span class="si">{</span><span class="n">next_href</span><span class="si">}</span><span class="s2">"&gt;&lt;span class="dir"&gt;Next </span><span class="se">\u2192</span><span class="s2">&lt;/span&gt;&lt;span class="ttl"&gt;</span><span class="si">{</span><span class="n">next_ttl</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;/nav&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+    <span class="k">return</span> <span class="n">shell</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span><span class="si">}</span><span class="s2"> · Day </span><span class="si">{</span><span class="p">[</span><span class="s1">''</span><span class="p">,</span><span class="s1">'One'</span><span class="p">,</span><span class="s1">'Two'</span><span class="p">,</span><span class="s1">'Three'</span><span class="p">,</span><span class="s1">'Four'</span><span class="p">,</span><span class="s1">'Five'</span><span class="p">,</span><span class="s1">'Six'</span><span class="p">,</span><span class="s1">'Seven'</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="si">}</span><span class="s2"> — Family Legacy"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"Day </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> of the Family Legacy 40-day journey: </span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'dek'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="n">body</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Day </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> of 40"</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="c1"># ---------------------------------------------------------------- session one</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">session_page</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="col"&gt;</span>
+<span class="s2">  &lt;div class="kicker"&gt;Week One · The Family Conversation&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;Session One · By Design&lt;/h1&gt;</span>
+<span class="s2">  &lt;p class="dek"&gt;Forty-five minutes. One table. Every voice. The first of six conversations on the road to Day Forty.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="rule"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="reading"&gt;</span>
+<span class="s2">    &lt;p&gt;This is the first family conversation of the Family Legacy journey. Nothing here requires preparation beyond the week</span><span class="se">\u2019</span><span class="s2">s readings — and even those are optional for anyone at the table who hasn</span><span class="se">\u2019</span><span class="s2">t been reading along. The only requirement is presence. One person hosts and keeps the evening moving; everyone else just comes ready to talk, and readier to listen.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;h2 style="font-family:'Besley',serif;font-weight:700;font-size:1.5rem;color:var(--green-deep);margin:2rem 0 .4rem"&gt;Three ground rules&lt;/h2&gt;</span>
+<span class="s2">  &lt;div class="ground"&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;Every voice gets the floor.&lt;/b&gt; Youngest to oldest, no exceptions — and no interruptions until a voice is finished.&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;No fixing tonight.&lt;/b&gt; This table is for hearing, not solving. The solving comes later in the journey.&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;&lt;b&gt;The table holds it.&lt;/b&gt; What</span><span class="se">\u2019</span><span class="s2">s shared here stays here, unless the person who shared it says otherwise.&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="seg"&gt;</span>
+<span class="s2">    &lt;div class="min"&gt;&lt;b&gt;5&lt;/b&gt;min&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h3&gt;Gather&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;Settle in. Phones in another room. Then the host reads this aloud, word for word or in their own words:&lt;/p&gt;</span>
+<span class="s2">      &lt;div class="say"&gt;&lt;p&gt;</span><span class="se">\u201c</span><span class="s2">We</span><span class="se">\u2019</span><span class="s2">re here because our family is choosing to leave its legacy on purpose. Nothing has to be decided tonight. We</span><span class="se">\u2019</span><span class="s2">re just going to talk — and even more than that, we</span><span class="se">\u2019</span><span class="s2">re going to listen.</span><span class="se">\u201d</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="seg"&gt;</span>
+<span class="s2">    &lt;div class="min"&gt;&lt;b&gt;10&lt;/b&gt;min&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h3&gt;Open&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;One question, around the table, every person answering before anyone responds:&lt;/p&gt;</span>
+<span class="s2">      &lt;div class="say"&gt;&lt;p&gt;</span><span class="se">\u201c</span><span class="s2">What</span><span class="se">\u2019</span><span class="s2">s one thing this family has given you that money couldn</span><span class="se">\u2019</span><span class="s2">t buy?</span><span class="se">\u201d</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="seg"&gt;</span>
+<span class="s2">    &lt;div class="min"&gt;&lt;b&gt;5&lt;/b&gt;min&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h3&gt;Read&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;Have two different voices read these aloud:&lt;/p&gt;</span>
+<span class="s2">      &lt;figure class="scripture" style="margin-bottom:1rem"&gt;</span>
+<span class="s2">        &lt;p&gt;</span><span class="se">\u201c</span><span class="s2">A good man leaveth an inheritance to his children</span><span class="se">\u2019</span><span class="s2">s children.</span><span class="se">\u201d</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;span class="ref"&gt;Proverbs 13:22 · KJV · The campaign</span><span class="se">\u2019</span><span class="s2">s core Scripture&lt;/span&gt;</span>
+<span class="s2">      &lt;/figure&gt;</span>
+<span class="s2">      &lt;figure class="scripture"&gt;</span>
+<span class="s2">        &lt;p&gt;</span><span class="se">\u201c</span><span class="s2">We will not hide them from their children, shewing to the generation to come the praises of the LORD, and his strength, and his wonderful works that he hath done.</span><span class="se">\u201d</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;span class="ref"&gt;Psalm 78:4 · KJV&lt;/span&gt;</span>
+<span class="s2">      &lt;/figure&gt;</span>
+<span class="s2">      &lt;p&gt;Then the host frames it in one line: an inheritance that reaches children</span><span class="se">\u2019</span><span class="s2">s children has to travel through rooms like this one. Conversations are the vehicle.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="seg"&gt;</span>
+<span class="s2">    &lt;div class="min"&gt;&lt;b&gt;20&lt;/b&gt;min&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h3&gt;Talk&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;Four questions. Go in order; it</span><span class="se">\u2019</span><span class="s2">s fine not to finish all four. Depth beats coverage.&lt;/p&gt;</span>
+<span class="s2">      &lt;div class="qs"&gt;</span>
+<span class="s2">        &lt;div&gt;&lt;p&gt;If we kept living exactly as we do now, what would this family hand the next generation by default?&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div&gt;&lt;p&gt;Of the five areas of our legacy — personal, family, financial, business, charitable — which one do we most want to grow in together?&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div&gt;&lt;p&gt;Where has silence been easier than conversation for us — and what has it cost?&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div&gt;&lt;p&gt;What would </span><span class="se">\u201c</span><span class="s2">legacy by design</span><span class="se">\u201d</span><span class="s2"> look like in our house? Try to say it in one sentence.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="seg"&gt;</span>
+<span class="s2">    &lt;div class="min"&gt;&lt;b&gt;5&lt;/b&gt;min&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h3&gt;Decide&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;This week</span><span class="se">\u2019</span><span class="s2">s commitment — simple, and it pays off on Day Forty:&lt;/p&gt;</span>
+<span class="s2">      &lt;div class="block s" style="margin:.6rem 0"&gt;&lt;div class="lab"&gt;The envelope&lt;/div&gt;&lt;p&gt;Each person writes one hope for what this family will be by Day Forty. Fold it, initial it, and place it in a single envelope. Seal the envelope. It is opened at the family meeting on Day Forty — and not before.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="seg"&gt;</span>
+<span class="s2">    &lt;div class="min"&gt;Close&lt;/div&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;h3&gt;Pray&lt;/h3&gt;</span>
+<span class="s2">      &lt;p&gt;If it fits your family, let each person pray one sentence first. Then the host closes:&lt;/p&gt;</span>
+<span class="s2">      &lt;div class="block pr" style="margin:.6rem 0"&gt;&lt;p&gt;Father, thank You for every person at this table. Take the ordinary conversations of this family and turn them into inheritance. Teach us to hear each other the way You hear us. Amen.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;section class="advisor" aria-label="For the advisor facilitating"&gt;</span>
+<span class="s2">    &lt;div class="lab"&gt;For the advisor facilitating&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;If a family has asked you to guide this evening, hold the running order lightly — Gather 5, Open 10, Read 5, Talk 20, Decide and Pray 5 — and hold one rule tightly: the family does four-fifths of the talking. Ask, then wait longer than is comfortable. Capture their exact phrases in their exact words; verbatim family language is the raw material the Day Forty meeting is built from. Before anyone stands up, confirm next week</span><span class="se">\u2019</span><span class="s2">s date. And remember where you sit: beside the family, never between its members.&lt;/p&gt;</span>
+<span class="s2">    &lt;p class="ask"&gt;Facilitating all six conversations — and the Day Forty family meeting itself — is the heart of the Family Legacy certification path. Start at the &lt;a href="index.html" style="color:var(--gold-soft)"&gt;campaign home&lt;/a&gt;.&lt;/p&gt;</span>
+<span class="s2">  &lt;/section&gt;</span>
+
+<span class="s2">  &lt;nav class="pn" aria-label="Session navigation"&gt;</span>
+<span class="s2">    &lt;a href="Day_Seven_Family_Legacy.html"&gt;&lt;span class="dir"&gt;</span><span class="se">\u2190</span><span class="s2"> Previous&lt;/span&gt;&lt;span class="ttl"&gt;Day Seven · Before You Speak&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">    &lt;a class="next" href="Week_One_Family_Legacy.html"&gt;&lt;span class="dir"&gt;Week One </span><span class="se">\u2192</span><span class="s2">&lt;/span&gt;&lt;span class="ttl"&gt;Back to the Week One overview&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;/nav&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+    <span class="k">return</span> <span class="n">shell</span><span class="p">(</span>
+        <span class="s2">"Session One · By Design — The Week One Family Conversation"</span><span class="p">,</span>
+        <span class="s2">"The first family conversation of the Family Legacy journey: 45 minutes, one table, every voice — with a facilitation guide for advisors."</span><span class="p">,</span>
+        <span class="n">body</span><span class="p">,</span> <span class="s2">"Session One · Week One"</span><span class="p">)</span>
+
+<span class="c1"># --------------------------------------------------------------------- hub</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hub_page</span><span class="p">():</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">d1</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'&lt;a class="card" href="Day_One_Family_Legacy.html"&gt;'</span>
+          <span class="s1">'&lt;div class="dn"&gt;&lt;span&gt;Day 1&lt;/span&gt;&lt;span class="start"&gt;Start here&lt;/span&gt;&lt;/div&gt;'</span>
+          <span class="s1">'&lt;h3&gt;The Choice&lt;/h3&gt;&lt;p&gt;Every family is already leaving a legacy. The only choice left is whether it will be left by design — or by default.&lt;/p&gt;'</span>
+          <span class="s1">'&lt;span class="sref"&gt;Proverbs 13:22&lt;/span&gt;&lt;/a&gt;'</span><span class="p">)</span>
+    <span class="n">cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">DAYS</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'&lt;a class="card" href="</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"slug"</span><span class="p">]</span><span class="si">}</span><span class="s1">"&gt;'</span>
+            <span class="sa">f</span><span class="s1">'&lt;div class="dn"&gt;&lt;span&gt;Day </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+            <span class="sa">f</span><span class="s1">'&lt;h3&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/h3&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"card"</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/p&gt;'</span>
+            <span class="sa">f</span><span class="s1">'&lt;span class="sref"&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"sref"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" · "</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/a&gt;'</span><span class="p">)</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'&lt;a class="card session" href="Session_One_Family_Legacy.html"&gt;'</span>
+               <span class="s1">'&lt;div class="dn"&gt;&lt;span&gt;The Week One Family Conversation&lt;/span&gt;&lt;/div&gt;'</span>
+               <span class="s1">'&lt;h3&gt;Session One · By Design&lt;/h3&gt;'</span>
+               <span class="s1">'&lt;p&gt;Forty-five minutes, one table, every voice. The questions, the reading, the ground rules, and the envelope that gets opened on Day Forty — with a facilitation guide for advisors.&lt;/p&gt;'</span>
+               <span class="s1">'&lt;span class="go"&gt;Open Session One </span><span class="se">\u2192</span><span class="s1">&lt;/span&gt;&lt;/a&gt;'</span><span class="p">)</span>
+    <span class="n">cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="col"&gt;</span>
+<span class="s2">  &lt;div class="kicker"&gt;The Family Legacy Campaign · Series I · Flagship&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;Week One&lt;/h1&gt;</span>
+<span class="s2">  &lt;p class="dek"&gt;Waking up to the legacy already in motion — seven short readings, and the family</span><span class="se">\u2019</span><span class="s2">s first conversation.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="rhythm"&gt;</span>
+<span class="s2">    &lt;span&gt;One reading a day&lt;/span&gt;</span>
+<span class="s2">    &lt;span&gt;One conversation a week&lt;/span&gt;</span>
+<span class="s2">    &lt;span&gt;One family meeting on Day Forty&lt;/span&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p class="engine"&gt;Daily inspiration plus weekly conversation leads to family transformation.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="rule"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="reading"&gt;</span>
+<span class="s2">    &lt;p&gt;Week One does one thing: it wakes the household up. The readings move from the legacy your family is already leaving, to the five areas where legacy really lives, to the honest numbers behind failed inheritances — and then to grace, to the table, and to the posture that makes a first conversation safe. By week</span><span class="se">\u2019</span><span class="s2">s end, your family has sat down together once, on purpose. That is the whole assignment, and it is enough.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards"&gt;</span>
+<span class="si">{</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cards</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="col" style="margin-top:2.2rem"&gt;</span>
+<span class="s2">  &lt;a class="btn gold" href="Day_One_Family_Legacy.html"&gt;Start Day One </span><span class="se">\u2192</span><span class="s2">&lt;/a&gt;</span>
+<span class="s2">  &amp;nbsp; &lt;a class="btn" href="Session_One_Family_Legacy.html"&gt;Open Session One&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+    <span class="k">return</span> <span class="n">shell</span><span class="p">(</span>
+        <span class="s2">"Week One · Waking Up to Legacy — The Family Legacy Campaign"</span><span class="p">,</span>
+        <span class="s2">"Seven daily readings and the first family conversation: Week One of the flagship 40-day Family Legacy journey."</span><span class="p">,</span>
+        <span class="n">body</span><span class="p">,</span> <span class="s2">"Week One of Six"</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">"week"</span><span class="p">)</span>
+
+<span class="c1"># --------------------------------------------------------------------- write</span>
+<span class="p">(</span><span class="n">OUT</span> <span class="o">/</span> <span class="s2">"flbd-weekone.css"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">CSS</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DAYS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="p">(</span><span class="n">OUT</span> <span class="o">/</span> <span class="n">d</span><span class="p">[</span><span class="s2">"slug"</span><span class="p">])</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">day_page</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="p">(</span><span class="n">OUT</span> <span class="o">/</span> <span class="s2">"Session_One_Family_Legacy.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">session_page</span><span class="p">(),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="p">(</span><span class="n">OUT</span> <span class="o">/</span> <span class="s2">"Week_One_Family_Legacy.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">hub_page</span><span class="p">(),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">OUT</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/flbd/build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

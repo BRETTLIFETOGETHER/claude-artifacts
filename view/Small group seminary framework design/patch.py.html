@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>patch.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>patch.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">14 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/patch.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Patch script that converts the rendered catalog&#x27;s 400 rows into clickable drop-downs with a modal</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Convert the rendered catalog's 400 static course rows into clickable</span>
+<span class="sd">drop-downs with a summary, facts, status chip, and a button to a full view."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">summaries</span><span class="w"> </span><span class="kn">import</span> <span class="n">FLAGSHIP</span><span class="p">,</span> <span class="n">compose</span>
+
+<span class="n">SRC</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/smallgroupseminary-framework-and-catalog.html"</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">SRC</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># --- split off the catalog region so we never touch the essay's &lt;ol class="steps"&gt; ---</span>
+<span class="n">split_at</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'&lt;div class="cat-head"&gt;'</span><span class="p">)</span>
+<span class="n">head</span><span class="p">,</span> <span class="n">cat</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">split_at</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">split_at</span><span class="p">:]</span>
+
+<span class="n">TIER_OF</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Foundation &amp;nbsp;&amp;middot;&amp;nbsp; entry level"</span><span class="p">:</span> <span class="s2">"Foundation"</span><span class="p">,</span>
+           <span class="s2">"Core &amp;nbsp;&amp;middot;&amp;nbsp; the working middle"</span><span class="p">:</span> <span class="s2">"Core"</span><span class="p">,</span>
+           <span class="s2">"Advanced &amp;nbsp;&amp;middot;&amp;nbsp; depth and practicum"</span><span class="p">:</span> <span class="s2">"Advanced"</span><span class="p">}</span>
+
+<span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"disc"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"tier"</span><span class="p">:</span> <span class="s2">"Foundation"</span><span class="p">,</span> <span class="s2">"i"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">track_disc</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"disc"</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">track_tier</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"tier"</span><span class="p">]</span> <span class="o">=</span> <span class="n">TIER_OF</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"i"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="s1">'&lt;p class="tier"&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;div class="courses"&gt;'</span> <span class="o">%</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ROW</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;li&gt;&lt;span class="code"&gt;([^&lt;]+)&lt;/span&gt;&lt;span class="t"&gt;(.*?)'</span>
+                 <span class="sa">r</span><span class="s1">'&lt;span class="s"&gt;(.*?)&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;'</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">row</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">code</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">tier</span><span class="p">,</span> <span class="n">disc</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">"tier"</span><span class="p">],</span> <span class="n">state</span><span class="p">[</span><span class="s2">"disc"</span><span class="p">]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">"i"</span><span class="p">];</span> <span class="n">state</span><span class="p">[</span><span class="s2">"i"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">flagship</span> <span class="o">=</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">FLAGSHIP</span>
+    <span class="n">built</span> <span class="o">=</span> <span class="p">(</span><span class="n">code</span> <span class="o">==</span> <span class="s2">"ST 101"</span><span class="p">)</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">FLAGSHIP</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="k">if</span> <span class="n">flagship</span> <span class="k">else</span> <span class="n">compose</span><span class="p">(</span><span class="n">disc</span><span class="p">,</span> <span class="n">tier</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">built</span><span class="p">:</span>
+        <span class="n">chip</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">btn</span> <span class="o">=</span> <span class="s2">"Built"</span><span class="p">,</span> <span class="s2">"built"</span><span class="p">,</span> <span class="s2">"Open full syllabus"</span>
+    <span class="k">elif</span> <span class="n">flagship</span><span class="p">:</span>
+        <span class="n">chip</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">btn</span> <span class="o">=</span> <span class="s2">"In production"</span><span class="p">,</span> <span class="s2">"prod"</span><span class="p">,</span> <span class="s2">"See the course frame"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">chip</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">btn</span> <span class="o">=</span> <span class="s2">"Planned"</span><span class="p">,</span> <span class="s2">"plan"</span><span class="p">,</span> <span class="s2">"See the course frame"</span>
+    <span class="n">pre</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Foundation"</span><span class="p">:</span> <span class="s2">"None"</span><span class="p">,</span> <span class="s2">"Core"</span><span class="p">:</span> <span class="s2">"Foundation row"</span><span class="p">,</span> <span class="s2">"Advanced"</span><span class="p">:</span> <span class="s2">"Core row"</span><span class="p">}[</span><span class="n">tier</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="s1">'&lt;div class="crow" data-open="false"&gt;'</span>
+      <span class="s1">'&lt;button class="chead" aria-expanded="false"&gt;&lt;span class="code"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;'</span>
+      <span class="s1">'&lt;span class="t"&gt;</span><span class="si">%s</span><span class="s1">&lt;span class="s"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/span&gt;&lt;span class="chev"&gt;+&lt;/span&gt;&lt;/button&gt;'</span>
+      <span class="s1">'&lt;div class="cbody"&gt;&lt;p class="csum"&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;'</span>
+      <span class="s1">'&lt;div class="cfacts"&gt;&lt;span&gt;12 sessions&lt;/span&gt;&lt;span&gt;90 minutes&lt;/span&gt;&lt;span&gt;</span><span class="si">%s</span><span class="s1"> tier&lt;/span&gt;'</span>
+      <span class="s1">'&lt;span&gt;Prerequisite: </span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;span class="chip </span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+      <span class="s1">'&lt;button class="cbtn" data-code="</span><span class="si">%s</span><span class="s1">" data-title="</span><span class="si">%s</span><span class="s1">" data-sub="</span><span class="si">%s</span><span class="s1">" data-disc="</span><span class="si">%s</span><span class="s1">" '</span>
+      <span class="s1">'data-status="</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1"> &amp;nbsp;&amp;rarr;&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+      <span class="o">%</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">tier</span><span class="p">,</span> <span class="n">pre</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">chip</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span>
+         <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+         <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">disc</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;amp;"</span><span class="p">,</span> <span class="s2">"and"</span><span class="p">),</span> <span class="n">quote</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">chip</span><span class="p">,</span> <span class="n">btn</span><span class="p">))</span>
+
+<span class="n">cat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;div class="disc-top"&gt;&lt;span class="disc-num"&gt;[^&lt;]+&lt;/span&gt;&lt;h3&gt;(.*?)&lt;/h3&gt;'</span><span class="p">,</span>
+             <span class="n">track_disc</span><span class="p">,</span> <span class="n">cat</span><span class="p">)</span>
+<span class="n">cat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;p class="tier"&gt;(.*?)&lt;/p&gt;&lt;ol class="courses"&gt;'</span><span class="p">,</span> <span class="n">track_tier</span><span class="p">,</span> <span class="n">cat</span><span class="p">)</span>
+<span class="n">n_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ROW</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">cat</span><span class="p">))</span>
+<span class="n">cat</span> <span class="o">=</span> <span class="n">ROW</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">cat</span><span class="p">)</span>
+<span class="n">cat</span> <span class="o">=</span> <span class="n">cat</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;/ol&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">,</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">.courses{margin:0;padding:0}</span>
+<span class="s2">.crow{border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.chead{width:100%;display:flex;align-items:flex-start;gap:20px;background:none;border:none;</span>
+<span class="s2"> text-align:left;padding:13px 0;cursor:pointer;font:inherit}</span>
+<span class="s2">.chead:hover .t{color:var(--gold)}</span>
+<span class="s2">.chead:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}</span>
+<span class="s2">.crow .code{flex:0 0 76px;font-family:"Lato",sans-serif;font-size:11px;font-weight:700;</span>
+<span class="s2"> letter-spacing:.1em;color:var(--gold);padding-top:6px}</span>
+<span class="s2">.crow .t{flex:1 1 auto;font-family:"Playfair Display",serif;font-size:18.5px;line-height:1.28;color:#1c2b3a}</span>
+<span class="s2">.crow .s{display:block;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:17.5px;</span>
+<span class="s2"> color:var(--muted);margin-top:2px;letter-spacing:0}</span>
+<span class="s2">.crow .chev{flex:0 0 20px;font-family:"Lato",sans-serif;color:var(--gold);font-size:16px;</span>
+<span class="s2"> text-align:right;padding-top:4px}</span>
+<span class="s2">.crow[data-open="true"] .chev{color:var(--body)}</span>
+<span class="s2">.cbody{display:none;padding:2px 0 24px 96px}</span>
+<span class="s2">.crow[data-open="true"] .cbody{display:block}</span>
+<span class="s2">.csum{margin:0 0 16px;max-width:640px;font-size:18px}</span>
+<span class="s2">.cfacts{display:flex;flex-wrap:wrap;align-items:center;margin-bottom:18px;row-gap:8px}</span>
+<span class="s2">.cfacts span{font-family:"Lato",sans-serif;font-size:10px;letter-spacing:.13em;text-transform:uppercase;</span>
+<span class="s2"> color:var(--muted);padding-right:15px;margin-right:15px;border-right:1px solid var(--rule)}</span>
+<span class="s2">.cfacts span:last-child{border-right:none;padding-right:0;margin-right:0}</span>
+<span class="s2">.chip{padding:4px 10px;font-weight:800}</span>
+<span class="s2">.chip.built{background:var(--gold);color:#fff;border:none}</span>
+<span class="s2">.chip.prod{border:1px solid var(--gold);color:var(--gold)}</span>
+<span class="s2">.chip.plan{border:1px solid var(--rule);color:var(--muted)}</span>
+<span class="s2">.cbtn{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.18em;</span>
+<span class="s2"> text-transform:uppercase;background:var(--ink);color:var(--gold-lt);border:none;padding:13px 22px;cursor:pointer}</span>
+<span class="s2">.cbtn:hover{background:var(--gold);color:#fff}</span>
+<span class="s2">.cbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}</span>
+<span class="s2">@media(max-width:620px){.chead{gap:10px}.crow .code{flex:0 0 62px}.cbody{padding-left:0}}</span>
+<span class="s2">.mask{position:fixed;inset:0;background:rgba(10,20,32,.74);display:none;z-index:60;overflow-y:auto;padding:38px 16px}</span>
+<span class="s2">.mask[data-on="true"]{display:block}</span>
+<span class="s2">.modal{background:var(--parch);max-width:720px;margin:0 auto;padding:46px 46px 40px;position:relative}</span>
+<span class="s2">.modal h3{font-size:clamp(25px,4vw,34px);line-height:1.1;margin-bottom:6px}</span>
+<span class="s2">.modal .mcode{font-family:"Lato",sans-serif;font-weight:800;font-size:11px;letter-spacing:.24em;</span>
+<span class="s2"> color:var(--gold);margin-bottom:12px}</span>
+<span class="s2">.modal .msub{font-style:italic;color:var(--muted);font-size:19px;margin:0 0 20px}</span>
+<span class="s2">.modal h5{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.2em;</span>
+<span class="s2"> text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:7px;margin:28px 0 12px}</span>
+<span class="s2">.modal ol,.modal ul{margin:0;padding-left:20px}</span>
+<span class="s2">.modal li{margin-bottom:7px}</span>
+<span class="s2">.modal p{margin:0 0 14px}</span>
+<span class="s2">.lrow{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.lrow b{flex:0 0 24px;font-family:"Lato",sans-serif;font-size:10px;color:var(--gold);padding-top:6px;font-weight:700}</span>
+<span class="s2">.lrow span{flex:1;font-family:"Playfair Display",serif;font-size:17px;line-height:1.3}</span>
+<span class="s2">.lrow i{display:block;font-family:"Cormorant Garamond",serif;font-size:16.5px;color:var(--muted);margin-top:1px}</span>
+<span class="s2">.mclose{position:absolute;top:15px;right:18px;background:none;border:none;font-family:"Lato",sans-serif;</span>
+<span class="s2"> font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);cursor:pointer}</span>
+<span class="s2">.mclose:hover{color:var(--gold)}</span>
+<span class="s2">@media(max-width:620px){.modal{padding:40px 22px 30px}}</span>
+<span class="s2">@media print{.cbody{display:block!important}.chev,.cbtn,.mask{display:none!important}}</span>
+<span class="s2">"""</span>
+
+<span class="n">JS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="mask" id="mask" role="dialog" aria-modal="true" aria-labelledby="mtitle"&gt;</span>
+<span class="s2"> &lt;div class="modal"&gt;&lt;button class="mclose" id="mclose"&gt;Close &amp;times;&lt;/button&gt;</span>
+<span class="s2"> &lt;div id="mbody"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">var ST101 = {</span>
+<span class="s2"> desc:"Most Christians have absorbed a great deal of doctrine without ever being taught how doctrine actually works. They know what their church believes. They are far less sure where those beliefs came from, how they were tested, which of them are worth dividing over, and what any of it has to do with a Tuesday afternoon in a hospital corridor.&lt;br&gt;&lt;br&gt;This course does not attempt to teach the doctrines. That is what the eleven courses after it are for. This one teaches a person how to hold one.",</span>
+<span class="s2"> outcomes:["Explain in plain language what doctrine is, where it comes from, and what it is for.",</span>
+<span class="s2">  "Trace a single teaching from biblical text through theological synthesis to confessional statement.",</span>
+<span class="s2">  "Distinguish first, second, and third order convictions, and explain why that distinction keeps congregations together.",</span>
+<span class="s2">  "Apply a repeatable four-step method for testing whether a doctrinal claim is sound.",</span>
+<span class="s2">  "Describe how doctrine functions pastorally in suffering, in decision-making, in worship, and at a deathbed.",</span>
+<span class="s2">  "Teach one doctrine clearly to another person and receive feedback on it."],</span>
+<span class="s2"> texts:["The Apostles' Creed and the Nicene Creed, provided in the workbook",</span>
+<span class="s2">  "One accessible survey of Christian belief, roughly 120 pages assigned",</span>
+<span class="s2">  "Athanasius, On the Incarnation, for students on the depth track"],</span>
+<span class="s2"> lessons:[["The Question Under the Question","Everyone already has a theology. The only question is whether it was chosen or absorbed."],</span>
+<span class="s2">  ["Where Doctrine Comes From","A teaching is not invented. It is gathered, from many texts, over a long time."],</span>
+<span class="s2">  ["Revelation","Christian doctrine is a response to a God who speaks first."],</span>
+<span class="s2">  ["Scripture as the Rule","To be under a text is a specific and unusual thing to agree to."],</span>
+<span class="s2">  ["The Rule of Faith","Before there was a creed, there was a summary the church handed down by mouth."],</span>
+<span class="s2">  ["The Creeds","The words that held, and the century-long fight it took to find them."],</span>
+<span class="s2">  ["Confessions and Catechisms","Why churches wrote it all down again, in their own words, for their own people."],</span>
+<span class="s2">  ["First, Second, and Third Things","Theological triage is the skill that keeps congregations together."],</span>
+<span class="s2">  ["Testing a Doctrine","A repeatable method, so you are not dependent on whoever spoke last."],</span>
+<span class="s2">  ["Doctrine in the Pew","What any of this has to do with a hospital corridor."],</span>
+<span class="s2">  ["When Doctrine Goes Wrong","Heresy, drift, and the pastoral cost of both."],</span>
+<span class="s2">  ["Teaching What You Believe","You do not know a doctrine until you have handed it to somebody else."]]</span>
+<span class="s2">};</span>
+
+<span class="s2">function esc(t){return t;}</span>
+
+<span class="s2">function fullST101(code,title,sub){</span>
+<span class="s2">  var h = '&lt;div class="mcode"&gt;'+code+' &amp;nbsp;&amp;middot;&amp;nbsp; Full syllabus&lt;/div&gt;&lt;h3 id="mtitle"&gt;'+title+'&lt;/h3&gt;'+</span>
+<span class="s2">    '&lt;p class="msub"&gt;'+sub+'&lt;/p&gt;&lt;p&gt;'+ST101.desc+'&lt;/p&gt;'+</span>
+<span class="s2">    '&lt;h5&gt;Learning outcomes&lt;/h5&gt;&lt;ol&gt;';</span>
+<span class="s2">  for(var i=0;i&lt;ST101.outcomes.length;i++){h+='&lt;li&gt;'+ST101.outcomes[i]+'&lt;/li&gt;';}</span>
+<span class="s2">  h += '&lt;/ol&gt;&lt;h5&gt;Texts&lt;/h5&gt;&lt;ul&gt;';</span>
+<span class="s2">  for(var j=0;j&lt;ST101.texts.length;j++){h+='&lt;li&gt;'+ST101.texts[j]+'&lt;/li&gt;';}</span>
+<span class="s2">  h += '&lt;/ul&gt;&lt;h5&gt;The twelve lessons&lt;/h5&gt;';</span>
+<span class="s2">  for(var k=0;k&lt;ST101.lessons.length;k++){</span>
+<span class="s2">    var n = (k+1)&lt;10 ? '0'+(k+1) : ''+(k+1);</span>
+<span class="s2">    h += '&lt;div class="lrow"&gt;&lt;b&gt;'+n+'&lt;/b&gt;&lt;span&gt;'+ST101.lessons[k][0]+'&lt;i&gt;'+ST101.lessons[k][1]+'&lt;/i&gt;&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;h5&gt;Also built&lt;/h5&gt;&lt;p&gt;Full teaching script for Lesson One, participant workbook, facilitator guide, '+</span>
+<span class="s2">       'and the four delivery editions. These live in the standalone ST 101 build file.&lt;/p&gt;';</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function frame(code,title,sub,disc,status){</span>
+<span class="s2">  return '&lt;div class="mcode"&gt;'+code+' &amp;nbsp;&amp;middot;&amp;nbsp; Course frame&lt;/div&gt;&lt;h3 id="mtitle"&gt;'+title+'&lt;/h3&gt;'+</span>
+<span class="s2">   '&lt;p class="msub"&gt;'+sub+'&lt;/p&gt;'+</span>
+<span class="s2">   '&lt;p&gt;A course in '+disc+'. The syllabus for this one has not been drafted yet, so what follows is '+</span>
+<span class="s2">   'the standard frame every course in this program is built to. Nothing here is specific to this title.&lt;/p&gt;'+</span>
+<span class="s2">   '&lt;h5&gt;Status&lt;/h5&gt;&lt;p&gt;&lt;b&gt;'+status+'.&lt;/b&gt; '+</span>
+<span class="s2">   (status === 'In production'</span>
+<span class="s2">     ? 'Part of the twenty-course Year One row, one per discipline, which is the first block being written.'</span>
+<span class="s2">     : 'In the catalog, not yet in the build queue. Churches can request it, and requests set the build order.')+</span>
+<span class="s2">   '&lt;/p&gt;'+</span>
+<span class="s2">   '&lt;h5&gt;Every course ships with&lt;/h5&gt;&lt;ul&gt;'+</span>
+<span class="s2">   '&lt;li&gt;Twelve sessions of ninety minutes, in the six-stage shape: open, three movements, discuss, close&lt;/li&gt;'+</span>
+<span class="s2">   '&lt;li&gt;Participant workbook with the exercises and reading plan&lt;/li&gt;'+</span>
+<span class="s2">   '&lt;li&gt;Facilitator guide and a full teaching script for every session&lt;/li&gt;'+</span>
+<span class="s2">   '&lt;li&gt;Four delivery editions from one build: self-study, small group, church class, church-branded&lt;/li&gt;'+</span>
+<span class="s2">   '&lt;li&gt;Reading of roughly 140 pages, with a heavier primary-source list for the depth track&lt;/li&gt;&lt;/ul&gt;'+</span>
+<span class="s2">   '&lt;h5&gt;Each session carries&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;A big idea stated in one sentence&lt;/li&gt;&lt;li&gt;A key text&lt;/li&gt;'+</span>
+<span class="s2">   '&lt;li&gt;Three teaching movements&lt;/li&gt;&lt;li&gt;Two discussion questions, never three&lt;/li&gt;'+</span>
+<span class="s2">   '&lt;li&gt;One exercise done outside the session&lt;/li&gt;&lt;/ul&gt;'+</span>
+<span class="s2">   '&lt;p style="font-family:Lato,sans-serif;font-size:13px;color:var(--muted);border-top:1px solid var(--rule);'+</span>
+<span class="s2">   'padding-top:14px;margin-top:26px"&gt;See ST 101 for a course built all the way out. It is the pattern '+</span>
+<span class="s2">   'the other three hundred and ninety-nine are written against.&lt;/p&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">var mask = document.getElementById('mask'), mbody = document.getElementById('mbody'), lastFocus = null;</span>
+<span class="s2">function closeModal(){ mask.setAttribute('data-on','false'); if(lastFocus) lastFocus.focus(); }</span>
+<span class="s2">document.getElementById('mclose').addEventListener('click', closeModal);</span>
+<span class="s2">mask.addEventListener('click', function(e){ if(e.target === mask) closeModal(); });</span>
+<span class="s2">document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });</span>
+
+<span class="s2">document.addEventListener('click', function(e){</span>
+<span class="s2">  var head = e.target.closest ? e.target.closest('.chead') : null;</span>
+<span class="s2">  if(head){</span>
+<span class="s2">    var r = head.parentNode, open = r.getAttribute('data-open') === 'true';</span>
+<span class="s2">    r.setAttribute('data-open', open ? 'false' : 'true');</span>
+<span class="s2">    head.setAttribute('aria-expanded', open ? 'false' : 'true');</span>
+<span class="s2">    head.querySelector('.chev').textContent = open ? '+' : '\u2013';</span>
+<span class="s2">    return;</span>
+<span class="s2">  }</span>
+<span class="s2">  var b = e.target.closest ? e.target.closest('.cbtn') : null;</span>
+<span class="s2">  if(b){</span>
+<span class="s2">    lastFocus = b;</span>
+<span class="s2">    var c = b.getAttribute('data-code'), t = b.getAttribute('data-title'),</span>
+<span class="s2">        u = b.getAttribute('data-sub'), d = b.getAttribute('data-disc'),</span>
+<span class="s2">        st = b.getAttribute('data-status');</span>
+<span class="s2">    mbody.innerHTML = (c === 'ST 101') ? fullST101(c,t,u) : frame(c,t,u,d,st);</span>
+<span class="s2">    mask.setAttribute('data-on','true');</span>
+<span class="s2">    mask.scrollTop = 0;</span>
+<span class="s2">    document.getElementById('mclose').focus();</span>
+<span class="s2">  }</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">cat</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;"</span><span class="p">,</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">&lt;/style&gt;"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/body&gt;"</span><span class="p">,</span> <span class="n">JS</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">&lt;/body&gt;"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># refresh the catalog intro line to mention the interaction</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+ <span class="s2">"Doubled to twenty courses per discipline, with ten disciplines added that were not on the</span><span class="se">\n</span><span class="s2">previous list. Numbered in registrar order so depth is visible at a glance."</span><span class="p">,</span>
+ <span class="s2">"Doubled to twenty courses per discipline, with ten disciplines added that were not on the</span><span class="se">\n</span><span class="s2">previous list. Click any course to open its summary, then open the full syllabus."</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="n">SRC</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"rows converted:"</span><span class="p">,</span> <span class="n">n_before</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"crow count:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">'&lt;div class="crow"'</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"flagship summaries used:"</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">FLAGSHIP</span> <span class="k">if</span> <span class="s1">'data-code="</span><span class="si">%s</span><span class="s1">"'</span> <span class="o">%</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">out</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/patch.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

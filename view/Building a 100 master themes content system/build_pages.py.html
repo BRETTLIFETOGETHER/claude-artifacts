@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_pages.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Building a 100 master themes content system</div>
+<h1>build_pages.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">37 KB</span>
+<a class="btn" href="../../artifacts/Building%20a%20100%20master%20themes%20content%20system/build_pages.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Shared page shell (nav+footer+palette) and builder for the 8 new pages</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">OUT</span><span class="o">=</span><span class="s1">'/home/claude/site/out'</span>
+
+<span class="n">HEAD</span> <span class="o">=</span> <span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="UTF-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">&lt;title&gt;</span><span class="si">{title}</span><span class="s2"> — 40 Day Campaigns&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="s2">:root{{--ink:#16161D;--ink-2:#3A3A45;--dim:#5E5E6B;--faint:#8A8A98;--orange:#F26C1E;--orange-d:#DE5E12;</span>
+<span class="s2">--gold:#E4AC43;--gold-d:#C68E2A;--line:#ECE9F2;--card:#F5F3F9;--white:#FFFFFF;</span>
+<span class="s2">--c1:#7B5FE0;--c2:#4F86E0;--c3:#C8484C;--c4:#E0703F;--c5:#36A85E;--c6:#E8A52E;--c7:#16A88F;--c8:#E2542F;--c9:#5A6B8C;--c10:#C99A3C;}}</span>
+<span class="s2">*{{box-sizing:border-box;}}</span>
+<span class="s2">body{{margin:0;color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;</span>
+<span class="s2">background:radial-gradient(46</span><span class="si">% 40%</span><span class="s2"> at 92</span><span class="si">% 0%</span><span class="s2">, rgba(225,216,250,.7), transparent 60%),</span>
+<span class="s2">radial-gradient(40</span><span class="si">% 36%</span><span class="s2"> at 99</span><span class="si">% 18%</span><span class="s2">, rgba(252,222,214,.55), transparent 60%),#fff;background-attachment:fixed;}}</span>
+<span class="s2">a{{text-decoration:none;color:inherit;}}</span>
+<span class="s2">h1,h2,h3,h4{{font-family:'Hanken Grotesk',sans-serif;margin:0;letter-spacing:-.02em;}}</span>
+<span class="s2">.wrap{{max-width:1180px;margin:0 auto;padding:0 28px;}}</span>
+<span class="s2">.btn{{display:inline-flex;align-items:center;gap:8px;font-family:'Hanken Grotesk';font-weight:700;font-size:14px;</span>
+<span class="s2">padding:11px 18px;border-radius:999px;border:none;cursor:pointer;transition:.16s;white-space:nowrap;}}</span>
+<span class="s2">.btn-dark{{background:var(--ink);color:#fff;}}.btn-dark:hover{{background:#000;}}</span>
+<span class="s2">.btn-orange{{background:var(--orange);color:#fff;}}.btn-orange:hover{{background:var(--orange-d);}}</span>
+<span class="s2">.btn-white{{background:#fff;color:var(--ink);border:1px solid var(--line);}}.btn-white:hover{{box-shadow:0 8px 20px -12px rgba(0,0,0,.25);}}</span>
+<span class="s2">.navwrap{{position:sticky;top:0;z-index:60;padding:16px 16px 0;}}</span>
+<span class="s2">.nav{{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.72);</span>
+<span class="s2">backdrop-filter:blur(16px);border:1px solid rgba(22,22,29,.07);border-radius:999px;padding:9px 12px 9px 18px;</span>
+<span class="s2">box-shadow:0 12px 32px -18px rgba(40,30,80,.32);}}</span>
+<span class="s2">.brand{{display:flex;align-items:center;gap:10px;}}</span>
+<span class="s2">.mark{{width:36px;height:36px;border-radius:10px;position:relative;background:linear-gradient(135deg,var(--gold),var(--gold-d));</span>
+<span class="s2">display:flex;align-items:center;justify-content:center;box-shadow:0 5px 13px -5px rgba(228,172,67,.7);}}</span>
+<span class="s2">.mark b{{font-family:'Hanken Grotesk';font-weight:900;font-size:14px;color:#26190A;}}</span>
+<span class="s2">.mark i{{position:absolute;right:-4px;bottom:-4px;width:15px;height:15px;border-radius:5px;background:var(--orange);</span>
+<span class="s2">border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;}}</span>
+<span class="s2">.mark i::after{{content:"";border-left:5px solid #fff;border-top:3px solid transparent;border-bottom:3px solid transparent;margin-left:1px;}}</span>
+<span class="s2">.brand .a{{font-family:'Hanken Grotesk';font-weight:800;font-size:15.5px;}}.brand .a span{{color:var(--gold-d);}}</span>
+<span class="s2">.nlinks{{display:flex;gap:22px;margin-left:6px;}}</span>
+<span class="s2">.nlinks a{{font-family:'Hanken Grotesk';font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-2);}}</span>
+<span class="s2">.nlinks a.on{{color:var(--orange);}}</span>
+<span class="s2">.nright{{margin-left:auto;display:flex;gap:9px;align-items:center;}}</span>
+<span class="s2">.head{{padding:56px 0 22px;}}</span>
+<span class="s2">.head .eb{{font-family:'Hanken Grotesk';font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);}}</span>
+<span class="s2">.head h1{{font-weight:900;font-size:clamp(32px,4.4vw,50px);line-height:1.05;margin:12px 0 12px;}}</span>
+<span class="s2">.head p{{font-size:17px;color:var(--ink-2);max-width:62ch;margin:0;}}</span>
+<span class="s2">.section{{padding:38px 0;}}</span>
+<span class="s2">.section h2{{font-weight:900;font-size:clamp(23px,3vw,30px);margin-bottom:6px;}}</span>
+<span class="s2">.section .sd{{font-size:15px;color:var(--dim);margin-bottom:22px;max-width:66ch;}}</span>
+<span class="s2">.cards{{display:grid;gap:16px;}}</span>
+<span class="s2">.card{{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;}}</span>
+<span class="s2">.card h3{{font-weight:800;font-size:17px;margin-bottom:6px;}}</span>
+<span class="s2">.card p{{font-size:14px;color:var(--ink-2);margin:0;}}</span>
+<span class="s2">.num{{font-family:'Hanken Grotesk';font-weight:900;font-size:13px;color:#fff;background:var(--orange);width:26px;height:26px;</span>
+<span class="s2">border-radius:8px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;}}</span>
+<span class="s2">.ii{{width:40px;height:40px;border-radius:12px;background:#FBEFE4;color:var(--orange-d);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}}</span>
+<span class="s2">footer{{background:var(--ink);color:#fff;margin-top:70px;}}</span>
+<span class="s2">footer .wrap{{display:flex;align-items:center;gap:26px;flex-wrap:wrap;padding:34px 28px;}}</span>
+<span class="s2">.fnav{{display:flex;gap:20px;flex-wrap:wrap;margin-left:auto;}}</span>
+<span class="s2">.fnav a{{font-family:'Hanken Grotesk';font-weight:700;font-size:13px;color:rgba(255,255,255,.75);}}</span>
+<span class="s2">.fnav a:hover{{color:#fff;}}</span>
+<span class="s2">.fbar{{border-top:1px solid rgba(255,255,255,.12);padding:16px 28px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;</span>
+<span class="s2">font-size:12px;color:rgba(255,255,255,.55);max-width:1180px;margin:0 auto;}}</span>
+<span class="s2">.fbar a{{color:rgba(255,255,255,.7);}}</span>
+<span class="si">{extra_css}</span>
+<span class="s2">@media(max-width:760px){{.nlinks{{display:none;}}}}</span>
+<span class="s2">@media(prefers-reduced-motion:reduce){{*{{transition:none!important;}}}}</span>
+<span class="s2">:focus-visible{{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px;}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">&lt;div class="navwrap"&gt;&lt;nav class="nav"&gt;</span>
+<span class="s2">  &lt;a class="brand" href="index.html"&gt;&lt;span class="mark"&gt;&lt;b&gt;40&lt;/b&gt;&lt;i&gt;&lt;/i&gt;&lt;/span&gt;&lt;span class="a"&gt;40 Day &lt;span&gt;Campaigns&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">  &lt;div class="nlinks"&gt;</span>
+<span class="s2">    &lt;a href="browse.html"</span><span class="si">{on_browse}</span><span class="s2">&gt;Campaigns&lt;/a&gt;&lt;a href="finder.html"</span><span class="si">{on_finder}</span><span class="s2">&gt;Finder&lt;/a&gt;</span>
+<span class="s2">    &lt;a href="how-it-works.html"</span><span class="si">{on_how}</span><span class="s2">&gt;How It Works&lt;/a&gt;&lt;a href="pricing.html"</span><span class="si">{on_pricing}</span><span class="s2">&gt;Pricing&lt;/a&gt;</span>
+<span class="s2">    &lt;a href="churches.html"</span><span class="si">{on_church}</span><span class="s2">&gt;For Churches&lt;/a&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="nright"&gt;&lt;a class="btn btn-white" href="signin.html"&gt;Sign in&lt;/a&gt;&lt;a class="btn btn-orange" href="get-access.html"&gt;Get access&lt;/a&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/nav&gt;&lt;/div&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">FOOT</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;footer&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;a class="brand" href="index.html"&gt;&lt;span class="mark"&gt;&lt;b&gt;40&lt;/b&gt;&lt;i&gt;&lt;/i&gt;&lt;/span&gt;&lt;span class="a" style="color:#fff"&gt;40 Day &lt;span style="color:var(--gold)"&gt;Campaigns&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;</span>
+<span class="s2">    &lt;div class="fnav"&gt;</span>
+<span class="s2">      &lt;a href="browse.html"&gt;Browse&lt;/a&gt;&lt;a href="finder.html"&gt;Finder&lt;/a&gt;&lt;a href="how-it-works.html"&gt;How It Works&lt;/a&gt;</span>
+<span class="s2">      &lt;a href="pricing.html"&gt;Pricing&lt;/a&gt;&lt;a href="churches.html"&gt;For Churches&lt;/a&gt;&lt;a href="faq.html"&gt;FAQ&lt;/a&gt;</span>
+<span class="s2">      &lt;a href="about.html"&gt;About&lt;/a&gt;&lt;a href="contact.html"&gt;Contact&lt;/a&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="fbar"&gt;&lt;span&gt;© 2026 40daycampaigns.com · A Lifetogether ministry · Built in the Purpose Driven tradition&lt;/span&gt;</span>
+<span class="s2">  &lt;span&gt;1,000+ campaigns · 50 themes · 10 categories · NIV throughout · &lt;a href="contact.html"&gt;Say hello&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/footer&gt;</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">shell</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">extra_css</span><span class="o">=</span><span class="s1">''</span><span class="p">):</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="s1">''</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'on_browse'</span><span class="p">,</span><span class="s1">'on_finder'</span><span class="p">,</span><span class="s1">'on_how'</span><span class="p">,</span><span class="s1">'on_pricing'</span><span class="p">,</span><span class="s1">'on_church'</span><span class="p">]}</span>
+    <span class="k">if</span> <span class="n">on</span><span class="p">:</span> <span class="n">flags</span><span class="p">[</span><span class="s1">'on_'</span><span class="o">+</span><span class="n">on</span><span class="p">]</span> <span class="o">=</span> <span class="s1">' class="on"'</span>
+    <span class="k">return</span> <span class="n">HEAD</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">extra_css</span><span class="o">=</span><span class="n">extra_css</span><span class="p">,</span> <span class="o">**</span><span class="n">flags</span><span class="p">)</span>
+
+<span class="n">ARROW</span><span class="o">=</span><span class="s1">'&lt;svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"&gt;&lt;path d="M5 12h14M13 6l6 6-6 6"/&gt;&lt;/svg&gt;'</span>
+
+<span class="c1"># ---------------- HOW IT WORKS ----------------</span>
+<span class="n">hiw_css</span> <span class="o">=</span> <span class="s2">""".grid3{grid-template-columns:repeat(3,1fr);} .grid4{grid-template-columns:repeat(4,1fr);} .grid5{grid-template-columns:repeat(5,1fr);}</span>
+<span class="s2">@media(max-width:900px){.grid3,.grid4,.grid5{grid-template-columns:1fr 1fr;}} @media(max-width:560px){.grid3,.grid4,.grid5{grid-template-columns:1fr;}}</span>
+<span class="s2">.fmtcard b{display:block;font-family:'Hanken Grotesk';font-weight:900;font-size:22px;color:var(--orange);}</span>
+<span class="s2">.exp{display:flex;gap:14px;align-items:flex-start;}</span>
+<span class="s2">"""</span>
+<span class="n">how</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'How It Works'</span><span class="p">,</span><span class="s1">'how'</span><span class="p">,</span><span class="n">hiw_css</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;How it works&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;One campaign. Your whole church, moving together.&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;A churchwide campaign aligns the weekend sermon, the small-group study, and every member's daily devotional around one theme for a season — so Sunday doesn't end on Sunday. Here's the process from first click to Celebration Sunday.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+
+<span class="s2">&lt;section class="section" id="what"&gt;&lt;h2&gt;What is a campaign?&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Every campaign in the library is one theme delivered three ways at once, so the whole church hears one message all week long.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards grid3"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;div class="ii"&gt;📖&lt;/div&gt;&lt;h3&gt;Daily devotional&lt;/h3&gt;&lt;p&gt;A short daily reading — Scripture (NIV), reflection, prayer, and one next step — for every member, every day of the campaign.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;div class="ii"&gt;🪑&lt;/div&gt;&lt;h3&gt;Small-group study&lt;/h3&gt;&lt;p&gt;Six leader-led sessions with discussion questions, so groups process together what the church is reading individually.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;div class="ii"&gt;🎤&lt;/div&gt;&lt;h3&gt;Sermon series&lt;/h3&gt;&lt;p&gt;Six aligned message outlines for the weekend, so the pulpit, the living room, and the quiet time all point the same direction.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="process"&gt;&lt;h2&gt;The campaign process&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Most churches run this in about six weeks of prep plus the campaign itself. Nothing here requires a big staff — a solo pastor with a volunteer team can do all of it.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards grid5"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;span class="num"&gt;1&lt;/span&gt;&lt;h3&gt;Pick&lt;/h3&gt;&lt;p&gt;Browse 1,000+ campaigns across 50 themes, or let the &lt;a href="finder.html" style="color:var(--orange);font-weight:600"&gt;Campaign Finder&lt;/a&gt; recommend three matches in six questions.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;span class="num"&gt;2&lt;/span&gt;&lt;h3&gt;Choose a format&lt;/h3&gt;&lt;p&gt;Every campaign runs as a 7-Day, 21-Day, 30-Day, or 40-Day journey, or a 6-Week group series. Pick what your church can commit to.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;span class="num"&gt;3&lt;/span&gt;&lt;h3&gt;Customize&lt;/h3&gt;&lt;p&gt;Add your church name, adjust wording, or order a pastor-branded edition. Export to print PDF, Canva, or Google Docs.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;span class="num"&gt;4&lt;/span&gt;&lt;h3&gt;Launch&lt;/h3&gt;&lt;p&gt;Use the launch kit — graphics, announcement scripts, leader training, and a group sign-up push — to start everyone on Day 1 together.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;span class="num"&gt;5&lt;/span&gt;&lt;h3&gt;Celebrate&lt;/h3&gt;&lt;p&gt;End with Celebration Sunday: stories, baptisms, next steps — and a clear on-ramp to your next season.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="formats"&gt;&lt;h2&gt;Choosing a format&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Same theme, five lengths. A rule of thumb: first campaign ever? Start with 21 days. Churchwide movement with sermon alignment? That's the classic 40.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards grid5"&gt;</span>
+<span class="s2">&lt;div class="card fmtcard"&gt;&lt;b&gt;7-Day&lt;/b&gt;&lt;h3&gt;The spark&lt;/h3&gt;&lt;p&gt;A high-energy week — great for New Year prayer, Holy Week, or testing the waters.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card fmtcard"&gt;&lt;b&gt;21-Day&lt;/b&gt;&lt;h3&gt;The habit&lt;/h3&gt;&lt;p&gt;Three weeks is long enough to form a daily rhythm without exhausting volunteers.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card fmtcard"&gt;&lt;b&gt;30-Day&lt;/b&gt;&lt;h3&gt;The month&lt;/h3&gt;&lt;p&gt;A clean calendar month — ideal for themed months like generosity in November.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card fmtcard"&gt;&lt;b&gt;40-Day&lt;/b&gt;&lt;h3&gt;The movement&lt;/h3&gt;&lt;p&gt;The full churchwide journey with six aligned sermons. Our flagship format.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card fmtcard"&gt;&lt;b&gt;6-Week&lt;/b&gt;&lt;h3&gt;The group series&lt;/h3&gt;&lt;p&gt;Leader-led curriculum for a small-group semester, with or without the daily devotional.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="included"&gt;&lt;h2&gt;What's included in every campaign&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;One license covers your whole congregation — every format, every asset, print rights included.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards grid4"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Daily devotional&lt;/h3&gt;&lt;p&gt;Every day of the journey: Scripture (NIV), a pastoral reflection, a prayer, one question, and one small step.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;6-session group study&lt;/h3&gt;&lt;p&gt;Leader guides, discussion questions, and icebreakers — written for first-time hosts, not seminary grads.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;6 sermon outlines&lt;/h3&gt;&lt;p&gt;Weekend message outlines aligned to each week of the campaign, ready to make your own.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Launch kit&lt;/h3&gt;&lt;p&gt;Promo graphics, announcement scripts, email/text sequences, leader-training video outline, and a Celebration Sunday guide.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="exports"&gt;&lt;h2&gt;Editing &amp; exports&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Everything is yours to adapt. Three ways to take a campaign and make it your church's own:&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards grid3"&gt;</span>
+<span class="s2">&lt;div class="card exp"&gt;&lt;div&gt;&lt;h3&gt;Print-ready PDF&lt;/h3&gt;&lt;p&gt;Download the devotional as a formatted booklet (Letter or A5), ready for your local print shop. A free sample is on every campaign page.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card exp"&gt;&lt;div&gt;&lt;h3&gt;Canva template&lt;/h3&gt;&lt;p&gt;Import the PDF into Canva today to restyle with your church's brand. One-click "Open in Canva" is in development and included free at platform launch.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card exp"&gt;&lt;div&gt;&lt;h3&gt;Google Docs / Word&lt;/h3&gt;&lt;p&gt;All-Access members receive fully editable copies — adapt wording, add local stories, or translate. Delivered with your subscription.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;"&gt;</span>
+<span class="s2">&lt;a class="btn btn-orange" href="browse.html"&gt;Browse the library """</span><span class="o">+</span><span class="n">ARROW</span><span class="o">+</span><span class="s2">"""&lt;/a&gt;</span>
+<span class="s2">&lt;a class="btn btn-white" href="pricing.html"&gt;See pricing&lt;/a&gt;</span>
+<span class="s2">&lt;a class="btn btn-white" href="faq.html"&gt;Read the FAQ&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="c1"># ---------------- PRICING ----------------</span>
+<span class="n">pr_css</span> <span class="o">=</span> <span class="s2">""".tiers{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:18px;align-items:start;}</span>
+<span class="s2">@media(max-width:900px){.tiers{grid-template-columns:1fr;}}</span>
+<span class="s2">.tier{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;position:relative;}</span>
+<span class="s2">.tier.hot{border:2px solid var(--orange);box-shadow:0 24px 50px -30px rgba(242,108,30,.45);}</span>
+<span class="s2">.tier .tag{position:absolute;top:-13px;left:24px;background:var(--orange);color:#fff;font-family:'Hanken Grotesk';font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px;}</span>
+<span class="s2">.tier h3{font-weight:900;font-size:19px;}</span>
+<span class="s2">.tier .who{font-size:13px;color:var(--dim);margin:3px 0 14px;}</span>
+<span class="s2">.price{font-family:'Hanken Grotesk';font-weight:900;font-size:38px;line-height:1;}</span>
+<span class="s2">.price small{font-size:14px;font-weight:700;color:var(--dim);}</span>
+<span class="s2">.per{font-size:12.5px;color:var(--faint);margin:4px 0 16px;}</span>
+<span class="s2">.feat{list-style:none;margin:0 0 20px;padding:0;}</span>
+<span class="s2">.feat li{font-size:13.5px;color:var(--ink-2);padding:6px 0 6px 26px;position:relative;}</span>
+<span class="s2">.feat li::before{content:"✓";position:absolute;left:2px;color:var(--orange);font-weight:900;}</span>
+<span class="s2">.atable{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);}</span>
+<span class="s2">.atable th,.atable td{padding:13px 18px;font-size:14px;text-align:left;border-bottom:1px solid var(--line);}</span>
+<span class="s2">.atable th{font-family:'Hanken Grotesk';font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);background:var(--card);}</span>
+<span class="s2">.atable td b{font-family:'Hanken Grotesk';font-weight:800;}</span>
+<span class="s2">.faq{border-bottom:1px solid var(--line);padding:16px 0;}</span>
+<span class="s2">.faq b{font-family:'Hanken Grotesk';font-weight:800;font-size:15px;display:block;margin-bottom:5px;}</span>
+<span class="s2">.faq p{font-size:14px;color:var(--ink-2);margin:0;}</span>
+<span class="s2">.fine{font-size:12px;color:var(--faint);margin-top:26px;line-height:1.6;}</span>
+<span class="s2">"""</span>
+<span class="n">pricing</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'Pricing'</span><span class="p">,</span><span class="s1">'pricing'</span><span class="p">,</span><span class="n">pr_css</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;Pricing&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Simple pricing for churches of every size&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;One license always covers your entire congregation — devotional, group study, sermon outlines, launch kit, and print rights. No per-seat math, no surprise fees.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+
+<span class="s2">&lt;section class="section" id="tiers"&gt;</span>
+<span class="s2">&lt;div class="tiers"&gt;</span>
+<span class="s2">&lt;div class="tier"&gt;</span>
+<span class="s2">  &lt;h3&gt;Single Campaign&lt;/h3&gt;&lt;div class="who"&gt;For your next series — one campaign, everything included&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="price"&gt;$199&lt;/div&gt;&lt;div class="per"&gt;one-time · per campaign · whole-church license&lt;/div&gt;</span>
+<span class="s2">  &lt;ul class="feat"&gt;</span>
+<span class="s2">    &lt;li&gt;Any one campaign from the 1,000+ library&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;All 5 formats (7, 21, 30, 40-Day &amp;amp; 6-Week)&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Daily devotional + 6-session group study&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;6 sermon outlines + full launch kit&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Print-ready PDF with congregation print rights&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Yours to run again in future years&lt;/li&gt;</span>
+<span class="s2">  &lt;/ul&gt;</span>
+<span class="s2">  &lt;a class="btn btn-dark" href="get-access.html" style="width:100%;justify-content:center;"&gt;Choose a campaign&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="tier hot"&gt;&lt;span class="tag"&gt;Most popular&lt;/span&gt;</span>
+<span class="s2">  &lt;h3&gt;All Access&lt;/h3&gt;&lt;div class="who"&gt;The whole library, all year — priced by weekly attendance&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="price"&gt;from $49&lt;small&gt;/mo&lt;/small&gt;&lt;/div&gt;&lt;div class="per"&gt;billed annually · see the attendance table below&lt;/div&gt;</span>
+<span class="s2">  &lt;ul class="feat"&gt;</span>
+<span class="s2">    &lt;li&gt;Unlimited campaigns from all 50 themes&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Every format, every audience edition&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Editable Google Docs / Word copies&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Campaign Finder team workspace&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;New campaigns added monthly&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Priority support &amp;amp; launch coaching call&lt;/li&gt;</span>
+<span class="s2">  &lt;/ul&gt;</span>
+<span class="s2">  &lt;a class="btn btn-orange" href="get-access.html" style="width:100%;justify-content:center;"&gt;Start All Access&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="tier" id="premium"&gt;</span>
+<span class="s2">  &lt;h3&gt;Premium &amp;amp; Custom&lt;/h3&gt;&lt;div class="who"&gt;Make it unmistakably yours&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="price"&gt;from $499&lt;/div&gt;&lt;div class="per"&gt;per project · quoted before work begins&lt;/div&gt;</span>
+<span class="s2">  &lt;ul class="feat"&gt;</span>
+<span class="s2">    &lt;li&gt;Pastor-branded edition — your logo, colors &amp;amp; pastor's name across all formats ($499/campaign)&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Fully custom campaign written for your church's vision (from $4,900)&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Network, denomination &amp;amp; multisite licensing&lt;/li&gt;</span>
+<span class="s2">    &lt;li&gt;Translation-ready source files&lt;/li&gt;</span>
+<span class="s2">  &lt;/ul&gt;</span>
+<span class="s2">  &lt;a class="btn btn-white" href="contact.html" style="width:100%;justify-content:center;"&gt;Talk to us&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section"&gt;&lt;h2&gt;All Access by attendance&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Fair pricing that scales with your weekend attendance — comparable church media libraries charge similar or more for a fraction of the campaign depth.&lt;/div&gt;</span>
+<span class="s2">&lt;table class="atable"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Average weekly attendance&lt;/th&gt;&lt;th&gt;Monthly&lt;/th&gt;&lt;th&gt;Annual (2 months free)&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td&gt;&lt;b&gt;Under 100&lt;/b&gt;&lt;/td&gt;&lt;td&gt;$49/mo&lt;/td&gt;&lt;td&gt;$490/yr&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td&gt;&lt;b&gt;100 – 250&lt;/b&gt;&lt;/td&gt;&lt;td&gt;$89/mo&lt;/td&gt;&lt;td&gt;$890/yr&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td&gt;&lt;b&gt;251 – 500&lt;/b&gt;&lt;/td&gt;&lt;td&gt;$149/mo&lt;/td&gt;&lt;td&gt;$1,490/yr&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td&gt;&lt;b&gt;501 – 1,000&lt;/b&gt;&lt;/td&gt;&lt;td&gt;$249/mo&lt;/td&gt;&lt;td&gt;$2,490/yr&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td&gt;&lt;b&gt;Over 1,000 / multisite / networks&lt;/b&gt;&lt;/td&gt;&lt;td colspan="2"&gt;&lt;a href="contact.html" style="color:var(--orange);font-weight:700;"&gt;Custom — talk to us&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="faq"&gt;&lt;h2&gt;Pricing questions&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Does one license really cover our whole church?&lt;/b&gt;&lt;p&gt;Yes. Every price on this page is a congregation-wide license — print the devotional for every household, run unlimited groups, use it across your campuses' weekend services. Multisite churches over 1,000 use network pricing.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;What's the difference between Single Campaign and All Access?&lt;/b&gt;&lt;p&gt;Single Campaign is a one-time purchase of one campaign, forever. All Access is an annual subscription to the entire 1,000+ library plus editable source files and everything we add during your term.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Can we cancel All Access?&lt;/b&gt;&lt;p&gt;Anytime. Annual plans refund unused full months in your first 60 days; after that your access simply runs through the end of the term. Campaigns you've already launched stay launched.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Is there a guarantee?&lt;/b&gt;&lt;p&gt;30 days, no questions. If your first campaign isn't a fit, we refund it in full.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Do you discount for church plants and small churches?&lt;/b&gt;&lt;p&gt;Yes — plants under 3 years old and churches under 50 in attendance get 40</span><span class="si">% o</span><span class="s2">ff any tier. &lt;a href="contact.html" style="color:var(--orange);font-weight:600;"&gt;Just ask.&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="fine"&gt;All prices USD. Scripture quotations are from the Holy Bible, New International Version® (NIV®), used with permission of Biblica, Inc. Licenses cover use within your local congregation and its ministries; resale and redistribution outside your church are not permitted. Prices shown are launch pricing and are locked for the life of your subscription.&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="c1"># ---------------- FOR CHURCHES / AUDIENCES ----------------</span>
+<span class="n">ch_css</span> <span class="o">=</span> <span class="s2">""".aud{display:grid;grid-template-columns:1fr 1fr;gap:18px;}</span>
+<span class="s2">@media(max-width:800px){.aud{grid-template-columns:1fr;}}</span>
+<span class="s2">.story{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;}</span>
+<span class="s2">.story .q{font-family:'Hanken Grotesk';font-weight:700;font-size:15.5px;line-height:1.45;margin-bottom:12px;}</span>
+<span class="s2">.story .who{font-size:12.5px;color:var(--dim);}</span>
+<span class="s2">.stories{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}</span>
+<span class="s2">@media(max-width:860px){.stories{grid-template-columns:1fr;}}</span>
+<span class="s2">"""</span>
+<span class="n">churches</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'For Churches'</span><span class="p">,</span><span class="s1">'church'</span><span class="p">,</span><span class="n">ch_css</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;Who it's for&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Built for churches. Loved by families, advisors &amp;amp; networks.&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;Lifetogether campaigns started in the local church — and the same library now serves homes, advisor practices, and whole networks. Find your fit below.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+
+<span class="s2">&lt;section class="section" id="churches"&gt;&lt;h2&gt;Churches&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;The core of everything we build. One campaign aligns your weekend services, small groups, and every member's daily devotional around a single theme — so momentum from Sunday carries through Saturday.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards aud"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;For senior pastors&lt;/h3&gt;&lt;p&gt;Pick a theme, and the sermon series, group study, and daily devotional arrive already aligned. You preach; the campaign carries the message into the week. &lt;a href="how-it-works.html" style="color:var(--orange);font-weight:600;"&gt;See the process →&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;For groups &amp;amp; discipleship pastors&lt;/h3&gt;&lt;p&gt;Campaigns are the best group-launch engine we know: churches typically see their biggest sign-up wave of the year when a churchwide campaign begins. Every study is written for first-time hosts.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="families"&gt;&lt;h2&gt;Families&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;A whole category of campaigns — Family &amp;amp; Parenting, plus Family Legacy themes — is written for the home: dinner-table conversations, milestone moments, and faith that gets passed down on purpose.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards aud"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Around the table&lt;/h3&gt;&lt;p&gt;Campaigns like &lt;em&gt;Passing Down Faith&lt;/em&gt; and &lt;em&gt;Parenting on Purpose&lt;/em&gt; turn daily readings into family conversations. &lt;a href="browse.html?cat=4" style="color:var(--orange);font-weight:600;"&gt;Browse Family &amp;amp; Parenting →&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Across generations&lt;/h3&gt;&lt;p&gt;&lt;em&gt;Grandparent Legacy&lt;/em&gt; and &lt;em&gt;Family Legacy&lt;/em&gt; campaigns help grandparents and legacy families bless the next generation with more than money.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="advisors"&gt;&lt;h2&gt;Advisors&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Financial advisors, CPAs, and wealth managers use Money &amp;amp; Stewardship and Generosity campaigns as client journeys — a 40-day conversation about what money is for.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="cards aud"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;For the practice&lt;/h3&gt;&lt;p&gt;Walk client families through &lt;em&gt;God Owns It All&lt;/em&gt; or &lt;em&gt;Family Legacy&lt;/em&gt; ahead of estate and giving decisions. &lt;a href="browse.html?cat=5" style="color:var(--orange);font-weight:600;"&gt;Browse Money &amp;amp; Stewardship →&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;For giving conversations&lt;/h3&gt;&lt;p&gt;Generosity &amp;amp; Kingdom Impact campaigns give donor families shared language before they build a giving plan. &lt;a href="browse.html?cat=6" style="color:var(--orange);font-weight:600;"&gt;Browse Generosity →&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="networks"&gt;&lt;h2&gt;Networks &amp;amp; denominations&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Run one campaign across a hundred churches at once — shared launch dates, shared momentum, network-level reporting, and custom licensing. &lt;a href="contact.html" style="color:var(--orange);font-weight:600;"&gt;Talk to us about network licensing →&lt;/a&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="section" id="stories"&gt;&lt;h2&gt;Church stories&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd"&gt;Early results from churches running Lifetogether-tradition campaigns. (Names shared with permission; full written case studies are being prepared for platform launch.)&lt;/div&gt;</span>
+<span class="s2">&lt;div class="stories"&gt;</span>
+<span class="s2">&lt;div class="story"&gt;&lt;div class="q"&gt;"Our groups doubled during the campaign — and eight months later, most of them are still meeting."&lt;/div&gt;&lt;div class="who"&gt;Groups pastor · suburban church of ~450&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="story"&gt;&lt;div class="q"&gt;"For forty days the whole church was having one conversation. I've never seen alignment like that here."&lt;/div&gt;&lt;div class="who"&gt;Senior pastor · church of ~180&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="story"&gt;&lt;div class="q"&gt;"The launch kit did the heavy lifting. Two volunteers ran what used to take our whole staff."&lt;/div&gt;&lt;div class="who"&gt;Executive pastor · church of ~900&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div style="margin-top:22px;"&gt;&lt;a class="btn btn-orange" href="get-access.html"&gt;Bring a campaign to your church """</span><span class="o">+</span><span class="n">ARROW</span><span class="o">+</span><span class="s2">"""&lt;/a&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="c1"># ---------------- ABOUT ----------------</span>
+<span class="n">about</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'About'</span><span class="p">,</span><span class="s1">''</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;About Lifetogether&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Helping the whole church do life together&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;40 Day Campaigns is the campaign library of Lifetogether, founded by Brett Eastman — built in the Purpose Driven tradition to become the world's largest library of churchwide campaigns.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+<span class="s2">&lt;section class="section"&gt;&lt;h2&gt;Our story&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="sd" style="max-width:72ch;"&gt;Brett Eastman helped pioneer the churchwide campaign model through leadership at Saddleback Church and Willow Creek — seasons that produced some of the most-used small-group tools in the modern church and proved a simple idea: churches change fastest when everyone reads, discusses, and hears the same thing at the same time. Lifetogether exists to put that model within reach of every church — not just the megachurch with a publishing arm. Fifty themes. A thousand campaigns and growing. Every felt need a pastor plans around, ready to launch.&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">&lt;section class="section"&gt;&lt;h2&gt;What we believe about the work&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="cards" style="grid-template-columns:repeat(3,1fr);"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Scripture first&lt;/h3&gt;&lt;p&gt;Every campaign is anchored in a passage, not a personality. NIV throughout, used with permission of Biblica.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Pastoral, not academic&lt;/h3&gt;&lt;p&gt;Plain language, honest felt needs, and gentle care on hard topics — grief, anxiety, money stress — with encouragement toward real-life support.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Together, always&lt;/h3&gt;&lt;p&gt;Nobody does this alone. Every campaign is designed to be walked with a group, a family, or a friend.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;section class="section"&gt;</span>
+<span class="s2">&lt;div style="display:flex;gap:12px;flex-wrap:wrap;"&gt;</span>
+<span class="s2">&lt;a class="btn btn-orange" href="browse.html"&gt;Explore the library """</span><span class="o">+</span><span class="n">ARROW</span><span class="o">+</span><span class="s2">"""&lt;/a&gt;</span>
+<span class="s2">&lt;a class="btn btn-white" href="contact.html"&gt;Get in touch&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="c1"># ---------------- CONTACT ----------------</span>
+<span class="n">ct_css</span> <span class="o">=</span> <span class="s2">""".cgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;}</span>
+<span class="s2">@media(max-width:820px){.cgrid{grid-template-columns:1fr;}}</span>
+<span class="s2">.field{margin-bottom:14px;}</span>
+<span class="s2">.field label{font-family:'Hanken Grotesk';font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:6px;}</span>
+<span class="s2">.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-family:'Inter';font-size:14px;background:#fff;}</span>
+<span class="s2">.ok{display:none;background:#EDF9F0;border:1px solid #BFE8CB;color:#1E6B34;border-radius:12px;padding:14px 16px;font-size:14px;margin-top:14px;}</span>
+<span class="s2">"""</span>
+<span class="n">contact</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="n">ct_css</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;Contact&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Talk to a real person&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;Questions about a campaign, pricing, network licensing, or a walkthrough for your team — send a note and we'll reply within one business day.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+<span class="s2">&lt;section class="section"&gt;&lt;div class="cgrid"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Your name&lt;/label&gt;&lt;input id="cn" type="text" placeholder="Pastor Sam Rivera"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Email&lt;/label&gt;&lt;input id="ce" type="email" placeholder="sam@yourchurch.org"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Church / organization&lt;/label&gt;&lt;input id="cc" type="text" placeholder="Grace Community Church"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;What can we help with?&lt;/label&gt;&lt;select id="ct"&gt;&lt;option&gt;Request a walkthrough&lt;/option&gt;&lt;option&gt;Pricing question&lt;/option&gt;&lt;option&gt;Pastor-branded / custom campaign&lt;/option&gt;&lt;option&gt;Network or denomination licensing&lt;/option&gt;&lt;option&gt;Something else&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Message&lt;/label&gt;&lt;textarea id="cm" rows="4" placeholder="Tell us a little about your church and what you're planning…"&gt;&lt;/textarea&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;button class="btn btn-orange" id="csend"&gt;Send message&lt;/button&gt;</span>
+<span class="s2">&lt;div class="ok" id="cok"&gt;Thanks — your message is ready in your email app. If it didn't open, write us directly at &lt;b&gt;hello@40daycampaigns.com&lt;/b&gt;.&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;</span>
+<span class="s2">&lt;div class="card" style="margin-bottom:16px;"&gt;&lt;h3&gt;Email&lt;/h3&gt;&lt;p&gt;&lt;a href="mailto:hello@40daycampaigns.com" style="color:var(--orange);font-weight:700;"&gt;hello@40daycampaigns.com&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card" style="margin-bottom:16px;"&gt;&lt;h3&gt;Walkthroughs&lt;/h3&gt;&lt;p&gt;15-minute screen-share for you or your whole staff — we'll match campaigns to your calendar and answer anything. Choose "Request a walkthrough" in the form.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;Social&lt;/h3&gt;&lt;p&gt;Our channels go live with the platform launch — until then, this inbox is the fastest way to reach us.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">document.getElementById('csend').addEventListener('click',()=&gt;{</span>
+<span class="s2"> const v=id=&gt;document.getElementById(id).value;</span>
+<span class="s2"> const body=encodeURIComponent(`Name: ${v('cn')}</span><span class="se">\n</span><span class="s2">Church: ${v('cc')}</span><span class="se">\n</span><span class="s2">Topic: ${v('ct')}</span><span class="se">\n\n</span><span class="s2">${v('cm')}`);</span>
+<span class="s2"> location.href=`mailto:hello@40daycampaigns.com?subject=${encodeURIComponent(v('ct')+' — '+(v('cc')||'website inquiry'))}&amp;body=$</span><span class="si">{body}</span><span class="s2">`;</span>
+<span class="s2"> document.getElementById('cok').style.display='block';</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="c1"># ---------------- SIGN IN ----------------</span>
+<span class="n">si</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="n">ct_css</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;Sign in&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Member sign-in opens at platform launch&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;Accounts, saved plans, and your church's campaign dashboard arrive with the full platform. Request early access and we'll create your account on day one.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+<span class="s2">&lt;section class="section"&gt;&lt;div class="cgrid"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Email&lt;/label&gt;&lt;input type="email" placeholder="you@yourchurch.org" disabled style="background:var(--card);"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Password&lt;/label&gt;&lt;input type="password" placeholder="••••••••" disabled style="background:var(--card);"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;button class="btn btn-dark" disabled style="opacity:.45;cursor:not-allowed;"&gt;Sign in (available at launch)&lt;/button&gt;</span>
+<span class="s2">&lt;p style="font-size:13px;color:var(--dim);margin-top:14px;"&gt;Not a member yet? &lt;a href="get-access.html" style="color:var(--orange);font-weight:700;"&gt;Request early access →&lt;/a&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;div class="card"&gt;&lt;h3&gt;Why early access?&lt;/h3&gt;&lt;p&gt;Founding churches get launch pricing locked for life, first pick of pastor-branded slots, and a hands-on launch coaching call. &lt;a href="pricing.html" style="color:var(--orange);font-weight:600;"&gt;See pricing →&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="c1"># ---------------- GET ACCESS ----------------</span>
+<span class="n">ga</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'Get access'</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="n">ct_css</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;Get access&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Bring a campaign to your church&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;Tell us about your church and what you're planning — we'll set you up with the right tier, and founding churches lock launch pricing for life.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+<span class="s2">&lt;section class="section"&gt;&lt;div class="cgrid"&gt;</span>
+<span class="s2">&lt;div class="card"&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Your name&lt;/label&gt;&lt;input id="gn" type="text" placeholder="Pastor Sam Rivera"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Email&lt;/label&gt;&lt;input id="ge" type="email" placeholder="sam@yourchurch.org"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Church name&lt;/label&gt;&lt;input id="gc" type="text" placeholder="Grace Community Church"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Average weekly attendance&lt;/label&gt;&lt;select id="gs"&gt;&lt;option&gt;Under 100&lt;/option&gt;&lt;option&gt;100 – 250&lt;/option&gt;&lt;option&gt;251 – 500&lt;/option&gt;&lt;option&gt;501 – 1,000&lt;/option&gt;&lt;option&gt;Over 1,000 / multisite&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Which tier interests you?&lt;/label&gt;&lt;select id="gt"&gt;&lt;option&gt;All Access (annual)&lt;/option&gt;&lt;option&gt;Single Campaign ($199)&lt;/option&gt;&lt;option&gt;Premium / pastor-branded&lt;/option&gt;&lt;option&gt;Not sure yet — help me choose&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="field"&gt;&lt;label&gt;Campaign or theme you have in mind (optional)&lt;/label&gt;&lt;input id="gk" type="text" placeholder="e.g., God Owns It All, or 'something on anxiety'"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;button class="btn btn-orange" id="gsend"&gt;Request access&lt;/button&gt;</span>
+<span class="s2">&lt;div class="ok" id="gok"&gt;Request drafted in your email app — send it and we'll reply within one business day. Or write &lt;b&gt;hello@40daycampaigns.com&lt;/b&gt; directly.&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;</span>
+<span class="s2">&lt;div class="card" style="margin-bottom:16px;"&gt;&lt;h3&gt;What happens next&lt;/h3&gt;&lt;p&gt;1. We reply with your tier and a launch-window suggestion.&lt;br&gt;2. You pick a campaign (or take the &lt;a href="finder.html" style="color:var(--orange);font-weight:600;"&gt;Finder&lt;/a&gt;).&lt;br&gt;3. We schedule your launch coaching call.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="card"&gt;&lt;h3&gt;No pressure, ever&lt;/h3&gt;&lt;p&gt;Every tier has a 30-day guarantee, and this request doesn't commit you to anything — it starts a conversation.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">document.getElementById('gsend').addEventListener('click',()=&gt;{</span>
+<span class="s2"> const v=id=&gt;document.getElementById(id).value;</span>
+<span class="s2"> const body=encodeURIComponent(`Name: ${v('gn')}</span><span class="se">\n</span><span class="s2">Church: ${v('gc')}</span><span class="se">\n</span><span class="s2">Attendance: ${v('gs')}</span><span class="se">\n</span><span class="s2">Tier: ${v('gt')}</span><span class="se">\n</span><span class="s2">Campaign in mind: ${v('gk')}`);</span>
+<span class="s2"> location.href=`mailto:hello@40daycampaigns.com?subject=${encodeURIComponent('Early access request — '+(v('gc')||'new church'))}&amp;body=$</span><span class="si">{body}</span><span class="s2">`;</span>
+<span class="s2"> document.getElementById('gok').style.display='block';</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="c1"># ---------------- FAQ ----------------</span>
+<span class="n">faq_css</span> <span class="o">=</span> <span class="s2">""".faq{border-bottom:1px solid var(--line);padding:18px 0;}</span>
+<span class="s2">.faq b{font-family:'Hanken Grotesk';font-weight:800;font-size:16px;display:block;margin-bottom:6px;}</span>
+<span class="s2">.faq p{font-size:14.5px;color:var(--ink-2);margin:0;max-width:76ch;}</span>
+<span class="s2">"""</span>
+<span class="n">faqp</span> <span class="o">=</span> <span class="n">shell</span><span class="p">(</span><span class="s1">'FAQ'</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="n">faq_css</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;header class="head"&gt;&lt;span class="eb"&gt;FAQ&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Everything pastors ask us&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;The straight answers — and if yours isn't here, &lt;a href="contact.html" style="color:var(--orange);font-weight:700;"&gt;just ask&lt;/a&gt;.&lt;/p&gt;</span>
+<span class="s2">&lt;/header&gt;</span>
+<span class="s2">&lt;section class="section"&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;What exactly is a "campaign"?&lt;/b&gt;&lt;p&gt;One theme, delivered three ways at once for a set season: a daily devotional for every member, a 6-session small-group study, and 6 aligned sermon outlines — plus a launch kit. &lt;a href="how-it-works.html" style="color:var(--orange);font-weight:600;"&gt;Full walkthrough here.&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;How big is the library?&lt;/b&gt;&lt;p&gt;1,000+ campaigns across 50 themes in 10 categories, each available in 5 formats (7-Day, 21-Day, 30-Day, 40-Day, and 6-Week group series). New campaigns are added monthly for All Access members.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Which Bible translation do you use?&lt;/b&gt;&lt;p&gt;NIV throughout, used with permission of Biblica, Inc.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;How long does prep take?&lt;/b&gt;&lt;p&gt;Most churches run about six weeks of prep: pick and customize (weeks 1–2), recruit hosts and promote (weeks 3–5), launch Sunday (week 6). The launch kit includes the whole timeline.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Do we need a big staff?&lt;/b&gt;&lt;p&gt;No. Everything is written for a solo pastor with a volunteer team — group studies assume first-time hosts, and the launch kit includes ready-to-read announcement scripts.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Can we edit the materials?&lt;/b&gt;&lt;p&gt;Yes. Print PDFs come with every license; All Access adds fully editable Google Docs/Word files; Canva import works today with one-click integration in development. Pastor-branded editions are done for you.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;What does it cost?&lt;/b&gt;&lt;p&gt;$199 for a single campaign, or All Access from $49/month (by attendance). &lt;a href="pricing.html" style="color:var(--orange);font-weight:600;"&gt;Full pricing here.&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;How do sensitive topics get handled?&lt;/b&gt;&lt;p&gt;Campaigns on grief, anxiety, burnout, and financial stress use gentle, pastoral framing — permission to go slow, comforting Scripture, and consistent encouragement toward a pastor, trusted friend, or professional support where that's wise.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="faq"&gt;&lt;b&gt;Is there a guarantee?&lt;/b&gt;&lt;p&gt;30 days on everything, no questions asked.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;"&gt;</span>
+<span class="s2">&lt;a class="btn btn-orange" href="finder.html"&gt;Find your campaign """</span><span class="o">+</span><span class="n">ARROW</span><span class="o">+</span><span class="s2">"""&lt;/a&gt;</span>
+<span class="s2">&lt;a class="btn btn-white" href="contact.html"&gt;Ask something else&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span> <span class="o">+</span> <span class="n">FOOT</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">html</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">'how-it-works.html'</span><span class="p">,</span><span class="n">how</span><span class="p">),(</span><span class="s1">'pricing.html'</span><span class="p">,</span><span class="n">pricing</span><span class="p">),(</span><span class="s1">'churches.html'</span><span class="p">,</span><span class="n">churches</span><span class="p">),</span>
+                   <span class="p">(</span><span class="s1">'about.html'</span><span class="p">,</span><span class="n">about</span><span class="p">),(</span><span class="s1">'contact.html'</span><span class="p">,</span><span class="n">contact</span><span class="p">),(</span><span class="s1">'signin.html'</span><span class="p">,</span><span class="n">si</span><span class="p">),</span>
+                   <span class="p">(</span><span class="s1">'get-access.html'</span><span class="p">,</span><span class="n">ga</span><span class="p">),(</span><span class="s1">'faq.html'</span><span class="p">,</span><span class="n">faqp</span><span class="p">)]:</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span><span class="n">name</span><span class="p">),</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'built'</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/site/build_pages.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_leader.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Rewriting youth devotional with video curriculum</div>
+<h1>build_leader.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">22 KB</span>
+<a class="btn" href="../../artifacts/Rewriting%20youth%20devotional%20with%20video%20curriculum/build_leader.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the generator that injects leader notes into the participant text</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""</span>
+<span class="sd">Builds the Leader Edition as a derivative of the Participant Guide.</span>
+
+<span class="sd">The participant text is never retyped here. It is read from curr.md and leader</span>
+<span class="sd">notes are injected at named anchors. Change curr.md and rerun this script and</span>
+<span class="sd">the Leader Edition rebuilds to match, so the two can never drift.</span>
+
+<span class="sd">Usage:  python3 build_leader.py</span>
+<span class="sd">Output: leader_edition.md</span>
+<span class="sd">"""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="n">PARTICIPANT</span> <span class="o">=</span> <span class="s1">'curr.md'</span>
+<span class="n">OUT</span> <span class="o">=</span> <span class="s1">'leader_edition.md'</span>
+
+<span class="c1"># ---------------------------------------------------------------- front matter</span>
+
+<span class="n">FRONT</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""## **GOD OWNS IT ALL**</span>
+
+<span class="s2">### **Student Edition** · Leader Edition</span>
+
+<span class="s2">#### **A Six-Session Journey on Ownership, Contentment, Stewardship, Confidence, Generosity, and Legacy**</span>
+
+<span class="s2">*Ron Blue with Brett Eastman*</span>
+
+<span class="s2">&gt; **This book contains everything in the student guide, in the same order, plus leader notes.** Your students' pages and your pages match line for line, so you can run the session from this book alone. Leader notes are set apart and are for you, not to be read aloud.</span>
+
+<span class="s2">## **Before You Lead Anything**</span>
+
+<span class="s2">You don't have to be good with money to lead this.</span>
+
+<span class="s2">That isn't a nice thing to say so you'll feel better. It's the actual best-case setup. A leader who admits they're still figuring money out builds more trust with students than one who has it handled, because this whole series is about honesty rather than competence. If a student asks you something financial you can't answer, "I don't know, I'm still working that out myself" is a better answer than a guess.</span>
+
+<span class="s2">What you do need to do is read the session before you walk in. Not skim it. Read it, do the exercise yourself, and notice where it gets uncomfortable for you, because that is exactly where it will get uncomfortable for them.</span>
+
+<span class="s2">Six things that will make you better at this than any amount of preparation.</span>
+
+<span class="s2">**Let silence work.** After you ask a question, count to ten in your head. Ten is much longer than it feels. Students are used to adults rescuing silence, so they have learned to wait it out. Stop rescuing and they start talking. The best follow-up you have is "tell me more about that."</span>
+
+<span class="s2">**Answer first when it's hard, not when it's easy.** On the light questions, let students go first. On the real ones, model it. Go first, be honest, keep it short. Your honesty sets the ceiling for the room, and they will never go deeper than you do.</span>
+
+<span class="s2">**Don't fix anybody.** When a student says something real, the instinct is to solve it, or find a verse, or tie a bow. Resist all three. Receive it. "That's a lot to carry" is enough. This series touches fear, family money stress, and shame, and a student who gets fixed once will not say the real thing again.</span>
+
+<span class="s2">**Never ask for numbers, and don't let the group ask either.** The no-numbers promise is signed in the front of every student's guide, and holding it is on you. If a student volunteers a number, don't repeat it or build on it. Move on gently.</span>
+
+<span class="s2">**Watch for the student carrying it at home.** In most groups there is at least one student whose family is genuinely stressed about money right now. They will not tell you. They may go quiet in sessions two and four especially. Follow up privately, don't put them on the spot, and don't build a group moment around them.</span>
+
+<span class="s2">**Rotate and share the load.** Healthy groups rotate hosting and leading. Nobody should carry six weeks alone, and rotating develops the students who will lead next.</span>
+
+<span class="s2">## **What to Do When It Gets Heavy**</span>
+
+<span class="s2">It will, probably in session four.</span>
+
+<span class="s2">When a student shares something hard, the group's job is to receive it, not solve it. Don't rush to advice or a verse that closes it down. Sit with it. "Thanks for saying that out loud" is a complete response.</span>
+
+<span class="s2">If a student discloses something beyond what a small group can hold, family crisis, real fear about safety, anything about harming themselves, that is not a group moment. Follow up privately, that day, and get your youth pastor involved. You are not the last line of help and you should not try to be.</span>
+
+<span class="s2">If the group itself feels off in session two, relax. Groups usually don't gel until three or four. Finish the six weeks before deciding anything.</span>
+
+<span class="s2">## **Answer Keys, All Six Sessions**</span>
+
+<span class="s2">*Each key also appears beside its own session. Don't read these aloud during the video.*</span>
+
+<span class="s2">**Session One** · life · image · created / His · good / very · holding · borrowed / yours</span>
+
+<span class="s2">**Session Two** · have · finish line · what is it · day · rotten · store · normal · industries / business model · hitting / trusting</span>
+
+<span class="s2">**Session Three** · not looking · holding · could handle · afraid · identical / Faithfulness · fear · fear · safe move / failure</span>
+
+<span class="s2">**Session Four** · out there / in here · 2:00 a.m. · real · care · Quiet / still · I am with you · weather / boat · outcome / Person · agreement</span>
+
+<span class="s2">**Session Five** · you / you · have · reservoir · stagnant / rot · sack lunch · All of it · holding / released · poorer · amount / heart</span>
+
+<span class="s2">**Session Six** · faithful / trend · small stuff · famous / you · are · bowl · identity · wasted · you / up · window / view</span>
+
+<span class="s2">"""</span>
+
+<span class="n">BACK</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">## **Leading After Session Six**</span>
+
+<span class="s2">The six weeks were the easy part. There was a rhythm, a video, a page, and a room. All of that stops now, and what is left is whatever actually got built.</span>
+
+<span class="s2">Three things worth doing in the two weeks after.</span>
+
+<span class="s2">**Follow up individually, once.** One message to each student, naming the one thing you noticed in them. Not a group text. This is the highest-return thing you will do in the whole series and it takes about twenty minutes.</span>
+
+<span class="s2">**Ask what they kept.** Not what they learned. What they kept. If the answer is nothing, that's useful information and it isn't a failure, since most people keep nothing from most things.</span>
+
+<span class="s2">**Do something together that isn't a study.** A meal, a service thing, anything. Groups that meet once more without curriculum usually stay groups.</span>
+
+<span class="s2">And keep the student who went quiet in session four on your radar. That one matters more than the rest of this page.</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ------------------------------------------------------------------ the notes</span>
+<span class="c1"># Injected BEFORE the section header named in the key.</span>
+<span class="c1"># 'SETUP' goes immediately after the session title block.</span>
+
+<span class="n">NOTES</span> <span class="o">=</span> <span class="p">{</span>
+<span class="mi">1</span><span class="p">:</span> <span class="p">{</span>
+ <span class="s1">'SETUP'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"This session sets the tone for all six. Budget more time for Come Together than you think you need, "</span>
+   <span class="s2">"because the group agreement is the foundation for everything after it. Read it aloud rather than summarizing, "</span>
+   <span class="s2">"then have students sign it. It feels formal. Do it anyway. Signing something makes it real in a way that "</span>
+   <span class="s2">"agreeing to it doesn't.</span><span class="se">\n\n</span><span class="s2">Bring pens. Every week. Students will not have them.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**The one thing to get right this week:** the no-numbers promise. Say it plainly and say it early. Half the "</span>
+   <span class="s2">"room walked in braced for a money study that is going to expose them.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**Answer key** · life · image · created / His · good / very · holding · borrowed / yours"</span><span class="p">),</span>
+ <span class="s1">'Come together'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Pray first, then read the no-numbers paragraph word for word rather than paraphrasing. Then the "</span>
+   <span class="s2">"agreement, then signatures. The opening question about being protective is meant to be light. Let it be light. "</span>
+   <span class="s2">"Don't push anybody deeper here."</span><span class="p">),</span>
+ <span class="s1">'Watch the video'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Hand out the pens now. Don't read answers aloud, and don't stop the video to catch anybody up.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**Pause and reflect is sixty seconds, timed and silent.** Say </span><span class="se">\"</span><span class="s2">we're going to sit here for a minute, that's on "</span>
+   <span class="s2">"purpose</span><span class="se">\"</span><span class="s2"> so nobody thinks something went wrong."</span><span class="p">),</span>
+ <span class="s2">"Let's talk about it"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The board question is your easiest entry. Most students can name something they're carrying "</span>
+   <span class="s2">"that belongs to somebody else. If the room is slow, go first with a small real one of your own.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**The third question is the honest one.** Somebody on the show said that if they stopped holding it all together, "</span>
+   <span class="s2">"they don't know what would be left of them. If a student agrees with that out loud, don't move on quickly. Sit in "</span>
+   <span class="s2">"it. That sentence is the emotional center of the episode.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**If you're short on time, keep the fourth question.**"</span><span class="p">),</span>
+ <span class="s1">'Open hands'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Say clearly that nobody reads this out loud. Then be quiet and let them write for four to five "</span>
+   <span class="s2">"minutes. Watch for the student who fills it in fast and shallow, and don't call it out."</span><span class="p">),</span>
+ <span class="s1">'Before you go'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Read the prayer or pray your own. Then point them to the devotional, days one through seven, and "</span>
+   <span class="s2">"tell them you'll ask next week who read any of it. Then actually ask.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**Your prayer, if you want one:** God, thank you for these students and for six weeks together. Nobody here has "</span>
+   <span class="s2">"this figured out, including me. Quiet the part of us that wants to look fine. Show us where we have been carrying "</span>
+   <span class="s2">"weight you never asked us to carry. Amen."</span><span class="p">),</span>
+<span class="p">},</span>
+<span class="mi">2</span><span class="p">:</span> <span class="p">{</span>
+ <span class="s1">'SETUP'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"This is the session where the quiet student gets quiet. Wanting things is embarrassing to admit out loud "</span>
+   <span class="s2">"at this age, and half your room is carrying a comparison problem they have never named. Your job is to make "</span>
+   <span class="s2">"wanting things normal instead of shameful. Go first on the opening question and pick something a little "</span>
+   <span class="s2">"embarrassing.</span><span class="se">\n\n</span><span class="s2">**The one thing to get right this week:** nobody compares anything. If two students start "</span>
+   <span class="s2">"measuring what they have against each other, stop it kindly and immediately. This is the session where that does "</span>
+   <span class="s2">"the most damage.</span><span class="se">\n\n</span><span class="s2">**Answer key** · have · finish line · what is it · day · rotten · store · normal · "</span>
+   <span class="s2">"industries / business model · hitting / trusting"</span><span class="p">),</span>
+ <span class="s1">'Come together'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The opening question asks how long the buzz lasted on something they saved for. Most students will "</span>
+   <span class="s2">"underestimate it and then correct themselves. Let them correct themselves. Don't do it for them."</span><span class="p">),</span>
+ <span class="s1">'Watch the video'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Watch for the moment near the end of the game when sleep comes out last and Caroline has already "</span>
+   <span class="s2">"committed her top spots. Students laugh, then go quiet. If your group reacts to that, it's your best entry into "</span>
+   <span class="s2">"discussion, better than any question on the page.</span><span class="se">\n\n</span><span class="s2">**Sixty seconds of silence after.** Some students will name "</span>
+   <span class="s2">"something small and real, like sleep. Take that as seriously as the big answers."</span><span class="p">),</span>
+ <span class="s2">"Let's talk about it"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Asking what their feed tells them they are missing works better than asking about money "</span>
+   <span class="s2">"directly, and it gets to the same place. Most students have never said this out loud.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**The fourth question is the peak.** It asks whether any amount would actually let them exhale. Let the silence "</span>
+   <span class="s2">"sit. If the honest answer in the room is no, that is exactly right, and it is the whole point of the session."</span><span class="p">),</span>
+ <span class="s1">'Draw your finish line'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Say plainly there are no amounts anywhere on this page. Students who hear </span><span class="se">\"</span><span class="s2">finish line</span><span class="se">\"</span><span class="s2"> "</span>
+   <span class="s2">"think you want a salary number. The last prompt, what they would do with what's left over, is the one that "</span>
+   <span class="s2">"matters. Give them time for it."</span><span class="p">),</span>
+ <span class="s1">'Before you go'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Days eight through fourteen. Day fourteen is the hardest and best one in the week. Mention it.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**Your prayer, if you want one:** God, we are all chasing something and most of us could not name it if you asked. "</span>
+   <span class="s2">"Thank you that you sent enough every morning to people who could not store it, and that you have not changed. "</span>
+   <span class="s2">"Amen."</span><span class="p">),</span>
+<span class="p">},</span>
+<span class="mi">3</span><span class="p">:</span> <span class="p">{</span>
+ <span class="s1">'SETUP'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"This one is funnier than the others for about ten minutes and then it turns, and the turn catches people "</span>
+   <span class="s2">"off guard. The game is a confession game, and Jerry's ratings on screen give your students permission to be honest "</span>
+   <span class="s2">"about their own borrowed-stuff record.</span><span class="se">\n\n</span><span class="s2">The real content is not the hoodie. It's the buried thing. Watch for the "</span>
+   <span class="s2">"student who goes still during the pause.</span><span class="se">\n\n</span><span class="s2">**The one thing to get right this week:** do not let the buried-thing "</span>
+   <span class="s2">"conversation become about talent or performance. It is about fear. When a student names something they have not "</span>
+   <span class="s2">"done, ask what they were afraid of, not what is stopping them.</span><span class="se">\n\n</span><span class="s2">**Answer key** · not looking · holding · "</span>
+   <span class="s2">"could handle · afraid · identical / Faithfulness · fear · fear · safe move / failure"</span><span class="p">),</span>
+ <span class="s1">'Come together'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The opening question about something they are holding that belongs to somebody else is a laugh "</span>
+   <span class="s2">"line. Use it. The lighter this opening is, the further the group will go later."</span><span class="p">),</span>
+ <span class="s1">'Watch the video'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The pause afterward asks </span><span class="se">\"</span><span class="s2">what's your buried thing.</span><span class="se">\"</span><span class="s2"> Say out loud that they do not have to "</span>
+   <span class="s2">"share it. Some will anyway, and that's the session working."</span><span class="p">),</span>
+ <span class="s2">"Let's talk about it"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Widening from a hoodie to time, talent, and trust is the hinge of the session. If the group "</span>
+   <span class="s2">"stays on objects, name a bigger one yourself and let them follow.</span><span class="se">\n\n</span><span class="s2">**The third question is the honest one.** "</span>
+   <span class="s2">"Somebody on the show said burying it feels safer than failing at it. If a student says yes, ask what the smallest "</span>
+   <span class="s2">"version of digging it up would be, and then stop talking."</span><span class="p">),</span>
+ <span class="s1">'Live, Give, Owe, Grow'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Percentages only, never amounts. The point of the exercise is the two questions after the "</span>
+   <span class="s2">"four buckets, not the buckets themselves. Most students will discover Live got everything and Give has never "</span>
+   <span class="s2">"existed. Let that land without commentary."</span><span class="p">),</span>
+ <span class="s1">'Before you go'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Days fifteen through twenty-one. Day twenty is the four questions before you borrow, which is the "</span>
+   <span class="s2">"single most useful page in the book for the next ten years of their lives.</span><span class="se">\n\n</span><span class="s2">**Your prayer, if you want one:** "</span>
+   <span class="s2">"God, we are holding a lot of things we did not make and calling them ours. Help these students dig up the thing "</span>
+   <span class="s2">"they have been sitting on. Amen."</span><span class="p">),</span>
+<span class="p">},</span>
+<span class="mi">4</span><span class="p">:</span> <span class="p">{</span>
+ <span class="s1">'SETUP'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"This is the heavy one. Read </span><span class="se">\"</span><span class="s2">What to Do When It Gets Heavy</span><span class="se">\"</span><span class="s2"> before you walk in, even if you read it in "</span>
+   <span class="s2">"week one.</span><span class="se">\n\n</span><span class="s2">The game is funny, six fears sorted into three piles, and then two cards land that are not funny at "</span>
+   <span class="s2">"all: being ordinary, and being found out. Both of those live at 2:00 a.m. in most of your students. Expect the "</span>
+   <span class="s2">"room to change temperature.</span><span class="se">\n\n</span><span class="s2">**The one thing to get right this week:** do not fix anybody. This session asks "</span>
+   <span class="s2">"students to name their 2:00 a.m. fear, and the instinct to reassure is strong. Reassurance ends the conversation. "</span>
+   <span class="s2">"Presence continues it.</span><span class="se">\n\n</span><span class="s2">If a student discloses something serious, follow up privately that same day and involve "</span>
+   <span class="s2">"your youth pastor.</span><span class="se">\n\n</span><span class="s2">**Answer key** · out there / in here · 2:00 a.m. · real · care · Quiet / still · "</span>
+   <span class="s2">"I am with you · weather / boat · outcome / Person · agreement"</span><span class="p">),</span>
+ <span class="s1">'Come together'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Start with the silly fear. Genuinely start there. The order matters, and a room that has laughed "</span>
+   <span class="s2">"together will go further than a room that hasn't."</span><span class="p">),</span>
+ <span class="s1">'Watch the video'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The pause afterward asks for their 2:00 a.m. question, </span><span class="se">\"</span><span class="s2">not the presentable version.</span><span class="se">\"</span><span class="s2"> Say that "</span>
+   <span class="s2">"phrase out loud. It gives students permission they will not take otherwise."</span><span class="p">),</span>
+ <span class="s2">"Let's talk about it"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Asking whether they have stopped believing God is paying attention is the most spiritually "</span>
+   <span class="s2">"honest question in the series. Answer it first yourself if the room stalls, and answer it truthfully.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**On the third question**, somebody on the show describes a prayer that felt like it hit the ceiling. Some student "</span>
+   <span class="s2">"in your room has been there this month. The point to land is that the people literally in the boat with Jesus also "</span>
+   <span class="s2">"thought He did not care, so that feeling is not evidence of failure.</span><span class="se">\n\n</span><span class="s2">**The fourth question is where it lands.** "</span>
+   <span class="s2">"Ask students to finish the </span><span class="se">\"</span><span class="s2">even if</span><span class="se">\"</span><span class="s2"> out loud if they are willing. Do not force it, and do not correct anybody's "</span>
+   <span class="s2">"answer."</span><span class="p">),</span>
+ <span class="s1">'The five habits'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"This is a relief valve after a heavy conversation, and it is meant to be. Move to something "</span>
+   <span class="s2">"concrete on purpose. The last prompt, the smallest possible version of their weakest habit, is the whole exercise."</span><span class="p">),</span>
+ <span class="s1">'Before you go'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Days twenty-two through twenty-eight. Day twenty-six is the one to mention, since it hands them "</span>
+   <span class="s2">"something to do when they are panicking.</span><span class="se">\n\n</span><span class="s2">**Your prayer, if you want one:** God, some of us in this room are "</span>
+   <span class="s2">"genuinely afraid, and most of us have not said so. You never told us not to be afraid because things would go our "</span>
+   <span class="s2">"way. You said it because you are here. Be here. Amen."</span><span class="p">),</span>
+<span class="p">},</span>
+<span class="mi">5</span><span class="p">:</span> <span class="p">{</span>
+ <span class="s1">'SETUP'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Students expect this week to be the ask. They are braced for a guilt trip about giving, and the session is "</span>
+   <span class="s2">"not that. Say so at the top, out loud, in the first two minutes.</span><span class="se">\n\n</span><span class="s2">The game builds to a point most groups miss "</span>
+   <span class="s2">"until it is named: the two hardest things to share are not things at all. Credit and feelings. Those are self.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**The one thing to get right this week:** nobody says what they give. Not a number, not a percentage, not a story "</span>
+   <span class="s2">"that implies one. Generosity stops being generosity the moment it becomes a scoreboard, and in a student group it "</span>
+   <span class="s2">"becomes one fast.</span><span class="se">\n\n</span><span class="s2">**Answer key** · you / you · have · reservoir · stagnant / rot · sack lunch · All of it · "</span>
+   <span class="s2">"holding / released · poorer · amount / heart"</span><span class="p">),</span>
+ <span class="s1">'Come together'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Start with what is easy to share. Every student has an easy one, and starting there makes the hard "</span>
+   <span class="s2">"one sayable twenty minutes later."</span><span class="p">),</span>
+ <span class="s1">'Watch the video'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The pause afterward asks what they are white-knuckling. Expect answers that are not money. That "</span>
+   <span class="s2">"is the session working, not drifting."</span><span class="p">),</span>
+ <span class="s2">"Let's talk about it"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Somebody on the show says that if he gave the credit away too, he is scared there would be "</span>
+   <span class="s2">"nothing left that proves he mattered. That is the realest line in the episode. If a student agrees, stay there.</span><span class="se">\n\n</span><span class="s2">"</span>
+   <span class="s2">"**The fourth question asks for the actual cost**, </span><span class="se">\"</span><span class="s2">not the noble version.</span><span class="se">\"</span><span class="s2"> That is deliberate. Students will "</span>
+   <span class="s2">"reach for the impressive answer. Push once, gently, for the true one."</span><span class="p">),</span>
+ <span class="s1">'The quiet gift'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"This exercise only works if nobody finds out, which means you do not ask about it next week in "</span>
+   <span class="s2">"front of the group. Say that when you assign it. The last prompt asks whether they are less interested in doing it "</span>
+   <span class="s2">"if nobody will know. Do not soften that question."</span><span class="p">),</span>
+ <span class="s1">'Before you go'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Days twenty-nine through thirty-five. Day thirty-four is for the student who thinks they have "</span>
+   <span class="s2">"nothing to give.</span><span class="se">\n\n</span><span class="s2">**Your prayer, if you want one:** God, we have been holding on tightly and calling it being "</span>
+   <span class="s2">"careful, and it has been making us empty. Help these students open their hands around something small this week. "</span>
+   <span class="s2">"Amen."</span><span class="p">),</span>
+<span class="p">},</span>
+<span class="mi">6</span><span class="p">:</span> <span class="p">{</span>
+ <span class="s1">'SETUP'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Last one. Leave room, because last sessions are where people finally say the thing.</span><span class="se">\n\n</span><span class="s2">Two things are "</span>
+   <span class="s2">"different this week. The exercise gets shared, which breaks the pattern of the other five, so tell students that "</span>
+   <span class="s2">"before they start writing rather than after. And there is a closing beat after the prayer about what happens next "</span>
+   <span class="s2">"Tuesday, when the videos stop.</span><span class="se">\n\n</span><span class="s2">**The one thing to get right this week:** get every student to name one thing "</span>
+   <span class="s2">"they are keeping and one person who is allowed to ask them about it. That single move is what makes six weeks "</span>
+   <span class="s2">"stick instead of fade.</span><span class="se">\n\n</span><span class="s2">**Answer key** · faithful / trend · small stuff · famous / you · are · bowl · identity · "</span>
+   <span class="s2">"wasted · you / up · window / view"</span><span class="p">),</span>
+ <span class="s1">'Come together'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The yearbook quote question, </span><span class="se">\"</span><span class="s2">not the one you'd actually submit, the real one,</span><span class="se">\"</span><span class="s2"> is a good laugh "</span>
+   <span class="s2">"and a quiet setup for everything after it."</span><span class="p">),</span>
+ <span class="s1">'Watch the video'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"The pause afterward asks about ten years of the week they just had. Some students will find this "</span>
+   <span class="s2">"genuinely unsettling. Do not rescue it."</span><span class="p">),</span>
+ <span class="s2">"Let's talk about it"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Naming an un-famous person who changed them is the warmest moment in the whole series. Give "</span>
+   <span class="s2">"it room, and go first.</span><span class="se">\n\n</span><span class="s2">**On the third question**, somebody on the show says they have been seen by a lot of "</span>
+   <span class="s2">"people and known by almost none. Some student in your room lives there. Do not rush past it."</span><span class="p">),</span>
+ <span class="s1">'Your legacy letter'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Three lines, not a book. Say clearly that they will be asked to read these to one real person "</span>
+   <span class="s2">"this week, and that person can be someone in this room. Line two, why it holds when things get hard, takes the "</span>
+   <span class="s2">"longest. Give it real time.</span><span class="se">\n\n</span><span class="s2">If your group is willing, have students read line three aloud to each other. That is "</span>
+   <span class="s2">"the closing moment of the series if you want one."</span><span class="p">),</span>
+ <span class="s1">'Before you go'</span><span class="p">:</span> <span class="p">(</span><span class="s2">"Days thirty-six through forty-two. Day forty-two asks what they hope God does with their life. Tell "</span>
+   <span class="s2">"them to date it and come back in a year.</span><span class="se">\n\n</span><span class="s2">**Your prayer, if you want one:** God, six weeks ago this started with "</span>
+   <span class="s2">"a sentence about everything belonging to you, including us. You called these students light before they did "</span>
+   <span class="s2">"anything to earn it. Let it be on, and pointed at you. Amen."</span><span class="p">),</span>
+<span class="p">},</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="n">note</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Render a leader note as an indented block quote."""</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">para</span> <span class="ow">in</span> <span class="n">note</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n\n</span><span class="s1">'</span><span class="p">):</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&gt; '</span> <span class="o">+</span> <span class="n">para</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">&gt; '</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">'**LEADER NOTE**</span><span class="se">\n\n</span><span class="s1">'</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">&gt;</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">PARTICIPANT</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'## **SESSION ONE'</span><span class="p">)</span>
+    <span class="n">sessions</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">'(?=## \*\*SESSION (?:ONE|TWO|THREE|FOUR|FIVE|SIX))'</span><span class="p">,</span> <span class="n">src</span><span class="p">[</span><span class="n">start</span><span class="p">:])</span>
+    <span class="n">sessions</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+
+    <span class="c1"># session six carries the participant back matter; split it off</span>
+    <span class="n">back_start</span> <span class="o">=</span> <span class="n">sessions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'## **Four Questions Before You Borrow**'</span><span class="p">)</span>
+    <span class="n">participant_back</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="k">if</span> <span class="n">back_start</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">participant_back</span> <span class="o">=</span> <span class="n">sessions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">back_start</span><span class="p">:]</span>
+        <span class="n">sessions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sessions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">back_start</span><span class="p">]</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">FRONT</span><span class="p">]</span>
+    <span class="n">injected</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">sess</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sessions</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">notes</span> <span class="o">=</span> <span class="n">NOTES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="c1"># SETUP goes after the session title block, before the memory verse</span>
+        <span class="n">mv</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'**MEMORY VERSE**'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">'SETUP'</span> <span class="ow">in</span> <span class="n">notes</span> <span class="ow">and</span> <span class="n">mv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sess</span> <span class="o">=</span> <span class="n">sess</span><span class="p">[:</span><span class="n">mv</span><span class="p">]</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">(</span><span class="n">notes</span><span class="p">[</span><span class="s1">'SETUP'</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span> <span class="o">+</span> <span class="n">sess</span><span class="p">[</span><span class="n">mv</span><span class="p">:]</span>
+            <span class="n">injected</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># remaining notes go before their named section header</span>
+        <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">note</span> <span class="ow">in</span> <span class="n">notes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">header</span> <span class="o">==</span> <span class="s1">'SETUP'</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">pat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^(## \*\*'</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">'</span><span class="se">\'</span><span class="s1">'</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"(?:</span><span class="se">\\</span><span class="s2">)?'"</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">'\*\*)$'</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">sess</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">sess</span> <span class="o">=</span> <span class="n">sess</span><span class="p">[:</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">(</span><span class="n">note</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span> <span class="o">+</span> <span class="n">sess</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">():]</span>
+                <span class="n">injected</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'  WARNING session </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">: anchor not found -&gt; </span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">)</span>
+
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">participant_back</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BACK</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'notes injected: </span><span class="si">{</span><span class="n">injected</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'wrote </span><span class="si">{</span><span class="n">OUT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="si">}</span><span class="s1"> words'</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_leader.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

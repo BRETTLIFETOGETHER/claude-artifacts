@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>parse_gen.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Flourishing Intelligence Master Catalog brochure</div>
+<h1>parse_gen.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">3 KB</span>
+<a class="btn" href="../../artifacts/Flourishing%20Intelligence%20Master%20Catalog%20brochure/parse_gen.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Parser and HTML generator for the 17-dimension document in the blue style</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/blue17/source.md'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">esc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Split into dimension blocks on "## &lt;roman&gt;. Dimension Name"</span>
+<span class="n">dim_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^##\s+([IVX]+)\.\s+(.+)$'</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dim_pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+
+<span class="n">dimensions</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matches</span><span class="p">):</span>
+    <span class="n">roman</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">matches</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">if</span> <span class="n">idx</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">block</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+
+    <span class="c1"># subtitle: first **bold** line</span>
+    <span class="n">sub_m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^\*\*(.+?)\*\*\s*$'</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+    <span class="n">subtitle</span> <span class="o">=</span> <span class="n">sub_m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">sub_m</span> <span class="k">else</span> <span class="s1">''</span>
+
+    <span class="c1"># marketing paragraph: first non-bold, non-empty line after subtitle</span>
+    <span class="n">para_m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\*\*.+?\*\*\s*\n\n(.+?)\n\n'</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+    <span class="n">paragraph</span> <span class="o">=</span> <span class="n">para_m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">para_m</span> <span class="k">else</span> <span class="s1">''</span>
+
+    <span class="c1"># pathways</span>
+    <span class="n">path_m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\*\*Ten Pathways:\*\*\s*(.+)'</span><span class="p">,</span> <span class="n">block</span><span class="p">)</span>
+    <span class="n">pathways</span> <span class="o">=</span> <span class="n">path_m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">path_m</span> <span class="k">else</span> <span class="s1">''</span>
+
+    <span class="c1"># campaigns: **Title** — Subtitle \n 1. ... · 2. ... etc</span>
+    <span class="n">campaign_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\*\*(.+?)\*\*\s+—\s+(.+?)\n(1\..+)'</span><span class="p">)</span>
+    <span class="n">campaigns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cm</span> <span class="ow">in</span> <span class="n">campaign_pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">block</span><span class="p">):</span>
+        <span class="n">ctitle</span><span class="p">,</span> <span class="n">csub</span><span class="p">,</span> <span class="n">sessions_line</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">cm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">cm</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\s*·\s*'</span><span class="p">,</span> <span class="n">sessions_line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="c1"># strip leading "N. "</span>
+        <span class="n">clean_sessions</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^\d+\.\s*'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">]</span>
+        <span class="n">campaigns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ctitle</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">csub</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">clean_sessions</span><span class="p">))</span>
+
+    <span class="n">dimensions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">'roman'</span><span class="p">:</span> <span class="n">roman</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">'subtitle'</span><span class="p">:</span> <span class="n">subtitle</span><span class="p">,</span>
+        <span class="s1">'paragraph'</span><span class="p">:</span> <span class="n">paragraph</span><span class="p">,</span> <span class="s1">'pathways'</span><span class="p">:</span> <span class="n">pathways</span><span class="p">,</span> <span class="s1">'campaigns'</span><span class="p">:</span> <span class="n">campaigns</span>
+    <span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Parsed"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span> <span class="s2">"dimensions"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dimensions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s1">'roman'</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span> <span class="s2">"-"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'campaigns'</span><span class="p">]),</span> <span class="s2">"campaigns"</span><span class="p">)</span>
+
+<span class="c1"># ---- Generate HTML ----</span>
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">total_campaigns</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">total_sessions</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dimensions</span><span class="p">:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="dimension"&gt;</span>
+<span class="s1">  &lt;div class="dim-head"&gt;</span>
+<span class="s1">    &lt;span class="dim-roman"&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'roman'</span><span class="p">]</span><span class="si">}</span><span class="s1">&lt;/span&gt;</span>
+<span class="s1">    &lt;div&gt;</span>
+<span class="s1">      &lt;h2&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'name'</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/h2&gt;</span>
+<span class="s1">      &lt;p class="dim-subtitle"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'subtitle'</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;p class="dim-para"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'paragraph'</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">  &lt;div class="pathways"&gt;&lt;strong&gt;Ten Pathways:&lt;/strong&gt; </span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'pathways'</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="campaign-grid"&gt;'''</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ctitle</span><span class="p">,</span> <span class="n">csub</span><span class="p">,</span> <span class="n">sessions</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s1">'campaigns'</span><span class="p">]:</span>
+        <span class="n">total_campaigns</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">session_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;li&gt;&lt;span class="sn"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&lt;/span&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/li&gt;'</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sessions</span><span class="p">))</span>
+        <span class="n">total_sessions</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;div class="campaign-card"&gt;</span>
+<span class="s1">      &lt;h4&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">ctitle</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/h4&gt;</span>
+<span class="s1">      &lt;p class="csub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">csub</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">      &lt;ol class="sessions"&gt;</span><span class="si">{</span><span class="n">session_html</span><span class="si">}</span><span class="s1">&lt;/ol&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'''</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;'''</span><span class="p">)</span>
+
+<span class="n">body</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/blue17/dimensions_block.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"TOTAL campaigns:"</span><span class="p">,</span> <span class="n">total_campaigns</span><span class="p">,</span> <span class="s2">"TOTAL sessions:"</span><span class="p">,</span> <span class="n">total_sessions</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/blue17/parse_gen.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

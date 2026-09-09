@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>wp_build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Family assessment PDF design options</div>
+<h1>wp_build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">40 KB</span>
+<a class="btn" href="../../artifacts/Family%20assessment%20PDF%20design%20options/wp_build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">White paper builder - design system, graphics, and all twenty pages</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weasyprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pypdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">PdfReader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">wp_data</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">OUT</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs"</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">TOTAL</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">@page { size: Letter; margin: 0; }</span>
+<span class="s2">* { box-sizing: border-box; }</span>
+<span class="s2">body { margin: 0; font-family: 'Poppins'; font-weight: 300; color: #3A4553;</span>
+<span class="s2">       font-size: 8.6pt; line-height: 1.44; }</span>
+<span class="s2">.page { page-break-after: always; height: 11in; position: relative; overflow: hidden;</span>
+<span class="s2">        background: #FFFFFF; }</span>
+<span class="s2">.page.last { page-break-after: auto; }</span>
+<span class="s2">.pad { padding: 0 0.78in; }</span>
+
+<span class="s2">.foot { position: absolute; bottom: 0.36in; left: 0.78in; right: 0.78in; display: flex;</span>
+<span class="s2">        justify-content: space-between; border-top: .6pt solid #E4E8ED; padding-top: 5pt;</span>
+<span class="s2">        font-size: 6.2pt; letter-spacing: .14em; text-transform: uppercase; color: #A3ADBA; }</span>
+<span class="s2">.rhead { display: flex; justify-content: space-between; align-items: baseline;</span>
+<span class="s2">         padding: 0.46in 0.78in 0; }</span>
+<span class="s2">.rhead .a { font-weight: 600; font-size: 6.4pt; letter-spacing: .24em; text-transform: uppercase;</span>
+<span class="s2">            color: #B8873B; }</span>
+<span class="s2">.rhead .b { font-family: 'Lora'; font-style: italic; font-size: 8.2pt; color: #A3ADBA; }</span>
+
+<span class="s2">h2 { font-family: 'Lora'; font-weight: 600; font-size: 21pt; line-height: 1.1; color: #101B2E;</span>
+<span class="s2">     margin: 6pt 0 0; letter-spacing: -.016em; }</span>
+<span class="s2">h2.sm { font-size: 17pt; }</span>
+<span class="s2">.kick { font-weight: 600; font-size: 6.6pt; letter-spacing: .26em; text-transform: uppercase;</span>
+<span class="s2">        color: #B8873B; }</span>
+<span class="s2">.dek { font-family: 'Lora'; font-style: italic; font-size: 10pt; line-height: 1.5; color: #5C6B7C;</span>
+<span class="s2">       margin-top: 8pt; max-width: 5.4in; }</span>
+<span class="s2">.prose { font-family: 'Lora'; font-size: 9.5pt; line-height: 1.62; color: #3A4553; }</span>
+<span class="s2">.prose p { margin: 0 0 9pt; }</span>
+<span class="s2">.hr { border-top: .6pt solid #E4E8ED; margin: 14pt 0; }</span>
+<span class="s2">.lb { font-weight: 600; font-size: 6.4pt; letter-spacing: .2em; text-transform: uppercase;</span>
+<span class="s2">      color: #101B2E; }</span>
+<span class="s2">.sec { margin-top: 22pt; }</span>
+
+<span class="s2">/* ---------------- cover ---------------- */</span>
+<span class="s2">.cover { background: #101B2E; color: #fff; height: 11in; padding: 1.05in 0.78in 0;</span>
+<span class="s2">         position: relative; }</span>
+<span class="s2">.cover .type { font-weight: 600; font-size: 7pt; letter-spacing: .34em; text-transform: uppercase;</span>
+<span class="s2">               color: #B8873B; }</span>
+<span class="s2">.cover .rule { width: 52pt; border-top: 2.4pt solid #B8873B; margin: 15pt 0 26pt; }</span>
+<span class="s2">.cover h1 { font-family: 'Lora'; font-weight: 600; font-size: 42pt; line-height: 1.03;</span>
+<span class="s2">            margin: 0; letter-spacing: -.022em; }</span>
+<span class="s2">.cover h1 em { font-style: normal; color: #7FA3D6; }</span>
+<span class="s2">.cover .sub { font-family: 'Lora'; font-size: 13pt; color: #C3D2E4; margin-top: 20pt;</span>
+<span class="s2">              max-width: 5in; line-height: 1.42; }</span>
+<span class="s2">.cover .deck { font-size: 9.4pt; line-height: 1.62; color: #93A8C2; max-width: 4.9in;</span>
+<span class="s2">               margin-top: 16pt; }</span>
+<span class="s2">.cover .band { display: flex; margin-top: 34pt; }</span>
+<span class="s2">.cover .band div { flex: 1; height: 8pt; }</span>
+<span class="s2">.cover .base { position: absolute; bottom: 0.85in; left: 0.78in; right: 0.78in; }</span>
+<span class="s2">.cover .toc { display: flex; border-top: .7pt solid rgba(255,255,255,.2); padding-top: 12pt; }</span>
+<span class="s2">.cover .toc div { flex: 1; padding-right: 10pt; font-size: 6.6pt; color: #7E93AE; line-height: 1.4; }</span>
+<span class="s2">.cover .toc b { display: block; font-weight: 600; font-size: 7pt; letter-spacing: .16em;</span>
+<span class="s2">                text-transform: uppercase; color: #fff; margin-bottom: 3pt; }</span>
+<span class="s2">.cover .org { font-weight: 600; font-size: 6.8pt; letter-spacing: .22em; text-transform: uppercase;</span>
+<span class="s2">              color: #7FA3D6; margin-bottom: 15pt; }</span>
+
+<span class="s2">/* ---------------- stats ---------------- */</span>
+<span class="s2">.stats { display: flex; border-top: 1.6pt solid #101B2E; border-bottom: .6pt solid #E4E8ED; }</span>
+<span class="s2">.stats div { flex: 1; padding: 11pt 8pt 12pt 0; }</span>
+<span class="s2">.stats .n { font-family: 'Lora'; font-weight: 600; font-size: 22pt; color: #101B2E;</span>
+<span class="s2">            line-height: 1; letter-spacing: -.02em; }</span>
+<span class="s2">.stats .t { font-size: 6.6pt; letter-spacing: .1em; text-transform: uppercase; color: #7A8797;</span>
+<span class="s2">            margin-top: 5pt; }</span>
+
+<span class="s2">/* ---------------- two-column contrast ---------------- */</span>
+<span class="s2">.vs { margin-top: 6pt; }</span>
+<span class="s2">.vs .hd { display: flex; gap: 18pt; padding-bottom: 7pt; border-bottom: 1.2pt solid #101B2E; }</span>
+<span class="s2">.vs .hd div { flex: 1; }</span>
+<span class="s2">.vs .hd .l { font-weight: 600; font-size: 8.6pt; color: #B85C3B; letter-spacing: .04em; }</span>
+<span class="s2">.vs .hd .r { font-weight: 600; font-size: 8.6pt; color: #2F6B45; letter-spacing: .04em; }</span>
+<span class="s2">.vs .row { display: flex; gap: 18pt; padding: 8.4pt 0; border-bottom: .6pt solid #EDF0F3; }</span>
+<span class="s2">.vs .row div { flex: 1; font-size: 8.4pt; line-height: 1.4; }</span>
+<span class="s2">.vs .row .l { color: #8B97A5; }</span>
+<span class="s2">.vs .row .r { color: #23303F; font-weight: 400; }</span>
+
+<span class="s2">.core { background: #F5F7F9; border-left: 2.8pt solid #B8873B; padding: 16pt 20pt; margin-top: 18pt; }</span>
+<span class="s2">.core div { font-family: 'Lora'; font-weight: 600; font-size: 14pt; color: #101B2E;</span>
+<span class="s2">            line-height: 1.36; letter-spacing: -.01em; }</span>
+
+<span class="s2">/* ---------------- generic lists ---------------- */</span>
+<span class="s2">.cols2 { display: flex; gap: 22pt; }</span>
+<span class="s2">.cols2 &gt; div { flex: 1; }</span>
+<span class="s2">.cols3 { display: flex; gap: 18pt; }</span>
+<span class="s2">.cols3 &gt; div { flex: 1; }</span>
+<span class="s2">ul.tick { margin: 6pt 0 0; padding: 0; list-style: none; }</span>
+<span class="s2">ul.tick li { font-size: 8.2pt; line-height: 1.38; padding: 3.4pt 0 3.4pt 12pt; position: relative;</span>
+<span class="s2">             border-bottom: .5pt solid #EDF0F3; }</span>
+<span class="s2">ul.tick li:before { content: "</span><span class="se">\\</span><span class="s2">203A"; position: absolute; left: 0; color: #B8873B; font-size: 9pt;</span>
+<span class="s2">                    top: 2.6pt; }</span>
+<span class="s2">.chipwrap { display: flex; flex-wrap: wrap; margin-top: 7pt; }</span>
+<span class="s2">.chip { font-size: 7.4pt; color: #3A4553; border: .6pt solid #DCE2E8; border-radius: 10pt;</span>
+<span class="s2">        padding: 3.2pt 9pt; margin: 0 4pt 4pt 0; }</span>
+<span class="s2">.chip.dark { background: #101B2E; color: #fff; border-color: #101B2E; }</span>
+
+<span class="s2">/* ---------------- module + form tables ---------------- */</span>
+<span class="s2">.mods { display: flex; flex-wrap: wrap; margin-top: 4pt; }</span>
+<span class="s2">.mods div { width: 33.33%; font-size: 8pt; color: #3A4553; padding: 5pt 10pt 5pt 13pt;</span>
+<span class="s2">            position: relative; border-bottom: .5pt solid #EDF0F3; }</span>
+<span class="s2">.mods div:before { content: ""; position: absolute; left: 0; top: 9pt; width: 5pt; height: 5pt;</span>
+<span class="s2">                   background: #B8873B; border-radius: 1pt; }</span>
+<span class="s2">.forms { width: 100%; border-collapse: collapse; margin-top: 6pt; }</span>
+<span class="s2">.forms td { padding: 6.4pt 0; border-bottom: .5pt solid #EDF0F3; font-size: 8.4pt;</span>
+<span class="s2">            vertical-align: baseline; }</span>
+<span class="s2">.forms td.a { font-weight: 500; color: #101B2E; }</span>
+<span class="s2">.forms td.b { text-align: right; font-size: 7.4pt; color: #8B97A5; letter-spacing: .04em; }</span>
+
+<span class="s2">/* ---------------- worked example ---------------- */</span>
+<span class="s2">.example { border: .7pt solid #DCE2E8; border-top: 2.6pt solid #101B2E; padding: 14pt 16pt;</span>
+<span class="s2">           margin-top: 12pt; }</span>
+<span class="s2">.example .t { font-family: 'Lora'; font-weight: 600; font-size: 14pt; color: #101B2E; }</span>
+<span class="s2">.example .s { font-size: 7.2pt; letter-spacing: .12em; text-transform: uppercase; color: #8B97A5;</span>
+<span class="s2">              margin-top: 4pt; }</span>
+<span class="s2">.arrow { text-align: center; font-size: 12pt; color: #C6CEd6; margin: 8pt 0; }</span>
+
+<span class="s2">/* ---------------- library map ---------------- */</span>
+<span class="s2">.arc { margin-top: 11pt; }</span>
+<span class="s2">.arc .h { display: flex; align-items: baseline; gap: 9pt; padding-bottom: 4pt;</span>
+<span class="s2">          border-bottom: 1pt solid; }</span>
+<span class="s2">.arc .h .n { font-weight: 600; font-size: 9pt; letter-spacing: -.01em; }</span>
+<span class="s2">.arc .h .d { flex: 1; font-size: 7.2pt; color: #8B97A5; }</span>
+<span class="s2">.arc .h .r { font-size: 6.6pt; letter-spacing: .12em; color: #A3ADBA; }</span>
+<span class="s2">.cl { display: flex; align-items: center; gap: 9pt; padding: 4.2pt 0;</span>
+<span class="s2">      border-bottom: .5pt solid #F0F3F6; }</span>
+<span class="s2">.cl .no { width: 15pt; font-size: 7pt; color: #A3ADBA; flex: none; text-align: right; }</span>
+<span class="s2">.cl .nm { flex: 1; font-size: 8.2pt; color: #23303F; }</span>
+<span class="s2">.cl .dots { flex: none; }</span>
+<span class="s2">.cl .dots u { display: inline-block; width: 5.6pt; height: 5.6pt; border-radius: 50%;</span>
+<span class="s2">              margin-left: 3pt; text-decoration: none; }</span>
+
+<span class="s2">/* ---------------- taxonomy ---------------- */</span>
+<span class="s2">.tax { display: flex; flex-wrap: wrap; }</span>
+<span class="s2">.tx { width: 33.33%; padding: 0 12pt 12pt 0; break-inside: avoid; }</span>
+<span class="s2">.tx .h { display: flex; align-items: baseline; gap: 5pt; border-top: 1.8pt solid;</span>
+<span class="s2">         padding-top: 5pt; }</span>
+<span class="s2">.tx .h .n { font-family: 'Lora'; font-weight: 600; font-size: 9.4pt; }</span>
+<span class="s2">.tx .h .t { flex: 1; font-weight: 600; font-size: 7.6pt; color: #101B2E; line-height: 1.18; }</span>
+<span class="s2">.tx ol { margin: 5pt 0 0; padding: 0; list-style: none; }</span>
+<span class="s2">.tx li { font-size: 6.9pt; line-height: 1.36; color: #4A5766; padding: 1.1pt 0 1.1pt 13pt;</span>
+<span class="s2">         position: relative; }</span>
+<span class="s2">.tx li span { position: absolute; left: 0; color: #B4BEC9; font-size: 6.2pt; }</span>
+
+<span class="s2">/* ---------------- layers ---------------- */</span>
+<span class="s2">.stack { margin-top: 10pt; }</span>
+<span class="s2">.ly { display: flex; align-items: center; gap: 12pt; padding: 9.6pt 13pt; margin-bottom: 4pt;</span>
+<span class="s2">      border-left: 3.4pt solid; background: #F7F9FA; }</span>
+<span class="s2">.ly .k { width: 42pt; flex: none; font-weight: 600; font-size: 6.6pt; letter-spacing: .16em;</span>
+<span class="s2">         text-transform: uppercase; }</span>
+<span class="s2">.ly .n { width: 128pt; flex: none; font-weight: 600; font-size: 9.2pt; color: #101B2E;</span>
+<span class="s2">         line-height: 1.2; }</span>
+<span class="s2">.ly .d { flex: 1; font-size: 7.8pt; line-height: 1.4; color: #5C6B7C; }</span>
+
+<span class="s2">/* ---------------- overlays ---------------- */</span>
+<span class="s2">.ov { display: flex; gap: 9pt; margin-top: 10pt; }</span>
+<span class="s2">.ovc { flex: 1; border-top: 2.6pt solid; padding-top: 7pt; }</span>
+<span class="s2">.ovc .n { font-weight: 600; font-size: 8.6pt; color: #101B2E; }</span>
+<span class="s2">.ovc ul { margin: 5pt 0 0; padding: 0; list-style: none; }</span>
+<span class="s2">.ovc li { font-size: 6.9pt; line-height: 1.46; color: #5C6B7C; }</span>
+
+<span class="s2">/* ---------------- business models ---------------- */</span>
+<span class="s2">.mg { margin-top: 13pt; }</span>
+<span class="s2">.mg .h { display: flex; align-items: baseline; gap: 8pt; border-bottom: 1pt solid;</span>
+<span class="s2">         padding-bottom: 4pt; }</span>
+<span class="s2">.mg .h .n { font-weight: 600; font-size: 8.8pt; }</span>
+<span class="s2">.mg .h .c { font-size: 6.6pt; letter-spacing: .14em; text-transform: uppercase; color: #A3ADBA; }</span>
+<span class="s2">.mm { display: flex; gap: 12pt; padding: 7pt 0; border-bottom: .5pt solid #F0F3F6; }</span>
+<span class="s2">.mm .a { width: 132pt; flex: none; font-weight: 500; font-size: 8.2pt; color: #101B2E;</span>
+<span class="s2">         line-height: 1.24; }</span>
+<span class="s2">.mm .b { flex: 1; font-size: 7.6pt; line-height: 1.42; color: #5C6B7C; }</span>
+<span class="s2">.price { width: 100%; border-collapse: collapse; margin-top: 7pt; }</span>
+<span class="s2">.price td { padding: 6pt 0; border-bottom: .5pt solid #EDF0F3; font-size: 8.4pt; }</span>
+<span class="s2">.price td.b { text-align: right; font-family: 'Lora'; font-weight: 600; color: #101B2E; }</span>
+
+<span class="s2">/* ---------------- readiness ---------------- */</span>
+<span class="s2">.gauge { margin-top: 12pt; }</span>
+<span class="s2">.gauge .row { margin-bottom: 14pt; }</span>
+<span class="s2">.gauge .lbl { display: flex; justify-content: space-between; align-items: baseline; }</span>
+<span class="s2">.gauge .lbl .a { font-weight: 500; font-size: 9pt; color: #101B2E; }</span>
+<span class="s2">.gauge .lbl .b { font-family: 'Lora'; font-weight: 600; font-size: 12pt; }</span>
+<span class="s2">.gauge .bar { height: 13pt; background: #EDF0F3; margin-top: 5pt; position: relative; }</span>
+<span class="s2">.gauge .bar u { position: absolute; left: 0; top: 0; bottom: 0; display: block;</span>
+<span class="s2">                text-decoration: none; }</span>
+<span class="s2">.gauge .cap { font-size: 7.4pt; color: #8B97A5; margin-top: 4pt; line-height: 1.4; }</span>
+
+<span class="s2">/* ---------------- roadmap ---------------- */</span>
+<span class="s2">.phases { display: flex; align-items: flex-end; gap: 10pt; margin-top: 12pt; height: 108pt; }</span>
+<span class="s2">.ph { flex: 1; text-align: center; }</span>
+<span class="s2">.ph .bx { border-radius: 2pt 2pt 0 0; color: #fff; padding-top: 9pt; }</span>
+<span class="s2">.ph .bx .n { font-family: 'Lora'; font-weight: 600; font-size: 19pt; line-height: 1; }</span>
+<span class="s2">.ph .bx .t { font-size: 6.4pt; letter-spacing: .18em; text-transform: uppercase; margin-top: 4pt;</span>
+<span class="s2">             color: rgba(255,255,255,.85); }</span>
+<span class="s2">.ph .c { font-size: 7pt; color: #8B97A5; margin-top: 6pt; line-height: 1.34; }</span>
+<span class="s2">.steps { display: flex; flex-wrap: wrap; margin-top: 6pt; }</span>
+<span class="s2">.st { width: 50%; display: flex; gap: 9pt; padding: 6.6pt 14pt 6.6pt 0; }</span>
+<span class="s2">.st .n { width: 17pt; height: 17pt; flex: none; border-radius: 50%; background: #101B2E;</span>
+<span class="s2">         color: #fff; font-weight: 600; font-size: 7pt; text-align: center; line-height: 17pt; }</span>
+<span class="s2">.st .t { flex: 1; font-size: 8.2pt; line-height: 1.36; color: #23303F; padding-top: 2pt; }</span>
+<span class="s2">.warn { border: .7pt solid #E8D5CC; border-left: 2.8pt solid #B85C3B; background: #FCF8F6;</span>
+<span class="s2">        padding: 12pt 15pt; margin-top: 6pt; }</span>
+<span class="s2">.warn .k { font-weight: 600; font-size: 6.4pt; letter-spacing: .2em; text-transform: uppercase;</span>
+<span class="s2">           color: #B85C3B; }</span>
+<span class="s2">.warn p { margin: 5pt 0 0; font-size: 8.4pt; line-height: 1.48; color: #4A5766; }</span>
+
+<span class="s2">/* ---------------- finale ---------------- */</span>
+<span class="s2">.finale { background: #101B2E; color: #fff; padding: 34pt 0.78in; margin-top: 18pt; }</span>
+<span class="s2">.finale .k { font-weight: 600; font-size: 6.8pt; letter-spacing: .28em; text-transform: uppercase;</span>
+<span class="s2">             color: #B8873B; }</span>
+<span class="s2">.finale h2 { font-family: 'Lora'; font-weight: 600; font-size: 19pt; line-height: 1.34;</span>
+<span class="s2">             color: #fff; margin: 12pt 0 0; letter-spacing: -.01em; }</span>
+<span class="s2">.finale p { font-size: 9.2pt; line-height: 1.6; color: #93A8C2; margin: 14pt 0 0; max-width: 5.3in; }</span>
+<span class="s2">.launch { background: #101B2E; color: #fff; padding: 20pt 22pt; margin-top: 10pt; }</span>
+<span class="s2">.launch .n { font-family: 'Lora'; font-weight: 600; font-size: 21pt; letter-spacing: -.014em; }</span>
+<span class="s2">.launch .s { font-size: 7.6pt; letter-spacing: .14em; text-transform: uppercase; color: #7FA3D6;</span>
+<span class="s2">             margin-top: 6pt; }</span>
+<span class="s2">"""</span>
+
+
+<span class="c1"># =============================================================== graphics</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">svg_engine</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""1 master tool x 13 modules x 5 overlays = hundreds of finished editions."""</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 268" width="100%"&gt;'</span><span class="p">]</span>
+    <span class="n">mid</span> <span class="o">=</span> <span class="mi">140</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="</span><span class="si">%d</span><span class="s1">" y="26" font-family="Poppins" font-size="7.4" font-weight="600" '</span>
+                 <span class="s1">'letter-spacing="1.9" fill="#101B2E" text-anchor="middle"&gt;</span><span class="si">%s</span><span class="s1">&lt;/text&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="</span><span class="si">%d</span><span class="s1">" y="252" font-family="Lora" font-size="17" font-weight="600" '</span>
+                 <span class="s1">'fill="#101B2E" text-anchor="middle"&gt;</span><span class="si">%s</span><span class="s1">&lt;/text&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+    <span class="c1"># stage 1 — one master tool</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;rect x="52" y="</span><span class="si">%d</span><span class="s1">" width="84" height="56" rx="3" fill="#101B2E"/&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">mid</span> <span class="o">-</span> <span class="mi">28</span><span class="p">))</span>
+    <span class="n">cap</span><span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="s2">"MASTER TOOL"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+
+    <span class="c1"># stage 2 — 13 modules</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="mi">224</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">71</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">11</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;rect x="</span><span class="si">%d</span><span class="s1">" y="</span><span class="si">%d</span><span class="s1">" width="96" height="7.4" rx="1.4" fill="#2B5C9B" '</span>
+                 <span class="s1">'fill-opacity="</span><span class="si">%.2f</span><span class="s1">"/&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="mi">48</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mf">0.42</span> <span class="o">+</span> <span class="mf">0.045</span> <span class="o">*</span> <span class="n">i</span><span class="p">))</span>
+    <span class="n">cap</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="s2">"CONTENT MODULES"</span><span class="p">,</span> <span class="s2">"13"</span><span class="p">)</span>
+
+    <span class="c1"># stage 3 — 5 overlays</span>
+    <span class="n">x3</span> <span class="o">=</span> <span class="mi">400</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"#2B5C9B"</span><span class="p">,</span> <span class="s2">"#0F7A6C"</span><span class="p">,</span> <span class="s2">"#B85C3B"</span><span class="p">,</span> <span class="s2">"#6B4E9E"</span><span class="p">,</span> <span class="s2">"#2F6B45"</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">62</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">25</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;rect x="</span><span class="si">%d</span><span class="s1">" y="</span><span class="si">%d</span><span class="s1">" width="96" height="18" rx="2" fill="</span><span class="si">%s</span><span class="s1">" '</span>
+                 <span class="s1">'fill-opacity=".82"/&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x3</span> <span class="o">-</span> <span class="mi">48</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">cap</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="s2">"OVERLAY SYSTEMS"</span><span class="p">,</span> <span class="s2">"5"</span><span class="p">)</span>
+
+    <span class="c1"># stage 4 — finished editions grid</span>
+    <span class="n">x4</span> <span class="o">=</span> <span class="mi">600</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;rect x="</span><span class="si">%d</span><span class="s1">" y="</span><span class="si">%d</span><span class="s1">" width="13" height="10" rx="1.2" fill="#101B2E" '</span>
+                     <span class="s1">'fill-opacity="</span><span class="si">%.2f</span><span class="s1">"/&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x4</span> <span class="o">-</span> <span class="mi">52</span> <span class="o">+</span> <span class="n">c</span> <span class="o">*</span> <span class="mi">18</span><span class="p">,</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">74</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="mi">15</span><span class="p">,</span>
+                                                <span class="mf">0.16</span> <span class="o">+</span> <span class="mf">0.10</span> <span class="o">*</span> <span class="p">((</span><span class="n">r</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span> <span class="o">%</span> <span class="mi">7</span><span class="p">)))</span>
+    <span class="n">cap</span><span class="p">(</span><span class="n">x4</span><span class="p">,</span> <span class="s2">"FINISHED EDITIONS"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\u221e</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># operators</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">sym</span> <span class="ow">in</span> <span class="p">((</span><span class="mi">178</span><span class="p">,</span> <span class="s2">"</span><span class="se">\u00d7</span><span class="s2">"</span><span class="p">),</span> <span class="p">(</span><span class="mi">352</span><span class="p">,</span> <span class="s2">"</span><span class="se">\u00d7</span><span class="s2">"</span><span class="p">),</span> <span class="p">(</span><span class="mi">516</span><span class="p">,</span> <span class="s2">"="</span><span class="p">)):</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="</span><span class="si">%d</span><span class="s1">" y="</span><span class="si">%d</span><span class="s1">" font-family="Poppins" font-size="15" fill="#B8873B" '</span>
+                 <span class="s1">'text-anchor="middle"&gt;</span><span class="si">%s</span><span class="s1">&lt;/text&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">6</span><span class="p">,</span> <span class="n">sym</span><span class="p">))</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/svg&gt;'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">svg_overlay_stack</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""A master edition with five overlays applied."""</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300" width="100%"&gt;'</span><span class="p">]</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"Master edition"</span><span class="p">,</span> <span class="s2">"#8B97A5"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Branding"</span><span class="p">,</span> <span class="s2">"#2B5C9B"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Audience"</span><span class="p">,</span> <span class="s2">"#0F7A6C"</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"Values"</span><span class="p">,</span> <span class="s2">"#B85C3B"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Content"</span><span class="p">,</span> <span class="s2">"#6B4E9E"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Format"</span><span class="p">,</span> <span class="s2">"#2F6B45"</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">40</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">21</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">224</span> <span class="o">-</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">38</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;rect x="</span><span class="si">%d</span><span class="s1">" y="</span><span class="si">%d</span><span class="s1">" width="178" height="46" rx="3" fill="#FFFFFF" '</span>
+                 <span class="s1">'stroke="#DCE2E8" stroke-width=".8"/&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;rect x="</span><span class="si">%d</span><span class="s1">" y="</span><span class="si">%d</span><span class="s1">" width="5.4" height="46" rx="1.4" fill="</span><span class="si">%s</span><span class="s1">"/&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">col</span><span class="p">))</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="</span><span class="si">%d</span><span class="s1">" y="</span><span class="si">%d</span><span class="s1">" font-family="Poppins" font-size="9" font-weight="500" '</span>
+                 <span class="s1">'fill="#101B2E"&gt;</span><span class="si">%s</span><span class="s1">&lt;/text&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">17</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">28</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;line x1="</span><span class="si">%d</span><span class="s1">" y1="</span><span class="si">%d</span><span class="s1">" x2="300" y2="</span><span class="si">%d</span><span class="s1">" stroke="#E4E8ED" stroke-width=".7" '</span>
+                 <span class="s1">'stroke-dasharray="2 2"/&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">178</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">23</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">23</span><span class="p">))</span>
+        <span class="n">lbl</span> <span class="o">=</span> <span class="s2">"the neutral, universal baseline"</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">"overlay </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="n">i</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="308" y="</span><span class="si">%d</span><span class="s1">" font-family="Poppins" font-size="7.4" fill="#8B97A5"&gt;</span><span class="si">%s</span><span class="s1">&lt;/text&gt;'</span>
+                 <span class="o">%</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="mi">26</span><span class="p">,</span> <span class="n">lbl</span><span class="p">))</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;path d="M470 30 L482 30 L482 250 L470 250" fill="none" stroke="#B8873B" '</span>
+             <span class="s1">'stroke-width="1"/&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="492" y="134" font-family="Lora" font-size="11" font-weight="600" '</span>
+             <span class="s1">'fill="#101B2E"&gt;One finished,&lt;/text&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="492" y="149" font-family="Lora" font-size="11" font-weight="600" '</span>
+             <span class="s1">'fill="#101B2E"&gt;personalized&lt;/text&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;text x="492" y="164" font-family="Lora" font-size="11" font-weight="600" '</span>
+             <span class="s1">'fill="#101B2E"&gt;resource&lt;/text&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/svg&gt;'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================== helpers</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">foot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s1">'&lt;div class="foot"&gt;&lt;span&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;span&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;span&gt;Page </span><span class="si">%d</span><span class="s1"> of </span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+            <span class="o">%</span> <span class="p">(</span><span class="s2">"Create Once. Configure Many Ways."</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">TOTAL</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">rhead</span><span class="p">(</span><span class="n">sec</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s1">'&lt;div class="rhead"&gt;&lt;div class="a"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;'</span>
+            <span class="s1">'&lt;div class="b"&gt;Strategy White Paper&lt;/div&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="n">sec</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">page</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s1">'&lt;div class="page</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;div class="pad"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;'</span>
+            <span class="o">%</span> <span class="p">(</span><span class="s2">" last"</span> <span class="k">if</span> <span class="n">last</span> <span class="k">else</span> <span class="s2">""</span><span class="p">,</span> <span class="n">rhead</span><span class="p">(</span><span class="n">sec</span><span class="p">),</span> <span class="n">body</span><span class="p">,</span> <span class="n">foot</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ul</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="s2">"tick"</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">'&lt;ul class="</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/ul&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"&lt;li&gt;</span><span class="si">%s</span><span class="s2">&lt;/li&gt;"</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">chips</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="s2">"chip dark"</span> <span class="k">if</span> <span class="n">dark</span> <span class="k">else</span> <span class="s2">"chip"</span>
+    <span class="k">return</span> <span class="s1">'&lt;div class="chipwrap"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;'</span> <span class="o">%</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="s1">'&lt;span class="</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">arc_of</span><span class="p">(</span><span class="n">cn</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ARCS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">cn</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"#101B2E"</span>
+
+
+<span class="c1"># =============================================================== pages</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># 1 — cover</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="cover"&gt;</span>
+<span class="s2">  &lt;div class="type"&gt;</span><span class="si">{doctype}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="rule"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;</span><span class="si">{ta}</span><span class="s2">&lt;br&gt;&lt;em&gt;</span><span class="si">{tb}</span><span class="s2">&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">  &lt;div class="sub"&gt;</span><span class="si">{sub}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="deck"&gt;</span><span class="si">{deck}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="band"&gt;</span><span class="si">{band}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="base"&gt;</span>
+<span class="s2">    &lt;div class="org"&gt;LifeTogether </span><span class="si">{em}</span><span class="s2"> The Human Side of Wealth&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="toc"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;The Choice&lt;/b&gt;Custom shop or publishing platform&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;Four Assets&lt;/b&gt;Library, modules, engine, fulfillment&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;200 Tools&lt;/b&gt;Twenty collections, five arcs&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;The Model&lt;/b&gt;Ten revenue paths and pricing&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;The Build&lt;/b&gt;Twenty-five tools first&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">doctype</span><span class="o">=</span><span class="n">DOCTYPE</span><span class="p">,</span> <span class="n">ta</span><span class="o">=</span><span class="n">TITLE_A</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="n">TITLE_B</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="n">SUBTITLE</span><span class="p">,</span> <span class="n">deck</span><span class="o">=</span><span class="n">DECK</span><span class="p">,</span> <span class="n">em</span><span class="o">=</span><span class="n">EM</span><span class="p">,</span>
+                 <span class="n">band</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div style="background:</span><span class="si">%s</span><span class="s1">"&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="n">c</span>
+                              <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">ARCS</span><span class="p">)))</span>
+
+    <span class="c1"># 2 — executive summary</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div&gt;&lt;div class="n"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;div class="t"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">STATS</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Executive Summary"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div style="height:26pt"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="kick"&gt;Executive Summary&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;The opportunity is not two hundred products.&lt;br&gt;It is one system that produces them.&lt;/h2&gt;</span>
+<span class="s2">    &lt;div style="height:16pt"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="stats"&gt;</span><span class="si">{stats}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="height:16pt"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="prose"&gt;</span><span class="si">{paras}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="n">paras</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"&lt;p&gt;</span><span class="si">%s</span><span class="s2">&lt;/p&gt;"</span> <span class="o">%</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">EXEC</span><span class="p">)),</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># 3 — the strategic choice</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="row"&gt;&lt;div class="l"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;div class="r"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">CHOICE</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Strategic Choice"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;The Strategic Choice&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;Two businesses that look identical&lt;br&gt;from the outside.&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;Both sell beautiful resources to advisors and families. Only one of them</span>
+<span class="s2">        gets easier, cheaper, and more valuable with every project delivered.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="vs"&gt;</span>
+<span class="s2">      &lt;div class="hd"&gt;&lt;div class="l"&gt;The Custom Shop&lt;/div&gt;&lt;div class="r"&gt;The Publishing Platform&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      </span><span class="si">{rows}</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="core"&gt;</span><span class="si">{core}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="margin-top:16pt" class="prose"&gt;</span>
+<span class="s2">      &lt;p&gt;The difference is not ambition or craft. It is whether the intellectual property is</span>
+<span class="s2">      written once into a structured system, or written again into every deliverable. Everything</span>
+<span class="s2">      that follows in this paper is a consequence of that single decision.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">core</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"&lt;div&gt;</span><span class="si">%s</span><span class="s2">&lt;/div&gt;"</span> <span class="o">%</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CORE</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1"># 4 — multiplication engine</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Multiplication Engine"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;How It Works&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;The multiplication engine&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;One methodology. Thirteen interchangeable content modules. Five overlay</span>
+<span class="s2">        systems. Ten output formats. A single master tool becomes hundreds of distinct,</span>
+<span class="s2">        finished editions without anyone rewriting it.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="margin-top:22pt"&gt;</span><span class="si">{svg}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols3"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;What stays fixed&lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-size:8.2pt;line-height:1.5;color:#5C6B7C;margin-top:6pt"&gt;The methodology,</span>
+<span class="s2">          the questions, the exercises, the outcomes. This is the approved intellectual property</span>
+<span class="s2">          and it is authored once, to a professional editorial standard.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;What varies&lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-size:8.2pt;line-height:1.5;color:#5C6B7C;margin-top:6pt"&gt;Which modules</span>
+<span class="s2">          appear, in what order, at what depth, in whose voice, under whose brand, for which</span>
+<span class="s2">          audience, in which format, at which length.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;Why it compounds&lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-size:8.2pt;line-height:1.5;color:#5C6B7C;margin-top:6pt"&gt;Every new</span>
+<span class="s2">          module, overlay, and template improves every tool in the library at once. Growth is</span>
+<span class="s2">          multiplicative rather than additive.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">svg</span><span class="o">=</span><span class="n">svg_engine</span><span class="p">()),</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="c1"># 5 — asset one</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Asset One"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Asset One of Four&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;The Master Tool Library&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;A professionally written and designed library of reusable intellectual</span>
+<span class="s2">        property, authored first in neutral, broadly usable language so that a single</span>
+<span class="s2">        methodology can serve very different institutions.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;Who a neutral master edition can serve&lt;/div&gt;</span>
+<span class="s2">    </span><span class="si">{aud}</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols2"&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;div class="lb"&gt;One master tool&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="example" style="margin-top:8pt"&gt;</span>
+<span class="s2">          &lt;div class="t"&gt;Family Values Discovery Guide&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="s"&gt;Master methodology </span><span class="se">\u00b7</span><span class="s2"> Collection 2&lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-size:8.2pt;line-height:1.5;color:#5C6B7C;margin-top:12pt"&gt;</span>
+<span class="s2">          You are not writing ten different products. You are writing one strong framework</span>
+<span class="s2">          with carefully designed variations </span><span class="se">\u2014</span><span class="s2"> and the framework is the asset that appreciates.</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;div class="lb"&gt;Ten editions from it&lt;/div&gt;</span>
+<span class="s2">        </span><span class="si">{eds}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aud</span><span class="o">=</span><span class="n">chips</span><span class="p">(</span><span class="n">AUDIENCES</span><span class="p">),</span> <span class="n">eds</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">EDITIONS</span><span class="p">)),</span> <span class="mi">5</span><span class="p">))</span>
+
+    <span class="c1"># 6 — asset two</span>
+    <span class="n">forms</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;tr&gt;&lt;td class="a"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;td class="b"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">FORMS</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Asset Two"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Asset Two of Four&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;The Modular Content System&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;Every tool is assembled from reusable components that can be included,</span>
+<span class="s2">        removed, reordered, or personalized. Without this, you are a custom publishing company.</span>
+<span class="s2">        With it, you are a platform.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;The thirteen standard modules&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="mods"&gt;</span><span class="si">{mods}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;The same underlying tool becomes&lt;/div&gt;</span>
+<span class="s2">    &lt;table class="forms"&gt;</span><span class="si">{forms}</span><span class="s2">&lt;/table&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mods</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"&lt;div&gt;</span><span class="si">%s</span><span class="s2">&lt;/div&gt;"</span> <span class="o">%</span> <span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">MODULES</span><span class="p">),</span> <span class="n">forms</span><span class="o">=</span><span class="n">forms</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
+
+    <span class="c1"># 7 — asset three</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Asset Three"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Asset Three of Four&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;The Personalization Engine&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;The system decides which content belongs in each finished resource. The</span>
+<span class="s2">        material remains rooted in the approved library; its selection, sequence, and</span>
+<span class="s2">        presentation are what change.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;Fifteen personalization inputs&lt;/div&gt;</span>
+<span class="s2">    </span><span class="si">{inp}</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;Worked example&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols2" style="margin-top:8pt"&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;div style="font-size:8.2pt;color:#5C6B7C;line-height:1.5"&gt;A family completes its</span>
+<span class="s2">          assessments and indicates four priorities:&lt;/div&gt;</span>
+<span class="s2">        </span><span class="si">{pri}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;</span>
+<span class="s2">        &lt;div class="example" style="margin-top:0"&gt;</span>
+<span class="s2">          &lt;div class="t"&gt;The Henderson Family&lt;br&gt;Legacy Journey&lt;/div&gt;</span>
+<span class="s2">          &lt;div class="s"&gt;A customized 30-day journal&lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-size:7.4pt;letter-spacing:.14em;text-transform:uppercase;color:#8B97A5;margin-top:11pt"&gt;</span>
+<span class="s2">          Drawing selected material from&lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-size:8pt;line-height:1.62;color:#3A4553;margin-top:5pt"&gt;</span><span class="si">{draws}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div style="font-size:8.2pt;line-height:1.5;color:#5C6B7C;margin-top:12pt"&gt;</span>
+<span class="s2">      The finished journal carries the family name, an advisor introduction, the family</span><span class="se">\u2019</span><span class="s2">s own</span>
+<span class="s2">      stated priorities, recommended meeting dates, and the exercises selected for their</span>
+<span class="s2">      situation </span><span class="se">\u2014</span><span class="s2"> generated, not assembled by hand.&lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inp</span><span class="o">=</span><span class="n">chips</span><span class="p">(</span><span class="n">PERSON_INPUTS</span><span class="p">),</span> <span class="n">pri</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">WORKED_PRIORITIES</span><span class="p">),</span>
+               <span class="n">draws</span><span class="o">=</span><span class="s2">" </span><span class="se">\u00b7</span><span class="s2"> "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WORKED_DRAWS</span><span class="p">)),</span> <span class="mi">7</span><span class="p">))</span>
+
+    <span class="c1"># 8 — asset four</span>
+    <span class="n">pod</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;tr&gt;&lt;td class="a" style="font-family:Lora;font-weight:600;font-size:11pt;'</span>
+                  <span class="s1">'color:#101B2E;width:56pt"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;td style="font-size:8.2pt;color:#5C6B7C"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;'</span>
+                  <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">POD</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Asset Four"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Asset Four of Four&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;Publishing and Fulfillment&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;The same generated resource must be able to leave the system as a file,</span>
+<span class="s2">        a booklet, a workbook, or a hardcover book </span><span class="se">\u2014</span><span class="s2"> in a run of one or a run of ten thousand.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols2"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;Digital publishing&lt;/div&gt;</span><span class="si">{dig}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;Print publishing&lt;/div&gt;</span><span class="si">{prt}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;Print-on-demand at any scale&lt;/div&gt;</span>
+<span class="s2">    &lt;table class="forms" style="margin-top:8pt"&gt;</span><span class="si">{pod}</span><span class="s2">&lt;/table&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dig</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">DIGITAL</span><span class="p">),</span> <span class="n">prt</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">PRINT</span><span class="p">),</span> <span class="n">pod</span><span class="o">=</span><span class="n">pod</span><span class="p">),</span> <span class="mi">8</span><span class="p">))</span>
+
+    <span class="c1"># 9 — library map</span>
+    <span class="n">arcs_html</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">ARCS</span><span class="p">:</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">cname</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">COLLECTIONS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">cn</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">:</span>
+                <span class="n">dots</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;u style="background:</span><span class="si">%s</span><span class="s1">;opacity:</span><span class="si">%.2f</span><span class="s1">"&gt;&lt;/u&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="mf">0.34</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mf">0.07</span><span class="p">)</span>
+                               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="cl"&gt;&lt;span class="no"&gt;</span><span class="si">%02d</span><span class="s1">&lt;/span&gt;'</span>
+                            <span class="s1">'&lt;span class="nm"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;span class="dots"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+                            <span class="o">%</span> <span class="p">(</span><span class="n">cn</span><span class="p">,</span> <span class="n">cname</span><span class="p">,</span> <span class="n">dots</span><span class="p">))</span>
+        <span class="n">arcs_html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s1">'&lt;div class="arc"&gt;&lt;div class="h" style="border-color:</span><span class="si">%s</span><span class="s1">"&gt;'</span>
+            <span class="s1">'&lt;span class="n" style="color:</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;span class="d"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;'</span>
+            <span class="s1">'&lt;span class="r"&gt;COLLECTIONS </span><span class="si">%02d</span><span class="se">\u2013</span><span class="si">%02d</span><span class="s1">&lt;/span&gt;&lt;/div&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;'</span>
+            <span class="o">%</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rows</span><span class="p">)))</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Library Map"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;The Library&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;Two hundred tools, twenty collections,&lt;br&gt;five arcs of family life.&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;The library should not feel like a warehouse. Grouping the twenty</span>
+<span class="s2">        collections into five arcs gives an advisor a mental model they can hold </span><span class="se">\u2014</span><span class="s2"> and gives</span>
+<span class="s2">        the personalization engine a coherent sequence to recommend.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="height:4pt"&gt;&lt;/div&gt;</span>
+<span class="s2">    </span><span class="si">{arcs}</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arcs</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arcs_html</span><span class="p">)),</span> <span class="mi">9</span><span class="p">))</span>
+
+    <span class="c1"># 10, 11 — taxonomy</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tax_block</span><span class="p">(</span><span class="n">sub</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">cname</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">sub</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">arc_of</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+            <span class="n">lis</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;li&gt;&lt;span&gt;</span><span class="si">%02d</span><span class="s1">&lt;/span&gt;</span><span class="si">%s</span><span class="s1">&lt;/li&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                          <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="p">(</span><span class="n">cn</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="tx"&gt;&lt;div class="h" style="border-color:</span><span class="si">%s</span><span class="s1">"&gt;'</span>
+                       <span class="s1">'&lt;span class="n" style="color:</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%02d</span><span class="s1">&lt;/span&gt;'</span>
+                       <span class="s1">'&lt;span class="t"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/div&gt;&lt;ol&gt;</span><span class="si">%s</span><span class="s1">&lt;/ol&gt;&lt;/div&gt;'</span>
+                       <span class="o">%</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">cn</span><span class="p">,</span> <span class="n">cname</span><span class="p">,</span> <span class="n">lis</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">'&lt;div class="tax"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;'</span> <span class="o">%</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Taxonomy"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec" style="margin-top:18pt"&gt;&lt;div class="kick"&gt;The Taxonomy </span><span class="se">\u2014</span><span class="s2"> One of Two&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="sm"&gt;Collections one through ten&lt;/h2&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr" style="margin:10pt 0"&gt;&lt;/div&gt;</span>
+<span class="s2">    </span><span class="si">{t}</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">tax_block</span><span class="p">(</span><span class="n">COLLECTIONS</span><span class="p">[:</span><span class="mi">10</span><span class="p">])),</span> <span class="mi">10</span><span class="p">))</span>
+
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Taxonomy"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec" style="margin-top:18pt"&gt;&lt;div class="kick"&gt;The Taxonomy </span><span class="se">\u2014</span><span class="s2"> Two of Two&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="sm"&gt;Collections eleven through twenty&lt;/h2&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr" style="margin:10pt 0"&gt;&lt;/div&gt;</span>
+<span class="s2">    </span><span class="si">{t}</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">tax_block</span><span class="p">(</span><span class="n">COLLECTIONS</span><span class="p">[</span><span class="mi">10</span><span class="p">:])),</span> <span class="mi">11</span><span class="p">))</span>
+
+    <span class="c1"># 12 — overlays</span>
+    <span class="n">ovs</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="ovc" style="border-color:</span><span class="si">%s</span><span class="s1">"&gt;&lt;div class="n"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;'</span>
+                  <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="s2">"&lt;ul&gt;</span><span class="si">%s</span><span class="s2">&lt;/ul&gt;"</span> <span class="o">%</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"&lt;li&gt;</span><span class="si">%s</span><span class="s2">&lt;/li&gt;"</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">))</span>
+                  <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">OVERLAYS</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Overlay System"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;The Overlay System&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;Universal is not the same as bland.&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;The master editions should be universal, not generic in a weak sense.</span>
+<span class="s2">        Strong concepts, proven questions, practical exercises, professional language, clear</span>
+<span class="s2">        outcomes, adaptable examples </span><span class="se">\u2014</span><span class="s2"> and a neutral baseline the platform then dresses.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="margin-top:14pt"&gt;</span><span class="si">{svg}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr" style="margin:10pt 0"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="ov"&gt;</span><span class="si">{ovs}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">svg</span><span class="o">=</span><span class="n">svg_overlay_stack</span><span class="p">(),</span> <span class="n">ovs</span><span class="o">=</span><span class="n">ovs</span><span class="p">),</span> <span class="mi">12</span><span class="p">))</span>
+
+    <span class="c1"># 13 — architecture</span>
+    <span class="n">lys</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="ly" style="border-color:</span><span class="si">%s</span><span class="s1">"&gt;&lt;span class="k" style="color:</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;'</span>
+                  <span class="s1">'&lt;span class="n"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;span class="d"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">LAYERS</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Product Architecture"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Product Architecture&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;Six layers&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;Each layer depends on the one beneath it. Most content companies build</span>
+<span class="s2">        layers five and six and never build one through four </span><span class="se">\u2014</span><span class="s2"> which is precisely why their</span>
+<span class="s2">        work does not compound.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="stack"&gt;</span><span class="si">{lys}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="warn"&gt;</span>
+<span class="s2">      &lt;div class="k"&gt;The load-bearing layer&lt;/div&gt;</span>
+<span class="s2">      &lt;p&gt;Layer 1 is the only layer that cannot be bought, outsourced, or regenerated. Two hundred</span>
+<span class="s2">      approved tools, written to a consistent editorial standard and structured for reuse, is the</span>
+<span class="s2">      asset. Everything above it is a way of arranging that asset for a particular reader.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lys</span><span class="o">=</span><span class="n">lys</span><span class="p">),</span> <span class="mi">13</span><span class="p">))</span>
+
+    <span class="c1"># 14 — journal</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Journal Opportunity"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Flagship Product&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;The custom journal&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;Custom journals could become the most visible and valuable product on the</span>
+<span class="s2">        platform </span><span class="se">\u2014</span><span class="s2"> tangible, personal, gift-worthy, and naturally recurring.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="example"&gt;</span>
+<span class="s2">      &lt;div class="t"&gt;The Anderson Family Legacy Journal&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="s"&gt;Prepared by Smith Family Wealth&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols2" style="margin-top:16pt"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;What it contains&lt;/div&gt;</span><span class="si">{c}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;What the advisor orders&lt;/div&gt;</span><span class="si">{o}</span>
+<span class="s2">        &lt;div style="font-size:8.2pt;line-height:1.5;color:#5C6B7C;margin-top:14pt"&gt;</span>
+<span class="s2">          An annually updated edition converts a one-time deliverable into recurring revenue and</span>
+<span class="s2">          a tangible client experience the family keeps on a shelf rather than in a folder.&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">JOURNAL_CONTENTS</span><span class="p">),</span> <span class="n">o</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">JOURNAL_ORDERS</span><span class="p">)),</span> <span class="mi">14</span><span class="p">))</span>
+
+    <span class="c1"># 15 — curriculum</span>
+    <span class="n">sess</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="mm"&gt;&lt;div class="a"&gt;Session </span><span class="si">%d</span><span class="s1">. </span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;div class="b"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span>
+                   <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">SESSIONS</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Curriculum Opportunity"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Flagship Product&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;The custom curriculum&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;The same platform produces complete, brandable curriculum </span><span class="se">\u2014</span><span class="s2"> the highest</span>
+<span class="s2">        contract value and the most defensible enterprise relationship.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;Six-Session Family Legacy Curriculum&lt;/div&gt;</span>
+<span class="s2">    &lt;div style="margin-top:4pt"&gt;</span><span class="si">{sess}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols2"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;Each curriculum includes&lt;/div&gt;</span><span class="si">{parts}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;Brandable for&lt;/div&gt;</span><span class="si">{brands}</span>
+<span class="s2">        &lt;div style="font-size:8.2pt;line-height:1.5;color:#5C6B7C;margin-top:12pt"&gt;</span>
+<span class="s2">          One curriculum, authored once, becomes seven institutional products </span><span class="se">\u2014</span><span class="s2"> each of which</span>
+<span class="s2">          feels custom-built to the organization that licenses it.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sess</span><span class="o">=</span><span class="n">sess</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">CURRIC_PARTS</span><span class="p">),</span> <span class="n">brands</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">CURRIC_BRANDS</span><span class="p">)),</span> <span class="mi">15</span><span class="p">))</span>
+
+    <span class="c1"># 16 — business models</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">gname</span><span class="p">,</span> <span class="n">gcol</span><span class="p">,</span> <span class="n">models</span> <span class="ow">in</span> <span class="n">MODEL_GROUPS</span><span class="p">:</span>
+        <span class="n">mm</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="mm"&gt;&lt;div class="a"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;div class="b"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">models</span><span class="p">)</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="mg"&gt;&lt;div class="h" style="border-color:</span><span class="si">%s</span><span class="s1">"&gt;'</span>
+                      <span class="s1">'&lt;span class="n" style="color:</span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;'</span>
+                      <span class="s1">'&lt;span class="c"&gt;</span><span class="si">%d</span><span class="s1"> models&lt;/span&gt;&lt;/div&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;'</span>
+                      <span class="o">%</span> <span class="p">(</span><span class="n">gcol</span><span class="p">,</span> <span class="n">gcol</span><span class="p">,</span> <span class="n">gname</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">mm</span><span class="p">))</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Revenue Models"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec" style="margin-top:16pt"&gt;&lt;div class="kick"&gt;The Business Model&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="sm"&gt;Ten ways the same library earns&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;Grouped by revenue behavior rather than by customer, because the mix</span>
+<span class="s2">        determines the valuation more than the total does.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    </span><span class="si">{groups}</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">groups</span><span class="p">)),</span> <span class="mi">16</span><span class="p">))</span>
+
+    <span class="c1"># 17 — pricing + readiness</span>
+    <span class="n">pr</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;tr&gt;&lt;td&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;td class="b"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">PRICING</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Pricing and Position"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Unit Economics&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="sm"&gt;Per-family publishing&lt;/h2&gt;</span>
+<span class="s2">      &lt;div class="dek"&gt;Indicative ranges. Final pricing depends on depth, printing, production,</span>
+<span class="s2">        facilitation, and the degree of customization.&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;table class="price"&gt;</span><span class="si">{pr}</span><span class="s2">&lt;/table&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="sec" style="margin-top:6pt"&gt;&lt;div class="kick"&gt;Honest Assessment&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="sm"&gt;How far away this is&lt;/h2&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="gauge"&gt;</span>
+<span class="s2">      &lt;div class="row"&gt;</span>
+<span class="s2">        &lt;div class="lbl"&gt;&lt;span class="a"&gt;Underlying content concepts already in hand&lt;/span&gt;</span>
+<span class="s2">          &lt;span class="b" style="color:#2F6B45"&gt;30</span><span class="se">\u2013</span><span class="s2">40%&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="bar"&gt;&lt;u style="width:35%;background:#2F6B45"&gt;&lt;/u&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cap"&gt;Spread across existing books, campaigns, journeys, advisor materials,</span>
+<span class="s2">          family legacy resources, and expert partnerships. You are not starting from zero.&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="row"&gt;</span>
+<span class="s2">        &lt;div class="lbl"&gt;&lt;span class="a"&gt;Toward a functioning, repeatable publishing platform&lt;/span&gt;</span>
+<span class="s2">          &lt;span class="b" style="color:#B85C3B"&gt;10</span><span class="se">\u2013</span><span class="s2">15%&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="bar"&gt;&lt;u style="width:12.5%;background:#B85C3B"&gt;&lt;/u&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="cap"&gt;The content still has to be standardized, modularized, tagged, designed,</span>
+<span class="s2">          personalized, and connected to production. The gap is executional, not conceptual.&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols2" style="margin-top:6pt"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb" style="color:#2F6B45"&gt;What is already true&lt;/div&gt;</span><span class="si">{have}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb" style="color:#B85C3B"&gt;What is still missing&lt;/div&gt;</span><span class="si">{gaps}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pr</span><span class="o">=</span><span class="n">pr</span><span class="p">,</span> <span class="n">have</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">HAVE</span><span class="p">),</span> <span class="n">gaps</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">GAPS</span><span class="p">)),</span> <span class="mi">17</span><span class="p">))</span>
+
+    <span class="c1"># 18 — sequenced build</span>
+    <span class="n">heights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">46</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"#2B5C9B"</span><span class="p">,</span> <span class="s2">"#0F7A6C"</span><span class="p">,</span> <span class="s2">"#6B4E9E"</span><span class="p">,</span> <span class="s2">"#101B2E"</span><span class="p">]</span>
+    <span class="n">caps</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Prove the model with the tools advisors ask for most"</span><span class="p">,</span>
+            <span class="s2">"Extend into the variations the pilots actually request"</span><span class="p">,</span>
+            <span class="s2">"Scale once modules and templates are stable"</span><span class="p">,</span>
+            <span class="s2">"Complete the taxonomy with demand already proven"</span><span class="p">]</span>
+    <span class="n">phs</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="ph"&gt;&lt;div class="bx" style="background:</span><span class="si">%s</span><span class="s1">;height:</span><span class="si">%d</span><span class="s1">pt"&gt;'</span>
+                  <span class="s1">'&lt;div class="n"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;div class="t"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span>
+                  <span class="s1">'&lt;div class="c"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">cap</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">h</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">cap</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">PHASES</span><span class="p">,</span> <span class="n">heights</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">caps</span><span class="p">))</span>
+    <span class="n">sts</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;div class="st"&gt;&lt;div class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/div&gt;&lt;div class="t"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">STEPS</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"The Sequenced Build"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Execution&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;Build twenty-five tools completely&lt;br&gt;before building two hundred badly.&lt;/h2&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="warn"&gt;</span>
+<span class="s2">      &lt;div class="k"&gt;What not to do&lt;/div&gt;</span>
+<span class="s2">      &lt;p&gt;Do not begin by writing and designing two hundred finished thirty-page PDFs individually.</span>
+<span class="s2">      That consumes enormous time and money while producing a library that may never be used </span><span class="se">\u2014</span>
+<span class="s2">      and it produces it in exactly the unstructured form that prevents personalization later.&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;Library growth&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="phases"&gt;</span><span class="si">{phs}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="lb"&gt;The eight execution steps&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="steps"&gt;</span><span class="si">{sts}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phs</span><span class="o">=</span><span class="n">phs</span><span class="p">,</span> <span class="n">sts</span><span class="o">=</span><span class="n">sts</span><span class="p">),</span> <span class="mi">18</span><span class="p">))</span>
+
+    <span class="c1"># 19 — launch</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="s2">"Recommended Launch"</span><span class="p">,</span> <span class="s2">"""</span>
+<span class="s2">    &lt;div class="sec"&gt;&lt;div class="kick"&gt;Recommended Launch&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="sm"&gt;Where to start&lt;/h2&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="launch"&gt;</span>
+<span class="s2">      &lt;div class="n"&gt;</span><span class="si">{ln}{tm}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="s"&gt;</span><span class="si">{ls}{tm}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cols2" style="margin-top:18pt"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;Initial custom outputs&lt;/div&gt;</span><span class="si">{outs}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="lb"&gt;Initial library&lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-family:Lora;font-weight:600;font-size:26pt;color:#101B2E;margin-top:8pt;line-height:1"&gt;25&lt;/div&gt;</span>
+<span class="s2">        &lt;div style="font-size:7.4pt;letter-spacing:.14em;text-transform:uppercase;color:#8B97A5;margin-top:4pt"&gt;proven tools&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="lb" style="margin-top:20pt"&gt;Initial customers&lt;/div&gt;</span><span class="si">{cust}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="n">LAUNCH_NAME</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="n">LAUNCH_SUB</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="n">TM</span><span class="p">,</span> <span class="n">outs</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">LAUNCH_OUTPUTS</span><span class="p">),</span>
+               <span class="n">cust</span><span class="o">=</span><span class="n">ul</span><span class="p">(</span><span class="n">LAUNCH_CUSTOMERS</span><span class="p">)),</span> <span class="mi">19</span><span class="p">))</span>
+
+    <span class="c1"># 20 — closing</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="page last"&gt;</span>
+<span class="s2">  </span><span class="si">{rh}</span>
+<span class="s2">  &lt;div class="pad"&gt;</span>
+<span class="s2">    &lt;div class="sec" style="margin-top:40pt"&gt;&lt;div class="kick"&gt;The Promise&lt;/div&gt;</span>
+<span class="s2">      &lt;h2&gt;The clearest way to say&lt;br&gt;what this is.&lt;/h2&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="hr"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="prose" style="font-size:12pt;line-height:1.62;color:#23303F"&gt;</span>
+<span class="s2">      &lt;p&gt;</span><span class="si">{promise}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="finale"&gt;</span>
+<span class="s2">    &lt;div class="k"&gt;Why It Matters&lt;/div&gt;</span>
+<span class="s2">    &lt;h2&gt;</span><span class="si">{closing}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">    &lt;p&gt;Create once. Configure many ways. Personalize for every organization and family.</span>
+<span class="s2">      Publish digitally or in print.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  </span><span class="si">{ft}</span>
+<span class="s2">&lt;/div&gt;"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rh</span><span class="o">=</span><span class="n">rhead</span><span class="p">(</span><span class="s2">"The Promise"</span><span class="p">),</span> <span class="n">promise</span><span class="o">=</span><span class="n">PROMISE</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="n">CLOSING</span><span class="p">,</span> <span class="n">ft</span><span class="o">=</span><span class="n">foot</span><span class="p">(</span><span class="mi">20</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="s1">'&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;style&gt;</span><span class="si">%s</span><span class="s1">&lt;/style&gt;&lt;/head&gt;&lt;body&gt;</span><span class="si">%s</span><span class="s1">'</span>
+            <span class="s1">'&lt;/body&gt;&lt;/html&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">CSS</span><span class="p">,</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">P</span><span class="p">)))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="s2">"White-Paper-Create-Once-Configure-Many-Ways.pdf"</span><span class="p">)</span>
+    <span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">build</span><span class="p">())</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">PdfReader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"pages: </span><span class="si">%d</span><span class="s2"> (expected </span><span class="si">%d</span><span class="s2">)  </span><span class="si">%.0f</span><span class="s2"> x </span><span class="si">%.0f</span><span class="s2"> pt"</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">pages</span><span class="p">),</span> <span class="n">TOTAL</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">pages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mediabox</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">pages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mediabox</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/wp_build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

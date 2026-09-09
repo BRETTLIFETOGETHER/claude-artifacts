@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>render.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Hannah - Foundation Series layout</div>
+<h1>render.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">1 edit</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">556 B</span>
+<a class="btn" href="../../artifacts/Hannah%20-%20Foundation%20Series%20layout/render.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Python script to render the HTML to PDF via Playwright/Chromium, matching the established production pipeline</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">playwright.sync_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">sync_playwright</span>
+
+<span class="n">html_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">pdf_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="k">with</span> <span class="n">sync_playwright</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+    <span class="n">browser</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">chromium</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">executable_path</span><span class="o">=</span><span class="s2">"/opt/pw-browsers/chromium-1194/chrome-linux/chrome"</span><span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">new_page</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="sa">f</span><span class="s2">"file://</span><span class="si">{</span><span class="n">html_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s2">"document.fonts.ready"</span><span class="p">)</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">wait_for_timeout</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="n">pdf_path</span><span class="p">,</span>
+        <span class="n">print_background</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">prefer_css_page_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"rendered:"</span><span class="p">,</span> <span class="n">pdf_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/render.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>DocGenerator.gs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Building a 100 master themes content system</div>
+<h1>DocGenerator.gs</h1>
+<div class="meta"><span class="ext e-gs">gs</span><span class="b ok" title="This file was delivered to you in the conversation">delivered</span>
+<span class="b">4 KB</span>
+<a class="btn" href="../../artifacts/Building%20a%20100%20master%20themes%20content%20system/DocGenerator.gs" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Apps Script that mass-generates one Google Doc per campaign row, replacing Keyboard Maestro automation</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * LIFETOGETHER CAMPAIGN DOC GENERATOR</span>
+<span class="cm"> * Creates one Google Doc per row of the "Campaigns" sheet — no clicking, no Keyboard Maestro.</span>
+<span class="cm"> * Handles thousands of docs safely by processing in batches with an auto-resume trigger.</span>
+<span class="cm"> *</span>
+<span class="cm"> * SETUP (one time, ~5 minutes):</span>
+<span class="cm"> * 1. Upload Lifetogether_Master_Taxonomy.xlsx to Google Drive and open it AS a Google Sheet</span>
+<span class="cm"> *    (File &gt; Save as Google Sheets).</span>
+<span class="cm"> * 2. Create ONE template Google Doc containing your four-part blueprint layout with merge</span>
+<span class="cm"> *    fields written exactly like this anywhere in the doc:</span>
+<span class="cm"> *    {{Title}} {{Subtitle}} {{Theme}} {{Audience}} {{LifeEvent}} {{TrustedGuide}}</span>
+<span class="cm"> *    {{Format}} {{Framework}} {{FeltNeed}} {{Scripture}} {{CampaignID}}</span>
+<span class="cm"> * 3. Create an empty Drive folder for output.</span>
+<span class="cm"> * 4. In the Sheet: Extensions &gt; Apps Script &gt; paste this file &gt; save.</span>
+<span class="cm"> * 5. Paste the template Doc ID and output folder ID into CONFIG below.</span>
+<span class="cm"> *    (The ID is the long string in the URL between /d/ and /edit.)</span>
+<span class="cm"> * 6. Reload the Sheet. A "Lifetogether" menu appears. Click "Generate Docs".</span>
+<span class="cm"> *</span>
+<span class="cm"> * WHAT IT DOES per row where Status = "Ready":</span>
+<span class="cm"> *  - copies the template</span>
+<span class="cm"> *  - fills every merge field</span>
+<span class="cm"> *  - names the doc "Title — Subtitle"</span>
+<span class="cm"> *  - files it in a subfolder named after the Theme</span>
+<span class="cm"> *  - writes the Doc URL back into the "Doc URL" column</span>
+<span class="cm"> *  - sets Status to "Generated"</span>
+<span class="cm"> * Apps Script caps a run at ~6 minutes, so this processes BATCH_SIZE rows per run and</span>
+<span class="cm"> * installs a trigger that re-runs itself every few minutes until every row is done.</span>
+<span class="cm"> * 2,500 docs finishes unattended in roughly an evening.</span>
+<span class="cm"> */</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">CONFIG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">TEMPLATE_DOC_ID</span><span class="o">:</span><span class="w"> </span><span class="s1">'PASTE_TEMPLATE_DOC_ID_HERE'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">OUTPUT_FOLDER_ID</span><span class="o">:</span><span class="w"> </span><span class="s1">'PASTE_OUTPUT_FOLDER_ID_HERE'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">SHEET_NAME</span><span class="o">:</span><span class="w"> </span><span class="s1">'Campaigns'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">BATCH_SIZE</span><span class="o">:</span><span class="w"> </span><span class="mf">40</span><span class="w">   </span><span class="c1">// rows per run; safe for the 6-minute limit</span>
+<span class="p">};</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">onOpen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">SpreadsheetApp</span><span class="p">.</span><span class="nx">getUi</span><span class="p">().</span><span class="nx">createMenu</span><span class="p">(</span><span class="s1">'Lifetogether'</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="s1">'Generate Docs (auto-resumes until done)'</span><span class="p">,</span><span class="w"> </span><span class="s1">'startGeneration'</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="s1">'Stop auto-resume'</span><span class="p">,</span><span class="w"> </span><span class="s1">'stopGeneration'</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">addToUi</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">startGeneration</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">stopGeneration</span><span class="p">();</span><span class="w"> </span><span class="c1">// clear old triggers</span>
+<span class="w">  </span><span class="nx">ScriptApp</span><span class="p">.</span><span class="nx">newTrigger</span><span class="p">(</span><span class="s1">'generateBatch'</span><span class="p">).</span><span class="nx">timeBased</span><span class="p">().</span><span class="nx">everyMinutes</span><span class="p">(</span><span class="mf">5</span><span class="p">).</span><span class="nx">create</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">generateBatch</span><span class="p">();</span><span class="w"> </span><span class="c1">// run the first batch immediately</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">stopGeneration</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">ScriptApp</span><span class="p">.</span><span class="nx">getProjectTriggers</span><span class="p">().</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">getHandlerFunction</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'generateBatch'</span><span class="p">)</span><span class="w"> </span><span class="nx">ScriptApp</span><span class="p">.</span><span class="nx">deleteTrigger</span><span class="p">(</span><span class="nx">t</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">generateBatch</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">ss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">SpreadsheetApp</span><span class="p">.</span><span class="nx">getActiveSpreadsheet</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">sheet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ss</span><span class="p">.</span><span class="nx">getSheetByName</span><span class="p">(</span><span class="nx">CONFIG</span><span class="p">.</span><span class="nx">SHEET_NAME</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">sheet</span><span class="p">.</span><span class="nx">getDataRange</span><span class="p">().</span><span class="nx">getValues</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">data</span><span class="p">[</span><span class="mf">0</span><span class="p">];</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">head</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'CampaignID'</span><span class="p">),</span><span class="w"> </span><span class="nx">theme</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Theme'</span><span class="p">),</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Campaign Title'</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">sub</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Subtitle'</span><span class="p">),</span><span class="w"> </span><span class="nx">aud</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Audience'</span><span class="p">),</span><span class="w"> </span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Life Event'</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">guide</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Trusted Guide'</span><span class="p">),</span><span class="w"> </span><span class="nx">fmt</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Format'</span><span class="p">),</span><span class="w"> </span><span class="nx">fw</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Framework'</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">need</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Felt Need'</span><span class="p">),</span><span class="w"> </span><span class="nx">scr</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Scripture Anchor'</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Status'</span><span class="p">),</span><span class="w"> </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="nx">col</span><span class="p">(</span><span class="s1">'Doc URL'</span><span class="p">)</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">template</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">DriveApp</span><span class="p">.</span><span class="nx">getFileById</span><span class="p">(</span><span class="nx">CONFIG</span><span class="p">.</span><span class="nx">TEMPLATE_DOC_ID</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">outRoot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">DriveApp</span><span class="p">.</span><span class="nx">getFolderById</span><span class="p">(</span><span class="nx">CONFIG</span><span class="p">.</span><span class="nx">OUTPUT_FOLDER_ID</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">done</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">done</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">CONFIG</span><span class="p">.</span><span class="nx">BATCH_SIZE</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">String</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">r</span><span class="p">][</span><span class="nx">c</span><span class="p">.</span><span class="nx">status</span><span class="p">]).</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'Ready'</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">data</span><span class="p">[</span><span class="nx">r</span><span class="p">];</span>
+
+<span class="w">    </span><span class="c1">// one subfolder per theme</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">themeName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">theme</span><span class="p">]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">'Uncategorized'</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">outRoot</span><span class="p">.</span><span class="nx">getFoldersByName</span><span class="p">(</span><span class="nx">themeName</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">it</span><span class="p">.</span><span class="nx">hasNext</span><span class="p">()</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">it</span><span class="p">.</span><span class="nx">next</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">outRoot</span><span class="p">.</span><span class="nx">createFolder</span><span class="p">(</span><span class="nx">themeName</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">docName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">sub</span><span class="p">]</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">title</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">' — '</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">sub</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">title</span><span class="p">];</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">copy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">template</span><span class="p">.</span><span class="nx">makeCopy</span><span class="p">(</span><span class="nx">docName</span><span class="p">,</span><span class="w"> </span><span class="nx">folder</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">DocumentApp</span><span class="p">.</span><span class="nx">openById</span><span class="p">(</span><span class="nx">copy</span><span class="p">.</span><span class="nx">getId</span><span class="p">());</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">doc</span><span class="p">.</span><span class="nx">getBody</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s1">'{{CampaignID}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">id</span><span class="p">],</span><span class="w"> </span><span class="s1">'{{Theme}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">themeName</span><span class="p">,</span>
+<span class="w">      </span><span class="s1">'{{Title}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">title</span><span class="p">],</span><span class="w"> </span><span class="s1">'{{Subtitle}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">sub</span><span class="p">],</span>
+<span class="w">      </span><span class="s1">'{{Audience}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">aud</span><span class="p">],</span><span class="w"> </span><span class="s1">'{{LifeEvent}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">evt</span><span class="p">],</span>
+<span class="w">      </span><span class="s1">'{{TrustedGuide}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">guide</span><span class="p">],</span><span class="w"> </span><span class="s1">'{{Format}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">fmt</span><span class="p">],</span>
+<span class="w">      </span><span class="s1">'{{Framework}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">fw</span><span class="p">],</span><span class="w"> </span><span class="s1">'{{FeltNeed}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">need</span><span class="p">],</span>
+<span class="w">      </span><span class="s1">'{{Scripture}}'</span><span class="o">:</span><span class="w"> </span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">scr</span><span class="p">]</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">k</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">map</span><span class="p">)</span><span class="w"> </span><span class="nx">body</span><span class="p">.</span><span class="nx">replaceText</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="p">(</span><span class="nx">map</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">''</span><span class="p">));</span>
+<span class="w">    </span><span class="nx">doc</span><span class="p">.</span><span class="nx">saveAndClose</span><span class="p">();</span>
+
+<span class="w">    </span><span class="nx">sheet</span><span class="p">.</span><span class="nx">getRange</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">url</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">).</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">copy</span><span class="p">.</span><span class="nx">getUrl</span><span class="p">());</span>
+<span class="w">    </span><span class="nx">sheet</span><span class="p">.</span><span class="nx">getRange</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">).</span><span class="nx">setValue</span><span class="p">(</span><span class="s1">'Generated'</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">done</span><span class="o">++</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// all finished? remove the trigger</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">sheet</span><span class="p">.</span><span class="nx">getDataRange</span><span class="p">().</span><span class="nx">getValues</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mf">1</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="nx">row</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">String</span><span class="p">(</span><span class="nx">row</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">status</span><span class="p">]).</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'Ready'</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">remaining</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="nx">stopGeneration</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/mnt/user-data/outputs/DocGenerator.gs</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>cextract.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Three-way file merge and audit review</div>
+<h1>cextract.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">762 B</span>
+<a class="btn" href="../../artifacts/Three-way%20file%20merge%20and%20audit%20review/cextract.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Extract File C paragraphs with page numbers from PDF</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">subprocess</span><span class="o">,</span><span class="w"> </span><span class="nn">unicodedata</span>
+
+<span class="c1"># use raw (non-layout) extraction for better paragraph reflow</span>
+<span class="n">paras</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># (page, text)</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">130</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">'pdftotext'</span><span class="p">,</span> <span class="s1">'-f'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="s1">'-l'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="s1">'C_current.pdf'</span><span class="p">,</span> <span class="s1">'-'</span><span class="p">],</span>
+                       <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'</span><span class="se">\x0c</span><span class="s1">'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+    <span class="c1"># join hyphen-broken lines</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'(\w)-\n(\w)'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'\1\2'</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\n\s*\n'</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\s*\n\s*'</span><span class="p">,</span> <span class="s1">' '</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\s+'</span><span class="p">,</span> <span class="s1">' '</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
+            <span class="n">paras</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'page'</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span> <span class="s1">'text'</span><span class="p">:</span> <span class="n">b</span><span class="p">})</span>
+
+<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">paras</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'C_paras.json'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'paras:'</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">paras</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'total words:'</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">paras</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/merge/cextract.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

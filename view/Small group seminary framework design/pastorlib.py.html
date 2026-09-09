@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>pastorlib.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>pastorlib.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">24 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/pastorlib.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Pastor&#x27;s Library Project offer: outcomes, workstreams, additions, reconciled pricing ladder, staffing scenarios</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""The Pastor's Library Project — offer, outcomes, reconciled pricing, staffing."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--ink:#0c1723;--ink2:#08111c;--gold:#c19a4b;--goldlt:#e2c689;--parch:#f7f3ea;</span>
+<span class="s2">--parch2:#efe8da;--rule:#d9cfbc;--body:#2b2a26;--muted:#6d6759;--mutedlt:#9fb0c1;}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--parch);color:var(--body);</span>
+<span class="s2">font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;line-height:1.62}</span>
+<span class="s2">.wrap{max-width:940px;margin:0 auto;padding:0 30px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;margin:0;letter-spacing:-.01em}</span>
+<span class="s2">.eyebrow{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.26em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);display:block}</span>
+<span class="s2">p{margin:0 0 15px}</span>
+<span class="s2">header{background:var(--ink);color:#f3efe6;padding:68px 0 56px;position:relative;overflow:hidden}</span>
+<span class="s2">header:before{content:"";position:absolute;inset:0;</span>
+<span class="s2">background:radial-gradient(112</span><span class="si">% 78%</span><span class="s2"> at 7</span><span class="si">% 0%</span><span class="s2">,rgba(193,154,75,.18),transparent 62%)}</span>
+<span class="s2">header .wrap{position:relative}header .eyebrow{color:var(--goldlt)}</span>
+<span class="s2">header h1{font-size:clamp(33px,5.8vw,58px);line-height:1.03;color:#fbf8f1;margin-top:16px}</span>
+<span class="s2">header h1 em{font-style:italic;font-weight:400;color:var(--goldlt)}</span>
+<span class="s2">header .lede{font-size:21px;color:#cfc7b8;max-width:640px;margin-top:22px}</span>
+<span class="s2">section{padding:58px 0 50px;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">section.dark{background:var(--ink2);color:#e6e0d3;border-bottom:none}</span>
+<span class="s2">section.dark h2,section.dark h3,section.dark h4{color:#fbf8f1}</span>
+<span class="s2">section.dark p{color:#d6cec0}</span>
+<span class="s2">section.tone{background:var(--parch2)}</span>
+<span class="s2">h2.sec{font-size:clamp(26px,4.1vw,38px);line-height:1.1;margin-top:13px;max-width:790px}</span>
+<span class="s2">.kick{font-style:italic;color:var(--muted);margin:13px 0 0;max-width:650px;font-size:20px}</span>
+<span class="s2">section.dark .kick{color:var(--mutedlt)}</span>
+<span class="s2">.verdict{font-family:"Playfair Display",serif;font-size:22px;line-height:1.42;</span>
+<span class="s2">border-left:3px solid var(--gold);padding-left:22px;margin:24px 0;max-width:670px}</span>
+<span class="s2">section.dark .verdict{color:var(--goldlt)}</span>
+<span class="s2">.item{display:flex;gap:22px;padding:20px 0;border-top:1px solid var(--rule)}</span>
+<span class="s2">section.dark .item{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">.item .n{flex:0 0 44px;font-family:"Playfair Display",serif;font-size:28px;line-height:1;</span>
+<span class="s2">color:transparent;-webkit-text-stroke:1px var(--gold);padding-top:3px}</span>
+<span class="s2">section.dark .item .n{-webkit-text-stroke-color:var(--goldlt)}</span>
+<span class="s2">.item .c{flex:1 1 auto;max-width:670px}</span>
+<span class="s2">.item h4{font-size:20px;line-height:1.25;margin-bottom:7px}</span>
+<span class="s2">.item p{margin:0 0 9px;font-size:18px}.item p:last-child{margin-bottom:0}</span>
+<span class="s2">.out{display:flex;gap:18px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline}</span>
+<span class="s2">.out .mark{flex:0 0 20px;color:var(--gold);font-family:"Lato",sans-serif;font-size:15px}</span>
+<span class="s2">.out .txt{flex:1;font-size:18.5px}</span>
+<span class="s2">section.dark .out{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">.ws{border-top:1px solid var(--rule);padding:24px 0}</span>
+<span class="s2">.ws h3{font-size:23px;margin-bottom:5px}</span>
+<span class="s2">.ws .who{font-family:"Lato",sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);margin-bottom:10px}</span>
+<span class="s2">.ws ul{margin:0;padding-left:20px}.ws li{margin-bottom:6px;font-size:18px}</span>
+<span class="s2">table{width:100%;border-collapse:collapse;margin-top:24px;font-size:17px}</span>
+<span class="s2">th{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.15em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);text-align:left;padding:0 14px 11px 0;</span>
+<span class="s2">border-bottom:1px solid var(--rule);vertical-align:bottom}</span>
+<span class="s2">td{padding:14px 14px 14px 0;border-bottom:1px solid var(--rule);vertical-align:top}</span>
+<span class="s2">td.k{font-family:"Playfair Display",serif;font-size:18px;width:24%}</span>
+<span class="s2">td.n{font-family:"Lato",sans-serif;font-size:14.5px;white-space:nowrap;color:var(--gold);font-weight:700}</span>
+<span class="s2">td.s{color:var(--muted);font-size:16.5px}</span>
+<span class="s2">section.dark td{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">section.dark td.k{color:#fbf8f1}section.dark td.s{color:var(--mutedlt)}</span>
+<span class="s2">section.dark td.n{color:var(--goldlt)}</span>
+<span class="s2">.note{font-family:"Lato",sans-serif;font-size:13px;line-height:1.75;color:var(--muted);</span>
+<span class="s2">border-top:1px solid var(--rule);margin-top:30px;padding-top:15px;max-width:720px}</span>
+<span class="s2">section.dark .note{color:var(--mutedlt);border-color:rgba(255,255,255,.15)}</span>
+<span class="s2">.close{background:var(--ink);color:#efeae0;padding:66px 0;text-align:center}</span>
+<span class="s2">.close h2{font-size:clamp(25px,4vw,38px);color:#fbf8f1}</span>
+<span class="s2">.close p{max-width:610px;margin:18px auto 0;color:#c9c0b0}</span>
+<span class="s2">footer{background:#070d15;color:#7d8b99;padding:24px 0;font-family:"Lato",sans-serif;</span>
+<span class="s2">font-size:10.5px;letter-spacing:.1em;text-align:center;text-transform:uppercase}</span>
+<span class="s2">@media(max-width:720px){body{font-size:18px}.wrap{padding:0 20px}section{padding:44px 0 38px}</span>
+<span class="s2">.item{gap:13px}.item .n{flex:0 0 30px;font-size:22px}}</span>
+<span class="s2">"""</span>
+
+<span class="n">OUTCOMES</span> <span class="o">=</span> <span class="p">[</span>
+<span class="s2">"Eighteen months of preaching planned, written, and aligned across the pulpit, the groups, and the households &amp;mdash; so the question of what comes next is answered before it is asked."</span><span class="p">,</span>
+<span class="s2">"Every message he has ever preached digitized, indexed, and findable by topic, passage, occasion, and outcome in under five seconds."</span><span class="p">,</span>
+<span class="s2">"One complete book manuscript in his own voice, under his own name, drawn from what he has already said rather than from what he still has to write."</span><span class="p">,</span>
+<span class="s2">"Ten small group studies built from his preaching, so the groups in his church are finally studying him rather than somebody else."</span><span class="p">,</span>
+<span class="s2">"Four launch-ready campaign kits including Easter and Christmas, each with sermon, devotional, group session, children's version, and print file."</span><span class="p">,</span>
+<span class="s2">"A membership series and a vision-and-values series his staff can run without him in the room."</span><span class="p">,</span>
+<span class="s2">"A financial health and generosity track his church has almost certainly never had, built on his convictions rather than a licensed program."</span><span class="p">,</span>
+<span class="s2">"Twelve months of working access to someone who has done this across five hundred churches, on a scheduled cadence rather than when there is a crisis."</span><span class="p">,</span>
+<span class="s2">"A searchable platform his whole staff uses, indexed against twenty domains of church practice rather than sitting in a folder."</span><span class="p">,</span>
+<span class="s2">"And the one that matters most to a man over fifty-five: a successor could run this church's teaching calendar from the archive alone."</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">WORKSTREAMS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"The Archive"</span><span class="p">,</span> <span class="s2">"Weeks 1 to 8 &amp;nbsp;&amp;middot;&amp;nbsp; Aggregate and Curate"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"Intake of everything &amp;mdash; files, boxes, cassettes, hard drives, the sermon folder nobody has opened since 2009"</span><span class="p">,</span>
+  <span class="s2">"Digitization, transcription, and cleanup"</span><span class="p">,</span>
+  <span class="s2">"Indexing against topic, book, passage, occasion, formation outcome and campaign hinge"</span><span class="p">,</span>
+  <span class="s2">"The Coverage Report: what he has preached, what he has never preached, and where the holes are"</span><span class="p">,</span>
+  <span class="s2">"Rights and ownership review, so everyone knows what can travel"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"The Library"</span><span class="p">,</span> <span class="s2">"Months 2 to 6 &amp;nbsp;&amp;middot;&amp;nbsp; Customize"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"The top ten timeless small group studies, drawn from his own material"</span><span class="p">,</span>
+  <span class="s2">"The membership series and the vision-and-values campaign"</span><span class="p">,</span>
+  <span class="s2">"The top felt-need series, chosen from the Coverage Report rather than from a hunch"</span><span class="p">,</span>
+  <span class="s2">"Financial health and generosity, built on his convictions"</span><span class="p">,</span>
+  <span class="s2">"Easter and Christmas devotional series, reusable every year"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"The Publication"</span><span class="p">,</span> <span class="s2">"Months 4 to 10 &amp;nbsp;&amp;middot;&amp;nbsp; Publish"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"The book &amp;mdash; manuscript, cover, interior, and the campaign that carries it"</span><span class="p">,</span>
+  <span class="s2">"The churchwide campaign built from the book, in the Purpose Driven shape"</span><span class="p">,</span>
+  <span class="s2">"Print editions of the journals and workbooks"</span><span class="p">,</span>
+  <span class="s2">"The audio and narrated editions of the core library"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"The Platform and the Partnership"</span><span class="p">,</span> <span class="s2">"Months 1 to 12 &amp;nbsp;&amp;middot;&amp;nbsp; The engine and the relationship"</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"The working Pastor's Library site: search, sort, filter, and staff access"</span><span class="p">,</span>
+  <span class="s2">"The twenty-part church intelligence library benchmarked against best practice"</span><span class="p">,</span>
+  <span class="s2">"The eighteen-month preaching calendar with campaigns placed"</span><span class="p">,</span>
+  <span class="s2">"Three to four timely campaigns positioned against what the next eighteen months will actually require"</span><span class="p">,</span>
+  <span class="s2">"Monthly working sessions with the pastor and the team for twelve months"</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">ADDITIONS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"The Transition File"</span><span class="p">,</span> <span class="s2">"highest"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The one nobody sells and every pastor over fifty-five thinks about at two in the morning. Not</span>
+<span class="sd"> legacy as a marketing word &amp;mdash; an actual handoff document. What this church believes and why,</span>
+<span class="sd"> the forty decisions that shaped it, the stories a successor has to know before he tells them wrong,</span>
+<span class="sd"> the things that are non-negotiable and the things that only look non-negotiable. If the archive is</span>
+<span class="sd"> his life's work, this is the instruction manual for it. Lead with this in any conversation with a</span>
+<span class="sd"> pastor past fifty."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The Weddings and Funerals File"</span><span class="p">,</span> <span class="s2">"highest"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""He has done hundreds. They are the most reused and least organized material in the entire</span>
+<span class="sd"> archive, they are needed on four days' notice with no time to prepare, and they are the moments the</span>
+<span class="sd"> congregation remembers longest. Curated, indexed by situation, with his own words at the graveside</span>
+<span class="sd"> of a child and at the wedding of a couple nobody thought would make it. The highest value per hour</span>
+<span class="sd"> of anything in the library, and almost nobody thinks to ask for it."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The Counseling and Crisis Playbook"</span><span class="p">,</span> <span class="s2">"high"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The twenty-five conversations he has had two hundred times. What he actually says to the couple</span>
+<span class="sd"> in the third year, the parent of the addict, the widow at eight weeks. This is the most transferable</span>
+<span class="sd"> pastoral knowledge in the building and it exists nowhere but in his head. Capturing it is also the</span>
+<span class="sd"> fastest way to make his staff competent."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Rights, Ownership, and Estate"</span><span class="p">,</span> <span class="s2">"high"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Who owns his sermons. What happens to them when he leaves, retires, or dies. Whether the church</span>
+<span class="sd"> or the pastor holds the copyright, what the employment agreement actually says, and what he wants</span>
+<span class="sd"> done with thirty years of work. Most pastors have never considered it, and raising it is what turns</span>
+<span class="sd"> the engagement from a purchase into stewardship. It is also the conversation that makes a family</span>
+<span class="sd"> want to fund it."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Three Books, Not One"</span><span class="p">,</span> <span class="s2">"high"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Most thirty-year archives contain three books, not one, and they are usually a teaching book, a</span>
+<span class="sd"> story book, and a book he has been circling for a decade without knowing it. Naming all three in the</span>
+<span class="sd"> Coverage Report and building one is a better offer than building the only one he had thought</span>
+<span class="sd"> of."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The Next Generation Translation"</span><span class="p">,</span> <span class="s2">"high"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""His big ideas rendered at three levels &amp;mdash; adult, student, child &amp;mdash; so a family talks</span>
+<span class="sd"> about the same thing at dinner that the church talked about on Sunday. This is the deliverable</span>
+<span class="sd"> pastors get most emotional about, because it is the one that reaches their own grandchildren."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The Second Language Edition"</span><span class="p">,</span> <span class="s2">"medium"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Spanish in most of the country, and whatever the church's actual second language is elsewhere.</span>
+<span class="sd"> Rarely offered, disproportionately valued, and frequently the thing that unlocks a part of the</span>
+<span class="sd"> congregation the church has been failing quietly for years."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The Staff Onboarding Library"</span><span class="p">,</span> <span class="s2">"medium"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""New hires currently absorb the culture over eighteen months by watching. His archive is the</span>
+<span class="sd"> culture, organized. Twelve pieces that a new staff member reads or watches in their first month, and</span>
+<span class="sd"> the church stops relying on osmosis."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The Board and Elder Formation Series"</span><span class="p">,</span> <span class="s2">"medium"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Governance is where pastors get hurt. A series built from his own convictions, for his own board,</span>
+<span class="sd"> addressing the questions that surface right before a conflict rather than during one."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The Weekly Audio Edition"</span><span class="p">,</span> <span class="s2">"medium"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The archive as an evergreen podcast feeding the congregation between Sundays. Under the narrated</span>
+<span class="sd"> production model this is now inexpensive, and it converts a static library into a weekly touch that</span>
+<span class="sd"> keeps the church inside his teaching all year."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">SCENARIOS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Concierge"</span><span class="p">,</span> <span class="s2">"Brett plus one producer"</span><span class="p">,</span>
+ <span class="s2">"2 to 4 full engagements per year"</span><span class="p">,</span> <span class="s2">"$300,000 to $500,000"</span><span class="p">,</span>
+ <span class="s2">"Roughly 55%"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""No infrastructure, no hiring risk, and every engagement personally led. This is the scenario that</span>
+<span class="sd"> proves the model and produces the first Coverage Report, the first finished library, and the case</span>
+<span class="sd"> study everything else depends on. It is also capped: Brett is the product, and Brett does not</span>
+<span class="sd"> scale."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Studio"</span><span class="p">,</span> <span class="s2">"Team of five"</span><span class="p">,</span>
+ <span class="s2">"12 to 15 engagements per year"</span><span class="p">,</span> <span class="s2">"$1,200,000 to $1,800,000"</span><span class="p">,</span>
+ <span class="s2">"Roughly 45%"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""An archive producer, an editorial lead, a campaign producer, a platform builder, and an engagement</span>
+<span class="sd"> lead. Margin falls because delivery is labor, and it only works if the templates from the first four</span>
+<span class="sd"> engagements genuinely cut the hours. The editorial lead is the hard hire and the whole scenario turns</span>
+<span class="sd"> on finding one."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Engine-assisted"</span><span class="p">,</span> <span class="s2">"Team of eight plus the platform"</span><span class="p">,</span>
+ <span class="s2">"30 to 40 engagements per year"</span><span class="p">,</span> <span class="s2">"$3,000,000 to $4,500,000"</span><span class="p">,</span>
+ <span class="s2">"Roughly 55%"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Margin recovers because the engine absorbs the hours that used to be bespoke: indexing, campaign</span>
+<span class="sd"> assembly, study generation, narration, and the calendar all run against systems that already exist</span>
+<span class="sd"> in your stack. This is the only scenario where the Pastor's Library stops being a consultancy and</span>
+<span class="sd"> becomes a business."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">();</span> <span class="n">W</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">write</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;The Pastor's Library Project &amp;mdash; The Offer&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@300;400;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;"""</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;&lt;/head&gt;&lt;body&gt;"</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;header&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Pastor's Library Project &amp;nbsp;&amp;middot;&amp;nbsp; Offer and Economics&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;They come for a sermon.&lt;br&gt;&lt;em&gt;They leave with thirty years.&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;What a pastor actually buys, the outcomes he can hold you to, ten things he may value</span>
+<span class="s2">more than the eleven you listed, and one reconciled price ladder instead of the four now in</span>
+<span class="s2">circulation.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;&lt;div style="max-width:720px"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Offer&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;He is not buying deliverables. He is buying the end of starting over.&lt;/h2&gt;</span>
+<span class="s2">&lt;p style="margin-top:22px"&gt;The pitch that works is not a list of eleven things. It is a sentence he</span>
+<span class="s2">has been carrying for years without saying out loud: everything he has preached is sitting in boxes</span>
+<span class="s2">and folders that nobody will ever open again, and every Monday he starts from nothing anyway.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;Ken Sparks handwrote every message he ever preached. Boxes of paper. That story is the offer,</span>
+<span class="s2">because every pastor over fifty hears it and recognizes his own garage.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="verdict"&gt;The most under-stewarded resource in any congregation is the senior pastor's</span>
+<span class="s2">own library. He has already done the work. Nobody has ever helped him keep it.&lt;/div&gt;</span>
+<span class="s2">&lt;p&gt;So the four moves stay exactly as you named them &amp;mdash; aggregate, curate, customize, publish</span>
+<span class="s2">&amp;mdash; and the offer is stated as outcomes rather than as a scope of work, because a scope of work</span>
+<span class="s2">invites a comparison and an outcome invites a decision.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Specific Outcomes&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;What is true when we are finished&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Written so he can hold you to them. Nothing here is a feeling or a percentage</span>
+<span class="s2">increase in giving that neither of you could ever verify.&lt;/p&gt;</span>
+<span class="s2">&lt;div style="margin-top:26px;max-width:740px"&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">OUTCOMES</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="out"&gt;&lt;span class="mark"&gt;&amp;#9679;&lt;/span&gt;&lt;span class="txt"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="n">o</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;/div&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Deliberately absent: any claim about attendance, giving, or engagement. Those depend</span>
+<span class="s2">on a hundred things you do not control, a pastor knows it, and promising them is how a services</span>
+<span class="s2">engagement ends in an argument at month nine.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Eleven, Organized&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Four workstreams, not eleven deliverables&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;The same list you named, sequenced so a pastor can see the year rather than the</span>
+<span class="s2">menu.&lt;/p&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">when</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">WORKSTREAMS</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="ws"&gt;&lt;h3&gt;</span><span class="si">%s</span><span class="s1">&lt;/h3&gt;&lt;div class="who"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;ul&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">when</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;li&gt;</span><span class="si">%s</span><span class="s1">&lt;/li&gt;'</span> <span class="o">%</span> <span class="n">it</span><span class="p">)</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;/ul&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;p class="note"&gt;Sequencing note that matters commercially: the Coverage Report lands in week</span>
+<span class="s2">eight and it is the moment the engagement sells itself upward. A pastor who sees, in print, that he</span>
+<span class="s2">has preached money four times in thirty years and never once preached suffering will buy the next</span>
+<span class="s2">tier without being asked.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;What You Did Not List&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Ten things a pastor may value more&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;The first two are the strongest offers in this entire document and neither is on</span>
+<span class="s2">anyone's price list anywhere.&lt;/p&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ADDITIONS</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="verdict"&gt;Lead the first conversation with the Transition File and the Weddings</span>
+<span class="s2">and Funerals File. They are cheap to produce, impossible to buy anywhere else, and they land on the</span>
+<span class="s2">two things a pastor over fifty-five is actually thinking about.&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Pricing&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;One ladder, three funding doors&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="verdict"&gt;You currently have four price architectures in circulation for the same</span>
+<span class="s2">conversation. Adding a fifth is the failure mode. This reconciles them.&lt;/div&gt;</span>
+<span class="s2">&lt;table style="color:#e6e0d3"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Rung&lt;/th&gt;&lt;th&gt;Price&lt;/th&gt;&lt;th&gt;What it is&lt;/th&gt;&lt;th&gt;Reconciles&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;1 &amp;middot; Discovery and Audit&lt;/td&gt;&lt;td class="n"&gt;$8,500 &amp;ndash; $15,000&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;Intake, digitization sample, the Coverage Report, an architecture recommendation, and one message produced end to end so he can see it. Four to six weeks.&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;Platform list $8,500 and the offer's Audit floor&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;2 &amp;middot; The Working Library&lt;/td&gt;&lt;td class="n"&gt;$28,000 &amp;ndash; $45,000&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;Full archive indexed, the searchable platform live, the top ten studies, one campaign, and a twelve-month preaching calendar.&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;Platform list $28,000 and the offer's Architecture tier&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;3 &amp;middot; The Full System&lt;/td&gt;&lt;td class="n"&gt;$65,000 &amp;ndash; $125,000&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;Everything on your list of eleven, including the book and its campaign, Easter and Christmas, financial health and generosity, membership, vision and values, and the twelve-month partnership.&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;Platform list $65,000+, the offer's Full System, and the donor prospectus at $100,000&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;4 &amp;middot; The Legacy Edition&lt;/td&gt;&lt;td class="n"&gt;$175,000 &amp;ndash; $250,000+&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;Adds the Transition File, weddings and funerals, the counseling playbook, three books rather than one, the next generation translation, a second language, and the rights and estate work.&lt;/td&gt;</span>
+<span class="s2">&lt;td class="s"&gt;The offer's $250,000 ceiling, now with something behind the number&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;h3 style="font-size:23px;margin-top:40px"&gt;The three doors&lt;/h3&gt;</span>
+<span class="s2">&lt;table style="color:#e6e0d3"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Who pays&lt;/th&gt;&lt;th&gt;Typical rung&lt;/th&gt;&lt;th&gt;Why it works&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;The church budget&lt;/td&gt;&lt;td class="n"&gt;Rung 1 or 2&lt;/td&gt;&lt;td class="s"&gt;Sold as curriculum and communications spend, approved by an executive pastor, no board conversation required&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;One family in the congregation&lt;/td&gt;&lt;td class="n"&gt;Rung 3 at $100,000&lt;/td&gt;&lt;td class="s"&gt;Funded as an honoring gift to a pastor they love. This is exactly where the donor prospectus belongs and it should stop being a separate document&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;A foundation, in cohort&lt;/td&gt;&lt;td class="n"&gt;Rung 3 or 4&lt;/td&gt;&lt;td class="s"&gt;The First One Hundred. Ten at a time, named, with a published coverage standard&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;p class="note"&gt;The naming should collapse too. Pastor's Library is the umbrella; Legacy Edition is</span>
+<span class="s2">Rung 4. Legacy Library as a separate brand should be retired, because two names for one engagement is</span>
+<span class="s2">how a prospect concludes there are two products and asks which one is cheaper.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Staffing&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Three scenarios you could actually run&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;A full Rung 3 engagement is roughly seven to nine hundred hours of real work. Every</span>
+<span class="s2">scenario below is built off that number.&lt;/p&gt;</span>
+<span class="s2">&lt;table&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Scenario&lt;/th&gt;&lt;th&gt;Team&lt;/th&gt;&lt;th&gt;Capacity&lt;/th&gt;&lt;th&gt;Revenue&lt;/th&gt;&lt;th&gt;Gross margin&lt;/th&gt;&lt;/tr&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">rev</span><span class="p">,</span> <span class="n">marg</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">SCENARIOS</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;tr&gt;&lt;td class="k"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;td class="s"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;td class="s"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;'</span>
+          <span class="s1">'&lt;td class="n"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;td class="s"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">rev</span><span class="p">,</span> <span class="n">marg</span><span class="p">))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"&lt;/table&gt;"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">rev</span><span class="p">,</span> <span class="n">marg</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">SCENARIOS</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;h3 style="font-size:23px;margin-top:36px"&gt;Where the hours actually go&lt;/h3&gt;</span>
+<span class="s2">&lt;table&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Workstream&lt;/th&gt;&lt;th&gt;Hours&lt;/th&gt;&lt;th&gt;Who&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Intake, digitization, transcription&lt;/td&gt;&lt;td class="n"&gt;40 &amp;ndash; 80&lt;/td&gt;&lt;td class="s"&gt;Vendor plus an archive producer. Largely outsourceable&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Indexing and the Coverage Report&lt;/td&gt;&lt;td class="n"&gt;30 &amp;ndash; 50&lt;/td&gt;&lt;td class="s"&gt;Archive producer against the engine. The most automatable line here&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;The book manuscript&lt;/td&gt;&lt;td class="n"&gt;120 &amp;ndash; 180&lt;/td&gt;&lt;td class="s"&gt;Editorial lead. The bottleneck and the hardest hire&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Ten small group studies&lt;/td&gt;&lt;td class="n"&gt;120 &amp;ndash; 160&lt;/td&gt;&lt;td class="s"&gt;Editorial plus the curriculum engine&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Campaigns and devotional series&lt;/td&gt;&lt;td class="n"&gt;140 &amp;ndash; 200&lt;/td&gt;&lt;td class="s"&gt;Campaign producer against the 17,000-campaign platform&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Platform build and calendar&lt;/td&gt;&lt;td class="n"&gt;60 &amp;ndash; 80&lt;/td&gt;&lt;td class="s"&gt;Platform builder, mostly configuration once the template exists&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Twelve months of consulting&lt;/td&gt;&lt;td class="n"&gt;48 &amp;ndash; 60&lt;/td&gt;&lt;td class="s"&gt;Engagement lead. Brett, until it can be handed off&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Project management&lt;/td&gt;&lt;td class="n"&gt;80 &amp;ndash; 100&lt;/td&gt;&lt;td class="s"&gt;Underestimated by everyone, every time&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Two honest constraints. First, this is a services business with services economics</span>
+<span class="s2">&amp;mdash; at Rung 3 you are around forty-five to fifty-five percent gross margin, not software margin,</span>
+<span class="s2">and no amount of framing changes that until the engine absorbs the hours. Second, the editorial lead</span>
+<span class="s2">is the single point of failure. Someone who can turn a thirty-year archive into a book in another</span>
+<span class="s2">man's voice is rare, expensive, and the reason most agencies never get past four engagements a year.</span>
+<span class="s2">Hire that person before selling the fifth.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="close"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;h2&gt;Sell Rung 1 to everyone.&lt;br&gt;The Coverage Report sells the rest.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;One ladder, three doors, and the Transition File leading every first conversation with a pastor</span>
+<span class="s2">past fifty-five.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; The Pastor's Library Project &amp;middot;</span>
+<span class="s2">Offer, outcomes, pricing and staffing &amp;middot; August 2026&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">build</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/pastors-library-offer-and-economics.html"</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="s2">"| div:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;div"</span><span class="p">)</span> <span class="o">-</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/div&gt;"</span><span class="p">),</span>
+          <span class="s2">"| sections:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;section"</span><span class="p">),</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/section&gt;"</span><span class="p">),</span>
+          <span class="s2">"| tables:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;table"</span><span class="p">),</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/table&gt;"</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/pastorlib.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

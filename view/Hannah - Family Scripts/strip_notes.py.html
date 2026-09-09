@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>strip_notes.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Hannah - Family Scripts</div>
+<h1>strip_notes.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">3 KB</span>
+<a class="btn" href="../../artifacts/Hannah%20-%20Family%20Scripts/strip_notes.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Strip internal notes from all six family scripts into clean production versions</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">OUT</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs"</span>
+
+<span class="n">BOOKS</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s2">"Book1_Overview"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"BOOK 1 — OVERVIEW"</span><span class="p">,</span> <span class="s2">"Family Legacy by Design"</span><span class="p">,</span>
+   <span class="s2">"Leading Your Family from Legacy by Default to Legacy by Design"</span><span class="p">),</span>
+ <span class="s2">"Book2_Clarity"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"BOOK 2 — CLARITY"</span><span class="p">,</span> <span class="s2">"What Will You Do With What You've Been Given?"</span><span class="p">,</span>
+   <span class="s2">"Discovering Your Family's Values, Purpose, and Direction"</span><span class="p">),</span>
+ <span class="s2">"Book3_Alignment"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"BOOK 3 — ALIGNMENT"</span><span class="p">,</span> <span class="s2">"Getting on the Same Page as a Family"</span><span class="p">,</span>
+   <span class="s2">"Aligning Your Values, Decisions, and Direction Around What Matters Most"</span><span class="p">),</span>
+ <span class="s2">"Book4_Communication"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"BOOK 4 — COMMUNICATION"</span><span class="p">,</span> <span class="s2">"Conversations That Matter"</span><span class="p">,</span>
+   <span class="s2">"Why Families Don't Talk</span><span class="se">\u2014</span><span class="s2">and How to Start"</span><span class="p">),</span>
+ <span class="s2">"Book5_Meetings"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"BOOK 5 — MEETINGS"</span><span class="p">,</span> <span class="s2">"Family Meetings That Bring You Together"</span><span class="p">,</span>
+   <span class="s2">"Creating a Space for Honest Conversations, Alignment, and Growth"</span><span class="p">),</span>
+ <span class="s2">"Book6_NextGen"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"BOOK 6 — NEXT GENERATION"</span><span class="p">,</span> <span class="s2">"Raising the Next Generation"</span><span class="p">,</span>
+   <span class="s2">"Helping Your Children Grow in Wisdom, Purpose, and Responsibility"</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># H2 sections to delete entirely (through to the next H1 or H2)</span>
+<span class="n">KILL</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"RUNTIME AND STORY BUDGET"</span><span class="p">,</span> <span class="s2">"SESSION TITLES"</span><span class="p">,</span> <span class="s2">"THE STRUCTURAL DIFFERENCE"</span><span class="p">,</span>
+        <span class="s2">"THE BOUNDARY"</span><span class="p">,</span> <span class="s2">"DEFAULTS SET FOR THIS BUILD"</span><span class="p">,</span> <span class="s2">"STORY CUES"</span><span class="p">,</span>
+        <span class="s2">"BUILD NOTES"</span><span class="p">,</span> <span class="s2">"FLAGGED IN THIS BUILD"</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">stem</span><span class="p">,</span> <span class="p">(</span><span class="n">bookline</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">subtitle</span><span class="p">)</span> <span class="ow">in</span> <span class="n">BOOKS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">OUT</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">_Family_All_Sessions.md"</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="c1"># cut everything before the first session, rebuild the header</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"# 🎬 SESSION 1"</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"# FAMILY FOUNDATION SERIES</span><span class="se">\n\n</span><span class="s2">## </span><span class="si">{</span><span class="n">bookline</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span>
+              <span class="sa">f</span><span class="s2">"# </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">### </span><span class="si">{</span><span class="n">subtitle</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">t</span><span class="p">[</span><span class="n">first</span><span class="p">:]</span>
+
+    <span class="c1"># drop killed H2 sections wherever they still appear</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">KILL</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">rf</span><span class="s2">"\n## </span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">.*?(?=\n#[^#]|\n## |\Z)"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+
+    <span class="c1"># drop source attribution lines under session headers</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\n\*Source:[^\n]*\n"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># drop internal blockquotes (DECISION / NOTE / attribution), keep Scripture</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\n&gt; \*\*(DECISION|NOTE|Attribution note)[^\n]*(\n&gt;[^\n]*)*"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># drop alternate case study blocks</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\n\*\*ALTERNATE CASE STUDIES\.\*\*.*?(?=\n\*\*THIS WEEK)"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+
+    <span class="c1"># tidy whitespace</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\n{3,}"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+
+    <span class="n">dst</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">OUT</span><span class="si">}</span><span class="s2">/SCRIPT_</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">.md"</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="n">sess</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^# 🎬 SESSION"</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+    <span class="n">scrip</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^&gt; \*\*Scripture"</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+    <span class="n">tom</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\[TOM —"</span><span class="p">,</span> <span class="n">t</span><span class="p">));</span> <span class="n">br</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\[BRETT —"</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+    <span class="n">cs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\*\*CASE STUDY"</span><span class="p">,</span> <span class="n">t</span><span class="p">));</span> <span class="n">wk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\*\*THIS WEEK"</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">stem</span><span class="si">:</span><span class="s2">22</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="si">:</span><span class="s2">5</span><span class="si">}</span><span class="s2">w  sessions </span><span class="si">{</span><span class="n">sess</span><span class="si">}</span><span class="s2">  scripture </span><span class="si">{</span><span class="n">scrip</span><span class="si">}</span><span class="s2">  "</span>
+          <span class="sa">f</span><span class="s2">"TOM </span><span class="si">{</span><span class="n">tom</span><span class="si">}</span><span class="s2">  BRETT </span><span class="si">{</span><span class="n">br</span><span class="si">}</span><span class="s2">  case </span><span class="si">{</span><span class="n">cs</span><span class="si">}</span><span class="s2">  week </span><span class="si">{</span><span class="n">wk</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/strip_notes.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

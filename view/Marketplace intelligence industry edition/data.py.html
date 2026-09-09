@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>data.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Marketplace intelligence industry edition</div>
+<h1>data.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">5 edits</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">28 KB</span>
+<a class="btn" href="../../artifacts/Marketplace%20intelligence%20industry%20edition/data.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Generator script that builds all 40 workplace categories (50 titles each) plus Flourishing Workplace and Purpose Based Business content</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""</span>
+<span class="sd">LifeTogether Workplace Intelligence(TM) -- Master Directory data generator</span>
+<span class="sd">Builds 40 workplace categories x 50 campaigns (title + subtitle only),</span>
+<span class="sd">organized into the 5-section framework:</span>
+<span class="sd">  1. Calling &amp; Purpose</span>
+<span class="sd">  2. Leadership &amp; Character</span>
+<span class="sd">  3. Stewardship &amp; Excellence</span>
+<span class="sd">  4. Relationships &amp; Culture</span>
+<span class="sd">  5. Legacy &amp; Kingdom Impact</span>
+<span class="sd">Plus: Flourishing Workplace (6-criteria series) and Purpose Based Business (themes only).</span>
+<span class="sd">"""</span>
+
+<span class="n">SECTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Calling &amp; Purpose"</span><span class="p">,</span> <span class="s2">"Leadership &amp; Character"</span><span class="p">,</span> <span class="s2">"Stewardship &amp; Excellence"</span><span class="p">,</span>
+            <span class="s2">"Relationships &amp; Culture"</span><span class="p">,</span> <span class="s2">"Legacy &amp; Kingdom Impact"</span><span class="p">]</span>
+
+<span class="c1"># ---------- TEMPLATES (title, subtitle) per section. Use {role} {roles} {field} {place} {beneficiary} {tool} {pressure}</span>
+<span class="n">T_CALLING</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Called to </span><span class="si">{field_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Discovering God's purpose behind your work as a </span><span class="si">{role}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The </span><span class="si">{role_cap}</span><span class="s2">'s Calling"</span><span class="p">,</span> <span class="s2">"Finding sacred meaning in </span><span class="si">{place}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"More Than a Job"</span><span class="p">,</span> <span class="s2">"Seeing </span><span class="si">{field}</span><span class="s2"> as Kingdom work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Made for This"</span><span class="p">,</span> <span class="s2">"How your gifts as a </span><span class="si">{role}</span><span class="s2"> serve God's design"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith in </span><span class="si">{place_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Living for Christ where you work every day"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Sacred Ordinary"</span><span class="p">,</span> <span class="s2">"Recognizing God's presence in the daily work of </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"</span><span class="si">{field_cap}</span><span class="s2"> as Worship"</span><span class="p">,</span> <span class="s2">"Offering your skill and labor to God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Your Kingdom Assignment"</span><span class="p">,</span> <span class="s2">"Why </span><span class="si">{field}</span><span class="s2"> is a calling, not just a career"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Behind </span><span class="si">{tool_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"The eternal purpose hidden in daily </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The </span><span class="si">{role_cap}</span><span class="s2">'s Soul"</span><span class="p">,</span> <span class="s2">"Protecting your heart while serving </span><span class="si">{beneficiary}</span><span class="s2">"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">T_LEADERSHIP</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Leading with Integrity"</span><span class="p">,</span> <span class="s2">"Character that holds up under pressure in </span><span class="si">{place}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Faithful </span><span class="si">{role_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Leading </span><span class="si">{beneficiary}</span><span class="s2"> with humility and truth"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Courage Under Pressure"</span><span class="p">,</span> <span class="s2">"Staying faithful through </span><span class="si">{pressure}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading Like Jesus"</span><span class="p">,</span> <span class="s2">"A servant model for </span><span class="si">{roles}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Trusted </span><span class="si">{role_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Why character matters more than competence"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Wisdom in </span><span class="si">{field_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Making hard calls with a clear conscience"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Grace Under Fire"</span><span class="p">,</span> <span class="s2">"Leading well when </span><span class="si">{pressure}</span><span class="s2"> tests you"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Whole Leader"</span><span class="p">,</span> <span class="s2">"Integrating faith, character, and competence"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading Through Change"</span><span class="p">,</span> <span class="s2">"Steady faith in a shifting field of </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Influence Worth Having"</span><span class="p">,</span> <span class="s2">"Building trust as a </span><span class="si">{role}</span><span class="s2"> people can follow"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">T_STEWARDSHIP</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Excellence as Worship"</span><span class="p">,</span> <span class="s2">"Bringing your best to </span><span class="si">{field}</span><span class="s2"> for God's glory"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Stewarding Your </span><span class="si">{tool_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Managing what's entrusted to you with wisdom"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Excellent </span><span class="si">{role_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Doing skilled work as an offering"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Beyond Competence"</span><span class="p">,</span> <span class="s2">"Excellence that reflects the Creator"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faithful with Little"</span><span class="p">,</span> <span class="s2">"Stewardship in the small details of </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Long Obedience"</span><span class="p">,</span> <span class="s2">"Consistency and excellence over a whole career"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Guarding What Matters"</span><span class="p">,</span> <span class="s2">"Ethics and integrity in </span><span class="si">{place}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Working Unto the Lord"</span><span class="p">,</span> <span class="s2">"Excellence when no one is watching"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Craft of Faithfulness"</span><span class="p">,</span> <span class="s2">"Mastering </span><span class="si">{field}</span><span class="s2"> as an act of devotion"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Stewarding Your Season"</span><span class="p">,</span> <span class="s2">"Wise use of time, energy, and opportunity"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">T_RELATIONSHIPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Serving </span><span class="si">{beneficiary_cap}</span><span class="s2"> Well"</span><span class="p">,</span> <span class="s2">"Seeing people the way God sees them"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building Healthy Culture"</span><span class="p">,</span> <span class="s2">"Relationships that make </span><span class="si">{place}</span><span class="s2"> thrive"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Beyond Transactions"</span><span class="p">,</span> <span class="s2">"Turning </span><span class="si">{field}</span><span class="s2"> into real relationship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Listening </span><span class="si">{role_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Presence and empathy in daily work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Grace for Difficult People"</span><span class="p">,</span> <span class="s2">"Loving </span><span class="si">{beneficiary}</span><span class="s2"> even under pressure"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Teams That Trust Each Other"</span><span class="p">,</span> <span class="s2">"Building unity in </span><span class="si">{place}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Compassion Without Burnout"</span><span class="p">,</span> <span class="s2">"Sustainable care for </span><span class="si">{beneficiary}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Honest Conversations"</span><span class="p">,</span> <span class="s2">"Truth-telling with grace in </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Serving Before Selling"</span><span class="p">,</span> <span class="s2">"Relationship first, results second"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Ministry of Presence"</span><span class="p">,</span> <span class="s2">"Showing up for </span><span class="si">{beneficiary}</span><span class="s2"> in hard moments"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">T_LEGACY</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Finish Well"</span><span class="p">,</span> <span class="s2">"Building a legacy that outlasts your career in </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Beyond the Paycheck"</span><span class="p">,</span> <span class="s2">"Discovering eternal significance in </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building What Lasts"</span><span class="p">,</span> <span class="s2">"Kingdom impact through your work as a </span><span class="si">{role}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Your Monday Mission"</span><span class="p">,</span> <span class="s2">"Every day in </span><span class="si">{place}</span><span class="s2"> as an act of mission"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Legacy </span><span class="si">{role_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Shaping the next generation of </span><span class="si">{roles}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Influence That Outlives You"</span><span class="p">,</span> <span class="s2">"Multiplying faithful </span><span class="si">{roles}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Kingdom Impact at Work"</span><span class="p">,</span> <span class="s2">"How </span><span class="si">{field}</span><span class="s2"> becomes a mission field"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Called to Multiply"</span><span class="p">,</span> <span class="s2">"Raising up the next generation in </span><span class="si">{field}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Long Game"</span><span class="p">,</span> <span class="s2">"Faithfulness measured in decades, not quarters"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Sent to </span><span class="si">{place_cap}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Living on mission exactly where God placed you"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">TEMPLATES</span> <span class="o">=</span> <span class="p">[</span><span class="n">T_CALLING</span><span class="p">,</span> <span class="n">T_LEADERSHIP</span><span class="p">,</span> <span class="n">T_STEWARDSHIP</span><span class="p">,</span> <span class="n">T_RELATIONSHIPS</span><span class="p">,</span> <span class="n">T_LEGACY</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fill</span><span class="p">(</span><span class="n">tpl</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="n">title</span><span class="p">,</span> <span class="n">sub</span> <span class="o">=</span> <span class="n">tpl</span>
+    <span class="n">ctx</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">"field_cap"</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">"field"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="s2">"field"</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">"place_cap"</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">"place"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="s2">"place"</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">"tool_cap"</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">"tool"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="s2">"tool"</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">"beneficiary_cap"</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">"beneficiary"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="s2">"beneficiary"</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">ctx</span><span class="p">[</span><span class="s2">"role_cap"</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">"role"</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">title</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">ctx</span><span class="p">),</span> <span class="n">sub</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">ctx</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_category</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">seed_examples</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Returns dict: section -&gt; list of (title, subtitle), 10 per section = 50 total."""</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">sec_name</span><span class="p">,</span> <span class="n">tpl_list</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">SECTIONS</span><span class="p">,</span> <span class="n">TEMPLATES</span><span class="p">):</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="p">[</span><span class="n">fill</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tpl_list</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">sec_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">entries</span>
+    <span class="k">if</span> <span class="n">seed_examples</span><span class="p">:</span>
+        <span class="c1"># splice a couple of the original example titles into Calling &amp; Purpose for continuity</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">SECTIONS</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">seed_examples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seed_examples</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">SECTIONS</span><span class="p">[</span><span class="mi">3</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">seed_examples</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># VOCAB for the 15 ORIGINAL categories that need expansion to 50</span>
+<span class="c1"># =========================================================================</span>
+<span class="n">ORIGINAL_EXPAND</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Healthcare Professionals"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"physician"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"healthcare professionals"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"patient care"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the bedside"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"patients"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the stethoscope"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"life-and-death decisions"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Called to Care"</span><span class="p">,</span> <span class="s2">"Seeing every patient as an image-bearer of God"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Compassion Without Burnout"</span><span class="p">,</span> <span class="s2">"Sustainable caregiving for the long haul"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Educators &amp; School Leaders"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"teacher"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"educators"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"teaching"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the classroom"</span><span class="p">,</span>
+                   <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"students"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the lesson plan"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"a classroom full of needs"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Called to Teach"</span><span class="p">,</span> <span class="s2">"Discovering God's purpose in shaping young minds"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Every Student Matters"</span><span class="p">,</span> <span class="s2">"Seeing each child the way God sees them"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Technology, AI &amp; Innovation"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"technologist"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"technologists"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"building technology"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the dev team"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"users"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the algorithm"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"the pace of innovation"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Faith in an AI World"</span><span class="p">,</span> <span class="s2">"Wisdom for building technology that serves people"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Ethics in AI"</span><span class="p">,</span> <span class="s2">"Building responsibly in a fast-moving field"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Sales, Marketing &amp; Customer Influence"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"sales professional"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"sales and marketing professionals"</span><span class="p">,</span>
+                   <span class="n">field</span><span class="o">=</span><span class="s2">"selling and influence"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the sales floor"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"customers"</span><span class="p">,</span>
+                   <span class="n">tool</span><span class="o">=</span><span class="s2">"the pitch"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"quota pressure"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Selling with Integrity"</span><span class="p">,</span> <span class="s2">"Influence that never compromises truth"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Serving Before Selling"</span><span class="p">,</span> <span class="s2">"Putting the customer's good ahead of the close"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Real Estate, Construction &amp; Skilled Trades"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"tradesperson"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"builders and tradespeople"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"skilled work"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the job site"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"clients"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the toolbelt"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"tight deadlines"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Built on the Rock"</span><span class="p">,</span> <span class="s2">"Building with integrity from the foundation up"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Honest Work"</span><span class="p">,</span> <span class="s2">"Craftsmanship that reflects the Creator"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Government, Law &amp; Public Service"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"public servant"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"those in government and law"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"public service"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the halls of government"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the public"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the gavel"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"political pressure"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Called to Serve"</span><span class="p">,</span> <span class="s2">"Public office as a sacred trust"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Justice and Mercy"</span><span class="p">,</span> <span class="s2">"Holding both truth and grace in public life"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Nonprofit, Ministry &amp; Mission Leaders"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"ministry leader"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"nonprofit and ministry leaders"</span><span class="p">,</span>
+                   <span class="n">field</span><span class="o">=</span><span class="s2">"mission-driven work"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the mission field"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"those you serve"</span><span class="p">,</span>
+                   <span class="n">tool</span><span class="o">=</span><span class="s2">"the vision"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"limited resources"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Leading the Mission"</span><span class="p">,</span> <span class="s2">"Vision and endurance for the long haul"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Ministry Without Burnout"</span><span class="p">,</span> <span class="s2">"Sustainable leadership for those who serve others"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Agriculture &amp; Ranching"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"farmer"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"farmers and ranchers"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"the land"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the fields"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your family and community"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the harvest"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"an uncertain season"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Faith in the Fields"</span><span class="p">,</span> <span class="s2">"Trusting God through every season"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"The Faithful Farmer"</span><span class="p">,</span> <span class="s2">"Stewardship from sunrise to sunset"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Hospitality &amp; Tourism"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"hospitality professional"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"hospitality professionals"</span><span class="p">,</span>
+                   <span class="n">field</span><span class="o">=</span><span class="s2">"hospitality"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the front desk"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"guests"</span><span class="p">,</span>
+                   <span class="n">tool</span><span class="o">=</span><span class="s2">"the welcome"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"a fast-paced service season"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Serving with Joy"</span><span class="p">,</span> <span class="s2">"Hospitality that reflects Christ"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"The Welcoming Heart"</span><span class="p">,</span> <span class="s2">"Making every guest feel valued"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Government &amp; Civic Leadership"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"civic leader"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"civic leaders"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"community leadership"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"city hall"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your community"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"your platform"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"public scrutiny"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Serving the Public Well"</span><span class="p">,</span> <span class="s2">"Leadership with integrity in civic life"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Hope for the City"</span><span class="p">,</span> <span class="s2">"Seeking the flourishing of your community"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Arts, Entertainment &amp; Media"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"creative"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"artists and creatives"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"creative work"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the studio"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your audience"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the craft"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"the pressure to perform"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Created to Create"</span><span class="p">,</span> <span class="s2">"Reflecting God's creativity through your art"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Beyond Applause"</span><span class="p">,</span> <span class="s2">"Finding identity in Christ, not the reviews"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Transportation &amp; Logistics"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"driver"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"transportation professionals"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"the road"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the cab"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"those you deliver to"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the route"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"long hours away from home"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Driven by Purpose"</span><span class="p">,</span> <span class="s2">"Honoring God on every journey"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"The Long Haul"</span><span class="p">,</span> <span class="s2">"Endurance and faithfulness mile after mile"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Science &amp; Engineering"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"engineer"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"scientists and engineers"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"discovery and design"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the lab"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the people your work serves"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the blueprint"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"the demand for certainty"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Designed by God"</span><span class="p">,</span> <span class="s2">"Discovering the Creator through creation"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"Faith and Discovery"</span><span class="p">,</span> <span class="s2">"Integrating rigorous science and deep faith"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Retail &amp; Customer Service"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"associate"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"retail and service professionals"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"customer service"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"the counter"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"every customer"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the register"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"a demanding shift"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Serving Every Customer"</span><span class="p">,</span> <span class="s2">"Reflecting Christ through everyday service"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"More Than Transactions"</span><span class="p">,</span> <span class="s2">"Building real relationships at the counter"</span><span class="p">)],</span>
+    <span class="p">),</span>
+    <span class="s2">"Ministry Staff &amp; Church Employees"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"staff member"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"ministry staff"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"serving the local church"</span><span class="p">,</span>
+                   <span class="n">place</span><span class="o">=</span><span class="s2">"behind the scenes"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the congregation"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"your role"</span><span class="p">,</span>
+                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"an unseen workload"</span><span class="p">),</span>
+        <span class="n">examples</span><span class="o">=</span><span class="p">[(</span><span class="s2">"Serving Behind the Scenes"</span><span class="p">,</span> <span class="s2">"Faithfulness that quietly builds the church"</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"The Staff Journey"</span><span class="p">,</span> <span class="s2">"Serving the church without losing your soul"</span><span class="p">)],</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">ORIGINAL_EXPAND</span><span class="p">[</span><span class="s2">"Marketplace Ministry Leaders"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">vocab</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"marketplace leader"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"marketplace ministry leaders"</span><span class="p">,</span>
+               <span class="n">field</span><span class="o">=</span><span class="s2">"everyday work"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"your workplace"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your coworkers"</span><span class="p">,</span>
+               <span class="n">tool</span><span class="o">=</span><span class="s2">"your influence"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"the divide between Sunday and Monday"</span><span class="p">),</span>
+    <span class="n">examples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Manufacturing and Marketplace Ministry already have 25 -- keep original 25 titles, generate 25 MORE to reach 50</span>
+<span class="n">MANUFACTURING_ORIGINAL_25</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Built to Last"</span><span class="p">,</span> <span class="s2">"Building products, people, and purpose"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Faithful Builder"</span><span class="p">,</span> <span class="s2">"Honoring God through quality work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Excellence Every Day"</span><span class="p">,</span> <span class="s2">"Glorifying God through craftsmanship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Factory Faith"</span><span class="p">,</span> <span class="s2">"Living Christ in the workplace"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading the Production Line"</span><span class="p">,</span> <span class="s2">"Leadership where it matters"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Purpose Behind Production"</span><span class="p">,</span> <span class="s2">"Seeing eternal value in everyday work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Stewarding Operations"</span><span class="p">,</span> <span class="s2">"Managing resources with wisdom"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Industrial Disciple"</span><span class="p">,</span> <span class="s2">"Following Jesus on the factory floor"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Work Worth Doing"</span><span class="p">,</span> <span class="s2">"Bringing dignity to labor"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Beyond Efficiency"</span><span class="p">,</span> <span class="s2">"Building people while building products"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith Under Pressure"</span><span class="p">,</span> <span class="s2">"Trusting God through deadlines"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Excellent Craftsman"</span><span class="p">,</span> <span class="s2">"Excellence as worship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building Better Teams"</span><span class="p">,</span> <span class="s2">"Leadership that develops people"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Hands That Honor God"</span><span class="p">,</span> <span class="s2">"Working with integrity"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Purpose in Production"</span><span class="p">,</span> <span class="s2">"More than making things"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Stewarded Workplace"</span><span class="p">,</span> <span class="s2">"Managing people and resources well"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Strength and Service"</span><span class="p">,</span> <span class="s2">"Leadership through humility"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Called to Build"</span><span class="p">,</span> <span class="s2">"God's purpose in industry"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith That Works"</span><span class="p">,</span> <span class="s2">"Living biblical values daily"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Leading with Character"</span><span class="p">,</span> <span class="s2">"Integrity that influences"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Productive Life"</span><span class="p">,</span> <span class="s2">"Stewardship of time and talent"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Serving Through Work"</span><span class="p">,</span> <span class="s2">"Work as ministry"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Building Kingdom Culture"</span><span class="p">,</span> <span class="s2">"Transforming workplaces"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Maker's Calling"</span><span class="p">,</span> <span class="s2">"Reflecting the Creator"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Legacy on the Factory Floor"</span><span class="p">,</span> <span class="s2">"Work that outlives you"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">MARKETPLACE_MINISTRY_ORIGINAL_25</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Monday Matters"</span><span class="p">,</span> <span class="s2">"Connecting Sunday faith to Monday work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Marketplace Disciple"</span><span class="p">,</span> <span class="s2">"Following Christ at work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith Beyond Sunday"</span><span class="p">,</span> <span class="s2">"Living missionally at work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Kingdom at Work"</span><span class="p">,</span> <span class="s2">"Every profession matters"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Work Is Worship"</span><span class="p">,</span> <span class="s2">"Honoring God through vocation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Sent Worker"</span><span class="p">,</span> <span class="s2">"Living on mission in the marketplace"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Business as Ministry"</span><span class="p">,</span> <span class="s2">"Every workplace a mission field"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Called to Influence"</span><span class="p">,</span> <span class="s2">"Using work for Kingdom impact"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith in Every Profession"</span><span class="p">,</span> <span class="s2">"Christ in every career"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Workplace Revival"</span><span class="p">,</span> <span class="s2">"Transforming culture through discipleship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Purpose Beyond the Paycheck"</span><span class="p">,</span> <span class="s2">"Discovering eternal significance"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Your Monday Mission"</span><span class="p">,</span> <span class="s2">"Seeing every workday as ministry"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Marketplace Light"</span><span class="p">,</span> <span class="s2">"Bringing hope into your profession"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Kingdom Influence at Work"</span><span class="p">,</span> <span class="s2">"Leading with Christlike character"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Work That Worships"</span><span class="p">,</span> <span class="s2">"Excellence as an act of devotion"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Vocation Journey"</span><span class="p">,</span> <span class="s2">"Discovering God's calling through work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faithful Where You Are"</span><span class="p">,</span> <span class="s2">"Serving God in your current assignment"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Mission in the Marketplace"</span><span class="p">,</span> <span class="s2">"Reaching people through everyday relationships"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Whole-Life Disciple"</span><span class="p">,</span> <span class="s2">"Integrating faith, family, and work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Beyond Career Success"</span><span class="p">,</span> <span class="s2">"Pursuing significance over status"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Workplace Witness"</span><span class="p">,</span> <span class="s2">"Sharing Christ through character and compassion"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Every Desk an Altar"</span><span class="p">,</span> <span class="s2">"Offering your daily work to God"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Influence That Lasts"</span><span class="p">,</span> <span class="s2">"Building an eternal legacy through your vocation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Kingdom Professional"</span><span class="p">,</span> <span class="s2">"Living with integrity and purpose"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Called to the Marketplace"</span><span class="p">,</span> <span class="s2">"Embracing your profession as God's assignment"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># VOCAB for the 20 NEW categories</span>
+<span class="c1"># =========================================================================</span>
+<span class="n">NEW_CATEGORIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Physicians"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"physician"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"physicians"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"medicine"</span><span class="p">,</span>
+                        <span class="n">place</span><span class="o">=</span><span class="s2">"the exam room"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"patients"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the diagnosis"</span><span class="p">,</span>
+                        <span class="n">pressure</span><span class="o">=</span><span class="s2">"life-and-death decisions"</span><span class="p">),</span>
+    <span class="s2">"Dentists"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"dentist"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"dentists"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"dental care"</span><span class="p">,</span>
+                      <span class="n">place</span><span class="o">=</span><span class="s2">"the treatment chair"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"patients"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the exam light"</span><span class="p">,</span>
+                      <span class="n">pressure</span><span class="o">=</span><span class="s2">"a packed schedule of anxious patients"</span><span class="p">),</span>
+    <span class="s2">"Nurses"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"nurse"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"nurses"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"patient care"</span><span class="p">,</span>
+                    <span class="n">place</span><span class="o">=</span><span class="s2">"the bedside"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"patients"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the chart"</span><span class="p">,</span>
+                    <span class="n">pressure</span><span class="o">=</span><span class="s2">"back-to-back twelve-hour shifts"</span><span class="p">),</span>
+    <span class="s2">"Therapists &amp; Counselors"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"therapist"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"therapists and counselors"</span><span class="p">,</span>
+                                     <span class="n">field</span><span class="o">=</span><span class="s2">"emotional and spiritual care"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the counseling room"</span><span class="p">,</span>
+                                     <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"clients"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the listening ear"</span><span class="p">,</span>
+                                     <span class="n">pressure</span><span class="o">=</span><span class="s2">"carrying others' pain"</span><span class="p">),</span>
+    <span class="s2">"Accountants &amp; CPAs"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"accountant"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"accountants and CPAs"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"the numbers"</span><span class="p">,</span>
+                                <span class="n">place</span><span class="o">=</span><span class="s2">"the ledger"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"clients"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the balance sheet"</span><span class="p">,</span>
+                                <span class="n">pressure</span><span class="o">=</span><span class="s2">"tax season deadlines"</span><span class="p">),</span>
+    <span class="s2">"Architects"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"architect"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"architects"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"design"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the drafting table"</span><span class="p">,</span>
+                        <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the communities you build for"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the blueprint"</span><span class="p">,</span>
+                        <span class="n">pressure</span><span class="o">=</span><span class="s2">"competing demands of client and budget"</span><span class="p">),</span>
+    <span class="s2">"Commercial Real Estate"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"commercial broker"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"commercial real estate professionals"</span><span class="p">,</span>
+                                    <span class="n">field</span><span class="o">=</span><span class="s2">"commercial real estate"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the negotiating table"</span><span class="p">,</span>
+                                    <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"clients and tenants"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the deal"</span><span class="p">,</span>
+                                    <span class="n">pressure</span><span class="o">=</span><span class="s2">"high-stakes negotiations"</span><span class="p">),</span>
+    <span class="s2">"Insurance Professionals"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"insurance professional"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"insurance professionals"</span><span class="p">,</span>
+                                     <span class="n">field</span><span class="o">=</span><span class="s2">"risk and protection"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the claims desk"</span><span class="p">,</span>
+                                     <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"policyholders"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the policy"</span><span class="p">,</span>
+                                     <span class="n">pressure</span><span class="o">=</span><span class="s2">"delivering hard news"</span><span class="p">),</span>
+    <span class="s2">"Bankers"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"banker"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"bankers"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"banking"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the branch"</span><span class="p">,</span>
+                     <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"depositors and borrowers"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the ledger"</span><span class="p">,</span>
+                     <span class="n">pressure</span><span class="o">=</span><span class="s2">"the weight of others' money"</span><span class="p">),</span>
+    <span class="s2">"Private Equity &amp; Venture Capital"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"investor"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"private equity and venture professionals"</span><span class="p">,</span>
+                                              <span class="n">field</span><span class="o">=</span><span class="s2">"capital allocation"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the deal room"</span><span class="p">,</span>
+                                              <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"founders and portfolio companies"</span><span class="p">,</span>
+                                              <span class="n">tool</span><span class="o">=</span><span class="s2">"the term sheet"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"the pressure to return capital"</span><span class="p">),</span>
+    <span class="s2">"Family Office Executives"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"family office executive"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"family office executives"</span><span class="p">,</span>
+                                      <span class="n">field</span><span class="o">=</span><span class="s2">"stewarding generational wealth"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the family office"</span><span class="p">,</span>
+                                      <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the families you serve"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the trust document"</span><span class="p">,</span>
+                                      <span class="n">pressure</span><span class="o">=</span><span class="s2">"the weight of generational expectations"</span><span class="p">),</span>
+    <span class="s2">"Engineers"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"engineer"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"engineers"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"engineering"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the design review"</span><span class="p">,</span>
+                       <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the people who rely on what you build"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the blueprint"</span><span class="p">,</span>
+                       <span class="n">pressure</span><span class="o">=</span><span class="s2">"the demand for precision"</span><span class="p">),</span>
+    <span class="s2">"Scientists"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"scientist"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"scientists"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"research"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the laboratory"</span><span class="p">,</span>
+                        <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the world your discoveries serve"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the data"</span><span class="p">,</span>
+                        <span class="n">pressure</span><span class="o">=</span><span class="s2">"the pursuit of an elusive answer"</span><span class="p">),</span>
+    <span class="s2">"University Faculty"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"professor"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"university faculty"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"teaching and research"</span><span class="p">,</span>
+                                <span class="n">place</span><span class="o">=</span><span class="s2">"the lecture hall"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"students"</span><span class="p">,</span>
+                                <span class="n">tool</span><span class="o">=</span><span class="s2">"the syllabus"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"publish-or-perish pressure"</span><span class="p">),</span>
+    <span class="s2">"Coaches &amp; Consultants"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"coach"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"coaches and consultants"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"advising others"</span><span class="p">,</span>
+                                   <span class="n">place</span><span class="o">=</span><span class="s2">"the coaching session"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"clients"</span><span class="p">,</span>
+                                   <span class="n">tool</span><span class="o">=</span><span class="s2">"the framework"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"the demand for results"</span><span class="p">),</span>
+    <span class="s2">"Human Resources"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"HR leader"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"human resources professionals"</span><span class="p">,</span>
+                             <span class="n">field</span><span class="o">=</span><span class="s2">"people and culture"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the HR office"</span><span class="p">,</span>
+                             <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"every employee"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the policy handbook"</span><span class="p">,</span>
+                             <span class="n">pressure</span><span class="o">=</span><span class="s2">"being caught in the middle"</span><span class="p">),</span>
+    <span class="s2">"Manufacturing Executives"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"operations executive"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"manufacturing executives"</span><span class="p">,</span>
+                                      <span class="n">field</span><span class="o">=</span><span class="s2">"operations"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the plant floor"</span><span class="p">,</span>
+                                      <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your workforce"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the production line"</span><span class="p">,</span>
+                                      <span class="n">pressure</span><span class="o">=</span><span class="s2">"margin and deadline pressure"</span><span class="p">),</span>
+    <span class="s2">"Franchise Owners"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"franchise owner"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"franchise owners"</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">"running the business"</span><span class="p">,</span>
+                              <span class="n">place</span><span class="o">=</span><span class="s2">"the storefront"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your staff and customers"</span><span class="p">,</span>
+                              <span class="n">tool</span><span class="o">=</span><span class="s2">"the brand standard"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"thin margins"</span><span class="p">),</span>
+    <span class="s2">"Restaurant &amp; Hospitality Owners"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"restaurateur"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"restaurant and hospitality owners"</span><span class="p">,</span>
+                                             <span class="n">field</span><span class="o">=</span><span class="s2">"hospitality"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the dining room"</span><span class="p">,</span>
+                                             <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"guests and staff"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the menu"</span><span class="p">,</span>
+                                             <span class="n">pressure</span><span class="o">=</span><span class="s2">"a brutal service rush"</span><span class="p">),</span>
+    <span class="s2">"Agriculture &amp; Food Producers"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"food producer"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"agriculture and food producers"</span><span class="p">,</span>
+                                          <span class="n">field</span><span class="o">=</span><span class="s2">"feeding people"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the field and the plant"</span><span class="p">,</span>
+                                          <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"the families your food reaches"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"the harvest"</span><span class="p">,</span>
+                                          <span class="n">pressure</span><span class="o">=</span><span class="s2">"forces outside your control"</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">flat_new_25</span><span class="p">(</span><span class="n">vocab</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""25 additional flat titles (no section headers) drawn across all 5 template families."""</span>
+    <span class="n">picks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tpl_list</span> <span class="ow">in</span> <span class="n">TEMPLATES</span><span class="p">:</span>
+        <span class="n">picks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tpl_list</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>  <span class="c1"># take the second half of each template family (5 x 5 = 25)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">fill</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">picks</span><span class="p">]</span>
+
+
+<span class="n">MANUFACTURING_VOCAB</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"plant leader"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"manufacturing and operations leaders"</span><span class="p">,</span>
+                            <span class="n">field</span><span class="o">=</span><span class="s2">"production"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"the factory floor"</span><span class="p">,</span> <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your team"</span><span class="p">,</span>
+                            <span class="n">tool</span><span class="o">=</span><span class="s2">"the production line"</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="s2">"deadline pressure"</span><span class="p">)</span>
+<span class="n">MARKETPLACE_MINISTRY_VOCAB</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"marketplace leader"</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="s2">"marketplace ministry leaders"</span><span class="p">,</span>
+                                   <span class="n">field</span><span class="o">=</span><span class="s2">"everyday work"</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s2">"your workplace"</span><span class="p">,</span>
+                                   <span class="n">beneficiary</span><span class="o">=</span><span class="s2">"your coworkers"</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s2">"your influence"</span><span class="p">,</span>
+                                   <span class="n">pressure</span><span class="o">=</span><span class="s2">"the divide between Sunday and Monday"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_all_categories</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Returns list of (category_name, kind, payload)</span>
+<span class="sd">       kind = 'sectioned' -&gt; payload is dict[section] = [(title,sub) x10]</span>
+<span class="sd">       kind = 'flat50'    -&gt; payload is list of 50 (title,sub), first 25 are 'founding', next 25 'expansion'</span>
+<span class="sd">    """</span>
+    <span class="n">cats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">ORIGINAL_EXPAND</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="n">build_category</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">"vocab"</span><span class="p">],</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"examples"</span><span class="p">))</span>
+        <span class="n">cats</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="s2">"sectioned"</span><span class="p">,</span> <span class="n">sec</span><span class="p">))</span>
+    <span class="n">cats</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"Manufacturing &amp; Industrial Leaders"</span><span class="p">,</span> <span class="s2">"flat50"</span><span class="p">,</span>
+                 <span class="n">MANUFACTURING_ORIGINAL_25</span> <span class="o">+</span> <span class="n">flat_new_25</span><span class="p">(</span><span class="n">MANUFACTURING_VOCAB</span><span class="p">)))</span>
+    <span class="n">cats</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"Marketplace Ministry Leaders"</span><span class="p">,</span> <span class="s2">"flat50"</span><span class="p">,</span>
+                 <span class="n">MARKETPLACE_MINISTRY_ORIGINAL_25</span> <span class="o">+</span> <span class="n">flat_new_25</span><span class="p">(</span><span class="n">MARKETPLACE_MINISTRY_VOCAB</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">vocab</span> <span class="ow">in</span> <span class="n">NEW_CATEGORIES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="n">build_category</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+        <span class="n">cats</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="s2">"sectioned"</span><span class="p">,</span> <span class="n">sec</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">cats</span>
+
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># FLOURISHING WORKPLACE -- 6-criteria framework (reused from the LifeTogether</span>
+<span class="c1"># Flourishing series: Flourishing with God / Together / from Within /</span>
+<span class="c1"># through Contribution / for Others / Across Generations)</span>
+<span class="c1"># =========================================================================</span>
+<span class="n">FLOURISHING_WEEKS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Flourishing with God"</span><span class="p">,</span>
+    <span class="s2">"Flourishing Together"</span><span class="p">,</span>
+    <span class="s2">"Flourishing from Within"</span><span class="p">,</span>
+    <span class="s2">"Flourishing through Contribution"</span><span class="p">,</span>
+    <span class="s2">"Flourishing for Others"</span><span class="p">,</span>
+    <span class="s2">"Flourishing Across Generations"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">FLOURISHING_WORKPLACE_SERIES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Flourishing at Work"</span><span class="p">,</span> <span class="s2">"The whole-life framework for thriving in your vocation"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Flourishing Leader"</span><span class="p">,</span> <span class="s2">"Leading a team that flourishes, not just performs"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Flourishing Team"</span><span class="p">,</span> <span class="s2">"Building a culture where people actually thrive"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Flourishing Through Burnout"</span><span class="p">,</span> <span class="s2">"Recovering a sustainable rhythm for demanding seasons"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Flourishing Career"</span><span class="p">,</span> <span class="s2">"A whole-life view of vocation, ambition, and rest"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Flourishing in Transition"</span><span class="p">,</span> <span class="s2">"Thriving through a job change, promotion, or layoff"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Flourishing Entrepreneur"</span><span class="p">,</span> <span class="s2">"Building a company without losing your soul"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Flourishing Under Pressure"</span><span class="p">,</span> <span class="s2">"Steady thriving in high-stakes, high-stress work"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Flourishing Workplace Culture"</span><span class="p">,</span> <span class="s2">"Shaping an organization where people flourish"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Flourishing for the Next Generation"</span><span class="p">,</span> <span class="s2">"Building a workplace legacy that outlasts you"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># PURPOSE BASED BUSINESS -- 5 purposes as the weekly framework</span>
+<span class="c1"># (Worship / Fellowship / Discipleship / Ministry / Mission,</span>
+<span class="c1">#  reused from the Biblical Purpose Library, applied to the business context)</span>
+<span class="c1"># =========================================================================</span>
+<span class="n">PURPOSE_WEEKS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Worship"</span><span class="p">,</span> <span class="s2">"Knowing God at the Center of Your Business"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Fellowship"</span><span class="p">,</span> <span class="s2">"Belonging to a Team, Not Just a Company"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Discipleship"</span><span class="p">,</span> <span class="s2">"Growing in Character as a Business Leader"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Ministry"</span><span class="p">,</span> <span class="s2">"Serving Employees, Customers, and Community"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Mission"</span><span class="p">,</span> <span class="s2">"Living Sent in the Marketplace"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># Theme ideas only -- NOT expanded into full 50-campaign catalogs yet.</span>
+<span class="n">PURPOSE_BASED_BUSINESS_THEMES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Purpose Built"</span><span class="p">,</span> <span class="s2">"The five purposes, reframed for the business owner"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Purpose-Driven Company"</span><span class="p">,</span> <span class="s2">"Building an organization on more than profit"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Five Purposes, One Business"</span><span class="p">,</span> <span class="s2">"A whole-company framework for lasting impact"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Purpose-Built Leader"</span><span class="p">,</span> <span class="s2">"Leading yourself before you lead your company"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Purpose Beyond Profit"</span><span class="p">,</span> <span class="s2">"Discovering what your business is really for"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Purpose-Built Team"</span><span class="p">,</span> <span class="s2">"Aligning your people around more than a paycheck"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Purpose in Every Department"</span><span class="p">,</span> <span class="s2">"Applying the five purposes company-wide"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Purpose-Built Founder"</span><span class="p">,</span> <span class="s2">"Starting and scaling with eternal values"</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">cats</span> <span class="o">=</span> <span class="n">get_all_categories</span><span class="p">()</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"sectioned"</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span><span class="si">}</span><span class="s2"> categories, </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2"> total campaigns generated"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Flourishing Workplace series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">FLOURISHING_WORKPLACE_SERIES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Purpose Based Business themes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">PURPOSE_BASED_BUSINESS_THEMES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/data.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

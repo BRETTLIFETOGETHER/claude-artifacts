@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>patch_create.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>patch_create.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">34 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/patch_create.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Patch the create studio: sermon-derived generation engine, Hosea-aware spine, devotional output, honest labels</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">s</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">'page_create.py'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># ============ 1. OUTPUT CARDS: unlock Devotional, clarify the locked two ============</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      &lt;button class="out avail" onclick="go('prefs')"&gt;"""</span><span class="p">,</span>
+<span class="sd">"""      &lt;button class="out avail" onclick="selectOut('cur')"&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      &lt;div class="out soon"&gt;</span>
+<span class="s2">        &lt;span class="otag chip ink"&gt;Coming soon&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Daily Devotional&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Your series as a daily reading plan — 7, 21, 30, or 40 days in your congregation&amp;rsquo;s hands.&lt;/span&gt;</span>
+<span class="s2">      &lt;/div&gt;"""</span><span class="p">,</span>
+<span class="sd">"""      &lt;button class="out avail" onclick="selectOut('devo')"&gt;</span>
+<span class="sd">        &lt;span class="otag chip gold"&gt;Week One preview&lt;/span&gt;</span>
+<span class="sd">        &lt;b&gt;Daily Devotional&lt;/b&gt;</span>
+<span class="sd">        &lt;span&gt;Your series as a daily reading plan. This preview builds Week One — seven days from your own texts; the full 40 ships with the platform.&lt;/span&gt;</span>
+<span class="sd">      &lt;/button&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""        &lt;span class="otag chip ink"&gt;Coming soon&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Leader Guide &amp;amp; Training&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;Host scripts, one-evening training, and care plans for the leaders you&amp;rsquo;re about to raise up.&lt;/span&gt;"""</span><span class="p">,</span>
+<span class="sd">"""        &lt;span class="otag chip ink"&gt;At platform launch&lt;/span&gt;</span>
+<span class="sd">        &lt;b&gt;Leader Guide &amp;amp; Training&lt;/b&gt;</span>
+<span class="sd">        &lt;span&gt;Host scripts, one-evening training, and care plans. Built by the same engine — a larger template set that switches on with the live platform, not a missing capability.&lt;/span&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""        &lt;span class="otag chip ink"&gt;Coming soon&lt;/span&gt;</span>
+<span class="s2">        &lt;b&gt;Full 40-Day Campaign&lt;/b&gt;</span>
+<span class="s2">        &lt;span&gt;The complete churchwide architecture — pulpit, groups, and daily reading aligned around your series.&lt;/span&gt;"""</span><span class="p">,</span>
+<span class="sd">"""        &lt;span class="otag chip ink"&gt;At platform launch&lt;/span&gt;</span>
+<span class="sd">        &lt;b&gt;Full 40-Day Campaign&lt;/b&gt;</span>
+<span class="sd">        &lt;span&gt;The complete churchwide architecture — pulpit, groups, and daily reading aligned. Same engine at full scale; enabled when generation moves to the live platform.&lt;/span&gt;"""</span><span class="p">)</span>
+
+<span class="c1"># ============ 2. PREFS: sessions block toggles for devotional ============</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      &lt;div&gt;</span>
+<span class="s2">        &lt;label class="lbl"&gt;Number of sessions&lt;/label&gt;</span>
+<span class="s2">        &lt;div class="pills" id="pSess"&gt;"""</span><span class="p">,</span>
+<span class="sd">"""      &lt;div id="sessBlock"&gt;</span>
+<span class="sd">        &lt;label class="lbl"&gt;Number of sessions&lt;/label&gt;</span>
+<span class="sd">        &lt;div class="pills" id="pSess"&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""          &lt;button class="pill" data-v="6"&gt;6 sessions&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;"""</span><span class="p">,</span>
+<span class="sd">"""          &lt;button class="pill" data-v="6"&gt;6 sessions&lt;/button&gt;</span>
+<span class="sd">        &lt;/div&gt;</span>
+<span class="sd">      &lt;/div&gt;</span>
+<span class="sd">      &lt;div id="devoLen" style="display:none"&gt;</span>
+<span class="sd">        &lt;label class="lbl"&gt;Length&lt;/label&gt;</span>
+<span class="sd">        &lt;p style="font-size:15px;color:var(--body)"&gt;&lt;span class="chip gold"&gt;Week One · 7 days&lt;/span&gt;&amp;nbsp; The preview engine builds your first week; the full platform extends it to 21, 30, or 40 days.&lt;/p&gt;</span>
+<span class="sd">      &lt;/div&gt;"""</span><span class="p">)</span>
+
+<span class="c1"># ============ 3. GENERATION ENGINE (inserted before analyze) ============</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"""</span>
+<span class="s2">/* ================= DERIVATION ENGINE (preview) =================</span>
+<span class="s2">   Builds sessions from the pastor's OWN text: extracted scripture</span>
+<span class="s2">   references, their phrases, and a detected theme. Deterministic. */</span>
+<span class="s2">window.outMode='cur';</span>
+<span class="s2">function selectOut(m){window.outMode=m;</span>
+<span class="s2">  document.getElementById('sessBlock').style.display=m==='devo'?'none':'block';</span>
+<span class="s2">  document.getElementById('devoLen').style.display=m==='devo'?'block':'none';</span>
+<span class="s2">  go('prefs');}</span>
+<span class="s2">const CHAPMAX={Genesis:50,Exodus:40,Deuteronomy:34,Joshua:24,Judges:21,Ruth:4,Nehemiah:13,Job:42,Psalm:150,Psalms:150,Proverbs:31,Ecclesiastes:12,Isaiah:66,Jeremiah:52,Ezekiel:48,Daniel:12,Hosea:14,Joel:3,Amos:9,Jonah:4,Micah:7,Matthew:28,Mark:16,Luke:24,John:21,Acts:28,Romans:16,Corinthians:16,Galatians:6,Ephesians:6,Philippians:4,Colossians:4,Thessalonians:5,Timothy:6,Hebrews:13,James:5,Peter:5,Revelation:22};</span>
+<span class="s2">const THEMES={</span>
+<span class="s2"> covenant:{kw:['covenant','unfaithful','faithful','return','mercy','adulter','wander','pursue','redeem','bride','betray','hesed','steadfast','prostitut','gomer','wilderness','allure'],</span>
+<span class="s2">  name:'covenant love &amp; return',</span>
+<span class="s2">  frames:['The God Who Won\u2019t Let Go','Bought Back','Into the Wilderness','The Long Way Home','Loved at Our Worst','Betrothed Forever'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Sit inside $</span><span class="si">{ref}</span><span class="s2"> until the shape of God\u2019s pursuing love becomes personal \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`When has someone kept a promise to you that you had stopped expecting them to keep? What did that do to you?`,</span>
+<span class="s2">           `Share a time you wandered from something good \u2014 a habit, a relationship, a faith rhythm. What finally turned you around?`,</span>
+<span class="s2">           `What\u2019s the difference between being tolerated and being pursued? Where have you felt each?`,</span>
+<span class="s2">           `Who in your life has loved you at your least lovable? Don\u2019t rush past this one.`,</span>
+<span class="s2">           `What does the word \u201cfaithfulness\u201d bring to mind first \u2014 a person, a failure, a hope?`,</span>
+<span class="s2">           `If God\u2019s love had a tone of voice in this passage, what would it sound like?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> aloud slowly. What surprises you most about how God speaks and acts here?`,</span>
+<span class="s2">    `$</span><span class="si">{book}</span><span class="s2"> refuses to let us keep God\u2019s love theoretical \u2014 it uses the language of marriage, betrayal, and pursuit. Why do you think God chose imagery this raw?`,</span>
+<span class="s2">    `Your pastor put it this way: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d Where does that land in your actual week?`,</span>
+<span class="s2">    `Where are you tempted to believe you\u2019ve out-wandered God\u2019s willingness to come after you? What does this text say back?`,</span>
+<span class="s2">    `What would \u201creturning\u201d look like for you \u2014 concretely, this week, not someday?`],</span>
+<span class="s2">  practice:[`Each morning this week, before anything else, say ${'`'}I am pursued${'`'} out loud \u2014 then read one verse of this week\u2019s chapter.`,</span>
+<span class="s2">    `Write the name of the season you most wandered. Hold it before God once this week and let Him rename it.`,</span>
+<span class="s2">    `Choose one relationship where you\u2019ve been keeping score. Practice one act of undeserved kindness \u2014 hesed \u2014 before the group meets again.`],</span>
+<span class="s2">  pray:{warm:`Thank God around the circle for one specific time He came after you when you weren\u2019t looking for Him.`,</span>
+<span class="s2">        direct:`Name out loud \u2014 a word or a phrase is enough \u2014 the place you\u2019re most tempted to wander right now. Receive this week\u2019s text as God\u2019s answer.`,</span>
+<span class="s2">        reflective:`Read the week\u2019s key verse three times slowly, with silence between. Let anyone who wishes pray a single sentence beginning \u201cYou are the God who\u2026\u201d`},</span>
+<span class="s2">  between:(ref)=&gt;`Before next session, read $</span><span class="si">{ref}</span><span class="s2"> in one unhurried sitting. Underline every action God takes toward His people.`},</span>
+<span class="s2"> work:{kw:['work','job','vocation','career','monday','workplace','labor','employ','office','calling'],</span>
+<span class="s2">  name:'work &amp; calling',</span>
+<span class="s2">  frames:['Made on Purpose','Work as Worship','The Original Job Description','Light in the Workplace','The Long Obedience','Commissioned to Monday'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`See your ordinary work through $</span><span class="si">{ref}</span><span class="s2"> \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`What did you want to be when you were ten \u2014 and what happened to that answer?`,</span>
+<span class="s2">           `What\u2019s the most invisible task in your week \u2014 the one nobody notices unless you stop doing it?`,</span>
+<span class="s2">           `Who taught you \u2014 by watching them \u2014 what good work looks like?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> aloud together. Which phrase lands hardest today, and why?`,</span>
+<span class="s2">    `Where is the line between healthy ambition and finding your identity in work? How do you know when you\u2019ve crossed it?`,</span>
+<span class="s2">    `Your pastor said: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d What changes this week if you actually believe that?`,</span>
+<span class="s2">    `Who is on your schedule this week that God may have been waiting to love through you?`,</span>
+<span class="s2">    `What would it mean to do your most ordinary task \u201cas for the Lord\u201d \u2014 concretely?`],</span>
+<span class="s2">  practice:[`Before your feet hit the floor each morning, ask: \u201cWho is on my schedule today that God has been waiting to love through me?\u201d Write one name daily.`,</span>
+<span class="s2">    `Choose your most invisible task this week. Offer it each time in a one-sentence silent prayer.`],</span>
+<span class="s2">  pray:{warm:`Thank God for the work of each person in the circle \u2014 by name, without hurry.`,</span>
+<span class="s2">        direct:`Have each person name their workplace out loud. Pray over each one as a mission field.`,</span>
+<span class="s2">        reflective:`Sit ninety seconds in silence with this week\u2019s text, then finish this sentence in prayer: \u201cLord, You prepared\u2026\u201d`},</span>
+<span class="s2">  between:(ref)=&gt;`Read $</span><span class="si">{ref}</span><span class="s2"> before next session. Note where work appears in the story before anything goes wrong.`},</span>
+<span class="s2"> family:{kw:['family','marriage','parent','child','home','father','mother','generation','legacy','household'],</span>
+<span class="s2">  name:'family &amp; legacy',</span>
+<span class="s2">  frames:['The Table','What We Hand Down','A House on the Rock','Blessing Out Loud','The Long Welcome','Generations'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Let $</span><span class="si">{ref}</span><span class="s2"> reset what your home is actually for \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`What\u2019s one thing \u2014 not money \u2014 that someone older handed down to you?`,</span>
+<span class="s2">           `Describe your family table growing up in three words. What do you want your table\u2019s three words to be?`,</span>
+<span class="s2">           `Who blessed you out loud once \u2014 and can you still hear it?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> together. What does this text assume a family is for?`,</span>
+<span class="s2">    `Where does your actual weekly rhythm agree with that \u2014 and where does it argue?`,</span>
+<span class="s2">    `Your pastor said: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d Who needs to hear that from you this week?`,</span>
+<span class="s2">    `What\u2019s one rule in your home that has a story behind it nobody\u2019s ever told?`,</span>
+<span class="s2">    `What do you want handed down from your life that isn\u2019t money \u2014 and what\u2019s one way to start handing it down now?`],</span>
+<span class="s2">  practice:[`Bless someone in your home out loud this week \u2014 specific, unhurried, face to face.`,</span>
+<span class="s2">    `Put one screen-free meal on the calendar. Ask one question at it: \u201cWhere did you see something good this week?\u201d`],</span>
+<span class="s2">  pray:{warm:`Pray for each home represented in the circle \u2014 by street name or family name.`,</span>
+<span class="s2">        direct:`Name one relationship at home that needs repair. Pray for the first step, not the whole road.`,</span>
+<span class="s2">        reflective:`In quiet, picture each person at your table. Give them, one by one, to God.`},</span>
+<span class="s2">  between:(ref)=&gt;`Read $</span><span class="si">{ref}</span><span class="s2"> with someone from your household this week \u2014 or over the phone with family far away.`},</span>
+<span class="s2"> money:{kw:['money','giving','generos','steward','treasure','tithe','wealth','provision','finances','debt'],</span>
+<span class="s2">  name:'generosity &amp; stewardship',</span>
+<span class="s2">  frames:['Whose Is It?','Open Hands','First, Not Leftover','The Freedom of Enough','Storing Up','A Generous Eye'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Let $</span><span class="si">{ref}</span><span class="s2"> loosen the grip \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`What\u2019s the best gift you ever gave \u2014 not the most expensive, the best?`,</span>
+<span class="s2">           `What money habit did you inherit without ever deciding to?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> aloud. What does it assume about who owns what?`,</span>
+<span class="s2">    `Where does money most often get the final vote in your decisions?`,</span>
+<span class="s2">    `Your pastor said: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d What would obeying that cost \u2014 and what might it free?`,</span>
+<span class="s2">    `What\u2019s the difference between wise saving and anxious storing? How do you tell them apart in yourself?`,</span>
+<span class="s2">    `What\u2019s one act of giving you could do this month that would actually be felt?`],</span>
+<span class="s2">  practice:[`Give one gift this week that costs you something \u2014 secretly if possible.`,</span>
+<span class="s2">    `Write every purchase down for seven days. At week\u2019s end, ask one question of the list: \u201cWhat do I apparently worship?\u201d`],</span>
+<span class="s2">  pray:{warm:`Thank God for specific provision this year \u2014 name it plainly.`,</span>
+<span class="s2">        direct:`Ask God to name the possession with the tightest grip on you \u2014 and to begin loosening it.`,</span>
+<span class="s2">        reflective:`Hold open hands in your lap for one minute of silence. Let the posture be the prayer.`},</span>
+<span class="s2">  between:(ref)=&gt;`Read $</span><span class="si">{ref}</span><span class="s2"> again mid-week \u2014 this time next to your bank app. Let them talk to each other.`},</span>
+<span class="s2"> prayer:{kw:['prayer','pray','worship','presence','listen','intercession','fasting','psalm'],</span>
+<span class="s2">  name:'prayer &amp; presence',</span>
+<span class="s2">  frames:['First Words','The Unhurried Room','Praying the Text','When Heaven Is Quiet','Together Before God','A Praying People'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Move prayer from event to atmosphere through $</span><span class="si">{ref}</span><span class="s2"> \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`Who taught you to pray \u2014 formally or just by being overheard?`,</span>
+<span class="s2">           `When has a prayer been answered in a way you didn\u2019t want \u2014 at first?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> aloud. What does this text teach about how God listens?`,</span>
+<span class="s2">    `What time of day does prayer actually happen for you \u2014 and what does that timing reveal?`,</span>
+<span class="s2">    `Your pastor said: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d What would your week look like if that were true of you?`,</span>
+<span class="s2">    `What do you do with silence from heaven? What does this passage do with it?`,</span>
+<span class="s2">    `What\u2019s one prayer you\u2019ve stopped praying that this text invites you to take up again?`],</span>
+<span class="s2">  practice:[`Pray this week\u2019s text out loud once a day \u2014 sixty seconds, no more, no phone.`,</span>
+<span class="s2">    `Keep a one-line answered-prayer log by your bed. One line, every night.`],</span>
+<span class="s2">  pray:{warm:`Let each person thank God for one prayer already answered this year.`,</span>
+<span class="s2">        direct:`Take the boldest request in the room and pray for it together, out loud, first.`,</span>
+<span class="s2">        reflective:`Practice four minutes of shared silence. Close with one whispered word each.`},</span>
+<span class="s2">  between:(ref)=&gt;`Pray $</span><span class="si">{ref}</span><span class="s2"> each morning before next session \u2014 same chair, same time, if you can manage it.`},</span>
+<span class="s2"> suffering:{kw:['suffer','grief','pain','trial','lament','loss','broken','wound','heal','tears','comfort'],</span>
+<span class="s2">  name:'suffering &amp; hope',</span>
+<span class="s2">  frames:['The God Who Stays','Permission to Lament','Hope with Scars','Not Wasted','The Valley Psalm','Morning Comes'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Bring the real weight into the light of $</span><span class="si">{ref}</span><span class="s2"> \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`What\u2019s a loss your group doesn\u2019t know about yet \u2014 that you\u2019re willing to name only as far as you want?`,</span>
+<span class="s2">           `Who sat with you once in a hard season without trying to fix it? What did they do right?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> slowly. Where does the text give permission you didn\u2019t know you had?`,</span>
+<span class="s2">    `What\u2019s the difference between explanation and presence when someone is hurting? Which does God offer here?`,</span>
+<span class="s2">    `Your pastor said: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d Where does that meet you \u2014 or where does it feel hard to believe?`,</span>
+<span class="s2">    `What has suffering taught you that ease never could \u2014 and what has it cost that shouldn\u2019t be spiritualized away?`,</span>
+<span class="s2">    `Who around you is in the valley right now? What would \u201cstaying\u201d look like?`],</span>
+<span class="s2">  practice:[`Write one honest lament this week \u2014 no polishing. End it with one line of trust, if you can. If you can\u2019t yet, end it honestly.`,</span>
+<span class="s2">    `Sit with someone who is hurting for twenty minutes this week. Bring nothing to fix.`],</span>
+<span class="s2">  pray:{warm:`Pray gently over every burden named tonight \u2014 and the unnamed ones too.`,</span>
+<span class="s2">        direct:`Invite anyone carrying something heavy to say only a name or a word. Carry each one to God together.`,</span>
+<span class="s2">        reflective:`Light nothing, fix nothing. Keep three minutes of held silence, then pray the week\u2019s verse over the room.`},</span>
+<span class="s2">  between:(ref)=&gt;`Read $</span><span class="si">{ref}</span><span class="s2"> once more this week \u2014 on your hardest day, if one comes.`},</span>
+<span class="s2"> identity:{kw:['identity','beloved','adopted','child of god','worth','shame','grace','new creation','belong'],</span>
+<span class="s2">  name:'identity &amp; belovedness',</span>
+<span class="s2">  frames:['Before You Did Anything','No Longer','The Adopted Life','What Shame Says \u2014 and God Says','New Name','Living Loved'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Let $</span><span class="si">{ref}</span><span class="s2"> say who you are before anything you do \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`What did you win \u2014 a ribbon, a title, a role \u2014 that mattered enormously then and not at all now?`,</span>
+<span class="s2">           `Whose approval have you worked hardest for? How\u2019s that going?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> aloud. Which identity words does the text use \u2014 and which do you actually use about yourself?`,</span>
+<span class="s2">    `Where does shame speak loudest in your week? What exactly does it say?`,</span>
+<span class="s2">    `Your pastor said: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d What competes with that voice on a Tuesday?`,</span>
+<span class="s2">    `What\u2019s the difference between humility and self-contempt? Which does this text produce?`,</span>
+<span class="s2">    `If you woke up actually believing this passage, what\u2019s the first thing that would change?`],</span>
+<span class="s2">  practice:[`Every mirror this week: one sentence from this text, said to your own face. Feel silly. Do it anyway.`,</span>
+<span class="s2">    `Catch one self-accusation per day and answer it \u2014 out loud if you\u2019re alone \u2014 with the week\u2019s verse.`],</span>
+<span class="s2">  pray:{warm:`Speak a one-line blessing over the person to your left \u2014 who they are, not what they do.`,</span>
+<span class="s2">        direct:`Renounce out loud, in a word, one false name you\u2019ve answered to. Receive the true one together.`,</span>
+<span class="s2">        reflective:`Breathe slowly through the week\u2019s verse phrase by phrase. Let the last phrase become your prayer.`},</span>
+<span class="s2">  between:(ref)=&gt;`Read $</span><span class="si">{ref}</span><span class="s2"> every morning before your phone. Let it get the first word all week.`},</span>
+<span class="s2"> mission:{kw:['mission','sent','witness','neighbor','gospel','evangel','go ','nations','city','serve'],</span>
+<span class="s2">  name:'mission &amp; neighbor',</span>
+<span class="s2">  frames:['Sent People','Across the Street','Eyes Open','The Table as Mission','Good News Out Loud','A City Blessed'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Trade mission-as-program for mission-as-life through $</span><span class="si">{ref}</span><span class="s2"> \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`Who first told you about Jesus \u2014 and what do you actually remember: the words, or the person?`,</span>
+<span class="s2">           `Name your literal neighbors \u2014 left, right, across. How far did you get?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> together. Who is sent, to whom, and with what?`,</span>
+<span class="s2">    `What makes \u201cwitness\u201d feel heavy \u2014 and what does this text actually ask of you?`,</span>
+<span class="s2">    `Your pastor said: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d Who came to mind while he said it?`,</span>
+<span class="s2">    `Where has God already placed you that you\u2019ve been calling ordinary?`,</span>
+<span class="s2">    `What\u2019s one door \u2014 literal or not \u2014 you could knock on this month?`],</span>
+<span class="s2">  practice:[`Learn one neighbor\u2019s name this week. Just the name. God will handle the sequel.`,</span>
+<span class="s2">    `Invite one person to a table \u2014 coffee counts \u2014 with no agenda except attention.`],</span>
+<span class="s2">  pray:{warm:`Pray by name for the neighbors named tonight \u2014 and for the ones whose names we don\u2019t know yet.`,</span>
+<span class="s2">        direct:`Ask God for one specific open door before next session \u2014 and the nerve to walk through it.`,</span>
+<span class="s2">        reflective:`Picture your street, house by house, in silence. Pray a blessing over each roof.`},</span>
+<span class="s2">  between:(ref)=&gt;`Read $</span><span class="si">{ref}</span><span class="s2"> again, then walk your street once, slowly, praying with your eyes open.`},</span>
+<span class="s2"> generic:{kw:[],</span>
+<span class="s2">  name:'the heart of your series',</span>
+<span class="s2">  frames:['Opening the Text','The Turn','What It Asks','Living It','When It Gets Hard','Sent With It'],</span>
+<span class="s2">  aim:(ref,idea)=&gt;`Open $</span><span class="si">{ref}</span><span class="s2"> together until it reads you back \u2014 $</span><span class="si">{idea}</span><span class="s2">`,</span>
+<span class="s2">  connect:[`What drew you into this series \u2014 honestly? What do you hope is different in six weeks?`,</span>
+<span class="s2">           `Where did this week\u2019s text intersect your actual week \u2014 even sideways?`,</span>
+<span class="s2">           `What\u2019s one question you\u2019ve always had about this part of Scripture and never asked out loud?`],</span>
+<span class="s2">  discuss:(ref,idea,quote,book)=&gt;[</span>
+<span class="s2">    `Read $</span><span class="si">{ref}</span><span class="s2"> aloud together \u2014 twice, two voices. What did you hear the second time that you missed the first?`,</span>
+<span class="s2">    `What does this passage assume about God that our culture doesn\u2019t?`,</span>
+<span class="s2">    `Your pastor put it this way: \u201c$</span><span class="si">{quote}</span><span class="s2">\u201d Where does that meet your week?`,</span>
+<span class="s2">    `What would obeying this text cost you? What might it free?`,</span>
+<span class="s2">    `Who needs what you just learned \u2014 and what\u2019s stopping you from bringing it to them?`],</span>
+<span class="s2">  practice:[`Read the week\u2019s passage once a day \u2014 same chair, same time. Underline one new word each day.`,</span>
+<span class="s2">    `Tell one person outside the group what struck you this week. Plain words, no polish.`],</span>
+<span class="s2">  pray:{warm:`Thank God for one specific thing this text names \u2014 around the circle, unhurried.`,</span>
+<span class="s2">        direct:`Let each person pray one sentence that begins with a word from tonight\u2019s passage.`,</span>
+<span class="s2">        reflective:`Read the key verse three times with silence between. Close with the Lord\u2019s Prayer, slowly.`},</span>
+<span class="s2">  between:(ref)=&gt;`Read $</span><span class="si">{ref}</span><span class="s2"> in one sitting before next session. Come back with one verse underlined and one question.`}</span>
+<span class="s2">};</span>
+<span class="s2">function detectTheme(txt){</span>
+<span class="s2">  const t=txt.toLowerCase();let best='generic',score=0;</span>
+<span class="s2">  for(const k in THEMES){ if(k==='generic')continue;</span>
+<span class="s2">    const s=THEMES[k].kw.reduce((a,w)=&gt;a+(t.split(w).length-1),0);</span>
+<span class="s2">    if(s&gt;score){score=s;best=k;} }</span>
+<span class="s2">  return score&gt;=2?best:'generic';</span>
+<span class="s2">}</span>
+<span class="s2">function parseRefs(txt){</span>
+<span class="s2">  const vre=new RegExp('\\b((?:[1-3]\\s)?(?:'+BOOKS+'))\\s?(\\d+(?::\\d+(?:[\u2013-]\\d+)?)?)','g');</span>
+<span class="s2">  const seen=new Set(),refs=[];</span>
+<span class="s2">  for(const m of txt.matchAll(vre)){</span>
+<span class="s2">    const r=m[1]+' '+m[2];</span>
+<span class="s2">    if(!seen.has(r)){seen.add(r);refs.push({book:m[1],disp:r});}</span>
+<span class="s2">  }</span>
+<span class="s2">  return refs;</span>
+<span class="s2">}</span>
+<span class="s2">function domBook(refs){</span>
+<span class="s2">  const c=</span><span class="si">{}</span><span class="s2">;refs.forEach(r=&gt;c[r.book]=(c[r.book]||0)+1);</span>
+<span class="s2">  return Object.keys(c).sort((a,b)=&gt;c[b]-c[a])[0]||null;</span>
+<span class="s2">}</span>
+<span class="s2">function titleFromQuote(q){</span>
+<span class="s2">  if(!q)return null;</span>
+<span class="s2">  let t=q.replace(/["\u201c\u201d]/g,'').split(/[.!?\u2014:;,]/)[0].trim();</span>
+<span class="s2">  const ws=t.split(/\s+/); if(ws.length&gt;6)t=ws.slice(0,6).join(' ');</span>
+<span class="s2">  if(t.length&lt;8)return null;</span>
+<span class="s2">  return t.replace(/\b\w/g,c=&gt;c.toUpperCase());</span>
+<span class="s2">}</span>
+<span class="s2">function spineFor(n,a){</span>
+<span class="s2">  const refs=[...a.refs]; const bk=a.book;</span>
+<span class="s2">  if(refs.length&gt;=n)return refs.slice(0,n).map(r=&gt;r.disp);</span>
+<span class="s2">  const out=refs.map(r=&gt;r.disp);</span>
+<span class="s2">  if(bk){</span>
+<span class="s2">    const used=new Set(refs.map(r=&gt;parseInt((r.disp.match(/\s(\d+)/)||[])[1]||0)));</span>
+<span class="s2">    const max=CHAPMAX[bk.replace(/^[1-3]\s/,'')]||12;</span>
+<span class="s2">    for(let ch=1;out.length&lt;n&amp;&amp;ch&lt;=max;ch++){ if(!used.has(ch)){out.push(bk+' '+ch);used.add(ch);} }</span>
+<span class="s2">  }</span>
+<span class="s2">  while(out.length&lt;n)out.push(out[out.length-1]||'Your key passage');</span>
+<span class="s2">  return out;</span>
+<span class="s2">}</span>
+<span class="s2">function deriveSeries(a,n){</span>
+<span class="s2">  const th=THEMES[a.theme]||THEMES.generic;</span>
+<span class="s2">  const spine=spineFor(n,a);</span>
+<span class="s2">  const qs=a.quotes.filter(Boolean);</span>
+<span class="s2">  return spine.map((ref,i)=&gt;{</span>
+<span class="s2">    const quote=qs[i%qs.length]||a.big;</span>
+<span class="s2">    const qt=i%2===0?titleFromQuote(qs[i%qs.length]):null;</span>
+<span class="s2">    const t=qt||th.frames[i%th.frames.length];</span>
+<span class="s2">    const conA=th.connect[i%th.connect.length], conB=th.connect[(i+1)%th.connect.length];</span>
+<span class="s2">    return {t, v:ref,</span>
+<span class="s2">      aim:th.aim(ref,a.big.replace(/\.$/,'').charAt(0).toLowerCase()+a.big.replace(/\.$/,'').slice(1)+'.'),</span>
+<span class="s2">      connect:[conA,conB],</span>
+<span class="s2">      recap:`This week your pastor took us into &lt;b&gt;$</span><span class="si">{ref}</span><span class="s2">&lt;/b&gt;${a.book?` \u2014 part of the journey through $</span><span class="si">{a.book}</span><span class="s2">`:''}. The line to carry into this session: &lt;span class="yw"&gt;\u270e your words&lt;/span&gt; \u201C$</span><span class="si">{quote}</span><span class="s2">\u201D`,</span>
+<span class="s2">      discuss:th.discuss(ref,a.big,quote,a.book||'This text'),</span>
+<span class="s2">      practice:th.practice[i%th.practice.length],</span>
+<span class="s2">      pray:th.pray,</span>
+<span class="s2">      between:th.between(spine[(i+1)</span><span class="si">%s</span><span class="s2">pine.length])};</span>
+<span class="s2">  });</span>
+<span class="s2">}</span>
+<span class="s2">function deriveDevoWeek(a){</span>
+<span class="s2">  const th=THEMES[a.theme]||THEMES.generic;</span>
+<span class="s2">  const spine=spineFor(7,a);</span>
+<span class="s2">  const qs=a.quotes.filter(Boolean);</span>
+<span class="s2">  return spine.map((ref,i)=&gt;{</span>
+<span class="s2">    const quote=qs[i%qs.length]||a.big;</span>
+<span class="s2">    const t=(i===0?'Begin Here':titleFromQuote(qs[i%qs.length])||th.frames[i%th.frames.length]);</span>
+<span class="s2">    return {t:`Day ${i+1} \u00b7 $</span><span class="si">{t}</span><span class="s2">`, v:ref, devo:true,</span>
+<span class="s2">      aim:`A ten-minute morning: one passage, one honest question, one prayer to carry out the door.`,</span>
+<span class="s2">      connect:[''],</span>
+<span class="s2">      recap:`Open to &lt;b&gt;$</span><span class="si">{ref}</span><span class="s2">&lt;/b&gt; and read it slowly \u2014 twice if you can. Don\u2019t hunt for the lesson yet; just let the text say what it says. Your pastor\u2019s word over this series: &lt;span class="yw"&gt;\u270e your words&lt;/span&gt; \u201C$</span><span class="si">{quote}</span><span class="s2">\u201D`,</span>
+<span class="s2">      discuss:[`Where does $</span><span class="si">{ref}</span><span class="s2"> touch something that actually happened to you this month?`,</span>
+<span class="s2">               `What one word or phrase keeps pulling your eye back? Sit with it for a moment \u2014 why that one?`,</span>
+<span class="s2">               `${th.discuss(ref,a.big,quote,a.book||'This text')[3]}`],</span>
+<span class="s2">      practice:`Carry today\u2019s phrase into one ordinary moment \u2014 a commute, a dish, a hallway \u2014 and let it interrupt you there.`,</span>
+<span class="s2">      pray:th.pray,</span>
+<span class="s2">      between:''};</span>
+<span class="s2">  });</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+<span class="n">anchor</span> <span class="o">=</span> <span class="s2">"const BOOKS='Genesis|"</span>
+<span class="n">i</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span>
+<span class="n">line_end</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[:</span><span class="n">line_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">ENGINE</span><span class="o">+</span><span class="n">s</span><span class="p">[</span><span class="n">line_end</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+
+<span class="c1"># ============ 4. buildAnalysis: real refs + theme + series title ============</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""    const vre=new RegExp('</span><span class="se">\\\\</span><span class="s2">b((?:[1-3]</span><span class="se">\\\\</span><span class="s2">s)?(?:'+BOOKS+'))</span><span class="se">\\\\</span><span class="s2">s?(</span><span class="se">\\\\</span><span class="s2">d+(?::</span><span class="se">\\\\</span><span class="s2">d+(?:[</span><span class="se">\\</span><span class="s2">u2013-]</span><span class="se">\\\\</span><span class="s2">d+)?)?)','g');</span>
+<span class="s2">    const verses=[...new Set([...txt.matchAll(vre)].map(m=&gt;m[1]+' '+m[2]))].slice(0,6);</span>
+<span class="s2">    const sents=txt.replace(/</span><span class="se">\\</span><span class="s2">s+/g,' ').split(/(?&lt;=[.!?])</span><span class="se">\\</span><span class="s2">s/).filter(s=&gt;s.length&gt;40&amp;&amp;s.length&lt;220);</span>
+<span class="s2">    const big=(sents.find(s=&gt;/</span><span class="se">\\</span><span class="s2">byou</span><span class="se">\\</span><span class="s2">b/i.test(s))||sents[0]||'The heart of your message.').trim();</span>
+<span class="s2">    const pts=sents.filter(s=&gt;/</span><span class="se">\\</span><span class="s2">b(God|Jesus|Christ|Lord)</span><span class="se">\\</span><span class="s2">b/.test(s)).slice(0,3);</span>
+<span class="s2">    analysis={big,verses:verses.length?verses:['Add your key passages'],</span>
+<span class="s2">      points:[pts.map((p,i)=&gt;`&lt;b&gt;${i+1}.&lt;/b&gt; $</span><span class="si">{p}</span><span class="s2">`).join('&lt;br&gt;')||'&lt;b&gt;1.&lt;/b&gt; Edit these to match your outline.'],</span>
+<span class="s2">      tone:'Warm and direct </span><span class="se">\\</span><span class="s2">u2014 refine this to match your voice.',</span>
+<span class="s2">      quotes:[big, sents[1]||big, sents[2]||big, sents[3]||big]};"""</span><span class="p">,</span>
+<span class="sd">"""    const refs=parseRefs(txt);</span>
+<span class="sd">    const sents=txt.replace(/\\s+/g,' ').split(/(?&lt;=[.!?])\\s/).filter(s=&gt;s.length&gt;40&amp;&amp;s.length&lt;220);</span>
+<span class="sd">    const big=(sents.find(s=&gt;/\\byou\\b/i.test(s))||sents[0]||'The heart of your message.').trim();</span>
+<span class="sd">    const pts=sents.filter(s=&gt;/\\b(God|Jesus|Christ|Lord)\\b/.test(s)).slice(0,3);</span>
+<span class="sd">    const theme=detectTheme(txt);</span>
+<span class="sd">    const book=domBook(refs);</span>
+<span class="sd">    analysis={big,refs,theme,book,</span>
+<span class="sd">      seriesTitle:book?`The ${book} Series`:(titleFromQuote(big)||'Your Series'),</span>
+<span class="sd">      verses:refs.length?refs.slice(0,6).map(r=&gt;r.disp):['No references detected \\u2014 the engine will suggest a spine; edit freely'],</span>
+<span class="sd">      points:[pts.map((p,i)=&gt;`&lt;b&gt;${i+1}.&lt;/b&gt; ${p}`).join('&lt;br&gt;')||'&lt;b&gt;1.&lt;/b&gt; Edit these to match your outline.'],</span>
+<span class="sd">      tone:`Detected register: ${THEMES[theme].name}. Refine anything here \\u2014 this step exists so nothing gets built on a misreading.`,</span>
+<span class="sd">      quotes:[big, sents[1]||big, sents[2]||big, sents[3]||big]};"""</span><span class="p">)</span>
+
+<span class="c1"># ============ 5. buildDoc: derive from the sermon (sample keeps its polished library) ============</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""  const lib=sessionLib(analysis.quotes);</span>
+<span class="s2">  const pick={4:[0,1,3,5],5:[0,1,2,3,5],6:[0,1,2,3,4,5]}[prefs.sess];</span>
+<span class="s2">  sessions=pick.map(i=&gt;JSON.parse(JSON.stringify(lib[i])));</span>
+<span class="s2">  cur=0;</span>
+<span class="s2">  document.getElementById('edTitle').textContent='More Than a Job </span><span class="se">\\</span><span class="s2">u2014 Small Group Curriculum';</span>
+<span class="s2">  if(!isSample) document.getElementById('edTitle').textContent='Your Series </span><span class="se">\\</span><span class="s2">u2014 Small Group Curriculum';</span>
+<span class="s2">  document.getElementById('edMeta').textContent=`$</span><span class="si">{prefs.sess}</span><span class="s2"> sessions </span><span class="se">\\</span><span class="s2">u00b7 $</span><span class="si">{prefs.aud}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">u00b7 $</span><span class="si">{prefs.church}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">u00b7 from the teaching of $</span><span class="si">{prefs.pastor}</span><span class="s2">`;"""</span><span class="p">,</span>
+<span class="sd">"""  if(window.outMode==='devo'){</span>
+<span class="sd">    sessions=isSample?deriveDevoWeek({...analysis,refs:parseRefs('Ephesians 2:10 Colossians 3:23 Genesis 2:15 Matthew 5:16 Colossians 3:17 Galatians 6:9 Matthew 28:19'),theme:'work',book:null}):deriveDevoWeek(analysis);</span>
+<span class="sd">    cur=0;</span>
+<span class="sd">    document.getElementById('edTitle').textContent=(isSample?'More Than a Job':analysis.seriesTitle)+' \\u2014 Daily Devotional \\u00b7 Week One';</span>
+<span class="sd">    document.getElementById('edMeta').textContent=`7 days \\u00b7 ${prefs.aud} \\u00b7 ${prefs.church} \\u00b7 from the teaching of ${prefs.pastor}`;</span>
+<span class="sd">  } else if(isSample){</span>
+<span class="sd">    const lib=sessionLib(analysis.quotes);</span>
+<span class="sd">    const pick={4:[0,1,3,5],5:[0,1,2,3,5],6:[0,1,2,3,4,5]}[prefs.sess];</span>
+<span class="sd">    sessions=pick.map(i=&gt;JSON.parse(JSON.stringify(lib[i])));</span>
+<span class="sd">    cur=0;</span>
+<span class="sd">    document.getElementById('edTitle').textContent='More Than a Job \\u2014 Small Group Curriculum';</span>
+<span class="sd">    document.getElementById('edMeta').textContent=`${prefs.sess} sessions \\u00b7 ${prefs.aud} \\u00b7 ${prefs.church} \\u00b7 from the teaching of ${prefs.pastor}`;</span>
+<span class="sd">  } else {</span>
+<span class="sd">    sessions=deriveSeries(analysis,+prefs.sess);</span>
+<span class="sd">    cur=0;</span>
+<span class="sd">    document.getElementById('edTitle').textContent=analysis.seriesTitle+' \\u2014 Small Group Curriculum';</span>
+<span class="sd">    document.getElementById('edMeta').innerHTML=`${prefs.sess} sessions \\u00b7 ${prefs.aud} \\u00b7 ${prefs.church} \\u00b7 from the teaching of ${prefs.pastor} &amp;nbsp;&lt;span class="chip gold" title="Built from your sermon by the on-device preview engine. The production platform reads deeper with Lifetogether\\u2019s AI engine."&gt;Preview engine \\u00b7 built from your sermon&lt;/span&gt;`;</span>
+<span class="sd">  }"""</span><span class="p">)</span>
+
+<span class="c1"># ============ 6. renderSession + docHTML: devotional labels ============</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""function renderSession(){</span>
+<span class="s2">  const s=sessions[cur];</span>
+<span class="s2">  const ci=altConnect[cur]||0;"""</span><span class="p">,</span>
+<span class="sd">"""function renderSession(){</span>
+<span class="sd">  const s=sessions[cur];</span>
+<span class="sd">  const ci=altConnect[cur]||0;</span>
+<span class="sd">  const devo=!!s.devo;</span>
+<span class="sd">  const L=devo?{unit:'Day',aim:'Today',recap:'Read',discuss:'Reflect',practice:'Respond \\u00b7 today',pray:'Pray'}</span>
+<span class="sd">             :{unit:'Session',aim:'The aim',recap:'From Sunday \\u00b7 5 min',discuss:'Discuss \\u00b7 35 min',practice:'Practice \\u00b7 this week',pray:'Pray \\u00b7 10 min'};"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      &lt;span class="chip gold"&gt;Session ${cur+1} of $</span><span class="si">{sessions.length}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">u00b7 $</span><span class="si">{s.v}</span><span class="s2">&lt;/span&gt;"""</span><span class="p">,</span>
+<span class="sd">"""      &lt;span class="chip gold"&gt;${L.unit} ${cur+1} of ${sessions.length} \\u00b7 ${s.v}&lt;/span&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;The aim&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true" onblur="sessions[$</span><span class="si">{cur}</span><span class="s2">].aim=this.textContent"&gt;$</span><span class="si">{s.aim}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Connect · 10 min&lt;/label&gt;</span>
+<span class="s2">        &lt;button class="regen" onclick="regenConnect(this)"&gt;</span><span class="se">\\</span><span class="s2">u21bb Try another&lt;/button&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true" id="connectBlk"&gt;$</span><span class="si">{s.connect[ci%s.connect.length]}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;From Sunday · 5 min&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.recap}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Discuss · 35 min&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;${s.discuss.map((q,i)=&gt;`&lt;b&gt;${i+1}.&lt;/b&gt; $</span><span class="si">{q}</span><span class="s2">`).join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Practice · this week&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.practice}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Pray · 10 min&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.pray[prefs.tone]}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Between sessions&lt;/label&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;p contenteditable="true"&gt;$</span><span class="si">{s.between}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;"""</span><span class="p">,</span>
+<span class="sd">"""      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;${L.aim}&lt;/label&gt;&lt;/div&gt;</span>
+<span class="sd">        &lt;p contenteditable="true" onblur="sessions[${cur}].aim=this.textContent"&gt;${s.aim}&lt;/p&gt;&lt;/div&gt;</span>
+<span class="sd">      ${devo?'':`&lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Connect \\u00b7 10 min&lt;/label&gt;</span>
+<span class="sd">        &lt;button class="regen" onclick="regenConnect(this)"&gt;\\u21bb Try another&lt;/button&gt;&lt;/div&gt;</span>
+<span class="sd">        &lt;p contenteditable="true" id="connectBlk"&gt;${s.connect[ci%s.connect.length]}&lt;/p&gt;&lt;/div&gt;`}</span>
+<span class="sd">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;${L.recap}&lt;/label&gt;&lt;/div&gt;</span>
+<span class="sd">        &lt;p contenteditable="true"&gt;${s.recap}&lt;/p&gt;&lt;/div&gt;</span>
+<span class="sd">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;${L.discuss}&lt;/label&gt;&lt;/div&gt;</span>
+<span class="sd">        &lt;p contenteditable="true"&gt;${s.discuss.map((q,i)=&gt;`&lt;b&gt;${i+1}.&lt;/b&gt; ${q}`).join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;&lt;/div&gt;</span>
+<span class="sd">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;${L.practice}&lt;/label&gt;&lt;/div&gt;</span>
+<span class="sd">        &lt;p contenteditable="true"&gt;${s.practice}&lt;/p&gt;&lt;/div&gt;</span>
+<span class="sd">      &lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;${L.pray}&lt;/label&gt;&lt;/div&gt;</span>
+<span class="sd">        &lt;p contenteditable="true"&gt;${s.pray[prefs.tone]}&lt;/p&gt;&lt;/div&gt;</span>
+<span class="sd">      ${devo?'':`&lt;div class="blk"&gt;&lt;div class="bh"&gt;&lt;label class="lbl"&gt;Between sessions&lt;/label&gt;&lt;/div&gt;</span>
+<span class="sd">        &lt;p contenteditable="true"&gt;${s.between}&lt;/p&gt;&lt;/div&gt;`}"""</span><span class="p">)</span>
+
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""function docHTML(){</span>
+<span class="s2">  return sessions.map((s,i)=&gt;`</span>
+<span class="s2">    &lt;div style="page-break-after:always;font-family:Georgia,serif;max-width:680px;margin:0 auto 40px"&gt;</span>
+<span class="s2">      &lt;p style="font-size:11px;letter-spacing:2px;color:#5F8540;font-weight:bold"&gt;SESSION ${i+1} </span><span class="se">\\</span><span class="s2">u00b7 ${s.v.toUpperCase()}&lt;/p&gt;"""</span><span class="p">,</span>
+<span class="sd">"""function docHTML(){</span>
+<span class="sd">  return sessions.map((s,i)=&gt;{</span>
+<span class="sd">   const devo=!!s.devo;</span>
+<span class="sd">   return `</span>
+<span class="sd">    &lt;div style="page-break-after:always;font-family:Georgia,serif;max-width:680px;margin:0 auto 40px"&gt;</span>
+<span class="sd">      &lt;p style="font-size:11px;letter-spacing:2px;color:#5F8540;font-weight:bold"&gt;${devo?'DAY':'SESSION'} ${i+1} \\u00b7 ${s.v.toUpperCase()}&lt;/p&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""      &lt;h4 style="color:#2E4C97"&gt;The aim&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.aim}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#2E4C97"&gt;Connect </span><span class="se">\\</span><span class="s2">u00b7 10 min&lt;/h4&gt;&lt;p&gt;${s.connect[(altConnect[i]||0)</span><span class="si">%s</span><span class="s2">.connect.length]}&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#2E4C97"&gt;From Sunday </span><span class="se">\\</span><span class="s2">u00b7 5 min&lt;/h4&gt;&lt;p&gt;${s.recap.replace(/&lt;span class="yw"&gt;[^&lt;]*&lt;</span><span class="se">\\</span><span class="s2">/span&gt;/g,'[your words] ')}&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#2E4C97"&gt;Discuss </span><span class="se">\\</span><span class="s2">u00b7 35 min&lt;/h4&gt;&lt;p&gt;${s.discuss.map((q,qi)=&gt;`&lt;b&gt;${qi+1}.&lt;/b&gt; $</span><span class="si">{q}</span><span class="s2">`).join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#2E4C97"&gt;Practice </span><span class="se">\\</span><span class="s2">u00b7 this week&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.practice}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#2E4C97"&gt;Pray </span><span class="se">\\</span><span class="s2">u00b7 10 min&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.pray[prefs.tone]}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;h4 style="color:#2E4C97"&gt;Between sessions&lt;/h4&gt;&lt;p&gt;$</span><span class="si">{s.between}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;`).join('');</span>
+<span class="s2">}"""</span><span class="p">,</span>
+<span class="sd">"""      &lt;h4 style="color:#2E4C97"&gt;${devo?'Today':'The aim'}&lt;/h4&gt;&lt;p&gt;${s.aim}&lt;/p&gt;</span>
+<span class="sd">      ${devo?'':`&lt;h4 style="color:#2E4C97"&gt;Connect \\u00b7 10 min&lt;/h4&gt;&lt;p&gt;${s.connect[(altConnect[i]||0)%s.connect.length]}&lt;/p&gt;`}</span>
+<span class="sd">      &lt;h4 style="color:#2E4C97"&gt;${devo?'Read':'From Sunday \\u00b7 5 min'}&lt;/h4&gt;&lt;p&gt;${s.recap.replace(/&lt;span class="yw"&gt;[^&lt;]*&lt;\\/span&gt;/g,'[your words] ')}&lt;/p&gt;</span>
+<span class="sd">      &lt;h4 style="color:#2E4C97"&gt;${devo?'Reflect':'Discuss \\u00b7 35 min'}&lt;/h4&gt;&lt;p&gt;${s.discuss.map((q,qi)=&gt;`&lt;b&gt;${qi+1}.&lt;/b&gt; ${q}`).join('&lt;br&gt;&lt;br&gt;')}&lt;/p&gt;</span>
+<span class="sd">      &lt;h4 style="color:#2E4C97"&gt;${devo?'Respond \\u00b7 today':'Practice \\u00b7 this week'}&lt;/h4&gt;&lt;p&gt;${s.practice}&lt;/p&gt;</span>
+<span class="sd">      &lt;h4 style="color:#2E4C97"&gt;Pray&lt;/h4&gt;&lt;p&gt;${s.pray[prefs.tone]}&lt;/p&gt;</span>
+<span class="sd">      ${devo?'':`&lt;h4 style="color:#2E4C97"&gt;Between sessions&lt;/h4&gt;&lt;p&gt;${s.between}&lt;/p&gt;`}</span>
+<span class="sd">    &lt;/div&gt;`}).join('');</span>
+<span class="sd">}"""</span><span class="p">)</span>
+
+<span class="c1"># download filename adapts</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"a.download='Small-Group-Curriculum.doc';"</span><span class="p">,</span>
+            <span class="s2">"a.download=(window.outMode==='devo'?'Daily-Devotional-Week-One.doc':'Small-Group-Curriculum.doc');"</span><span class="p">)</span>
+
+<span class="c1"># tabs label for devotional</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"function renderTabs(){"</span><span class="p">,</span><span class="s2">"function renderTabs(){</span><span class="se">\n</span><span class="s2">  const unit=(sessions[0]&amp;&amp;sessions[0].devo)?'Day':'S';"</span><span class="p">)</span>
+<span class="k">if</span> <span class="s2">"unit"</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"`Session ${i+1}`"</span> <span class="p">,</span><span class="s2">"`${unit==='Day'?'Day':'Session'} ${i+1}`"</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"`S${i+1}`"</span><span class="p">,</span><span class="s2">"`$</span><span class="si">{unit}</span><span class="s2">${i+1}`"</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="s1">'page_create.py'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"create engine patched"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/patch_create.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

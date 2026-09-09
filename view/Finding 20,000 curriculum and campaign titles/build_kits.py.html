@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_kits.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_kits.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">14 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_kits.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Render the Catalyst Kit volume with outline, devotional, and group session per kit</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kits</span><span class="w"> </span><span class="kn">import</span> <span class="n">KITS</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">esc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">para</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'&lt;p&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">))</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">KITS</span><span class="p">)</span>
+<span class="n">DAYS</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"dev"</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">KITS</span><span class="p">)</span>
+<span class="n">STEPS</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"grp"</span><span class="p">][</span><span class="s2">"personal"</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"grp"</span><span class="p">][</span><span class="s2">"family"</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"grp"</span><span class="p">][</span><span class="s2">"group"</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">KITS</span><span class="p">)</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--navy:#101a33;--navy-2:#16213d;--navy-3:#1c2a4a;--gold:#b8934e;</span>
+<span class="s2">--gold-lt:#d9bc82;--cream:#f7f3ea;--rule:rgba(184,147,78,.28)}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--navy);color:var(--cream);</span>
+<span class="s2">font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.68;</span>
+<span class="s2">-webkit-text-size-adjust:100%}</span>
+<span class="s2">.wrap{max-width:800px;margin:0 auto;padding:0 22px}</span>
+<span class="s2">h1,h2,h3,h4,h5{font-family:'Playfair Display',Georgia,serif;font-weight:600;line-height:1.15;margin:0}</span>
+<span class="s2">.label{font-family:'Lato',system-ui,sans-serif;font-size:11px;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);font-weight:700}</span>
+<span class="s2">.cover{padding:78px 0 58px;border-bottom:1px solid var(--rule);text-align:center}</span>
+<span class="s2">.cover .label{display:block;margin-bottom:24px}</span>
+<span class="s2">.cover h1{font-size:50px}</span>
+<span class="s2">.cover h1 em{display:block;font-style:italic;font-size:26px;color:var(--gold-lt);</span>
+<span class="s2">margin-top:12px;font-weight:400}</span>
+<span class="s2">.cover .dek{font-size:20px;color:#e6dfd0;margin:24px auto 0;max-width:600px}</span>
+<span class="s2">.brandline{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.18em;</span>
+<span class="s2">text-transform:uppercase;color:#b9b0a0;margin-top:32px}</span>
+<span class="s2">.stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--rule);</span>
+<span class="s2">border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.stat{flex:1 1 25%;min-width:120px;background:var(--navy);padding:24px 12px;text-align:center}</span>
+<span class="s2">.stat b{display:block;font-family:'Playfair Display',serif;font-size:34px;</span>
+<span class="s2">color:var(--gold-lt);font-weight:600}</span>
+<span class="s2">.stat span{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.18em;</span>
+<span class="s2">text-transform:uppercase;color:#b9b0a0}</span>
+<span class="s2">.block{padding:54px 0;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.block.alt{background:var(--navy-2)}</span>
+<span class="s2">.block h2{font-size:32px;margin-bottom:6px}</span>
+<span class="s2">.block h2 em{font-style:italic;color:var(--gold-lt)}</span>
+<span class="s2">.block p{color:#e6dfd0;margin:16px 0 0}</span>
+<span class="s2">.drop::first-letter{font-family:'Playfair Display',serif;float:left;font-size:62px;</span>
+<span class="s2">line-height:.82;padding:6px 12px 0 0;color:var(--gold)}</span>
+<span class="s2">.spec{border:1px solid var(--rule);padding:22px;margin-top:26px;background:var(--navy-2)}</span>
+<span class="s2">.spec .label{display:block;margin-bottom:12px}</span>
+<span class="s2">.spec ol{margin:0;padding-left:20px;color:#ded6c6}</span>
+<span class="s2">.spec li{margin-bottom:8px}</span>
+<span class="s2">.kithead{padding:70px 0 0;border-top:2px solid var(--gold)}</span>
+<span class="s2">.kithead .label{display:block;margin-bottom:10px}</span>
+<span class="s2">.kithead h2{font-size:38px}</span>
+<span class="s2">.kithead .ks{font-style:italic;color:#c8c0b2;font-size:20px;margin-top:8px}</span>
+<span class="s2">.kithead .why{margin-top:18px;border-left:2px solid var(--gold);padding:4px 0 4px 18px;</span>
+<span class="s2">color:#b6ac9d;font-size:17px}</span>
+<span class="s2">.sec{padding:44px 0 0}</span>
+<span class="s2">.sec .st{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.24em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--rule);</span>
+<span class="s2">padding-bottom:10px;margin-bottom:24px;font-weight:700}</span>
+<span class="s2">.meta{border-top:1px solid rgba(184,147,78,.18);</span>
+<span class="s2">border-bottom:1px solid rgba(184,147,78,.18);padding:14px 0;margin-bottom:20px}</span>
+<span class="s2">.row{display:flex;gap:14px;padding:7px 0;align-items:baseline}</span>
+<span class="s2">.row .k{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);min-width:82px;flex-shrink:0}</span>
+<span class="s2">.row .v{flex:1;color:#efe9dc}</span>
+<span class="s2">.row .v.idea{font-family:'Playfair Display',serif;font-size:21px;line-height:1.35;</span>
+<span class="s2">color:var(--gold-lt);font-style:italic}</span>
+<span class="s2">.mov{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.mov .mn{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold);</span>
+<span class="s2">min-width:26px;flex-shrink:0}</span>
+<span class="s2">.mov .mt{flex:1;color:#e6dfd0}</span>
+<span class="s2">.panel{margin-top:18px;background:var(--navy-2);border-left:2px solid var(--gold);</span>
+<span class="s2">padding:14px 18px}</span>
+<span class="s2">.panel .label{display:block;margin-bottom:5px}</span>
+<span class="s2">.panel p{margin:0;color:#ded6c6;font-size:18px}</span>
+<span class="s2">.day{padding:26px 0;border-bottom:1px solid rgba(184,147,78,.16)}</span>
+<span class="s2">.day .dn{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.2em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);margin-bottom:6px}</span>
+<span class="s2">.day h5{font-size:24px}</span>
+<span class="s2">.day .ref{font-family:'Lato',sans-serif;font-size:12px;letter-spacing:.1em;</span>
+<span class="s2">color:var(--gold-lt);margin-top:5px}</span>
+<span class="s2">.day .rd{margin-top:14px}</span>
+<span class="s2">.day .rd p{margin:0 0 13px;color:#e9e2d4}</span>
+<span class="s2">.day .rd p:last-child{margin-bottom:0}</span>
+<span class="s2">.qa{margin-top:16px;display:flex;gap:12px;padding:9px 0;</span>
+<span class="s2">border-top:1px solid rgba(184,147,78,.14)}</span>
+<span class="s2">.qa .qk{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);min-width:64px;flex-shrink:0;padding-top:4px}</span>
+<span class="s2">.qa .qv{flex:1;color:#ded6c6;font-size:18px}</span>
+<span class="s2">.gq{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.gq .gn{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);</span>
+<span class="s2">min-width:24px;flex-shrink:0}</span>
+<span class="s2">.gq .gt{flex:1;color:#e6dfd0}</span>
+<span class="s2">.lanes{margin-top:28px;display:flex;flex-wrap:wrap;gap:1px;background:var(--rule);</span>
+<span class="s2">border:1px solid var(--rule)}</span>
+<span class="s2">.lane{flex:1 1 240px;background:var(--navy-2);padding:20px}</span>
+<span class="s2">.lane .lh{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.2em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px}</span>
+<span class="s2">.lane ul{margin:0;padding-left:18px;color:#ded6c6;font-size:17px}</span>
+<span class="s2">.lane li{margin-bottom:9px}</span>
+<span class="s2">.closing{padding:64px 0;text-align:center;background:var(--navy-2)}</span>
+<span class="s2">.closing .q{font-family:'Playfair Display',serif;font-style:italic;font-size:26px;</span>
+<span class="s2">color:var(--gold-lt);max-width:620px;margin:0 auto;line-height:1.4}</span>
+<span class="s2">.closing .attr{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.2em;</span>
+<span class="s2">text-transform:uppercase;color:#9d958a;margin-top:22px}</span>
+<span class="s2">footer{padding:38px 0 58px;text-align:center;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8d8579}</span>
+<span class="s2">@media(max-width:620px){</span>
+<span class="s2">body{font-size:18px}</span>
+<span class="s2">.cover{padding:52px 0 42px}.cover h1{font-size:33px}.cover h1 em{font-size:20px}</span>
+<span class="s2">.block h2{font-size:27px}.kithead h2{font-size:29px}.day h5{font-size:22px}</span>
+<span class="s2">.row{flex-direction:column;gap:3px}.row .k{min-width:0}</span>
+<span class="s2">.row .v.idea{font-size:19px}.stat b{font-size:28px}</span>
+<span class="s2">.qa{flex-direction:column;gap:3px}.qa .qk{min-width:0}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kit_html</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap kithead"&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="label"&gt;Catalyst Kit '</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'</span><span class="si">%02d</span><span class="s1">'</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' &amp;middot; '</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"cat"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"t"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/h2&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="ks"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"s"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="why"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"why"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+    <span class="c1"># Sermon</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap sec"&gt;&lt;div class="st"&gt;One &amp;middot; The Sunday Message&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="meta"&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="row"&gt;&lt;div class="k"&gt;Text&lt;/div&gt;&lt;div class="v"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"x"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="row"&gt;&lt;div class="k"&gt;Big Idea&lt;/div&gt;&lt;div class="v idea"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"b"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">mv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"m"</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="mov"&gt;&lt;div class="mn"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;div class="mt"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">mv</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="panel"&gt;&lt;span class="label"&gt;Where the story goes&lt;/span&gt;&lt;p&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"story"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="panel"&gt;&lt;span class="label"&gt;The turn&lt;/span&gt;&lt;p&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"turn"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="panel"&gt;&lt;span class="label"&gt;Close&lt;/span&gt;&lt;p&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"close"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+    <span class="c1"># Devotional</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap sec"&gt;&lt;div class="st"&gt;Two &amp;middot; The Seven-Day Devotional&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">act</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"dev"</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="day"&gt;&lt;div class="dn"&gt;Day '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h5&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/h5&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="ref"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' (NIV)&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="rd"&gt;'</span> <span class="o">+</span> <span class="n">para</span><span class="p">(</span><span class="n">rd</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="qa"&gt;&lt;div class="qk"&gt;Reflect&lt;/div&gt;&lt;div class="qv"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="qa"&gt;&lt;div class="qk"&gt;Do&lt;/div&gt;&lt;div class="qv"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">act</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+    <span class="c1"># Group session</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="s2">"grp"</span><span class="p">]</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap sec"&gt;&lt;div class="st"&gt;Three &amp;middot; The Small Group Session&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="panel"&gt;&lt;span class="label"&gt;Open&lt;/span&gt;&lt;p&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">"open"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="panel"&gt;&lt;span class="label"&gt;Read together&lt;/span&gt;&lt;p&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">"read"</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div style="margin-top:24px"&gt;&lt;span class="label"&gt;Discussion&lt;/span&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">"qs"</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="gq"&gt;&lt;div class="gn"&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;div class="gt"&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="lanes"&gt;'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">lh</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"Next step &amp;mdash; personal"</span><span class="p">,</span> <span class="s2">"personal"</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">"Next step &amp;mdash; family"</span><span class="p">,</span> <span class="s2">"family"</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s2">"Next step &amp;mdash; group"</span><span class="p">,</span> <span class="s2">"group"</span><span class="p">)]:</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="lane"&gt;&lt;div class="lh"&gt;'</span> <span class="o">+</span> <span class="n">lh</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;&lt;ul&gt;'</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;li&gt;'</span> <span class="o">+</span> <span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/li&gt;'</span><span class="p">)</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/ul&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;!DOCTYPE html&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;title&gt;The Catalyst Kit &amp;mdash; One Sunday, Seven Days, One Room | LifeTogether&lt;/title&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;style&gt;'</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s1">'&lt;/style&gt;&lt;/head&gt;&lt;body&gt;'</span><span class="p">)</span>
+
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap cover"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="label"&gt;Catalytic Sundays &amp;middot; Volume Three&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h1&gt;The Catalyst Kit&lt;em&gt;One Sunday. Seven Days. One Room.&lt;/em&gt;&lt;/h1&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="dek"&gt;The forty-day campaign architecture compressed into a single week &amp;mdash; message, daily devotional, and a group session that sends people somewhere.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="brandline"&gt;LifeTogether &amp;middot; 25 Years &amp;middot; 500+ Churches &amp;middot; 50M+ Campaigns&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stats"&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">N</span><span class="p">,</span> <span class="s2">"Complete Kits"</span><span class="p">),</span> <span class="p">(</span><span class="n">DAYS</span><span class="p">,</span> <span class="s2">"Devotional Days"</span><span class="p">),</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s2">"Group Sessions"</span><span class="p">),</span> <span class="p">(</span><span class="n">STEPS</span><span class="p">,</span> <span class="s2">"Next Steps"</span><span class="p">)]:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stat"&gt;&lt;b&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;&lt;span&gt;'</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="block"&gt;&lt;div class="wrap"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;span class="label"&gt;What Changed&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h2&gt;A single Sunday just became &lt;em&gt;a campaign&lt;/em&gt;&lt;/h2&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="drop"&gt;A sermon reaches a person for thirty-five minutes and then competes with the rest of their life. A sermon followed by seven days of reading and a room where someone asks how it went is a different instrument entirely. That is the whole logic of the forty-day campaign, and there is no reason it only works at forty days. Compressed to a week, it becomes the smallest complete unit of the campaign system &amp;mdash; and the most likely thing a hesitant church will actually say yes to.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;The kit is deliberately finite. Seven days is short enough that a person who has never finished a devotional will finish this one, and short enough that a pastor can run four of them in a year without building a season around each. The group session lands after the devotional rather than before it, so people arrive having already done the work rather than hearing it for the first time.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;Every session ends in three lanes, because a next step that only addresses the individual leaves the two systems with the most leverage untouched. What you decide alone, what your household decides, and what the group decides together are different commitments with different failure rates, and the group lane is the one that actually holds.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="spec"&gt;&lt;span class="label"&gt;The kit, in nine parts&lt;/span&gt;&lt;ol&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"The Sunday message &amp;mdash; text, big idea, movements, illustration slot, turn, close"</span><span class="p">,</span>
+          <span class="s2">"Seven devotional days, each with a reading of roughly 150 words"</span><span class="p">,</span>
+          <span class="s2">"A reflection question per day"</span><span class="p">,</span>
+          <span class="s2">"A concrete action per day &amp;mdash; something done, not considered"</span><span class="p">,</span>
+          <span class="s2">"An opening question for the group that anyone can answer"</span><span class="p">,</span>
+          <span class="s2">"A shared Scripture reading"</span><span class="p">,</span>
+          <span class="s2">"Five discussion questions that follow the week rather than repeat the sermon"</span><span class="p">,</span>
+          <span class="s2">"Three next steps for the person"</span><span class="p">,</span>
+          <span class="s2">"Three for the family, and three for the group"</span><span class="p">]:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;li&gt;'</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">'&lt;/li&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/ol&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p&gt;Four kits follow, chosen because they stress the format differently: the flagship Easter message, the hardest pastoral Sunday on the calendar, the invitation Sunday that has to fill a room, and the connection Sunday that has to keep it full.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">KITS</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kit_html</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
+
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="closing"&gt;&lt;div class="wrap"&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="q"&gt;A church does not launch a program on Easter morning. It releases a movement, and then spends the rest of the year proving it meant it.&lt;/p&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="attr"&gt;Brett Eastman &amp;middot; LifeTogether&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; The Catalyst Kit &amp;middot; Volume Three &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Kits &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">DAYS</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Devotional Days&lt;/div&gt;&lt;/footer&gt;'</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/body&gt;&lt;/html&gt;'</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/catalyst-kit-vol-3.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"kits:"</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="s2">"days:"</span><span class="p">,</span> <span class="n">DAYS</span><span class="p">,</span> <span class="s2">"next steps:"</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">,</span> <span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_kits.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

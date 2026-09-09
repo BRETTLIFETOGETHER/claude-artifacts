@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_corpus.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; John - Sermon Central master directory index</div>
+<h1>build_corpus.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">15 KB</span>
+<a class="btn" href="../../artifacts/John%20-%20Sermon%20Central%20master%20directory%20index/build_corpus.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build script for the Title &amp; Subtitle Corpus PDF</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">build_index</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_corpus1</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORPUS_1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_corpus2</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORPUS_2</span><span class="p">,</span> <span class="n">BOOK_SERIES</span>
+
+<span class="n">CORPUS</span> <span class="o">=</span> <span class="n">CORPUS_1</span> <span class="o">+</span> <span class="n">CORPUS_2</span>
+<span class="n">NPAIRS</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">CORPUS</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">BOOK_SERIES</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">front</span><span class="p">(</span><span class="n">story</span><span class="p">):</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.55</span> <span class="o">*</span> <span class="n">inch</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"LIFETOGETHER MINISTRIES"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"cover_e"</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"THE SERMON LIBRARY  </span><span class="se">\u00b7</span><span class="s2">  THE MASTER TITLE LIBRARY"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"cover_m"</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.35</span> <span class="o">*</span> <span class="n">inch</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"Title and&lt;br/&gt;Subtitle"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"cover_t"</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span>
+        <span class="s2">"</span><span class="si">%d</span><span class="s2"> original title and subtitle pairs, each carrying an anchor passage and a "</span>
+        <span class="s2">"formation outcome &amp;mdash; plus the arithmetic on what a 160,000-title library "</span>
+        <span class="s2">"would actually cost you."</span> <span class="o">%</span> <span class="n">NPAIRS</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"cover_s"</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.45</span> <span class="o">*</span> <span class="n">inch</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span>
+        <span class="s2">"13 topic families &amp;nbsp;&amp;middot;&amp;nbsp; 312 message titles &amp;nbsp;&amp;middot;&amp;nbsp; "</span>
+        <span class="s2">"66 book series &amp;nbsp;&amp;middot;&amp;nbsp; every pair coordinated to Axis A, C and F"</span><span class="p">,</span>
+        <span class="n">S</span><span class="p">[</span><span class="s2">"cover_m"</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span>
+        <span class="s2">"Working corpus, version 1 &amp;nbsp;&amp;middot;&amp;nbsp; August 2026 &amp;nbsp;&amp;middot;&amp;nbsp; "</span>
+        <span class="s2">"Companion to The Master Preaching Index"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"cover_m"</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NextPageTemplate</span><span class="p">(</span><span class="s2">"inner"</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PageBreak</span><span class="p">())</span>
+
+    <span class="c1"># ---- the argument</span>
+    <span class="n">head</span><span class="p">(</span><span class="n">story</span><span class="p">,</span> <span class="s2">"BEFORE THE LIST"</span><span class="p">,</span>
+         <span class="s2">"The 160,000 you cannot have, and the number you should want instead"</span><span class="p">,</span>
+         <span class="s2">"Their 160,000 and your 21,214 are not the same unit. Everything below turns on "</span>
+         <span class="s2">"that."</span><span class="p">)</span>
+
+    <span class="n">para</span><span class="p">(</span><span class="n">story</span><span class="p">,</span>
+      <span class="s2">"Their 160,000 are finished sermons. Manuscripts, submitted by named pastors, each one "</span>
+      <span class="s2">"a complete piece of work. Your 21,214 are title records. Comparing the two counts is "</span>
+      <span class="s2">"comparing a warehouse to a catalog, and if you put a 160,000-row title list next to "</span>
+      <span class="s2">"their 160,000 finished sermons in front of a pastor, the comparison does not flatter "</span>
+      <span class="s2">"you &amp;mdash; it invites him to open one of yours."</span><span class="p">,</span>
+
+      <span class="s2">"The same rights problem applies to their list at 160,000 as at 300,000. Those titles "</span>
+      <span class="s2">"are the property of the contributors who wrote them, and building your catalog on top "</span>
+      <span class="s2">"of theirs is the one move that would hand the incumbent a legitimate grievance in the "</span>
+      <span class="s2">"exact area &amp;mdash; plagiarism &amp;mdash; where they publish a policy and you have a "</span>
+      <span class="s2">"positioning claim to protect. So this document contains none of their titles. Every "</span>
+      <span class="s2">"line in it is original."</span><span class="p">)</span>
+
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"WHAT YOUR LIBRARY ACTUALLY HOLDS RIGHT NOW"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"h3"</span><span class="p">]))</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"v20 MASTER LIBRARY"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"ROWS"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span>
+             <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"WHAT IT MEANS FOR A 160,000 TARGET"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">])]]</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span>
+      <span class="p">(</span><span class="s2">"Total title records"</span><span class="p">,</span> <span class="s2">"21,214"</span><span class="p">,</span>
+       <span class="s2">"The honest headline number, after sixteen sources and three rounds of pruning."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Rated A &amp;mdash; strong / ready"</span><span class="p">,</span> <span class="s2">"1,393"</span><span class="p">,</span>
+       <span class="s2">"The only rows you could print today without a caveat. Under 7 per cent."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Rated B"</span><span class="p">,</span> <span class="s2">"11,671"</span><span class="p">,</span> <span class="s2">"Real, unverified, and mostly without a passage or an outcome."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Rated C and F"</span><span class="p">,</span> <span class="s2">"7,062"</span><span class="p">,</span> <span class="s2">"Weak or filler. Adding volume adds to this pile fastest."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Seen four or more times"</span><span class="p">,</span> <span class="s2">"643"</span><span class="p">,</span>
+       <span class="s2">"The genuinely corroborated spine: How Much Is Enough?, God Owns It All, "</span>
+       <span class="s2">"The Legacy Conversation, Kingdom Legacy."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Single mention, ungraded"</span><span class="p">,</span> <span class="s2">"13,270"</span><span class="p">,</span>
+       <span class="s2">"Already greyed as unverified. This is 63 per cent of the library."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Collapsed as exact duplicates"</span><span class="p">,</span> <span class="s2">"10,087"</span><span class="p">,</span>
+       <span class="s2">"Removed in v16 &amp;mdash; roughly a third of everything ingested was the same title twice."</span><span class="p">),</span>
+    <span class="p">]:</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"&lt;b&gt;</span><span class="si">%s</span><span class="s2">&lt;/b&gt;"</span> <span class="o">%</span> <span class="n">a</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span>
+                     <span class="n">Paragraph</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbb"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbi"</span><span class="p">])])</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tbl</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.85</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">0.72</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">4.45</span> <span class="o">*</span> <span class="n">inch</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+    <span class="n">para</span><span class="p">(</span><span class="n">story</span><span class="p">,</span>
+      <span class="s2">"Read those seven rows together and the case against a 160,000-row target makes itself. "</span>
+      <span class="s2">"One row in three that came into the library was a word-for-word duplicate. Two rows in "</span>
+      <span class="s2">"three that survived have been seen exactly once and carry no grade. You spent yesterday "</span>
+      <span class="s2">"removing 10,087 duplicates, moving 4,054 session rows off the master, and pulling 323 "</span>
+      <span class="s2">"rows that were never titles at all. Generating another 138,786 would manufacture, at "</span>
+      <span class="s2">"scale and on purpose, precisely the mess you have been cleaning."</span><span class="p">)</span>
+
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Band</span><span class="p">(</span>
+      <span class="s2">"&lt;b&gt;The arithmetic nobody runs.&lt;/b&gt; &amp;nbsp;At thirty seconds per title for a human to read, "</span>
+      <span class="s2">"grade and accept or reject it, 160,000 titles is 1,333 hours &amp;mdash; eight months of "</span>
+      <span class="s2">"full-time work before a single one is built. At the current build ratio in the Sermon "</span>
+      <span class="s2">"Library (8 built against 5,155 titled), a 160,000-title catalog would ship with roughly "</span>
+      <span class="s2">"248 finished messages behind it. The number would be impressive in a deck and indefensible "</span>
+      <span class="s2">"in a demo."</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PageBreak</span><span class="p">())</span>
+
+    <span class="n">head</span><span class="p">(</span><span class="n">story</span><span class="p">,</span> <span class="s2">"THE BETTER ANSWER"</span><span class="p">,</span>
+         <span class="s2">"Three tiers instead of one number"</span><span class="p">,</span>
+         <span class="s2">"You do not need one count. You need three, each with a different job and a "</span>
+         <span class="s2">"different audience."</span><span class="p">)</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"TIER"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"SIZE"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span>
+             <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"WHAT IT IS FOR"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"WHO SEES IT"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">])]]</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span>
+      <span class="p">(</span><span class="s2">"&lt;b&gt;1. The Verified Spine&lt;/b&gt;"</span><span class="p">,</span> <span class="s2">"~1,400"</span><span class="p">,</span>
+       <span class="s2">"Every row A-rated, with a subtitle, an anchor passage and a formation outcome. "</span>
+       <span class="s2">"Printed, bound, handed to a pastor. This is the artifact."</span><span class="p">,</span>
+       <span class="s2">"Founders, partners, conferences"</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"&lt;b&gt;2. The Working Catalog&lt;/b&gt;"</span><span class="p">,</span> <span class="s2">"~21,000"</span><span class="p">,</span>
+       <span class="s2">"The full master library. Searchable, internal, honest about its own grades. Never "</span>
+       <span class="s2">"printed and never claimed as a public number."</span><span class="p">,</span>
+       <span class="s2">"You and Hannah"</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"&lt;b&gt;3. The Generative Surface&lt;/b&gt;"</span><span class="p">,</span> <span class="s2">"Unbounded"</span><span class="p">,</span>
+       <span class="s2">"Titles composed on demand from index coordinates at the moment a pastor asks. "</span>
+       <span class="s2">"Never stored, never counted, never deduplicated because nothing accumulates."</span><span class="p">,</span>
+       <span class="s2">"Every pastor, every query"</span><span class="p">),</span>
+    <span class="p">]:</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">Paragraph</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbb"</span><span class="p">]),</span>
+                     <span class="n">Paragraph</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbi"</span><span class="p">])])</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tbl</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.3</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">0.72</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">3.4</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">1.6</span> <span class="o">*</span> <span class="n">inch</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+    <span class="n">para</span><span class="p">(</span><span class="n">story</span><span class="p">,</span>
+      <span class="s2">"Tier 3 is the part worth arguing about, because it is where the scale claim actually "</span>
+      <span class="s2">"lives and it is the one thing the incumbent cannot copy. Their 160,000 is a warehouse. "</span>
+      <span class="s2">"It grows by 300 a week because three hundred pastors upload something, and every item "</span>
+      <span class="s2">"in it has to be stored, moderated and searched forever. Yours would be a press. The "</span>
+      <span class="s2">"index you already have &amp;mdash; 353 topics, 66 books, 149 anchor passages, 56 occasions, "</span>
+      <span class="s2">"7 outcomes, 4 hinges &amp;mdash; multiplies out past 160,000 combinations before you add a "</span>
+      <span class="s2">"single format variant, and none of it needs to exist until somebody asks for it."</span><span class="p">,</span>
+
+      <span class="s2">"That changes what you are able to say in a founders conversation, and the honest version "</span>
+      <span class="s2">"is stronger than the inflated one. Not &lt;i&gt;we have 160,000 sermons&lt;/i&gt;, which invites the "</span>
+      <span class="s2">"comparison you lose. Instead: &lt;i&gt;we can produce a coordinated title, subtitle, message, "</span>
+      <span class="s2">"week of devotionals, group session and household edition for any of 353 topics across 66 "</span>
+      <span class="s2">"books, 56 occasions and 7 formation outcomes &amp;mdash; and here are fourteen hundred we "</span>
+      <span class="s2">"have already verified.&lt;/i&gt; The second claim is bigger, it is true, and it survives being "</span>
+      <span class="s2">"checked."</span><span class="p">)</span>
+
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"THE TITLE GRAMMAR THAT MAKES TIER 3 REAL"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"h3"</span><span class="p">]))</span>
+    <span class="n">para</span><span class="p">(</span><span class="n">story</span><span class="p">,</span>
+      <span class="s2">"Generation only works if it is governed. Every pair in this document was built on six "</span>
+      <span class="s2">"title forms and four subtitle jobs, and the constraint is what keeps the output from "</span>
+      <span class="s2">"reading like a machine wrote it."</span><span class="p">)</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"TITLE FORM"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"EXAMPLE FROM THIS CORPUS"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span>
+             <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"WHEN TO USE IT"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">])]]</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span>
+      <span class="p">(</span><span class="s2">"Declarative"</span><span class="p">,</span> <span class="s2">"God Owns It All"</span><span class="p">,</span> <span class="s2">"A doctrinal claim the whole series rests on."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Interrogative"</span><span class="p">,</span> <span class="s2">"How Much Is Enough?"</span><span class="p">,</span> <span class="s2">"A felt need the listener already carries as a question."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Imperative"</span><span class="p">,</span> <span class="s2">"Say the Hard Thing"</span><span class="p">,</span> <span class="s2">"A message whose outcome is &lt;i&gt;do it&lt;/i&gt;."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Single word"</span><span class="p">,</span> <span class="s2">"Anxious &amp;nbsp;</span><span class="se">\u00b7</span><span class="s2">&amp;nbsp; Holy &amp;nbsp;</span><span class="se">\u00b7</span><span class="s2">&amp;nbsp; Wet"</span><span class="p">,</span>
+       <span class="s2">"Maximum weight, minimum explanation. Use sparingly or it becomes a tic."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Reversal"</span><span class="p">,</span> <span class="s2">"The Rich Fool Had a Retirement Plan"</span><span class="p">,</span>
+       <span class="s2">"When the point is that the listener is the one being described."</span><span class="p">),</span>
+      <span class="p">(</span><span class="s2">"Relational"</span><span class="p">,</span> <span class="s2">"The Legacy Conversation"</span><span class="p">,</span>
+       <span class="s2">"When the product is a conversation rather than a concept."</span><span class="p">),</span>
+    <span class="p">]:</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"&lt;b&gt;</span><span class="si">%s</span><span class="s2">&lt;/b&gt;"</span> <span class="o">%</span> <span class="n">a</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbi"</span><span class="p">]),</span>
+                     <span class="n">Paragraph</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">])])</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tbl</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.05</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">2.4</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">3.57</span> <span class="o">*</span> <span class="n">inch</span><span class="p">]))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+    <span class="n">para</span><span class="p">(</span><span class="n">story</span><span class="p">,</span>
+      <span class="s2">"The subtitle does one of four jobs and never restates the title: it names the "</span>
+      <span class="s2">"&lt;b&gt;promise&lt;/b&gt; (what changes), the &lt;b&gt;mechanism&lt;/b&gt; (how), the &lt;b&gt;audience&lt;/b&gt; (who this "</span>
+      <span class="s2">"is for), or the &lt;b&gt;scope&lt;/b&gt; (how long, how many). A subtitle that merely rephrases the "</span>
+      <span class="s2">"title is the single most reliable sign a catalog was generated rather than written, and "</span>
+      <span class="s2">"it is what makes eleven thousand B-rated rows read as filler."</span><span class="p">)</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PageBreak</span><span class="p">())</span>
+
+    <span class="n">head</span><span class="p">(</span><span class="n">story</span><span class="p">,</span> <span class="s2">"HOW TO READ THE CORPUS"</span><span class="p">,</span>
+         <span class="s2">"</span><span class="si">%d</span><span class="s2"> pairs, and what each one carries"</span> <span class="o">%</span> <span class="n">NPAIRS</span><span class="p">)</span>
+    <span class="n">para</span><span class="p">(</span><span class="n">story</span><span class="p">,</span>
+      <span class="s2">"What follows is written, not generated: 312 message titles across the thirteen families "</span>
+      <span class="s2">"of Axis A, then 66 series titles, one for every book of the Bible. Each message row "</span>
+      <span class="s2">"carries its anchor passage and its formation outcome, so every line arrives already "</span>
+      <span class="s2">"coordinated and can be dropped straight into the master workbook against the seven axis "</span>
+      <span class="s2">"columns."</span><span class="p">,</span>
+
+      <span class="s2">"Treat these as candidates for the Verified Spine rather than as finished catalog. They "</span>
+      <span class="s2">"are original, they are A-standard, and none of them duplicates a title already carrying "</span>
+      <span class="s2">"a strong signal in the master library &amp;mdash; &lt;i&gt;God Owns It All&lt;/i&gt;, &lt;i&gt;How Much Is "</span>
+      <span class="s2">"Enough?&lt;/i&gt; and &lt;i&gt;The Legacy Conversation&lt;/i&gt; appear deliberately, because those four "</span>
+      <span class="s2">"corroborated titles are the spine everything else hangs off and the corpus should show "</span>
+      <span class="s2">"where it connects."</span><span class="p">,</span>
+
+      <span class="s2">"Outcome tags use your seven steps. Expect the distribution to look uneven when you count "</span>
+      <span class="s2">"it, and expect the unevenness to be instructive: &lt;i&gt;bring it back&lt;/i&gt; appears twice in "</span>
+      <span class="s2">"312 titles, which is roughly its share in most preaching and exactly the imbalance the "</span>
+      <span class="s2">"outcome column exists to expose."</span><span class="p">)</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Band</span><span class="p">(</span>
+      <span class="s2">"&lt;b&gt;What I need to give you the actual thing you asked for.&lt;/b&gt; &amp;nbsp;Upload the v20 "</span>
+      <span class="s2">"master workbook and I will produce this same document from your real 21,214 rows &amp;mdash; "</span>
+      <span class="s2">"Verified Spine first, then the working catalog by family, with the ungraded single-mention "</span>
+      <span class="s2">"rows separated rather than hidden. That is a print job, not a research job, and it is the "</span>
+      <span class="s2">"title-and-subtitle PDF you probably actually want."</span><span class="p">,</span>
+      <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">],</span> <span class="n">bg</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s2">"#f4f0e4"</span><span class="p">),</span> <span class="n">bar</span><span class="o">=</span><span class="n">NAVY2</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PageBreak</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">corpus_section</span><span class="p">(</span><span class="n">story</span><span class="p">):</span>
+    <span class="n">head</span><span class="p">(</span><span class="n">story</span><span class="p">,</span> <span class="s2">"THE CORPUS  </span><span class="se">\u00b7</span><span class="s2">  PART ONE"</span><span class="p">,</span>
+         <span class="s2">"312 message titles"</span><span class="p">,</span>
+         <span class="s2">"Thirteen families, twenty-four each. Title, subtitle, anchor, outcome."</span><span class="p">)</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">fam</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">CORPUS</span><span class="p">):</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="p">[</span><span class="n">Paragraph</span><span class="p">(</span><span class="n">fam</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">S</span><span class="p">[</span><span class="s2">"h3"</span><span class="p">])]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"TITLE"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"SUBTITLE"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span>
+                 <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"ANCHOR"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"OUTCOME"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">])]]</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">anc</span><span class="p">,</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"&lt;b&gt;</span><span class="si">%s</span><span class="s2">&lt;/b&gt;"</span> <span class="o">%</span> <span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span>
+                         <span class="n">Paragraph</span><span class="p">(</span><span class="n">anc</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbi"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbi"</span><span class="p">])])</span>
+        <span class="n">block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tbl</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.72</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">3.32</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">1.06</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">0.92</span> <span class="o">*</span> <span class="n">inch</span><span class="p">]))</span>
+        <span class="n">block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+        <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">KeepTogether</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">12</span> <span class="k">else</span> <span class="n">block</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
+            <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PageBreak</span><span class="p">())</span>
+
+    <span class="n">head</span><span class="p">(</span><span class="n">story</span><span class="p">,</span> <span class="s2">"THE CORPUS  </span><span class="se">\u00b7</span><span class="s2">  PART TWO"</span><span class="p">,</span>
+         <span class="s2">"66 series titles, one per book"</span><span class="p">,</span>
+         <span class="s2">"The book axis, converted from a canonical list into a bookable preaching year."</span><span class="p">)</span>
+    <span class="n">para</span><span class="p">(</span><span class="n">story</span><span class="p">,</span>
+      <span class="s2">"Length is a recommendation, not a rule, and it assumes a congregation that will stay "</span>
+      <span class="s2">"with a book rather than a topic. Added end to end these sixty-six run to roughly 350 "</span>
+      <span class="s2">"weeks, which is a little under seven years of preaching &amp;mdash; a useful thing to be "</span>
+      <span class="s2">"able to say to a pastor who thinks he is out of material."</span><span class="p">)</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">span</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"OLD TESTAMENT"</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">39</span><span class="p">)),</span> <span class="p">(</span><span class="s2">"NEW TESTAMENT"</span><span class="p">,</span> <span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mi">66</span><span class="p">))]:</span>
+        <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"h3"</span><span class="p">]))</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">"BOOK"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"SERIES TITLE"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span>
+                 <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"SUBTITLE"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"LENGTH"</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"th"</span><span class="p">])]]</span>
+        <span class="k">for</span> <span class="n">bk</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">BOOK_SERIES</span><span class="p">[</span><span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">]]:</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">Paragraph</span><span class="p">(</span><span class="n">bk</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbi"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="s2">"&lt;b&gt;</span><span class="si">%s</span><span class="s2">&lt;/b&gt;"</span> <span class="o">%</span> <span class="n">t</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span>
+                         <span class="n">Paragraph</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">]),</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">ln</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tbi"</span><span class="p">])])</span>
+        <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tbl</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">1.72</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">3.5</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">inch</span><span class="p">]))</span>
+        <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Band</span><span class="p">(</span>
+      <span class="s2">"&lt;b&gt;Next action.&lt;/b&gt; &amp;nbsp;Drop these </span><span class="si">%d</span><span class="s2"> rows into the v20 workbook as source seventeen, "</span>
+      <span class="s2">"graded A and flagged LifeTogether-original so they never read as ingested from anywhere "</span>
+      <span class="s2">"else. Then upload the workbook and I will build the Verified Spine edition of this "</span>
+      <span class="s2">"document from your real library. The count that wins is 1,400 you can defend, not "</span>
+      <span class="s2">"160,000 you cannot."</span> <span class="o">%</span> <span class="n">NPAIRS</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="s2">"tb"</span><span class="p">],</span> <span class="n">bg</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s2">"#f4f0e4"</span><span class="p">),</span> <span class="n">bar</span><span class="o">=</span><span class="n">NAVY2</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">BaseDocTemplate</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="n">letter</span><span class="p">,</span>
+                          <span class="n">leftMargin</span><span class="o">=</span><span class="n">MARGIN</span><span class="p">,</span> <span class="n">rightMargin</span><span class="o">=</span><span class="n">MARGIN</span><span class="p">,</span>
+                          <span class="n">topMargin</span><span class="o">=</span><span class="n">MARGIN</span><span class="p">,</span> <span class="n">bottomMargin</span><span class="o">=</span><span class="mf">0.85</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s2">"Title and Subtitle - LifeTogether Working Corpus"</span><span class="p">,</span>
+                          <span class="n">author</span><span class="o">=</span><span class="s2">"LifeTogether Ministries"</span><span class="p">,</span>
+                          <span class="n">subject</span><span class="o">=</span><span class="s2">"378 original title and subtitle pairs"</span><span class="p">)</span>
+    <span class="n">fr</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="n">MARGIN</span><span class="p">,</span> <span class="mf">0.85</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span> <span class="n">PW</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">MARGIN</span><span class="p">,</span> <span class="n">PH</span> <span class="o">-</span> <span class="n">MARGIN</span> <span class="o">-</span> <span class="mf">0.85</span> <span class="o">*</span> <span class="n">inch</span><span class="p">,</span>
+               <span class="nb">id</span><span class="o">=</span><span class="s2">"body"</span><span class="p">,</span> <span class="n">leftPadding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rightPadding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">topPadding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bottomPadding</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">addPageTemplates</span><span class="p">([</span>
+        <span class="n">PageTemplate</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"cover"</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="p">[</span><span class="n">fr</span><span class="p">],</span> <span class="n">onPage</span><span class="o">=</span><span class="n">cover_page</span><span class="p">),</span>
+        <span class="n">PageTemplate</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"inner"</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="p">[</span><span class="n">fr</span><span class="p">],</span> <span class="n">onPage</span><span class="o">=</span><span class="n">inner_page</span><span class="p">),</span>
+    <span class="p">])</span>
+    <span class="n">story</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">front</span><span class="p">(</span><span class="n">story</span><span class="p">)</span>
+    <span class="n">corpus_section</span><span class="p">(</span><span class="n">story</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">story</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="s2">"/home/claude/Title-and-Subtitle-Corpus.pdf"</span>
+    <span class="n">build</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"built"</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="s2">"bytes"</span><span class="p">,</span> <span class="s2">"| pairs:"</span><span class="p">,</span> <span class="n">NPAIRS</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_corpus.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

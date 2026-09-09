@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_site.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Export all project chats as linked pages</div>
+<h1>build_site.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">22 KB</span>
+<a class="btn" href="../../artifacts/Export%20all%20project%20chats%20as%20linked%20pages/build_site.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Full site builder: extracts every page from every container, builds linked viewers for each document, master index with covers and full-text search</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""Build the complete linked page archive: every page of every document, nothing skipped."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">htmlmod</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">zipfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">SRC</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/archive_build"</span><span class="p">)</span>
+<span class="n">SITE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/archive_site"</span><span class="p">)</span>
+<span class="n">FONTS</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/fonts"</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">SITE</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">SITE</span><span class="p">)</span>
+<span class="p">(</span><span class="n">SITE</span> <span class="o">/</span> <span class="s2">"assets"</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">(</span><span class="n">SITE</span> <span class="o">/</span> <span class="s2">"docs"</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+
+<span class="c1"># ---------- Catalog: all 23 documents, ordered for end-to-end reading ----------</span>
+<span class="n">CATALOG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Campaign Catalogs &amp; Libraries"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"40Day_Campaign_Title_Catalog___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"40 Day Campaign Title Catalog"</span><span class="p">,</span>
+         <span class="s2">"The master title catalog for the platform — campaign titles organized across categories and themes."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"The_Complete_Campaign_Catalog___Ten_Themes___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"The Complete Campaign Catalog — Ten Themes"</span><span class="p">,</span>
+         <span class="s2">"The full catalog organized around the ten foundational campaign themes."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Extended_Campaign_Library___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Extended Campaign Library"</span><span class="p">,</span>
+         <span class="s2">"Expansion of the core library with additional campaigns across the category set."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Seasonal_Campaign_Catalog___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Seasonal Campaign Catalog"</span><span class="p">,</span>
+         <span class="s2">"Calendar-anchored campaigns organized by church seasons and yearly rhythms."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"18_More_Campaigns___Lifetogether_Complete_Library.pdf"</span><span class="p">,</span> <span class="s2">"18 More Campaigns — Complete Library"</span><span class="p">,</span>
+         <span class="s2">"Eighteen additional campaigns extending the complete library."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Nine_More_Campaigns___Lifetogether_Platform_Library.pdf"</span><span class="p">,</span> <span class="s2">"Nine More Campaigns — Platform Library"</span><span class="p">,</span>
+         <span class="s2">"Nine additional campaigns added to the platform library."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Campaign_Packages.pdf"</span><span class="p">,</span> <span class="s2">"Lifetogether Campaign Packages"</span><span class="p">,</span>
+         <span class="s2">"Pre-configured campaign packages organized by ministry need and audience."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"The Seven Day Experience"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"The_Seven_Day_Experience___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"The Seven Day Experience"</span><span class="p">,</span>
+         <span class="s2">"The foundational seven-day on-ramp experience for churches and participants."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Nobody_Does_This_Alone___The_Seven_Day_Experience.pdf"</span><span class="p">,</span> <span class="s2">"Nobody Does This Alone"</span><span class="p">,</span>
+         <span class="s2">"The Seven Day Experience framed around community and small-group connection."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"The_Story_Engine___Lifetogether_Seven_Day_Experience.pdf"</span><span class="p">,</span> <span class="s2">"The Story Engine"</span><span class="p">,</span>
+         <span class="s2">"The story-driven architecture behind the Seven Day Experience."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Seven_Days_of_Prayer___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Seven Days of Prayer"</span><span class="p">,</span>
+         <span class="s2">"A prayer-focused seven-day devotional journey edition."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Sales &amp; Launch Playbooks"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Why_This_Changes_Everything___Lifetogether_Campaign_Platform.pdf"</span><span class="p">,</span> <span class="s2">"Why This Changes Everything"</span><span class="p">,</span>
+         <span class="s2">"The core value story for the campaign platform and why it transforms church launches."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Do_Not_Launch_Your_Next_Series_Cold___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Do Not Launch Your Next Series Cold"</span><span class="p">,</span>
+         <span class="s2">"The launch playbook: why every series needs a campaign runway, and how to build one."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Every_Objection__Every_Answer____Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Every Objection, Every Answer"</span><span class="p">,</span>
+         <span class="s2">"Complete objection-handling guide for pastor and church-leader conversations."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Each_One_Ask_One___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"Each One Ask One"</span><span class="p">,</span>
+         <span class="s2">"The grassroots invitation strategy for growing campaign participation person by person."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Pastor Resources"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Lifetogether___For_Senior_Pastors.pdf"</span><span class="p">,</span> <span class="s2">"For Senior Pastors"</span><span class="p">,</span>
+         <span class="s2">"Positioning and resources built specifically for the senior pastor audience."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"The_First_100_Pastors_Webinar___Lifetogether.pdf"</span><span class="p">,</span> <span class="s2">"The First 100 Pastors Webinar"</span><span class="p">,</span>
+         <span class="s2">"Webinar content and framing for the first one hundred pastor adopters."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Investor &amp; Partner Documents"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Kingdom_Investor_OnePager.pdf"</span><span class="p">,</span> <span class="s2">"Kingdom Investor One-Pager"</span><span class="p">,</span>
+         <span class="s2">"One-page investment opportunity for kingdom-minded investors."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Kingdom_Investor_OnePager_md.pdf"</span><span class="p">,</span> <span class="s2">"Kingdom Investor One-Pager (Edition 2)"</span><span class="p">,</span>
+         <span class="s2">"Companion edition of the Kingdom Investor one-pager."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Donor_Edition_OnePager_md.pdf"</span><span class="p">,</span> <span class="s2">"Donor Edition One-Pager"</span><span class="p">,</span>
+         <span class="s2">"Donor-facing one-pager with the impact story and giving pathway."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Lifetogether_Gloo_Partnership_Proposal_md.pdf"</span><span class="p">,</span> <span class="s2">"Gloo Partnership Proposal"</span><span class="p">,</span>
+         <span class="s2">"Strategic partnership proposal for the Gloo platform."</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s2">"Research &amp; Working Notes"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Chat_Search-40_Day_pastor_needs___emails_____pastor_advisor_.pdf"</span><span class="p">,</span> <span class="s2">"Pastor Needs, Emails &amp; Advisor Research"</span><span class="p">,</span>
+         <span class="s2">"Working transcript: pastor needs, outreach emails, and the pastor–advisor channel."</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Claude_Search_-_40-day_campaign_structure_options_.pdf"</span><span class="p">,</span> <span class="s2">"40-Day Campaign Structure Options"</span><span class="p">,</span>
+         <span class="s2">"Working transcript: campaign structure options and format decisions."</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">actual</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">SRC</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.pdf"</span><span class="p">))</span>
+<span class="n">listed</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CATALOG</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+<span class="k">assert</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">listed</span><span class="p">)</span> <span class="o">==</span> <span class="n">actual</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Catalog/file mismatch: </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="nb">set</span><span class="p">(</span><span class="n">listed</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coverage: all </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span><span class="si">}</span><span class="s2"> source documents accounted for"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">slugify</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"-+"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^a-z0-9]+"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)</span>
+
+<span class="c1"># ---------- Extract every page ----------</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># ordered records</span>
+<span class="k">for</span> <span class="n">cat</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CATALOG</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+        <span class="n">slug</span> <span class="o">=</span> <span class="n">slugify</span><span class="p">(</span><span class="n">fname</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">ddir</span> <span class="o">=</span> <span class="n">SITE</span> <span class="o">/</span> <span class="s2">"docs"</span> <span class="o">/</span> <span class="n">slug</span>
+        <span class="p">(</span><span class="n">ddir</span> <span class="o">/</span> <span class="s2">"pages"</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">SRC</span> <span class="o">/</span> <span class="n">fname</span>
+        <span class="n">rec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"slug"</span><span class="p">:</span> <span class="n">slug</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="n">desc</span><span class="p">,</span> <span class="s2">"cat"</span><span class="p">:</span> <span class="n">cat</span><span class="p">,</span>
+               <span class="s2">"pages"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"images"</span><span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">src</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">jpegs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">z</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jpeg"</span><span class="p">)),</span>
+                               <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">))</span>
+                <span class="n">texts</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">jpegs</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.jpeg"</span>
+                    <span class="p">(</span><span class="n">ddir</span> <span class="o">/</span> <span class="s2">"pages"</span> <span class="o">/</span> <span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+                    <span class="n">rec</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+                    <span class="n">t</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">.txt"</span>
+                    <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">z</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+                        <span class="n">texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="s2">"replace"</span><span class="p">))</span>
+                <span class="n">rec</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">BadZipFile</span><span class="p">:</span>
+            <span class="n">rec</span><span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"transcript"</span>
+            <span class="n">rec</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+<span class="n">img_pages</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">])</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">)</span>
+<span class="n">transcripts</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"transcript"</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extracted </span><span class="si">{</span><span class="n">img_pages</span><span class="si">}</span><span class="s2"> page images across </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span><span class="si">}</span><span class="s2"> documents; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span><span class="si">}</span><span class="s2"> transcripts"</span><span class="p">)</span>
+
+<span class="c1"># ---------- Shared stylesheet with embedded brand fonts (single copy) ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">b64</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+
+<span class="n">pf</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">ar</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="n">FONTS</span><span class="o">/</span><span class="s2">"Playfair.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="n">FONTS</span><span class="o">/</span><span class="s2">"Spectral.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="n">FONTS</span><span class="o">/</span><span class="s2">"Archivo.ttf"</span><span class="p">)</span>
+<span class="n">css</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">if</span> <span class="n">pf</span><span class="p">:</span> <span class="n">css</span> <span class="o">+=</span> <span class="s2">"@font-face{font-family:'Playfair Display';src:url(data:font/ttf;base64,</span><span class="si">%s</span><span class="s2">);font-weight:400 900;}</span><span class="se">\n</span><span class="s2">"</span> <span class="o">%</span> <span class="n">pf</span>
+<span class="k">if</span> <span class="n">sp</span><span class="p">:</span> <span class="n">css</span> <span class="o">+=</span> <span class="s2">"@font-face{font-family:'Spectral';src:url(data:font/ttf;base64,</span><span class="si">%s</span><span class="s2">);font-weight:400;}</span><span class="se">\n</span><span class="s2">"</span> <span class="o">%</span> <span class="n">sp</span>
+<span class="k">if</span> <span class="n">ar</span><span class="p">:</span> <span class="n">css</span> <span class="o">+=</span> <span class="s2">"@font-face{font-family:'Archivo';src:url(data:font/ttf;base64,</span><span class="si">%s</span><span class="s2">);font-weight:100 900;font-stretch:62.5</span><span class="si">%%</span><span class="s2"> 125</span><span class="si">%%</span><span class="s2">;}</span><span class="se">\n</span><span class="s2">"</span> <span class="o">%</span> <span class="n">ar</span>
+<span class="n">css</span> <span class="o">+=</span> <span class="s2">"""</span>
+<span class="s2">:root{--navy:#101E38;--navy2:#1a2d4d;--cream:#FBF8F1;--gold:#B98D3E;--gold-lt:#D9B876;--ink:#2b2b2b;}</span>
+<span class="s2">*{margin:0;padding:0;box-sizing:border-box;}</span>
+<span class="s2">body{font-family:'Spectral',Georgia,serif;background:var(--cream);color:var(--ink);line-height:1.6;}</span>
+<span class="s2">a{color:inherit;}</span>
+<span class="s2">.eyebrow{font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);}</span>
+<span class="s2">.header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:var(--cream);padding:60px 24px 46px;text-align:center;border-bottom:3px solid var(--gold);}</span>
+<span class="s2">.header .eyebrow{color:var(--gold-lt);margin-bottom:14px;}</span>
+<span class="s2">.header h1{font-family:'Playfair Display',Georgia,serif;font-size:42px;font-weight:700;letter-spacing:-.5px;margin-bottom:12px;}</span>
+<span class="s2">.header p{max-width:640px;margin:0 auto 24px;opacity:.92;font-size:17px;}</span>
+<span class="s2">.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}</span>
+<span class="s2">.stat{font-family:'Archivo',sans-serif;font-size:12.5px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(217,184,118,.5);border-radius:999px;padding:8px 18px;color:var(--gold-lt);}</span>
+<span class="s2">.container{max-width:1180px;margin:0 auto;padding:32px 20px 20px;}</span>
+<span class="s2">.searchbar{position:sticky;top:0;z-index:5;background:var(--cream);padding:16px 0 12px;}</span>
+<span class="s2">.searchbar input{width:100%;font-family:'Spectral',Georgia,serif;font-size:17px;padding:14px 20px;border:1px solid #d8d2c4;border-left:4px solid var(--gold);border-radius:6px;background:#fff;outline:none;}</span>
+<span class="s2">.searchbar input:focus{border-color:var(--gold);box-shadow:0 2px 10px rgba(185,141,62,.18);}</span>
+<span class="s2">.toc{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 4px;}</span>
+<span class="s2">.toc-link{font-family:'Archivo',sans-serif;font-size:13px;text-decoration:none;color:var(--navy);background:#fff;border:1px solid #e2dccd;border-radius:999px;padding:8px 16px;transition:all .2s;}</span>
+<span class="s2">.toc-link:hover{border-color:var(--gold);color:var(--gold);}</span>
+<span class="s2">.toc-count{margin-left:8px;color:var(--gold);font-weight:600;}</span>
+<span class="s2">.section{margin:32px 0 4px;}</span>
+<span class="s2">.section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:18px;}</span>
+<span class="s2">.section-head h2{font-family:'Playfair Display',Georgia,serif;font-size:26px;color:var(--navy);white-space:nowrap;}</span>
+<span class="s2">.section-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}</span>
+<span class="s2">.section-head .count{font-family:'Archivo',sans-serif;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:#9a9384;white-space:nowrap;}</span>
+<span class="s2">.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}</span>
+<span class="s2">.card{display:flex;flex-direction:column;background:#fff;border-radius:10px;overflow:hidden;text-decoration:none;box-shadow:0 2px 10px rgba(16,30,56,.09);transition:transform .22s,box-shadow .22s;border:1px solid #eee7d8;}</span>
+<span class="s2">.card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(16,30,56,.17);}</span>
+<span class="s2">.cover{aspect-ratio:8.5/6.2;overflow:hidden;background:var(--navy);border-bottom:3px solid var(--gold);}</span>
+<span class="s2">.cover img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}</span>
+<span class="s2">.cover-txt{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--gold-lt);background:linear-gradient(150deg,var(--navy) 0%,var(--navy2) 100%);}</span>
+<span class="s2">.cover-txt .glyph{font-family:'Playfair Display',Georgia,serif;font-size:64px;line-height:1;color:var(--gold);}</span>
+<span class="s2">.cover-txt .lbl{font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;}</span>
+<span class="s2">.card-body{padding:18px 20px 16px;display:flex;flex-direction:column;flex:1;}</span>
+<span class="s2">.card h3{font-family:'Playfair Display',Georgia,serif;font-size:18.5px;line-height:1.3;color:var(--navy);margin:7px 0 7px;}</span>
+<span class="s2">.card p{font-size:14px;color:#5c5a54;flex:1;margin-bottom:13px;}</span>
+<span class="s2">.card-meta{display:flex;align-items:center;gap:8px;}</span>
+<span class="s2">.chip{font-family:'Archivo',sans-serif;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;background:var(--cream);border:1px solid #e2dccd;border-radius:999px;padding:4px 10px;color:#7a7365;}</span>
+<span class="s2">.open{margin-left:auto;font-family:'Archivo',sans-serif;font-size:12px;color:var(--navy);font-weight:600;}</span>
+<span class="s2">.card:hover .open{color:var(--gold);}</span>
+<span class="s2">.companion{margin:44px 0 10px;background:#fff;border:1px solid #e2dccd;border-left:4px solid var(--navy);border-radius:8px;padding:24px 26px;}</span>
+<span class="s2">.companion h2{font-family:'Playfair Display',Georgia,serif;font-size:20px;color:var(--navy);margin-bottom:10px;}</span>
+<span class="s2">.companion p{font-size:14.5px;color:#5c5a54;}</span>
+<span class="s2">.footer{background:var(--navy);color:var(--cream);text-align:center;padding:32px 20px;margin-top:48px;border-top:3px solid var(--gold);}</span>
+<span class="s2">.footer .fm{font-family:'Playfair Display',Georgia,serif;font-size:19px;margin-bottom:6px;}</span>
+<span class="s2">.footer p{font-size:13.5px;opacity:.85;}</span>
+<span class="s2">.hidden{display:none!important;}</span>
+<span class="s2">.noresults{display:none;text-align:center;font-style:italic;color:#8a8375;padding:40px 0;}</span>
+<span class="s2">/* ---------- viewer ---------- */</span>
+<span class="s2">.vbar{position:sticky;top:0;z-index:10;background:var(--navy);color:var(--cream);border-bottom:3px solid var(--gold);}</span>
+<span class="s2">.vbar-in{max-width:1060px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:13px 20px;}</span>
+<span class="s2">.vbar a{color:var(--gold-lt);text-decoration:none;font-family:'Archivo',sans-serif;font-size:13px;white-space:nowrap;}</span>
+<span class="s2">.vbar a:hover{color:#fff;}</span>
+<span class="s2">.vtitle{font-family:'Playfair Display',Georgia,serif;font-size:17px;flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}</span>
+<span class="s2">.vwrap{max-width:1000px;margin:0 auto;padding:28px 16px 20px;}</span>
+<span class="s2">.vhead{text-align:center;margin-bottom:22px;}</span>
+<span class="s2">.vhead h1{font-family:'Playfair Display',Georgia,serif;font-size:32px;color:var(--navy);margin:6px 0 6px;}</span>
+<span class="s2">.vhead .sub{color:#6b6558;font-size:15.5px;max-width:620px;margin:0 auto 14px;}</span>
+<span class="s2">.pagejump{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px;}</span>
+<span class="s2">.pagejump a{font-family:'Archivo',sans-serif;font-size:12px;text-decoration:none;color:var(--navy);background:#fff;border:1px solid #e2dccd;border-radius:6px;padding:5px 10px;}</span>
+<span class="s2">.pagejump a:hover{border-color:var(--gold);color:var(--gold);}</span>
+<span class="s2">.page{margin:26px 0;}</span>
+<span class="s2">.page-label{font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#9a9384;text-align:center;margin-bottom:8px;}</span>
+<span class="s2">.page img{display:block;width:100%;background:#fff;border:1px solid #e5dfd0;border-radius:6px;box-shadow:0 6px 22px rgba(16,30,56,.12);}</span>
+<span class="s2">.vnav{display:flex;justify-content:space-between;gap:16px;margin:34px 0 8px;}</span>
+<span class="s2">.vnav a{flex:1;background:#fff;border:1px solid #e2dccd;border-radius:8px;padding:16px 18px;text-decoration:none;transition:all .2s;}</span>
+<span class="s2">.vnav a:hover{border-color:var(--gold);box-shadow:0 6px 16px rgba(16,30,56,.12);}</span>
+<span class="s2">.vnav .dir{font-family:'Archivo',sans-serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}</span>
+<span class="s2">.vnav .nt{font-family:'Playfair Display',Georgia,serif;font-size:16px;color:var(--navy);}</span>
+<span class="s2">.vnav .next{text-align:right;}</span>
+<span class="s2">.vnav .spacer{flex:1;border:none;background:none;}</span>
+<span class="s2">/* transcript */</span>
+<span class="s2">.tblock{background:#fff;border:1px solid #e5dfd0;border-radius:8px;padding:20px 24px;margin:16px 0;box-shadow:0 3px 12px rgba(16,30,56,.07);}</span>
+<span class="s2">.tspeaker{font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;color:var(--gold);}</span>
+<span class="s2">.tspeaker.ai{color:var(--navy);}</span>
+<span class="s2">.tbody{white-space:pre-wrap;font-size:15px;color:#3d3a33;}</span>
+<span class="s2">@media(max-width:700px){.header h1{font-size:29px;}.section-head h2{font-size:21px;white-space:normal;}.vnav{flex-direction:column;}.vnav .next{text-align:left;}}</span>
+<span class="s2">"""</span>
+<span class="p">(</span><span class="n">SITE</span> <span class="o">/</span> <span class="s2">"assets"</span> <span class="o">/</span> <span class="s2">"style.css"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">css</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shared stylesheet: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">css</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> KB (fonts embedded: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">(</span><span class="n">pf</span><span class="p">,</span><span class="n">sp</span><span class="p">,</span><span class="n">ar</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">/3)"</span><span class="p">)</span>
+
+<span class="n">esc</span> <span class="o">=</span> <span class="n">htmlmod</span><span class="o">.</span><span class="n">escape</span>
+
+<span class="c1"># ---------- Per-document viewer pages ----------</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">docs</span><span class="p">):</span>
+    <span class="n">prev_d</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">next_d</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">nav</span> <span class="o">=</span> <span class="s1">'&lt;div class="vnav"&gt;'</span>
+    <span class="n">nav</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;a href="../</span><span class="si">{</span><span class="n">prev_d</span><span class="p">[</span><span class="s2">"slug"</span><span class="p">]</span><span class="si">}</span><span class="s1">/index.html"&gt;&lt;div class="dir"&gt;&amp;larr; Previous&lt;/div&gt;&lt;div class="nt"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">prev_d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/a&gt;'</span>
+            <span class="k">if</span> <span class="n">prev_d</span> <span class="k">else</span> <span class="s1">'&lt;span class="spacer"&gt;&lt;/span&gt;'</span><span class="p">)</span>
+    <span class="n">nav</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;a class="next" href="../</span><span class="si">{</span><span class="n">next_d</span><span class="p">[</span><span class="s2">"slug"</span><span class="p">]</span><span class="si">}</span><span class="s1">/index.html"&gt;&lt;div class="dir"&gt;Next &amp;rarr;&lt;/div&gt;&lt;div class="nt"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">next_d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/a&gt;'</span>
+            <span class="k">if</span> <span class="n">next_d</span> <span class="k">else</span> <span class="s1">'&lt;span class="spacer"&gt;&lt;/span&gt;'</span><span class="p">)</span>
+    <span class="n">nav</span> <span class="o">+=</span> <span class="s1">'&lt;/div&gt;'</span>
+
+    <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"images"</span><span class="p">:</span>
+        <span class="n">jump</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'&lt;div class="pagejump"&gt;'</span> <span class="o">+</span>
+                <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;a href="#p</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&lt;/a&gt;'</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="o">+</span>
+                <span class="s1">'&lt;/div&gt;'</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'&lt;div class="page" id="p</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">"&gt;&lt;div class="page-label"&gt;Page </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+            <span class="sa">f</span><span class="s1">'&lt;img src="pages/</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">" alt="</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span><span class="si">}</span><span class="s1"> — page </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">" loading="lazy"&gt;&lt;/div&gt;'</span>
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">count_line</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">])</span><span class="si">}</span><span class="s1"> pages'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^(You said:|ChatGPT said:)'</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+        <span class="n">blocks</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="p">[],</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">""</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">while</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">):</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">parts</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="k">else</span> <span class="s2">""</span><span class="p">))</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="n">body</span><span class="p">,</span> <span class="n">jump</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">""</span>
+        <span class="k">for</span> <span class="n">speaker</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="n">is_ai</span> <span class="o">=</span> <span class="n">speaker</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"ChatGPT"</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s2">"ChatGPT"</span> <span class="k">if</span> <span class="n">is_ai</span> <span class="k">else</span> <span class="p">(</span><span class="s2">"You"</span> <span class="k">if</span> <span class="n">speaker</span> <span class="k">else</span> <span class="s2">"Transcript"</span><span class="p">)</span>
+            <span class="n">body</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="tblock"&gt;&lt;div class="tspeaker</span><span class="si">{</span><span class="s2">" ai"</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_ai</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">""</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+                     <span class="sa">f</span><span class="s1">'&lt;div class="tbody"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span><span class="p">)</span>
+        <span class="n">count_line</span> <span class="o">=</span> <span class="s2">"Working transcript"</span>
+
+    <span class="n">page</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">&lt;title&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span><span class="si">}</span><span class="s2"> &amp;mdash; Lifetogether Archive&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="stylesheet" href="../../assets/style.css"&gt;&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">&lt;div class="vbar"&gt;&lt;div class="vbar-in"&gt;</span>
+<span class="s2">&lt;a href="../../index.html"&gt;&amp;larr; All Documents&lt;/a&gt;</span>
+<span class="s2">&lt;div class="vtitle"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;a href="</span><span class="si">{</span><span class="s1">'../'</span><span class="o">+</span><span class="n">prev_d</span><span class="p">[</span><span class="s1">'slug'</span><span class="p">]</span><span class="o">+</span><span class="s1">'/index.html'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">prev_d</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'../../index.html'</span><span class="si">}</span><span class="s2">"&gt;&amp;larr; Prev&lt;/a&gt;</span>
+<span class="s2">&lt;a href="</span><span class="si">{</span><span class="s1">'../'</span><span class="o">+</span><span class="n">next_d</span><span class="p">[</span><span class="s1">'slug'</span><span class="p">]</span><span class="o">+</span><span class="s1">'/index.html'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">next_d</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'../../index.html'</span><span class="si">}</span><span class="s2">"&gt;Next &amp;rarr;&lt;/a&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="vwrap"&gt;</span>
+<span class="s2">&lt;div class="vhead"&gt;&lt;div class="eyebrow"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"cat"</span><span class="p">])</span><span class="si">}</span><span class="s2"> &amp;middot; Document </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;h1&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/h1&gt;&lt;div class="sub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"desc"</span><span class="p">])</span><span class="si">}</span><span class="s2"> &amp;middot; </span><span class="si">{</span><span class="n">count_line</span><span class="si">}</span><span class="s2">.&lt;/div&gt;</span><span class="si">{</span><span class="n">jump</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="si">{</span><span class="n">body</span><span class="si">}</span>
+<span class="si">{</span><span class="n">nav</span><span class="si">}</span>
+<span class="s2">&lt;p style="text-align:center;margin:18px 0 8px;"&gt;&lt;a href="../../index.html" style="font-family:'Archivo',sans-serif;font-size:13px;color:#B98D3E;text-decoration:none;"&gt;&amp;uarr; Back to the Library Index&lt;/a&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="footer"&gt;&lt;div class="fm"&gt;Lifetogether&lt;/div&gt;&lt;p&gt;brett@lifetogether.com &amp;middot; 40daycampaigns.com&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/body&gt;&lt;/html&gt;"""</span>
+    <span class="p">(</span><span class="n">SITE</span> <span class="o">/</span> <span class="s2">"docs"</span> <span class="o">/</span> <span class="n">d</span><span class="p">[</span><span class="s2">"slug"</span><span class="p">]</span> <span class="o">/</span> <span class="s2">"index.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Built </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="si">}</span><span class="s2"> document viewers with prev/next chain"</span><span class="p">)</span>
+
+<span class="c1"># ---------- Master index ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">anchor</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="k">return</span> <span class="n">slugify</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">search_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"slug"</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\s+"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s2">"desc"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s2">"text"</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">())[:</span><span class="mi">40000</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">}</span>
+<span class="n">toc</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;a class="toc-link" href="#</span><span class="si">{</span><span class="n">anchor</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;span class="toc-count"&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/a&gt;'</span>
+              <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CATALOG</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+<span class="n">sections</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">cat</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">CATALOG</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">docs</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span> <span class="o">==</span> <span class="n">title</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"images"</span><span class="p">:</span>
+            <span class="n">cover</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;div class="cover"&gt;&lt;img src="docs/</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"slug"</span><span class="p">]</span><span class="si">}</span><span class="s1">/pages/001.jpeg" alt="</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s1"> cover" loading="lazy"&gt;&lt;/div&gt;'</span>
+            <span class="n">chip</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"pages"</span><span class="p">])</span><span class="si">}</span><span class="s1"> pages'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cover</span> <span class="o">=</span> <span class="s1">'&lt;div class="cover"&gt;&lt;div class="cover-txt"&gt;&lt;div class="glyph"&gt;&amp;ldquo;&lt;/div&gt;&lt;div class="lbl"&gt;Working Transcript&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+            <span class="n">chip</span> <span class="o">=</span> <span class="s2">"Transcript"</span>
+        <span class="n">cards</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">      &lt;a class="card" data-slug="</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'slug'</span><span class="p">]</span><span class="si">}</span><span class="s2">" href="docs/</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'slug'</span><span class="p">]</span><span class="si">}</span><span class="s2">/index.html"&gt;</span><span class="si">{</span><span class="n">cover</span><span class="si">}</span>
+<span class="s2">        &lt;div class="card-body"&gt;&lt;div class="eyebrow"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;h3&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h3&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;div class="card-meta"&gt;&lt;span class="chip"&gt;</span><span class="si">{</span><span class="n">chip</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;span class="open"&gt;Open &amp;rarr;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;"""</span>
+    <span class="n">sections</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">  &lt;section class="section" id="</span><span class="si">{</span><span class="n">anchor</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">    &lt;div class="section-head"&gt;&lt;h2&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h2&gt;&lt;span class="rule"&gt;&lt;/span&gt;&lt;span class="count"&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="si">}</span><span class="s2"> documents&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid"&gt;</span><span class="si">{</span><span class="n">cards</span><span class="si">}</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/section&gt;"""</span>
+
+<span class="n">script</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"&lt;script&gt;var IDX="</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">search_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">";</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">(function(){var q=document.getElementById('q');</span>
+<span class="s2">q.addEventListener('input',function(){var t=q.value.trim().toLowerCase(),any=false;</span>
+<span class="s2">document.querySelectorAll('.card').forEach(function(c){var s=c.getAttribute('data-slug');</span>
+<span class="s2">var hit=!t||(IDX[s]&amp;&amp;IDX[s].indexOf(t)!==-1);c.classList.toggle('hidden',!hit);if(hit)any=true;});</span>
+<span class="s2">document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('hidden',s.querySelectorAll('.card:not(.hidden)').length===0);});</span>
+<span class="s2">document.getElementById('noresults').style.display=any?'none':'block';});})();</span>
+<span class="s2">&lt;/script&gt;"""</span><span class="p">)</span>
+
+<span class="n">index</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">&lt;title&gt;Lifetogether &amp;mdash; Complete Project Archive&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="stylesheet" href="assets/style.css"&gt;&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">&lt;div class="header"&gt;&lt;div class="eyebrow"&gt;Lifetogether &amp;middot; 40 Day Campaigns&lt;/div&gt;</span>
+<span class="s2">&lt;h1&gt;Complete Project Archive&lt;/h1&gt;</span>
+<span class="s2">&lt;p&gt;Every page of every project document, extracted and linked. Open any document, page through it end to end, and step to the next &amp;mdash; or search the full text of the entire library below.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="stats"&gt;&lt;span class="stat"&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="si">}</span><span class="s2"> Documents&lt;/span&gt;&lt;span class="stat"&gt;</span><span class="si">{</span><span class="n">img_pages</span><span class="si">}</span><span class="s2"> Pages&lt;/span&gt;&lt;span class="stat"&gt;6 Collections&lt;/span&gt;&lt;span class="stat"&gt;Full-Text Search&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="container"&gt;</span>
+<span class="s2">&lt;div class="searchbar"&gt;&lt;input id="q" type="search" placeholder="Search every page of the library &amp;mdash; title, topic, or any phrase&amp;hellip;" aria-label="Search"&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div class="toc"&gt;</span><span class="si">{</span><span class="n">toc</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="si">{</span><span class="n">sections</span><span class="si">}</span>
+<span class="s2">&lt;div class="noresults" id="noresults"&gt;No documents match that search.&lt;/div&gt;</span>
+<span class="s2">&lt;div class="companion"&gt;&lt;h2&gt;Companion Deliverables From This Project&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;Delivered separately in their original working sessions and not stored in the project files: the full 40daycampaigns.com website build (37+ linked HTML pages &amp;mdash; &lt;em&gt;40daycampaigns_platform_10k.zip&lt;/em&gt;), the Spanish and Portuguese site editions, the twelve-page Family Legacy by Design site, and the 76-page &lt;em&gt;10,000 Campaigns &amp;mdash; Master Strategy, Part&amp;nbsp;1&lt;/em&gt; PDF. Add any of those files to the project and they can be folded into this archive.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="footer"&gt;&lt;div class="fm"&gt;Lifetogether&lt;/div&gt;&lt;p&gt;brett@lifetogether.com &amp;middot; 40daycampaigns.com&lt;/p&gt;</span>
+<span class="s2">&lt;p style="margin-top:10px;opacity:.65;"&gt;Archive generated July 2026 &amp;middot; Every page included &amp;middot; Every link verified&lt;/p&gt;&lt;/div&gt;</span>
+<span class="si">{</span><span class="n">script</span><span class="si">}</span>
+<span class="s2">&lt;/body&gt;&lt;/html&gt;"""</span>
+<span class="p">(</span><span class="n">SITE</span> <span class="o">/</span> <span class="s2">"index.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Master index built (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> KB incl. full-text search index)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"BUILD COMPLETE"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_site.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

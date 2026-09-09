@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_pdf.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Reading request</div>
+<h1>build_pdf.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">42 KB</span>
+<a class="btn" href="../../artifacts/Reading%20request/build_pdf.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Full designed HTML for the Wisdom Changes Everything presentation PDF</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">weasyprint</span><span class="o">,</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">pathlib</span>
+
+<span class="n">F</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/fonts"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">b64</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">((</span><span class="n">F</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+<span class="n">anton</span><span class="p">,</span> <span class="n">oswald</span><span class="p">,</span> <span class="n">lora</span><span class="p">,</span> <span class="n">lora_it</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Anton-Regular.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Oswald.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Lora.ttf"</span><span class="p">),</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Lora-Italic.ttf"</span><span class="p">)</span>
+
+<span class="c1"># ---- Brand palette ----</span>
+<span class="n">NAVY</span>   <span class="o">=</span> <span class="s2">"#15233F"</span>
+<span class="n">NAVY2</span>  <span class="o">=</span> <span class="s2">"#1E3358"</span>
+<span class="n">GOLD</span>   <span class="o">=</span> <span class="s2">"#E0A82E"</span>
+<span class="n">GOLD_D</span> <span class="o">=</span> <span class="s2">"#C8941A"</span>
+<span class="n">CREAM</span>  <span class="o">=</span> <span class="s2">"#FBF7EF"</span>
+<span class="n">PAPER</span>  <span class="o">=</span> <span class="s2">"#FFFFFF"</span>
+<span class="n">INK</span>    <span class="o">=</span> <span class="s2">"#23262B"</span>
+<span class="n">SLATE</span>  <span class="o">=</span> <span class="s2">"#5A6472"</span>
+<span class="n">GREEN</span>  <span class="o">=</span> <span class="s2">"#2E5D46"</span>
+<span class="n">TEAL</span>   <span class="o">=</span> <span class="s2">"#2C6E7F"</span>
+<span class="n">RUST</span>   <span class="o">=</span> <span class="s2">"#B5532A"</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Anton'; src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">anton</span><span class="si">}</span><span class="s2">); </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Oswald'; src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">oswald</span><span class="si">}</span><span class="s2">); </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Lora'; src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">lora</span><span class="si">}</span><span class="s2">); font-style:normal; </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Lora'; src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">lora_it</span><span class="si">}</span><span class="s2">); font-style:italic; </span><span class="se">}}</span>
+
+<span class="s2">@page </span><span class="se">{{</span><span class="s2"> size: 8.5in 11in; margin: 0; </span><span class="se">}}</span>
+<span class="s2">* </span><span class="se">{{</span><span class="s2"> margin:0; padding:0; box-sizing:border-box; </span><span class="se">}}</span>
+<span class="s2">html </span><span class="se">{{</span><span class="s2"> -weasy-hyphens:none; </span><span class="se">}}</span>
+<span class="s2">body </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; color:</span><span class="si">{</span><span class="n">INK</span><span class="si">}</span><span class="s2">; font-size:9.6pt; line-height:1.5; </span><span class="se">}}</span>
+
+<span class="s2">.page </span><span class="se">{{</span><span class="s2"> width:8.5in; height:11in; position:relative; overflow:hidden; page-break-after:always; background:</span><span class="si">{</span><span class="n">PAPER</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.page:last-child </span><span class="se">{{</span><span class="s2"> page-break-after:auto; </span><span class="se">}}</span>
+
+<span class="s2">/* ---------- shared type ---------- */</span>
+<span class="s2">.kicker </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:.22em; text-transform:uppercase; font-size:8pt; </span><span class="se">}}</span>
+<span class="s2">.anton </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; font-weight:400; text-transform:uppercase; letter-spacing:.01em; line-height:.96; </span><span class="se">}}</span>
+<span class="s2">.osw </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; </span><span class="se">}}</span>
+<span class="s2">h2.sec </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; text-transform:uppercase; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; line-height:.95; </span><span class="se">}}</span>
+<span class="s2">em,i </span><span class="se">{{</span><span class="s2"> font-style:italic; </span><span class="se">}}</span>
+<span class="s2">strong </span><span class="se">{{</span><span class="s2"> font-weight:600; </span><span class="se">}}</span>
+
+<span class="s2">/* gold rule motif */</span>
+<span class="s2">.rule </span><span class="se">{{</span><span class="s2"> height:4px; background:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; border:0; </span><span class="se">}}</span>
+<span class="s2">.rule-navy </span><span class="se">{{</span><span class="s2"> height:3px; background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; border:0; </span><span class="se">}}</span>
+
+<span class="s2">/* ============================================================ COVER */</span>
+<span class="s2">.cover </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.cover .bg-h </span><span class="se">{{</span><span class="s2"> position:absolute; font-family:'Anton',sans-serif; color:rgba(255,255,255,.045);</span>
+<span class="s2">  font-size:330pt; line-height:.8; top:-0.7in; left:-0.4in; letter-spacing:-.02em; </span><span class="se">}}</span>
+<span class="s2">.cover .inner </span><span class="se">{{</span><span class="s2"> position:absolute; inset:0; padding:0.9in 0.85in; display:flex; flex-direction:column; </span><span class="se">}}</span>
+<span class="s2">.cover .toprow </span><span class="se">{{</span><span class="s2"> display:flex; justify-content:space-between; align-items:center; </span><span class="se">}}</span>
+<span class="s2">.badge </span><span class="se">{{</span><span class="s2"> border:1.5px solid </span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; border-radius:40px; padding:6px 16px;</span>
+<span class="s2">  font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:.2em; font-size:7.5pt; text-transform:uppercase; </span><span class="se">}}</span>
+<span class="s2">.cover .center </span><span class="se">{{</span><span class="s2"> margin-top:auto; margin-bottom:auto; </span><span class="se">}}</span>
+<span class="s2">.cover .eyebrow </span><span class="se">{{</span><span class="s2"> color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; font-family:'Oswald',sans-serif; font-weight:500; letter-spacing:.36em;</span>
+<span class="s2">  text-transform:uppercase; font-size:11pt; margin-bottom:18px; </span><span class="se">}}</span>
+<span class="s2">.cover h1 </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; font-size:82pt; line-height:.9; text-transform:uppercase; color:#fff; </span><span class="se">}}</span>
+<span class="s2">.cover h1 .gold </span><span class="se">{{</span><span class="s2"> color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.cover .sub </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:17pt; color:#E9DFC9; margin-top:26px; line-height:1.35; max-width:6in; </span><span class="se">}}</span>
+<span class="s2">.cover .q </span><span class="se">{{</span><span class="s2"> border-left:4px solid </span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; padding:14px 0 14px 22px; margin-top:34px; max-width:5.4in;</span>
+<span class="s2">  font-family:'Lora',serif; font-style:italic; font-size:13pt; color:#fff; line-height:1.45; </span><span class="se">}}</span>
+<span class="s2">.cover .foot </span><span class="se">{{</span><span class="s2"> display:flex; justify-content:space-between; align-items:flex-end; </span><span class="se">}}</span>
+<span class="s2">.cover .foot .l </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; letter-spacing:.04em; font-size:9pt; color:#B9C2D2; line-height:1.7; </span><span class="se">}}</span>
+<span class="s2">.cover .foot .r </span><span class="se">{{</span><span class="s2"> text-align:right; font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:.2em;</span>
+<span class="s2">  text-transform:uppercase; font-size:8pt; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.dotbase </span><span class="se">{{</span><span class="s2"> display:inline-block; </span><span class="se">}}</span>
+
+<span class="s2">/* ============================================================ generic content page */</span>
+<span class="s2">.content </span><span class="se">{{</span><span class="s2"> padding:0; </span><span class="se">}}</span>
+<span class="s2">.topband </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:#fff; padding:0.42in 0.7in 0.34in; position:relative; </span><span class="se">}}</span>
+<span class="s2">.topband .kick </span><span class="se">{{</span><span class="s2"> color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.topband h2 </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; text-transform:uppercase; font-size:30pt; line-height:.96; color:#fff; margin-top:7px; </span><span class="se">}}</span>
+<span class="s2">.topband h2 .gold </span><span class="se">{{</span><span class="s2"> color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.topband .tag </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; color:#C9D2E0; font-size:10.5pt; margin-top:8px; max-width:6.4in; </span><span class="se">}}</span>
+<span class="s2">.body </span><span class="se">{{</span><span class="s2"> padding:0.34in 0.7in 0.4in; </span><span class="se">}}</span>
+
+<span class="s2">.pagenum </span><span class="se">{{</span><span class="s2"> position:absolute; bottom:0.34in; right:0.55in; font-family:'Oswald',sans-serif; font-weight:600;</span>
+<span class="s2">  font-size:8pt; letter-spacing:.18em; color:</span><span class="si">{</span><span class="n">SLATE</span><span class="si">}</span><span class="s2">; text-transform:uppercase; </span><span class="se">}}</span>
+<span class="s2">.brandfoot </span><span class="se">{{</span><span class="s2"> position:absolute; bottom:0.34in; left:0.7in; font-family:'Oswald',sans-serif; font-weight:600;</span>
+<span class="s2">  font-size:8pt; letter-spacing:.18em; color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; text-transform:uppercase; </span><span class="se">}}</span>
+
+<span class="s2">/* promise strip */</span>
+<span class="s2">.promise </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; padding:18px 24px; border-radius:6px; margin:0 0 20px; </span><span class="se">}}</span>
+<span class="s2">.promise .lab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; letter-spacing:.2em; text-transform:uppercase; font-size:8pt; </span><span class="se">}}</span>
+<span class="s2">.promise p </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:13pt; line-height:1.4; margin-top:6px; </span><span class="se">}}</span>
+
+<span class="s2">/* bases table */</span>
+<span class="s2">.bases </span><span class="se">{{</span><span class="s2"> width:100%; border-collapse:separate; border-spacing:0 7px; </span><span class="se">}}</span>
+<span class="s2">.bases td </span><span class="se">{{</span><span class="s2"> padding:11px 14px; vertical-align:middle; </span><span class="se">}}</span>
+<span class="s2">.bases .b-tag </span><span class="se">{{</span><span class="s2"> width:1.55in; font-family:'Anton',sans-serif; text-transform:uppercase; font-size:12.5pt; color:#fff; border-radius:5px 0 0 5px; text-align:center; </span><span class="se">}}</span>
+<span class="s2">.bases .b-mid </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.bases .b-name </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:600; font-size:11pt; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.bases .b-q </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:600; font-size:9pt; color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; letter-spacing:.06em; text-transform:uppercase; </span><span class="se">}}</span>
+<span class="s2">.bases .b-job </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; border-radius:0 5px 5px 0; font-family:'Lora',serif; font-style:italic; color:</span><span class="si">{</span><span class="n">SLATE</span><span class="si">}</span><span class="s2">; font-size:9.5pt; </span><span class="se">}}</span>
+<span class="s2">.b1 </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span><span class="s2"> .b2 </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">TEAL</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span><span class="s2"> .b3 </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span><span class="s2"> .b4 </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">RUST</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.firstrow td </span><span class="se">{{</span><span class="s2"> box-shadow:0 0 0 2px </span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2"> inset; </span><span class="se">}}</span>
+
+<span class="s2">.note </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; color:</span><span class="si">{</span><span class="n">SLATE</span><span class="si">}</span><span class="s2">; font-size:9pt; line-height:1.5; margin-top:4px; </span><span class="se">}}</span>
+
+<span class="s2">/* two-col */</span>
+<span class="s2">.cols </span><span class="se">{{</span><span class="s2"> display:flex; gap:22px; </span><span class="se">}}</span>
+<span class="s2">.col </span><span class="se">{{</span><span class="s2"> flex:1; </span><span class="se">}}</span>
+<span class="s2">.h3 </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.1em;</span>
+<span class="s2">  font-size:10pt; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; margin-bottom:8px; padding-bottom:6px; border-bottom:2px solid </span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+
+<span class="s2">.chips li </span><span class="se">{{</span><span class="s2"> list-style:none; font-family:'Lora',serif; font-size:9.4pt; line-height:1.45; margin-bottom:9px; padding-left:18px; position:relative; </span><span class="se">}}</span>
+<span class="s2">.chips li:before </span><span class="se">{{</span><span class="s2"> content:'</span><span class="se">\\</span><span class="s2">25C6'; color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; position:absolute; left:0; top:1px; font-size:7.5pt; </span><span class="se">}}</span>
+
+<span class="s2">/* H framework cards */</span>
+<span class="s2">.hgrid </span><span class="se">{{</span><span class="s2"> display:flex; flex-direction:column; gap:8px; </span><span class="se">}}</span>
+<span class="s2">.hrow </span><span class="se">{{</span><span class="s2"> display:flex; align-items:stretch; border-radius:6px; overflow:hidden; box-shadow:0 1px 0 rgba(0,0,0,.06); </span><span class="se">}}</span>
+<span class="s2">.hrow .letter </span><span class="se">{{</span><span class="s2"> width:0.62in; color:#fff; font-family:'Anton',sans-serif; font-size:22pt; display:flex; align-items:center; justify-content:center; </span><span class="se">}}</span>
+<span class="s2">.hrow .htxt </span><span class="se">{{</span><span class="s2"> flex:1; background:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; padding:9px 14px; display:flex; flex-direction:column; justify-content:center; </span><span class="se">}}</span>
+<span class="s2">.hrow .hname </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:11pt; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.hrow .hname span </span><span class="se">{{</span><span class="s2"> color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; font-weight:500; font-style:normal; </span><span class="se">}}</span>
+<span class="s2">.hrow .hdesc </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-size:9pt; color:</span><span class="si">{</span><span class="n">SLATE</span><span class="si">}</span><span class="s2">; font-style:italic; margin-top:1px; </span><span class="se">}}</span>
+<span class="s2">.hrow .hchange </span><span class="se">{{</span><span class="s2"> width:1.25in; background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; font-family:'Oswald',sans-serif; font-weight:600;</span>
+<span class="s2">  text-transform:uppercase; letter-spacing:.08em; font-size:8pt; display:flex; align-items:center; justify-content:center; text-align:center; </span><span class="se">}}</span>
+
+<span class="s2">/* format meta strip */</span>
+<span class="s2">.meta </span><span class="se">{{</span><span class="s2"> display:flex; gap:0; border-radius:6px; overflow:hidden; margin-top:6px; </span><span class="se">}}</span>
+<span class="s2">.meta .m </span><span class="se">{{</span><span class="s2"> flex:1; background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:#fff; padding:12px 8px; text-align:center; border-right:1px solid rgba(255,255,255,.12); </span><span class="se">}}</span>
+<span class="s2">.meta .m:last-child </span><span class="se">{{</span><span class="s2"> border-right:0; </span><span class="se">}}</span>
+<span class="s2">.meta .big </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; font-size:20pt; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.meta .lab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:500; text-transform:uppercase; letter-spacing:.12em; font-size:7pt; color:#C9D2E0; margin-top:3px; </span><span class="se">}}</span>
+
+<span class="s2">/* ============================================================ DAY pages */</span>
+<span class="s2">.day-head </span><span class="se">{{</span><span class="s2"> display:flex; align-items:flex-start; gap:16px; margin-bottom:13px; </span><span class="se">}}</span>
+<span class="s2">.day-num </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:#fff; border-radius:6px; width:0.95in; flex-shrink:0; text-align:center; padding:9px 0; </span><span class="se">}}</span>
+<span class="s2">.day-num .d1 </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:500; text-transform:uppercase; letter-spacing:.14em; font-size:7pt; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.day-num .d2 </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; font-size:27pt; line-height:.85; </span><span class="se">}}</span>
+<span class="s2">.day-title h3 </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; text-transform:uppercase; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; font-size:19pt; line-height:.98; </span><span class="se">}}</span>
+<span class="s2">.day-title .wk </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:.14em; font-size:7.5pt; color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; margin-top:5px; </span><span class="se">}}</span>
+
+<span class="s2">.conv </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; border-left:4px solid </span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; padding:9px 14px; border-radius:0 5px 5px 0; margin-bottom:11px; </span><span class="se">}}</span>
+<span class="s2">.conv .lab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.14em; font-size:7.5pt; color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.conv p </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-size:9.8pt; line-height:1.42; margin-top:2px; </span><span class="se">}}</span>
+
+<span class="s2">.blocklab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.13em;</span>
+<span class="s2">  font-size:8pt; color:</span><span class="si">{</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">; margin:9px 0 3px; </span><span class="se">}}</span>
+<span class="s2">.day p.story </span><span class="se">{{</span><span class="s2"> font-style:italic; color:#3c4350; font-size:9.4pt; line-height:1.46; </span><span class="se">}}</span>
+<span class="s2">.day p.why </span><span class="se">{{</span><span class="s2"> font-size:9.4pt; line-height:1.48; margin-bottom:5px; </span><span class="se">}}</span>
+
+<span class="s2">.ron </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:#F4ECD8; border-radius:6px; padding:11px 16px; margin:10px 0; </span><span class="se">}}</span>
+<span class="s2">.ron .lab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; letter-spacing:.16em; text-transform:uppercase; font-size:7.5pt; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; margin-bottom:3px; </span><span class="se">}}</span>
+<span class="s2">.ron p </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:9.6pt; line-height:1.42; </span><span class="se">}}</span>
+
+<span class="s2">.qrow </span><span class="se">{{</span><span class="s2"> display:flex; gap:9px; margin-top:9px; </span><span class="se">}}</span>
+<span class="s2">.qbox </span><span class="se">{{</span><span class="s2"> flex:1; background:#fff; border:1.5px solid #E7DEC9; border-top:3px solid </span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; border-radius:5px; padding:8px 11px; </span><span class="se">}}</span>
+<span class="s2">.qbox .lab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.07em; font-size:7pt; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; margin-bottom:3px; </span><span class="se">}}</span>
+<span class="s2">.qbox p </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-size:8.4pt; line-height:1.36; color:#3c4350; </span><span class="se">}}</span>
+
+<span class="s2">.carry </span><span class="se">{{</span><span class="s2"> margin-top:11px; background:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; border-radius:5px; padding:9px 15px;</span>
+<span class="s2">  font-family:'Lora',serif; font-style:italic; font-weight:600; font-size:10pt; </span><span class="se">}}</span>
+<span class="s2">.carry b </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-style:normal; font-weight:700; text-transform:uppercase;</span>
+<span class="s2">  letter-spacing:.1em; font-size:7.5pt; margin-right:6px; </span><span class="se">}}</span>
+
+<span class="s2">/* fears */</span>
+<span class="s2">.fearbox </span><span class="se">{{</span><span class="s2"> margin-bottom:11px; border-radius:6px; overflow:hidden; border:1px solid #ECE3D0; </span><span class="se">}}</span>
+<span class="s2">.fearbox .f </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:#fff; font-family:'Lora',serif; font-style:italic; font-size:10pt; padding:8px 14px; </span><span class="se">}}</span>
+<span class="s2">.fearbox .f:before </span><span class="se">{{</span><span class="s2"> content:'</span><span class="se">\\</span><span class="s2">201C'; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; font-size:14pt; </span><span class="se">}}</span>
+<span class="s2">.fearbox .f:after </span><span class="se">{{</span><span class="s2"> content:'</span><span class="se">\\</span><span class="s2">201D'; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; font-size:14pt; </span><span class="se">}}</span>
+<span class="s2">.fearbox .a </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; padding:8px 14px; font-size:9pt; line-height:1.44; </span><span class="se">}}</span>
+<span class="s2">.fearbox .a .where </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.05em;</span>
+<span class="s2">  font-size:7.5pt; color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+
+<span class="s2">.tworoot </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:#fff; border-radius:6px; padding:14px 18px; margin-bottom:16px; display:flex; gap:14px; align-items:center; </span><span class="se">}}</span>
+<span class="s2">.tworoot .rt </span><span class="se">{{</span><span class="s2"> flex:1; </span><span class="se">}}</span>
+<span class="s2">.tworoot .lab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; letter-spacing:.14em; text-transform:uppercase; font-size:7.5pt; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.tworoot p </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-size:9pt; line-height:1.4; margin-top:3px; color:#E4E9F1; </span><span class="se">}}</span>
+<span class="s2">.tworoot .key </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:9.5pt; color:#fff; </span><span class="se">}}</span>
+
+<span class="s2">/* session / huddle */</span>
+<span class="s2">.timeline </span><span class="se">{{</span><span class="s2"> position:relative; margin-left:6px; </span><span class="se">}}</span>
+<span class="s2">.tl </span><span class="se">{{</span><span class="s2"> display:flex; gap:14px; margin-bottom:12px; </span><span class="se">}}</span>
+<span class="s2">.tl .time </span><span class="se">{{</span><span class="s2"> width:0.95in; flex-shrink:0; text-align:right; </span><span class="se">}}</span>
+<span class="s2">.tl .time .mins </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; font-size:15pt; color:</span><span class="si">{</span><span class="n">GOLD_D</span><span class="si">}</span><span class="s2">; line-height:1; </span><span class="se">}}</span>
+<span class="s2">.tl .time .u </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.1em; font-size:6.5pt; color:</span><span class="si">{</span><span class="n">SLATE</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.tl .dot </span><span class="se">{{</span><span class="s2"> width:14px; flex-shrink:0; position:relative; </span><span class="se">}}</span>
+<span class="s2">.tl .dot:before </span><span class="se">{{</span><span class="s2"> content:''; position:absolute; left:4px; top:3px; width:9px; height:9px; border-radius:50%; background:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; box-shadow:0 0 0 3px </span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.tl .dot:after </span><span class="se">{{</span><span class="s2"> content:''; position:absolute; left:7.5px; top:12px; bottom:-14px; width:2px; background:#E2D8C2; </span><span class="se">}}</span>
+<span class="s2">.tl:last-child .dot:after </span><span class="se">{{</span><span class="s2"> display:none; </span><span class="se">}}</span>
+<span class="s2">.tl .c </span><span class="se">{{</span><span class="s2"> flex:1; padding-bottom:2px; </span><span class="se">}}</span>
+<span class="s2">.tl .c .t </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:10pt; color:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.tl .c p </span><span class="se">{{</span><span class="s2"> font-size:8.8pt; line-height:1.4; margin-top:2px; </span><span class="se">}}</span>
+<span class="s2">.tl .c .q </span><span class="se">{{</span><span class="s2"> font-style:italic; color:</span><span class="si">{</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+
+<span class="s2">.output </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">; color:#fff; border-radius:6px; padding:13px 18px; margin-top:6px; </span><span class="se">}}</span>
+<span class="s2">.output .lab </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:700; letter-spacing:.16em; text-transform:uppercase; font-size:7.5pt; color:#BFE3CE; </span><span class="se">}}</span>
+<span class="s2">.output p </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:11pt; line-height:1.4; margin-top:4px; </span><span class="se">}}</span>
+
+<span class="s2">/* closing CTA page */</span>
+<span class="s2">.closing </span><span class="se">{{</span><span class="s2"> background:</span><span class="si">{</span><span class="n">NAVY</span><span class="si">}</span><span class="s2">; color:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.closing .inner </span><span class="se">{{</span><span class="s2"> position:absolute; inset:0; padding:0.95in 0.85in; display:flex; flex-direction:column; </span><span class="se">}}</span>
+<span class="s2">.closing h2 </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; text-transform:uppercase; color:#fff; font-size:42pt; line-height:.95; </span><span class="se">}}</span>
+<span class="s2">.closing h2 .gold </span><span class="se">{{</span><span class="s2"> color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; </span><span class="se">}}</span>
+<span class="s2">.closing .pk </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:13pt; color:#D9CCAE; margin:18px 0 28px; max-width:5.6in; </span><span class="se">}}</span>
+<span class="s2">.pkg </span><span class="se">{{</span><span class="s2"> display:flex; flex-direction:column; gap:11px; margin-bottom:30px; </span><span class="se">}}</span>
+<span class="s2">.pkg .it </span><span class="se">{{</span><span class="s2"> display:flex; gap:14px; align-items:center; </span><span class="se">}}</span>
+<span class="s2">.pkg .n </span><span class="se">{{</span><span class="s2"> font-family:'Anton',sans-serif; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; font-size:22pt; width:0.5in; </span><span class="se">}}</span>
+<span class="s2">.pkg .tx .a </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:.06em; font-size:11pt; color:#fff; </span><span class="se">}}</span>
+<span class="s2">.pkg .tx .b </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:9.5pt; color:#C2CADA; </span><span class="se">}}</span>
+<span class="s2">.closing .stamp </span><span class="se">{{</span><span class="s2"> margin-top:auto; border-top:2px solid rgba(224,168,46,.4); padding-top:18px; display:flex; justify-content:space-between; align-items:flex-end; </span><span class="se">}}</span>
+<span class="s2">.closing .stamp .l </span><span class="se">{{</span><span class="s2"> font-family:'Lora',serif; font-style:italic; font-size:11pt; color:#D9CCAE; max-width:4.6in; line-height:1.4; </span><span class="se">}}</span>
+<span class="s2">.closing .stamp .r </span><span class="se">{{</span><span class="s2"> font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:.2em; text-transform:uppercase; font-size:8pt; color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">; text-align:right; </span><span class="se">}}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">page</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;div class="page </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">inner</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">topband</span><span class="p">(</span><span class="n">kick</span><span class="p">,</span> <span class="n">title_html</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="topband"&gt;</span>
+<span class="s1">      &lt;div class="kicker kick"&gt;</span><span class="si">{</span><span class="n">kick</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;h2&gt;</span><span class="si">{</span><span class="n">title_html</span><span class="si">}</span><span class="s1">&lt;/h2&gt;</span>
+<span class="s1">      &lt;div class="tag"&gt;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">foot</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;div class="brandfoot"&gt;Wisdom Changes Everything&lt;/div&gt;&lt;div class="pagenum"&gt;First Base &amp;middot; </span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+
+<span class="c1"># ---------------- COVER ----------------</span>
+<span class="n">cover</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="bg-h"&gt;H&lt;/div&gt;</span>
+<span class="s1">&lt;div class="inner"&gt;</span>
+<span class="s1">  &lt;div class="toprow"&gt;</span>
+<span class="s1">    &lt;div class="badge"&gt;Ron Blue Institute&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="badge"&gt;First Base &amp;middot; The Why&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="center"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;Financial Wisdom Pathway&lt;/div&gt;</span>
+<span class="s1">    &lt;h1&gt;Wisdom&lt;br&gt;Changes&lt;br&gt;&lt;span class="gold"&gt;Everything&lt;/span&gt;&lt;/h1&gt;</span>
+<span class="s1">    &lt;div class="sub"&gt;30 Days of Financial Wisdom for Pastors &amp;amp; Church Leaders&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="q"&gt;What if the one subject Jesus taught on most is the one your church has never truly discipled?&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="foot"&gt;</span>
+<span class="s1">    &lt;div class="l"&gt;A leadership vision journey&lt;br&gt;Built on Ron Blue&amp;rsquo;s 6 H&amp;rsquo;s&lt;br&gt;Concept draft for review&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="r"&gt;Wisdom &amp;rarr; Culture &amp;rarr;&lt;br&gt;Campaign &amp;rarr; Ministry&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;'''</span>
+<span class="n">P1</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="n">cover</span><span class="p">,</span> <span class="s2">"cover"</span><span class="p">)</span>
+
+<span class="c1"># ---------------- PAGE 2: OVERVIEW ----------------</span>
+<span class="n">bases_rows</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"1ST &amp;middot; WISDOM"</span><span class="p">,</span><span class="s2">"b1"</span><span class="p">,</span><span class="s2">"Wisdom Changes Everything"</span><span class="p">,</span><span class="s2">"Why?"</span><span class="p">,</span><span class="s2">"Convince &amp;amp; energize the leaders"</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"2ND &amp;middot; CULTURE"</span><span class="p">,</span><span class="s2">"b2"</span><span class="p">,</span><span class="s2">"Financial Wisdom Culture"</span><span class="p">,</span><span class="s2">"How?"</span><span class="p">,</span><span class="s2">"Align &amp;amp; ready the team"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"3RD &amp;middot; CAMPAIGN"</span><span class="p">,</span><span class="s2">"b3"</span><span class="p">,</span><span class="s2">"This Changes Everything: 40 Days"</span><span class="p">,</span><span class="s2">"What?"</span><span class="p">,</span><span class="s2">"Mobilize the congregation"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"HOME &amp;middot; MINISTRY"</span><span class="p">,</span><span class="s2">"b4"</span><span class="p">,</span><span class="s2">"Financial Wisdom Ministry"</span><span class="p">,</span><span class="s2">"Lasting?"</span><span class="p">,</span><span class="s2">"Make it permanent"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="n">tag</span><span class="p">,</span><span class="n">cl</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">job</span><span class="p">,</span><span class="n">first</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+    <span class="n">fr</span> <span class="o">=</span> <span class="s2">"firstrow"</span> <span class="k">if</span> <span class="n">first</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="n">bases_rows</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'''&lt;tr class="</span><span class="si">{</span><span class="n">fr</span><span class="si">}</span><span class="s1">"&gt;</span>
+<span class="s1">      &lt;td class="b-tag </span><span class="si">{</span><span class="n">cl</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">      &lt;td class="b-mid"&gt;&lt;div class="b-name"&gt;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td class="b-mid"&gt;&lt;div class="b-q"&gt;</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td class="b-job"&gt;</span><span class="si">{</span><span class="n">job</span><span class="si">}</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;'''</span>
+
+<span class="n">overview_body</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="promise"&gt;</span>
+<span class="s1">  &lt;div class="lab"&gt;The One-Line Promise&lt;/div&gt;</span>
+<span class="s1">  &lt;p&gt;In 30 days, your leadership team moves from seeing money as a problem to manage to seeing financial discipleship as a mission to lead &amp;mdash; with one vision, one language, and one conviction strong enough to change your church.&lt;/p&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+
+<span class="s1">&lt;div class="h3"&gt;Where It Fits &amp;middot; The Four Bases&lt;/div&gt;</span>
+<span class="s1">&lt;table class="bases"&gt;</span><span class="si">{</span><span class="n">bases_rows</span><span class="si">}</span><span class="s1">&lt;/table&gt;</span>
+<span class="s1">&lt;div class="note"&gt;You cannot skip the Why. A team that isn&amp;rsquo;t convinced will not build, align, or launch &amp;mdash; everything downstream runs on the conviction this resource creates. &lt;strong&gt;Pastor Advisor&lt;/strong&gt; stands off the path as a separate, personal resource.&lt;/div&gt;</span>
+
+<span class="s1">&lt;div style="height:14px"&gt;&lt;/div&gt;</span>
+<span class="s1">&lt;div class="cols"&gt;</span>
+<span class="s1">  &lt;div class="col"&gt;</span>
+<span class="s1">    &lt;div class="h3"&gt;Who It&amp;rsquo;s For&lt;/div&gt;</span>
+<span class="s1">    &lt;ul class="chips"&gt;</span>
+<span class="s1">      &lt;li&gt;Senior pastors &amp;amp; executive pastors&lt;/li&gt;</span>
+<span class="s1">      &lt;li&gt;Elders &amp;amp; key ministry leaders&lt;/li&gt;</span>
+<span class="s1">      &lt;li&gt;A &lt;strong&gt;team journey&lt;/strong&gt; &amp;mdash; read daily, gather weekly&lt;/li&gt;</span>
+<span class="s1">      &lt;li&gt;Built for any role, married or single&lt;/li&gt;</span>
+<span class="s1">    &lt;/ul&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="col"&gt;</span>
+<span class="s1">    &lt;div class="h3"&gt;What Leaders Walk Away With&lt;/div&gt;</span>
+<span class="s1">    &lt;ul class="chips"&gt;</span>
+<span class="s1">      &lt;li&gt;Conviction that &lt;strong&gt;God owns it all&lt;/strong&gt;&lt;/li&gt;</span>
+<span class="s1">      &lt;li&gt;Financial discipleship as the &lt;strong&gt;Great Commission&lt;/strong&gt;&lt;/li&gt;</span>
+<span class="s1">      &lt;li&gt;The shift &lt;strong&gt;from fundraising to faith-building&lt;/strong&gt;&lt;/li&gt;</span>
+<span class="s1">      &lt;li&gt;A shared vocabulary &amp;mdash; the 6 H&amp;rsquo;s&lt;/li&gt;</span>
+<span class="s1">    &lt;/ul&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+
+<span class="s1">&lt;div style="height:10px"&gt;&lt;/div&gt;</span>
+<span class="s1">&lt;div class="meta"&gt;</span>
+<span class="s1">  &lt;div class="m"&gt;&lt;div class="big"&gt;30&lt;/div&gt;&lt;div class="lab"&gt;Days&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="m"&gt;&lt;div class="big"&gt;6&lt;/div&gt;&lt;div class="lab"&gt;Weeks / H&amp;rsquo;s&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="m"&gt;&lt;div class="big"&gt;5&lt;/div&gt;&lt;div class="lab"&gt;Days Each&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="m"&gt;&lt;div class="big"&gt;1&lt;/div&gt;&lt;div class="lab"&gt;Team, Aligned&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span>
+<span class="n">P2</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="n">topband</span><span class="p">(</span><span class="s2">"First Base &amp;middot; The Why at a Glance"</span><span class="p">,</span>
+     <span class="s1">'Wisdom &lt;span class="gold"&gt;Changes&lt;/span&gt; Everything'</span><span class="p">,</span>
+     <span class="s1">'The hook: what it is, where it fits, and what it does &amp;mdash; in one minute.'</span><span class="p">)</span> <span class="o">+</span>
+     <span class="sa">f</span><span class="s1">'&lt;div class="body"&gt;</span><span class="si">{</span><span class="n">overview_body</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="o">+</span> <span class="n">foot</span><span class="p">(</span><span class="s2">"Overview"</span><span class="p">),</span> <span class="s2">"content"</span><span class="p">)</span>
+
+<span class="c1"># ---------------- PAGE 3: THE 6 H'S + WHY NOW ----------------</span>
+<span class="n">hdata</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"H"</span><span class="p">,</span><span class="n">NAVY</span><span class="p">,</span><span class="s2">"Honor"</span><span class="p">,</span><span class="s2">"God owns it all"</span><span class="p">,</span><span class="s2">"Our Posture"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"H"</span><span class="p">,</span><span class="n">TEAL</span><span class="p">,</span><span class="s2">"Heart"</span><span class="p">,</span><span class="s2">"Money reveals what we trust"</span><span class="p">,</span><span class="s2">"Our Discernment"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"H"</span><span class="p">,</span><span class="n">GREEN</span><span class="p">,</span><span class="s2">"Habits"</span><span class="p">,</span><span class="s2">"Wisdom becomes practice"</span><span class="p">,</span><span class="s2">"Our Discipleship"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"H"</span><span class="p">,</span><span class="n">GOLD_D</span><span class="p">,</span><span class="s2">"Health"</span><span class="p">,</span><span class="s2">"Wisdom brings peace &amp;amp; margin"</span><span class="p">,</span><span class="s2">"Our Care"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"H"</span><span class="p">,</span><span class="n">RUST</span><span class="p">,</span><span class="s2">"Hope"</span><span class="p">,</span><span class="s2">"Eternal perspective on enough"</span><span class="p">,</span><span class="s2">"Our Mission"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"H"</span><span class="p">,</span><span class="n">NAVY2</span><span class="p">,</span><span class="s2">"Harvest"</span><span class="p">,</span><span class="s2">"Generosity, legacy, Kingdom impact"</span><span class="p">,</span><span class="s2">"Our Fruit"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">hrows</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">L</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">desc</span><span class="p">,</span><span class="n">change</span> <span class="ow">in</span> <span class="n">hdata</span><span class="p">:</span>
+    <span class="n">hrows</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'''&lt;div class="hrow"&gt;</span>
+<span class="s1">      &lt;div class="letter" style="background:</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="htxt"&gt;&lt;div class="hname"&gt;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="hdesc"&gt;</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="hchange"&gt;</span><span class="si">{</span><span class="n">change</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'''</span>
+
+<span class="n">h_body</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="hgrid"&gt;</span><span class="si">{</span><span class="n">hrows</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">&lt;div class="note" style="margin-top:10px"&gt;The journey climbs from &lt;strong&gt;surrender&lt;/strong&gt; (Honor) to &lt;strong&gt;fruit&lt;/strong&gt; (Harvest) &amp;mdash; ending with a team commissioned to build. The same framework runs through Culture and the Campaign, so a team fluent in it here is already speaking the language the whole church will share.&lt;/div&gt;</span>
+
+<span class="s1">&lt;div style="height:16px"&gt;&lt;/div&gt;</span>
+<span class="s1">&lt;div class="tworoot"&gt;</span>
+<span class="s1">  &lt;div class="rt"&gt;</span>
+<span class="s1">    &lt;div class="lab"&gt;Why It Matters Now&lt;/div&gt;</span>
+<span class="s1">    &lt;p&gt;Households in your pews are under historic financial pressure &amp;mdash; debt, anxiety, comparison, and silence. The world disciples them about money every single day. The church, in most cases, has simply ceded the ground.&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="key" style="margin-top:7px"&gt;This is the church&amp;rsquo;s moment to claim a frontier it was uniquely made to claim.&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+
+<span class="s1">&lt;div class="h3"&gt;Each Day Contains&lt;/div&gt;</span>
+<span class="s1">&lt;ul class="chips"&gt;</span>
+<span class="s1">  &lt;li&gt;A &lt;strong&gt;conviction&lt;/strong&gt; &amp;mdash; the day&amp;rsquo;s big idea in one line&lt;/li&gt;</span>
+<span class="s1">  &lt;li&gt;A &lt;strong&gt;story&lt;/strong&gt; that names a leadership team&amp;rsquo;s real experience&lt;/li&gt;</span>
+<span class="s1">  &lt;li&gt;A &lt;strong&gt;teaching in Ron Blue&amp;rsquo;s voice&lt;/strong&gt;, anchored to Scripture and the Great Commission&lt;/li&gt;</span>
+<span class="s1">  &lt;li&gt;Three discussion layers &amp;mdash; &lt;strong&gt;personal reflection, team conversation, a wisdom question&lt;/strong&gt;&lt;/li&gt;</span>
+<span class="s1">&lt;/ul&gt;</span>
+<span class="s1">'''</span>
+<span class="n">P3</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="n">topband</span><span class="p">(</span><span class="s2">"The Framework &amp;amp; The Urgency"</span><span class="p">,</span>
+     <span class="s1">'Ron&amp;rsquo;s &lt;span class="gold"&gt;6 H&amp;rsquo;s&lt;/span&gt;'</span><span class="p">,</span>
+     <span class="s1">'The spine of the journey &amp;mdash; and the shared language that runs through every resource downstream.'</span><span class="p">)</span> <span class="o">+</span>
+     <span class="sa">f</span><span class="s1">'&lt;div class="body"&gt;</span><span class="si">{</span><span class="n">h_body</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="o">+</span> <span class="n">foot</span><span class="p">(</span><span class="s2">"Framework"</span><span class="p">),</span> <span class="s2">"content"</span><span class="p">)</span>
+
+<span class="c1"># ---------------- DAY PAGE BUILDER ----------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">day_page</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">week</span><span class="p">,</span> <span class="n">conv</span><span class="p">,</span> <span class="n">story_label</span><span class="p">,</span> <span class="n">story</span><span class="p">,</span> <span class="n">why_label</span><span class="p">,</span> <span class="n">why_paras</span><span class="p">,</span> <span class="n">ron</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">wis</span><span class="p">,</span> <span class="n">carry</span><span class="p">,</span> <span class="n">pnum</span><span class="p">):</span>
+    <span class="n">why_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;p class="why"&gt;</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&lt;/p&gt;'</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">why_paras</span><span class="p">)</span>
+    <span class="n">inner</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;div class="body" style="padding-top:0.5in"&gt;</span>
+<span class="s1">      &lt;div class="day-head"&gt;</span>
+<span class="s1">        &lt;div class="day-num"&gt;&lt;div class="d1"&gt;Day&lt;/div&gt;&lt;div class="d2"&gt;</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="day-title"&gt;&lt;h3&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">&lt;/h3&gt;&lt;div class="wk"&gt;</span><span class="si">{</span><span class="n">week</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="conv"&gt;&lt;div class="lab"&gt;Today&amp;rsquo;s Conviction&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">conv</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="blocklab"&gt;</span><span class="si">{</span><span class="n">story_label</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;p class="story"&gt;</span><span class="si">{</span><span class="n">story</span><span class="si">}</span><span class="s1">&lt;/p&gt;</span>
+<span class="s1">      &lt;div class="blocklab"&gt;</span><span class="si">{</span><span class="n">why_label</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="day"&gt;</span><span class="si">{</span><span class="n">why_html</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="ron"&gt;&lt;div class="lab"&gt;Ron&amp;rsquo;s Principle&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">ron</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="qrow"&gt;</span>
+<span class="s1">        &lt;div class="qbox"&gt;&lt;div class="lab"&gt;Leadership Reflection&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">refl</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="qbox"&gt;&lt;div class="lab"&gt;Team Conversation&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">team</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="qbox"&gt;&lt;div class="lab"&gt;The Wisdom Question&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">wis</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="carry"&gt;&lt;b&gt;Carry It Forward&lt;/b&gt;</span><span class="si">{</span><span class="n">carry</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span>
+    <span class="k">return</span> <span class="n">page</span><span class="p">(</span><span class="n">inner</span> <span class="o">+</span> <span class="n">foot</span><span class="p">(</span><span class="n">pnum</span><span class="p">),</span> <span class="s2">"content"</span><span class="p">)</span>
+
+<span class="c1"># A section divider strip atop the first day page</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">day_divider</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">""</span>
+
+<span class="n">DAY1</span> <span class="o">=</span> <span class="n">day_page</span><span class="p">(</span><span class="s2">"01"</span><span class="p">,</span><span class="s2">"The Owner of Everything"</span><span class="p">,</span><span class="s2">"Week 1 &amp;middot; Honor: God Owns It All"</span><span class="p">,</span>
+  <span class="s2">"Everything the church will ever do with financial discipleship begins with one truth: God owns it all &amp;mdash; and we, as leaders, are stewards of a mission, not owners of an institution."</span><span class="p">,</span>
+  <span class="s2">"A Story"</span><span class="p">,</span>
+  <span class="s2">"A leadership team sits around a table on a Tuesday night, the budget projected on the wall. The numbers are tight. The conversation circles the familiar territory &amp;mdash; what to cut, what to delay, how to make up the gap. And without anyone deciding it, the room has taken a posture: this is ours to fund, ours to protect, ours to carry. The mission has become an institution to keep alive."</span><span class="p">,</span>
+  <span class="s2">"The Why"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Ron Blue gave his life to four words: &lt;em&gt;God owns it all.&lt;/em&gt; Not most of it. Not the spiritual portion. All of it. &amp;ldquo;The earth is the Lord&amp;rsquo;s, and everything in it&amp;rdquo; (Psalm 24:1). For church leaders, this is not a doctrine to affirm and move past. It is the ground every other conviction in this journey stands on."</span><span class="p">,</span>
+   <span class="s2">"If God owns it all, then your church is not yours to fund, fix, or carry &amp;mdash; it is His to build. Your role shifts from anxious owner to faithful steward. Ownership asks, &lt;em&gt;How do we make this work?&lt;/em&gt; Stewardship asks, &lt;em&gt;Lord, what have You entrusted to us?&lt;/em&gt; One produces pressure. The other produces peace &amp;mdash; and a far bigger vision."</span><span class="p">,</span>
+   <span class="s2">"And that puts financial discipleship squarely inside the Great Commission. Jesus said &lt;em&gt;make disciples&lt;/em&gt; &amp;mdash; teaching them to obey everything He commanded. He commanded a great deal about money. A church that disciples people in marriage, parenting, and purpose but stays silent about money has left a frontier unclaimed."</span><span class="p">],</span>
+  <span class="s2">"God owns it all. We are not owners; we are stewards. Stewardship is the use of God-given resources to accomplish God-given goals."</span><span class="p">,</span>
+  <span class="s2">"Where am I &amp;mdash; and where are we as a team &amp;mdash; carrying the weight of ownership over a mission that actually belongs to God?"</span><span class="p">,</span>
+  <span class="s2">"When our church talks about money, does it sound like we believe God owns it all &amp;mdash; or like an institution managing its needs?"</span><span class="p">,</span>
+  <span class="s2">"If we truly led as stewards of God&amp;rsquo;s mission rather than owners of an institution, what is the first thing that would change?"</span><span class="p">,</span>
+  <span class="s2">"Honor doesn&amp;rsquo;t begin with a budget. It begins with surrender &amp;mdash; and surrender is where the vision gets bigger, not smaller."</span><span class="p">,</span>
+  <span class="s2">"Day 1"</span><span class="p">)</span>
+
+<span class="n">DAY2</span> <span class="o">=</span> <span class="n">day_page</span><span class="p">(</span><span class="s2">"02"</span><span class="p">,</span><span class="s2">"Stewards of a Mission, Not Owners of an Institution"</span><span class="p">,</span><span class="s2">"Week 1 &amp;middot; Honor: God Owns It All"</span><span class="p">,</span>
+  <span class="s2">"The shift from owning an institution to stewarding a mission changes not just how we feel, but how we lead, decide, and ask."</span><span class="p">,</span>
+  <span class="s2">"A Story"</span><span class="p">,</span>
+  <span class="s2">"A founding pastor walks his campus on a quiet Saturday. He built this. But somewhere over the years the church he planted to reach a city became a thing he had to protect. Decisions started flowing from a single instinct &amp;mdash; guard what we&amp;rsquo;ve built. He doesn&amp;rsquo;t notice until a younger leader asks why they haven&amp;rsquo;t tried anything risky in five years &amp;mdash; and he hears himself give an answer that sounds responsible and is actually just fear."</span><span class="p">,</span>
+  <span class="s2">"The Why"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"There&amp;rsquo;s a world of difference between an owner running an institution and a steward advancing a mission. The owner asks protective questions &amp;mdash; &lt;em&gt;How do we sustain this? How do we avoid risk?&lt;/em&gt; Notice what they orbit: survival. An institution&amp;rsquo;s deepest instinct is self-preservation."</span><span class="p">,</span>
+   <span class="s2">"The steward asks different questions entirely &amp;mdash; &lt;em&gt;What has God entrusted to us, and for what purpose?&lt;/em&gt; Ron defined stewardship as the use of God-given resources to accomplish God-given goals &amp;mdash; a definition with direction built in. Stewardship is never merely about keeping. It&amp;rsquo;s about deploying for a purpose beyond ourselves."</span><span class="p">,</span>
+   <span class="s2">"This changes what money is &lt;em&gt;for.&lt;/em&gt; If the church is an institution, money keeps it alive, and every money conversation carries the anxiety of survival. If the church is a mission, money is fuel for a calling &amp;mdash; and teaching people to handle it wisely frees them and equips the mission. Survival is a small, exhausting story. Mission is a large, energizing one."</span><span class="p">],</span>
+  <span class="s2">"Stewardship is the use of God-given resources to accomplish God-given goals. The steward&amp;rsquo;s question is never &amp;lsquo;How do I keep this?&amp;rsquo; but &amp;lsquo;How do I deploy this faithfully?&amp;rsquo;"</span><span class="p">,</span>
+  <span class="s2">"Honestly &amp;mdash; am I leading a mission or protecting an institution? Where can I feel the difference in my own decisions?"</span><span class="p">,</span>
+  <span class="s2">"Where have we made decisions this year out of self-preservation rather than mission? What would we have decided as stewards of a calling?"</span><span class="p">,</span>
+  <span class="s2">"If we believed our money was fuel for a mission, what is one thing we&amp;rsquo;d start funding &amp;mdash; or stop funding &amp;mdash; this year?"</span><span class="p">,</span>
+  <span class="s2">"An institution asks how to survive. A mission asks what God wants done. Stewards lead missions."</span><span class="p">,</span>
+  <span class="s2">"Day 2"</span><span class="p">)</span>
+
+<span class="n">DAY3</span> <span class="o">=</span> <span class="n">day_page</span><span class="p">(</span><span class="s2">"03"</span><span class="p">,</span><span class="s2">"The Discipleship Frontier We&amp;rsquo;ve Left Unclaimed"</span><span class="p">,</span><span class="s2">"Week 1 &amp;middot; Honor: God Owns It All"</span><span class="p">,</span>
+  <span class="s2">"Financial discipleship isn&amp;rsquo;t a topic the church has handled poorly &amp;mdash; it&amp;rsquo;s a frontier the church has largely never entered. And that&amp;rsquo;s an opportunity, not just an indictment."</span><span class="p">,</span>
+  <span class="s2">"A Story"</span><span class="p">,</span>
+  <span class="s2">"A discipleship pastor maps her church&amp;rsquo;s pathway on a whiteboard &amp;mdash; new believers, baptism, groups, marriage, parenting, leadership. It&amp;rsquo;s thorough. A volunteer studies the board and asks an innocent question: &amp;ldquo;Where&amp;rsquo;s money?&amp;rdquo; The room goes quiet. There&amp;rsquo;s a stewardship sermon every fall and a benevolence fund &amp;mdash; but on a board mapping how this church forms a whole disciple, there is no path for the one subject Jesus addressed most. Not a bad path. No path."</span><span class="p">,</span>
+  <span class="s2">"The Why"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"We assume the church has &lt;em&gt;tried&lt;/em&gt; to disciple people about money and just hasn&amp;rsquo;t done it well. The truth is closer to this: in most churches it was never really attempted as discipleship at all. There&amp;rsquo;s been fundraising, the occasional stewardship series, crisis benevolence &amp;mdash; but no deliberate, ongoing pathway the way we&amp;rsquo;ve built for marriage or parenting."</span><span class="p">,</span>
+   <span class="s2">"That&amp;rsquo;s why &amp;lsquo;frontier&amp;rsquo; is the right word. A frontier isn&amp;rsquo;t a place you failed; it&amp;rsquo;s a place you haven&amp;rsquo;t gone yet. Meanwhile, someone &lt;em&gt;is&lt;/em&gt; discipling your people about money &amp;mdash; advertisers, comparison, anxiety. The world is relentlessly forming your congregation about money, and the church has simply ceded the ground."</span><span class="p">,</span>
+   <span class="s2">"Here&amp;rsquo;s what makes it exciting rather than merely convicting: no one is better positioned to claim this than the church. Only the church can address the &lt;em&gt;heart&lt;/em&gt; beneath the money &amp;mdash; the trust, fear, worship, and eternal perspective that actually drive financial behavior."</span><span class="p">],</span>
+  <span class="s2">"The world disciples your people about money every day. The only question is whether the church will join the conversation Jesus started &amp;mdash; or leave His people to be formed by everyone else."</span><span class="p">,</span>
+  <span class="s2">"If I mapped our real discipleship pathway, where would financial formation appear &amp;mdash; a genuine path, or a once-a-year event?"</span><span class="p">,</span>
+  <span class="s2">"Who is currently discipling our people about money? What voices are forming their financial lives more than we are?"</span><span class="p">,</span>
+  <span class="s2">"If we treated financial discipleship as an unclaimed frontier rather than a sensitive topic, how would our posture change?"</span><span class="p">,</span>
+  <span class="s2">"We haven&amp;rsquo;t failed at this frontier. We just haven&amp;rsquo;t entered it. The ground is open."</span><span class="p">,</span>
+  <span class="s2">"Day 3"</span><span class="p">)</span>
+
+<span class="n">DAY4</span> <span class="o">=</span> <span class="n">day_page</span><span class="p">(</span><span class="s2">"04"</span><span class="p">,</span><span class="s2">"What Jesus Talked About Most"</span><span class="p">,</span><span class="s2">"Week 1 &amp;middot; Honor: God Owns It All"</span><span class="p">,</span>
+  <span class="s2">"Jesus made money a central subject of discipleship &amp;mdash; and a church that follows Him cannot treat as marginal what He treated as central."</span><span class="p">,</span>
+  <span class="s2">"A Story"</span><span class="p">,</span>
+  <span class="s2">"A seminary-trained pastor, twenty years in, decides one afternoon to actually count. He&amp;rsquo;d always known Jesus &amp;ldquo;talked about money a lot.&amp;rdquo; But he sits with the Gospels and tallies it &amp;mdash; and the number stuns him. Roughly one in ten verses touches money or possessions; sixteen of thirty-eight parables deal with resources. He&amp;rsquo;s preached most of those parables &amp;mdash; and somehow consistently made them about something else."</span><span class="p">,</span>
+  <span class="s2">"The Why"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"It&amp;rsquo;s one of the most quietly astonishing facts in Scripture: Jesus said more about money and possessions than about heaven and hell combined. More than prayer. More than faith. If frequency tells us anything about emphasis &amp;mdash; and surely it does &amp;mdash; money was central to how He formed disciples."</span><span class="p">,</span>
+   <span class="s2">"Why? Not for its own sake. Jesus addressed money because it is the most reliable diagnostic of the human heart available. &amp;ldquo;Where your treasure is, there your heart will be also.&amp;rdquo; You can hide a lot about your spiritual condition, but your relationship with money quietly tells the truth."</span><span class="p">,</span>
+   <span class="s2">"This puts a church in a striking position. If we follow a Lord who made money central to formation, we cannot in good conscience make it marginal. And notice: Jesus was never transactional. He used money to expose idolatry, call out false security, and reveal generosity as the mark of a transformed heart. He treated money as &lt;em&gt;discipleship&lt;/em&gt; &amp;mdash; exactly the thing we&amp;rsquo;ve struggled to do."</span><span class="p">],</span>
+  <span class="s2">"Jesus addressed money more than almost any subject &amp;mdash; not because money mattered most to Him, but because it reveals the heart more honestly than anything else."</span><span class="p">,</span>
+  <span class="s2">"Have I consistently made Jesus&amp;rsquo; money teachings about &lt;em&gt;something else&lt;/em&gt; &amp;mdash; because money itself felt too uncomfortable to address head-on?"</span><span class="p">,</span>
+  <span class="s2">"If a newcomer judged our priorities by how often we teach on subjects, where would money rank &amp;mdash; versus where it ranked for Jesus?"</span><span class="p">,</span>
+  <span class="s2">"What would it look like to let Jesus&amp;rsquo; actual emphasis set our discipleship priorities, rather than our comfort?"</span><span class="p">,</span>
+  <span class="s2">"We follow a Lord who made money central. We are not free to make it marginal."</span><span class="p">,</span>
+  <span class="s2">"Day 4"</span><span class="p">)</span>
+
+<span class="n">DAY5</span> <span class="o">=</span> <span class="n">day_page</span><span class="p">(</span><span class="s2">"05"</span><span class="p">,</span><span class="s2">"From Fundraising to Faith-Building"</span><span class="p">,</span><span class="s2">"Week 1 &amp;middot; Honor: God Owns It All"</span><span class="p">,</span>
+  <span class="s2">"The deepest reframe of this entire journey: we are not raising money; we are building faith. And that single shift frees a leader to lead."</span><span class="p">,</span>
+  <span class="s2">"A Story"</span><span class="p">,</span>
+  <span class="s2">"A pastor confesses he dreads one Sunday more than any other &amp;mdash; the stewardship sermon. Everyone knows what it&amp;rsquo;s really about: the budget is behind, and he&amp;rsquo;s there to close the gap. He hates how it makes him feel, like a salesman in a robe. His mentor asks a question that rearranges everything: &amp;ldquo;What if you never had to give that sermon again &amp;mdash; and instead only ever talked about your people&amp;rsquo;s freedom?&amp;rdquo;"</span><span class="p">,</span>
+  <span class="s2">"The Why"</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">"Most pastors carry a low-grade dread about money in the church, and it traces to a single confusion: they&amp;rsquo;ve fused two different things. &lt;em&gt;Fundraising&lt;/em&gt; and &lt;em&gt;faith-building&lt;/em&gt; live in the same drawer, so every time money comes up, the anxiety of asking comes with it."</span><span class="p">,</span>
+   <span class="s2">"But they&amp;rsquo;re opposites. Fundraising begins with the institution&amp;rsquo;s need and asks people to meet it. Faith-building begins with the person&amp;rsquo;s discipleship and trusts God to provide for the church as a byproduct. Ron spent his life on a sentence that dissolves the dread: &lt;em&gt;giving is a result, not a goal.&lt;/em&gt; Aim at the heart, and generosity follows the way fruit follows a healthy tree."</span><span class="p">,</span>
+   <span class="s2">"This frees the leader. You&amp;rsquo;re no longer the institution&amp;rsquo;s collector; you&amp;rsquo;re the people&amp;rsquo;s shepherd. And here&amp;rsquo;s the paradox Ron watched play out repeatedly: churches that stop fundraising and start discipling almost always become &lt;em&gt;more&lt;/em&gt; generous, not less &amp;mdash; because a transformed heart gives freely where obligation gives reluctantly."</span><span class="p">],</span>
+  <span class="s2">"Giving is a result, not a goal. Aim at the heart, and generosity follows. Disciple the person, and the church will be provided for."</span><span class="p">,</span>
+  <span class="s2">"Have I fused fundraising and faith-building into the same dreaded conversation? What would change if I fully separated them?"</span><span class="p">,</span>
+  <span class="s2">"Which posture do our people actually hear &amp;mdash; &amp;lsquo;the church needs this from you&amp;rsquo; or &amp;lsquo;God wants this freedom for you&amp;rsquo;?"</span><span class="p">,</span>
+  <span class="s2">"What is one place we currently &amp;lsquo;fundraise&amp;rsquo; that we could genuinely reframe &amp;mdash; not just reword &amp;mdash; as faith-building?"</span><span class="p">,</span>
+  <span class="s2">"Stop raising money. Start building faith. The generosity will come &amp;mdash; and so will the freedom, starting with yours."</span><span class="p">,</span>
+  <span class="s2">"Day 5"</span><span class="p">)</span>
+
+<span class="c1"># ---------------- FEARS PAGE ----------------</span>
+<span class="n">fears</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"People will think we just want money."</span><span class="p">,</span><span class="s2">"This is faith-building, not fundraising &amp;mdash; and the difference is the whole point."</span><span class="p">,</span><span class="s2">"Day 5 &amp;middot; Honor"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"I don&amp;rsquo;t feel qualified to teach about money."</span><span class="p">,</span><span class="s2">"You&amp;rsquo;re not the expert. The pastor casts vision; the framework carries the expertise."</span><span class="p">,</span><span class="s2">"Day 11 &amp;middot; Habits"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"This is just Financial Peace 2.0."</span><span class="p">,</span><span class="s2">"Not a budgeting program &amp;mdash; whole-life discipleship: heart, habits, health, hope, harvest."</span><span class="p">,</span><span class="s2">"Day 4 &amp;middot; Honor"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Our wealthy families will feel targeted."</span><span class="p">,</span><span class="s2">"The framework disciples them with dignity &amp;mdash; legacy and calling, never their checkbook."</span><span class="p">,</span><span class="s2">"Weeks 5&amp;ndash;6"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The struggling families will feel ashamed."</span><span class="p">,</span><span class="s2">"Grace-based and step-oriented; their pain is something the church exists to meet."</span><span class="p">,</span><span class="s2">"Day 17 &amp;middot; Health"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Our people won&amp;rsquo;t engage."</span><span class="p">,</span><span class="s2">"Wisdom speaks to every stage &amp;mdash; struggling, stable, and surplus alike."</span><span class="p">,</span><span class="s2">"Day 19 &amp;middot; Health"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"This will sound like the prosperity gospel."</span><span class="p">,</span><span class="s2">"Anchored in the opposite &amp;mdash; ownership, contentment, and &amp;lsquo;how much is enough.&amp;rsquo;"</span><span class="p">,</span><span class="s2">"Days 1 &amp;amp; 22"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"What happens after 30 days &amp;mdash; does it fade?"</span><span class="p">,</span><span class="s2">"This is First Base. Day 30 commissions the team straight into Culture and the pathway."</span><span class="p">,</span><span class="s2">"Day 30"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">fear_html</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">w</span> <span class="ow">in</span> <span class="n">fears</span><span class="p">:</span>
+    <span class="n">fear_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'''&lt;div class="fearbox"&gt;&lt;div class="f"&gt;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="a"&gt;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1"> &lt;span class="where"&gt;&amp;nbsp;&amp;rarr; </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;'''</span>
+
+<span class="c1"># split into two columns</span>
+<span class="n">half</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">fcol1</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fear_html</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'&lt;div class="fearbox"&gt;'</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="n">half</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">fcol1</span> <span class="o">=</span> <span class="s1">'&lt;div class="fearbox"&gt;'</span> <span class="o">+</span> <span class="s1">'&lt;div class="fearbox"&gt;'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fear_html</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'&lt;div class="fearbox"&gt;'</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="n">half</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">fcol2</span> <span class="o">=</span> <span class="s1">'&lt;div class="fearbox"&gt;'</span> <span class="o">+</span> <span class="s1">'&lt;div class="fearbox"&gt;'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fear_html</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'&lt;div class="fearbox"&gt;'</span><span class="p">)[</span><span class="n">half</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+
+<span class="n">fears_body</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="tworoot"&gt;</span>
+<span class="s1">  &lt;div class="rt"&gt;</span>
+<span class="s1">    &lt;div class="lab"&gt;The Two Fears Underneath All the Others&lt;/div&gt;</span>
+<span class="s1">    &lt;p&gt;&lt;strong style="color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s1">"&gt;Suspicion&lt;/strong&gt; &amp;mdash; &amp;ldquo;People will think we just want their money.&amp;rdquo; &amp;nbsp;&amp;bull;&amp;nbsp; &lt;strong style="color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s1">"&gt;Shame&lt;/strong&gt; &amp;mdash; &amp;ldquo;I&amp;rsquo;m not qualified / our own house isn&amp;rsquo;t in order.&amp;rdquo;&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="key" style="margin-top:7px"&gt;The master key to both: &lt;strong&gt;lead with wisdom, not giving.&lt;/strong&gt; &amp;ldquo;We need to talk about money&amp;rdquo; triggers suspicion. &amp;ldquo;We want to grow in wisdom&amp;rdquo; disarms it.&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">&lt;div class="cols"&gt;</span>
+<span class="s1">  &lt;div class="col"&gt;</span><span class="si">{</span><span class="n">fcol1</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="col"&gt;</span><span class="si">{</span><span class="n">fcol2</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">&lt;div class="note" style="margin-top:4px"&gt;Nearly every fear, honestly faced, becomes the very reason to do this work. The objections aren&amp;rsquo;t obstacles to the vision &amp;mdash; they &lt;em&gt;are&lt;/em&gt; the vision, seen from the underside.&lt;/div&gt;</span>
+<span class="s1">'''</span>
+<span class="n">PF</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="n">topband</span><span class="p">(</span><span class="s2">"Pre-Empt Every Hesitation in the Room"</span><span class="p">,</span>
+     <span class="s1">'Fears This &lt;span class="gold"&gt;Journey&lt;/span&gt; Answers'</span><span class="p">,</span>
+     <span class="s1">'Hand this to a hesitant elder before you pitch &amp;mdash; and you&amp;rsquo;ve answered the objection before it&amp;rsquo;s voiced.'</span><span class="p">)</span> <span class="o">+</span>
+     <span class="sa">f</span><span class="s1">'&lt;div class="body"&gt;</span><span class="si">{</span><span class="n">fears_body</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="o">+</span> <span class="n">foot</span><span class="p">(</span><span class="s2">"Fears Answered"</span><span class="p">),</span> <span class="s2">"content"</span><span class="p">)</span>
+
+<span class="c1"># ---------------- HUDDLE / TEAM SESSION PAGE ----------------</span>
+<span class="n">tls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"min"</span><span class="p">,</span><span class="s2">"Opening"</span><span class="p">,</span><span class="s2">"Read Psalm 24:1 together. One sentence each: &lt;span class='q'&gt;where did this week touch a nerve about how we lead around money?&lt;/span&gt; Surface, don&amp;rsquo;t solve."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"35"</span><span class="p">,</span><span class="s2">"min"</span><span class="p">,</span><span class="s2">"The Core Conversation"</span><span class="p">,</span><span class="s2">"Owners or stewards? (Day 1&amp;ndash;2). The unclaimed frontier (Day 3). Following Jesus&amp;rsquo; emphasis (Day 4). And the reframe that frees us &amp;mdash; fundraising vs. faith-building (Day 5). &lt;span class='q'&gt;Don&amp;rsquo;t rush to agreement; the friction is where alignment happens.&lt;/span&gt;"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"10"</span><span class="p">,</span><span class="s2">"min"</span><span class="p">,</span><span class="s2">"The Wisdom Question"</span><span class="p">,</span><span class="s2">"One question, agreed together &amp;mdash; the output of the week. Name it specifically. Write it down. Not a list &amp;mdash; one thing."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"min"</span><span class="p">,</span><span class="s2">"Close"</span><span class="p">,</span><span class="s2">"Pray together, naming the one commitment. The facilitator carries it into Week 2."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">tl_html</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">m</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="n">tls</span><span class="p">:</span>
+    <span class="n">tl_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'''&lt;div class="tl"&gt;&lt;div class="time"&gt;&lt;div class="mins"&gt;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="u"&gt;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="dot"&gt;&lt;/div&gt;&lt;div class="c"&gt;&lt;div class="t"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'''</span>
+
+<span class="n">huddle_body</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="note" style="margin-bottom:12px"&gt;The daily readings are done alone. &lt;strong&gt;This is where the journey becomes a team.&lt;/strong&gt; After each leader has read the week&amp;rsquo;s five days, the team gathers once &amp;mdash; about 60 minutes &amp;mdash; to process Honor together before moving into Heart. One ground rule, stated aloud: &lt;em&gt;this is about our posture as leaders, not anyone&amp;rsquo;s personal finances.&lt;/em&gt;&lt;/div&gt;</span>
+
+<span class="s1">&lt;div class="timeline"&gt;</span><span class="si">{</span><span class="n">tl_html</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+
+<span class="s1">&lt;div class="output"&gt;</span>
+<span class="s1">  &lt;div class="lab"&gt;What This Session Produces&lt;/div&gt;</span>
+<span class="s1">  &lt;p&gt;&amp;ldquo;If we truly led as stewards of God&amp;rsquo;s mission rather than owners of an institution &amp;mdash; starting now &amp;mdash; what is the ONE thing that would change first about how we lead?&amp;rdquo;&lt;/p&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">&lt;div class="note" style="margin-top:10px"&gt;Multiply this across six weeks and a leadership team doesn&amp;rsquo;t just read a book together &amp;mdash; they arrive at Week 6 sharing one conviction, one language, and six concrete commitments. &lt;strong&gt;That&amp;rsquo;s a team ready to build. That&amp;rsquo;s what First Base is for.&lt;/strong&gt;&lt;/div&gt;</span>
+<span class="s1">'''</span>
+<span class="n">PH</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="n">topband</span><span class="p">(</span><span class="s2">"The Team Journey, Made Real"</span><span class="p">,</span>
+     <span class="s1">'Sample Team &lt;span class="gold"&gt;Huddle&lt;/span&gt; &amp;middot; Week 1'</span><span class="p">,</span>
+     <span class="s1">'One worked example of the weekly gathering &amp;mdash; the rhythm repeats for all six weeks.'</span><span class="p">)</span> <span class="o">+</span>
+     <span class="sa">f</span><span class="s1">'&lt;div class="body"&gt;</span><span class="si">{</span><span class="n">huddle_body</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="o">+</span> <span class="n">foot</span><span class="p">(</span><span class="s2">"Team Session"</span><span class="p">),</span> <span class="s2">"content"</span><span class="p">)</span>
+
+<span class="c1"># ---------------- CLOSING / CTA ----------------</span>
+<span class="n">closing</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="inner"&gt;</span>
+<span class="s1">  &lt;div class="kicker" style="color:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s1">;letter-spacing:.28em"&gt;The Presentation Package&lt;/div&gt;</span>
+<span class="s1">  &lt;h2&gt;Everything You Need&lt;br&gt;To &lt;span class="gold"&gt;Believe It&lt;/span&gt;&lt;/h2&gt;</span>
+<span class="s1">  &lt;div class="pk"&gt;Four pieces that work together &amp;mdash; the hook, the proof, the disarmer, and the proof it runs.&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="pkg"&gt;</span>
+<span class="s1">    &lt;div class="it"&gt;&lt;div class="n"&gt;1&lt;/div&gt;&lt;div class="tx"&gt;&lt;div class="a"&gt;One-Page Overview&lt;/div&gt;&lt;div class="b"&gt;The hook &amp;mdash; what it is, where it fits, at a glance.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="it"&gt;&lt;div class="n"&gt;2&lt;/div&gt;&lt;div class="tx"&gt;&lt;div class="a"&gt;Honor Week &amp;middot; Days 1&amp;ndash;5&lt;/div&gt;&lt;div class="b"&gt;The proof &amp;mdash; the voice and the arc, fully written.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="it"&gt;&lt;div class="n"&gt;3&lt;/div&gt;&lt;div class="tx"&gt;&lt;div class="a"&gt;Fears This Journey Answers&lt;/div&gt;&lt;div class="b"&gt;The disarmer &amp;mdash; every hesitation, pre-empted.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="it"&gt;&lt;div class="n"&gt;4&lt;/div&gt;&lt;div class="tx"&gt;&lt;div class="a"&gt;Sample Team Huddle&lt;/div&gt;&lt;div class="b"&gt;The proof that &amp;lsquo;team-based&amp;rsquo; is real, not asserted.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div class="stamp"&gt;</span>
+<span class="s1">    &lt;div class="l"&gt;Only Week 1 is written. Weeks 2&amp;ndash;6 exist as titled outlines, ready to build once the concept is approved &amp;mdash; the right place to stop before greenlight.&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="r"&gt;Wisdom Changes&lt;br&gt;Everything&lt;br&gt;&lt;span style="color:#8893A6"&gt;First Base &amp;middot; The Why&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;'''</span>
+<span class="n">PC</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="n">closing</span><span class="p">,</span> <span class="s2">"closing"</span><span class="p">)</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset='utf-8'&gt;&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;&lt;/head&gt;&lt;body&gt;</span><span class="si">{</span><span class="n">P1</span><span class="si">}{</span><span class="n">P2</span><span class="si">}{</span><span class="n">P3</span><span class="si">}{</span><span class="n">DAY1</span><span class="si">}{</span><span class="n">DAY2</span><span class="si">}{</span><span class="n">DAY3</span><span class="si">}{</span><span class="n">DAY4</span><span class="si">}{</span><span class="n">DAY5</span><span class="si">}{</span><span class="n">PF</span><span class="si">}{</span><span class="n">PH</span><span class="si">}{</span><span class="n">PC</span><span class="si">}</span><span class="s2">&lt;/body&gt;&lt;/html&gt;"</span>
+
+<span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/wce.html"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">HTML</span><span class="p">)</span>
+<span class="n">weasyprint</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">HTML</span><span class="p">)</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span><span class="s2">"/home/claude/Wisdom_Changes_Everything.pdf"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"PDF built"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_pdf.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

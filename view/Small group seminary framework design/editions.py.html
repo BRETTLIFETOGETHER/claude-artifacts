@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>editions.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>editions.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">32 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/editions.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Editions architecture, certification take-rate, the sending model, and the 100-faculty prospect list</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Editions, certification, the sending model, and the hundred-faculty prospect list."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="c1"># (name, affiliation, note, warm)  warm: "" | "prior" | "client" | "talbot"</span>
+<span class="n">FACULTY</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Systematic Theology"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Fred Sanders"</span><span class="p">,</span> <span class="s2">"Biola, Torrey Honors"</span><span class="p">,</span> <span class="s2">"Trinity and classical theism for non-specialists"</span><span class="p">,</span> <span class="s2">"talbot"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Kevin Vanhoozer"</span><span class="p">,</span> <span class="s2">"Trinity Evangelical"</span><span class="p">,</span> <span class="s2">"Theological method; would set the standard for the discipline"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Michael Horton"</span><span class="p">,</span> <span class="s2">"Westminster Seminary California"</span><span class="p">,</span> <span class="s2">"Reformed anchor; essential for the Reformed edition"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Beth Felker Jones"</span><span class="p">,</span> <span class="s2">"Northern Seminary"</span><span class="p">,</span> <span class="s2">"Wesleyan anchor; essential for the Wesleyan edition"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Kelly Kapic"</span><span class="p">,</span> <span class="s2">"Covenant College"</span><span class="p">,</span> <span class="s2">"Suffering, humanity, and doctrine that reaches the pew"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Old Testament"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Sandra Richter"</span><span class="p">,</span> <span class="s2">"Westmont College"</span><span class="p">,</span> <span class="s2">"The Epic of Eden; already teaches lay audiences at scale"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Carmen Joy Imes"</span><span class="p">,</span> <span class="s2">"Biola, Talbot"</span><span class="p">,</span> <span class="s2">"Bearing God's Name; unusually good on video"</span><span class="p">,</span> <span class="s2">"talbot"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Christopher J. H. Wright"</span><span class="p">,</span> <span class="s2">"Langham Partnership"</span><span class="p">,</span> <span class="s2">"Old Testament ethics and mission; global reach"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Bill T. Arnold"</span><span class="p">,</span> <span class="s2">"Asbury Theological"</span><span class="p">,</span> <span class="s2">"Pentateuch and historical books"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Iain Provan"</span><span class="p">,</span> <span class="s2">"Regent College"</span><span class="p">,</span> <span class="s2">"Regent's whole model is lay theological education"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"New Testament"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Mark Strauss"</span><span class="p">,</span> <span class="s2">"Bethel Seminary"</span><span class="p">,</span> <span class="s2">"Already taught for you. First call in the discipline"</span><span class="p">,</span> <span class="s2">"prior"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Michael Wilkins"</span><span class="p">,</span> <span class="s2">"Biola, Talbot"</span><span class="p">,</span> <span class="s2">"Already taught for you. Matthew and discipleship"</span><span class="p">,</span> <span class="s2">"prior"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Nijay Gupta"</span><span class="p">,</span> <span class="s2">"Northern Seminary"</span><span class="p">,</span> <span class="s2">"Prolific, church-facing, mid-career, high yes probability"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Lynn Cohick"</span><span class="p">,</span> <span class="s2">"Houston Christian University"</span><span class="p">,</span> <span class="s2">"Pauline letters and women in the early church"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Craig Keener"</span><span class="p">,</span> <span class="s2">"Asbury Theological"</span><span class="p">,</span> <span class="s2">"Acts and background; the reference standard"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Church History"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Thomas Kidd"</span><span class="p">,</span> <span class="s2">"Midwestern Seminary"</span><span class="p">,</span> <span class="s2">"American evangelicalism, awakenings, Whitefield"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jennifer Powell McNutt"</span><span class="p">,</span> <span class="s2">"Wheaton College"</span><span class="p">,</span> <span class="s2">"Reformation and the history of the church's teaching"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Michael Haykin"</span><span class="p">,</span> <span class="s2">"Southern Seminary"</span><span class="p">,</span> <span class="s2">"Patristics and Baptist history"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Bruce Gordon"</span><span class="p">,</span> <span class="s2">"Yale Divinity"</span><span class="p">,</span> <span class="s2">"Calvin and the Reformation; prestige signal"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Chris Gehrz"</span><span class="p">,</span> <span class="s2">"Bethel University"</span><span class="p">,</span> <span class="s2">"Writes history for ordinary Christians deliberately"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Hermeneutics"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Craig Blomberg"</span><span class="p">,</span> <span class="s2">"Denver Seminary"</span><span class="p">,</span> <span class="s2">"Interpretation and gospel reliability"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jeannine Brown"</span><span class="p">,</span> <span class="s2">"Bethel Seminary"</span><span class="p">,</span> <span class="s2">"Scripture as Communication; the textbook choice"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Michael Gorman"</span><span class="p">,</span> <span class="s2">"St. Mary's Seminary"</span><span class="p">,</span> <span class="s2">"Reading Paul; cross-tradition credibility"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Douglas Moo"</span><span class="p">,</span> <span class="s2">"Wheaton College"</span><span class="p">,</span> <span class="s2">"Translation and the epistles"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Matthew Bates"</span><span class="p">,</span> <span class="s2">"Quincy University"</span><span class="p">,</span> <span class="s2">"Accessible on method and on faith itself"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Apologetics"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Sean McDowell"</span><span class="p">,</span> <span class="s2">"Biola, Talbot"</span><span class="p">,</span> <span class="s2">"Youth and deconstruction; enormous existing audience"</span><span class="p">,</span> <span class="s2">"talbot"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Rebecca McLaughlin"</span><span class="p">,</span> <span class="s2">"Author, Confronting Christianity"</span><span class="p">,</span> <span class="s2">"Best current writer for the honest skeptic"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Gavin Ortlund"</span><span class="p">,</span> <span class="s2">"Truth Unites"</span><span class="p">,</span> <span class="s2">"Charitable, historically grounded, native to video"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Paul Copan"</span><span class="p">,</span> <span class="s2">"Palm Beach Atlantic"</span><span class="p">,</span> <span class="s2">"Hard Old Testament questions"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Michael Licona"</span><span class="p">,</span> <span class="s2">"Houston Christian University"</span><span class="p">,</span> <span class="s2">"Resurrection evidence"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Homiletics"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Bryan Chapell"</span><span class="p">,</span> <span class="s2">"Author, Christ-Centered Preaching"</span><span class="p">,</span> <span class="s2">"The standard text on redemptive preaching"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jared Alcantara"</span><span class="p">,</span> <span class="s2">"Baylor, Truett Seminary"</span><span class="p">,</span> <span class="s2">"Practices of preaching; strong on cross-cultural"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Charlie Dates"</span><span class="p">,</span> <span class="s2">"Salem Baptist Church, Chicago"</span><span class="p">,</span> <span class="s2">"Practitioner of the first rank"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jeffrey Arthurs"</span><span class="p">,</span> <span class="s2">"Gordon-Conwell"</span><span class="p">,</span> <span class="s2">"Preaching genre by genre"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Scott Gibson"</span><span class="p">,</span> <span class="s2">"Baylor, Truett Seminary"</span><span class="p">,</span> <span class="s2">"Preaching history and method"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Pastoral Care"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Diane Langberg"</span><span class="p">,</span> <span class="s2">"Clinical psychologist, author"</span><span class="p">,</span> <span class="s2">"Trauma and abuse in the church; the essential voice"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Ed Welch"</span><span class="p">,</span> <span class="s2">"CCEF"</span><span class="p">,</span> <span class="s2">"Biblical counseling with clinical seriousness"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Curt Thompson"</span><span class="p">,</span> <span class="s2">"Psychiatrist, author"</span><span class="p">,</span> <span class="s2">"Neuroscience, shame, and formation"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Chuck DeGroat"</span><span class="p">,</span> <span class="s2">"Western Theological Seminary"</span><span class="p">,</span> <span class="s2">"Narcissism and leadership failure in the church"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"John Swinton"</span><span class="p">,</span> <span class="s2">"University of Aberdeen"</span><span class="p">,</span> <span class="s2">"Disability, dementia, and practical theology"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Christian Ethics"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Karen Swallow Prior"</span><span class="p">,</span> <span class="s2">"Author and literary scholar"</span><span class="p">,</span> <span class="s2">"Ethics through literature and imagination"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Andy Crouch"</span><span class="p">,</span> <span class="s2">"Praxis"</span><span class="p">,</span> <span class="s2">"Culture making, power, and technology"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Matthew Lee Anderson"</span><span class="p">,</span> <span class="s2">"Baylor University"</span><span class="p">,</span> <span class="s2">"Bioethics and Christian moral reasoning"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Charles Camosy"</span><span class="p">,</span> <span class="s2">"Creighton University"</span><span class="p">,</span> <span class="s2">"Beginning and end of life; cross-tradition"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jake Meador"</span><span class="p">,</span> <span class="s2">"Mere Orthodoxy"</span><span class="p">,</span> <span class="s2">"Political theology, work, and place"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Leadership and Missiology"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Ed Stetzer"</span><span class="p">,</span> <span class="s2">"Dean, Talbot School of Theology"</span><span class="p">,</span> <span class="s2">"First call of all hundred, for reasons beyond the course"</span><span class="p">,</span> <span class="s2">"talbot"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Tod Bolsinger"</span><span class="p">,</span> <span class="s2">"Formerly Fuller Seminary"</span><span class="p">,</span> <span class="s2">"Canoeing the Mountains; adaptive leadership"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Michael Goheen"</span><span class="p">,</span> <span class="s2">"Missional theology"</span><span class="p">,</span> <span class="s2">"The church's mission across the biblical story"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Todd Wilson"</span><span class="p">,</span> <span class="s2">"Center for Pastor Theologians"</span><span class="p">,</span> <span class="s2">"Pastor as theologian; ideal ally for the whole project"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Amy Sherman"</span><span class="p">,</span> <span class="s2">"Sagamore Institute"</span><span class="p">,</span> <span class="s2">"Vocational stewardship and church-based mission"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Biblical Theology"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Patrick Schreiner"</span><span class="p">,</span> <span class="s2">"Midwestern Seminary"</span><span class="p">,</span> <span class="s2">"Kingdom, canon, and accessible biblical theology"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Matthew Emerson"</span><span class="p">,</span> <span class="s2">"Oklahoma Baptist University"</span><span class="p">,</span> <span class="s2">"Canon and creed together"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Chris Bruno"</span><span class="p">,</span> <span class="s2">"Author, The Whole Story of the Bible"</span><span class="p">,</span> <span class="s2">"Already writes exactly this course"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jason DeRouchie"</span><span class="p">,</span> <span class="s2">"Midwestern Seminary"</span><span class="p">,</span> <span class="s2">"Old Testament in Christian Scripture"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Brandon Crowe"</span><span class="p">,</span> <span class="s2">"Westminster Theological"</span><span class="p">,</span> <span class="s2">"Gospels and biblical theology"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Spiritual Formation"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Ruth Haley Barton"</span><span class="p">,</span> <span class="s2">"Transforming Center"</span><span class="p">,</span> <span class="s2">"Formation for leaders; deep church credibility"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"John Mark Comer"</span><span class="p">,</span> <span class="s2">"Practicing the Way"</span><span class="p">,</span> <span class="s2">"Largest current audience in formation by a wide margin"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"James Bryan Smith"</span><span class="p">,</span> <span class="s2">"Friends University"</span><span class="p">,</span> <span class="s2">"The Good and Beautiful series; built for small groups"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Rich Villodas"</span><span class="p">,</span> <span class="s2">"New Life Fellowship"</span><span class="p">,</span> <span class="s2">"Formation in an urban, multiethnic congregation"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Gary Moon"</span><span class="p">,</span> <span class="s2">"Martin Institute, Dallas Willard Center"</span><span class="p">,</span> <span class="s2">"Carries the Willard stream"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Worship"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Constance Cherry"</span><span class="p">,</span> <span class="s2">"Indiana Wesleyan"</span><span class="p">,</span> <span class="s2">"The Worship Architect; the practical standard"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Glenn Packiam"</span><span class="p">,</span> <span class="s2">"Rockharbor Church"</span><span class="p">,</span> <span class="s2">"Pastor-scholar on worship and formation"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Zac Hicks"</span><span class="p">,</span> <span class="s2">"Author, The Worship Pastor"</span><span class="p">,</span> <span class="s2">"Written for the volunteer, not the academy"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Sandra Van Opstal"</span><span class="p">,</span> <span class="s2">"Chasing Justice"</span><span class="p">,</span> <span class="s2">"Multiethnic worship"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Bob Kauflin"</span><span class="p">,</span> <span class="s2">"Sovereign Grace Music"</span><span class="p">,</span> <span class="s2">"Congregational song and theology"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Discipleship and Groups"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Jen Wilkin"</span><span class="p">,</span> <span class="s2">"Author and Bible teacher"</span><span class="p">,</span> <span class="s2">"Largest lay Bible-literacy platform in evangelicalism"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Greg Ogden"</span><span class="p">,</span> <span class="s2">"Author, Transforming Discipleship"</span><span class="p">,</span> <span class="s2">"The triad model; native to this thesis"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Bill Donahue"</span><span class="p">,</span> <span class="s2">"Author, Leading Life-Changing Small Groups"</span><span class="p">,</span> <span class="s2">"Willow-era group architecture"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jim Putman"</span><span class="p">,</span> <span class="s2">"Real Life Ministries"</span><span class="p">,</span> <span class="s2">"Discipleship as a whole-church system"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Alan Hirsch"</span><span class="p">,</span> <span class="s2">"Movement Leaders Collective"</span><span class="p">,</span> <span class="s2">"Multiplication and movement theory"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Evangelism"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Rico Tice"</span><span class="p">,</span> <span class="s2">"Christianity Explored"</span><span class="p">,</span> <span class="s2">"Built a global lay evangelism curriculum already"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Sam Chan"</span><span class="p">,</span> <span class="s2">"City Bible Forum"</span><span class="p">,</span> <span class="s2">"Evangelism in a secular age; genuinely funny on camera"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Elliot Clark"</span><span class="p">,</span> <span class="s2">"Training Leaders International"</span><span class="p">,</span> <span class="s2">"Witness under pressure and in exile"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jerry Root"</span><span class="p">,</span> <span class="s2">"Wheaton College"</span><span class="p">,</span> <span class="s2">"Evangelism and Lewis"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Mack Stiles"</span><span class="p">,</span> <span class="s2">"Author, Evangelism"</span><span class="p">,</span> <span class="s2">"Ordinary, unforced personal witness"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Marriage and Family"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Kara Powell"</span><span class="p">,</span> <span class="s2">"Fuller Youth Institute"</span><span class="p">,</span> <span class="s2">"Sticky Faith; the research base on teens and faith"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Gary Thomas"</span><span class="p">,</span> <span class="s2">"Author, Sacred Marriage"</span><span class="p">,</span> <span class="s2">"Marriage as formation rather than happiness"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Justin Whitmel Earley"</span><span class="p">,</span> <span class="s2">"Author, Habits of the Household"</span><span class="p">,</span> <span class="s2">"Family practice, currently the best-selling frame"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Chap Clark"</span><span class="p">,</span> <span class="s2">"Author and researcher"</span><span class="p">,</span> <span class="s2">"Adolescents and abandonment"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Scott Stanley"</span><span class="p">,</span> <span class="s2">"University of Denver"</span><span class="p">,</span> <span class="s2">"Marriage research; empirical credibility"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Money, Work and Vocation"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Ron Blue"</span><span class="p">,</span> <span class="s2">"Ron Blue Institute"</span><span class="p">,</span> <span class="s2">"Your own client. The anchor for this entire discipline"</span><span class="p">,</span> <span class="s2">"client"</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Tom Nelson"</span><span class="p">,</span> <span class="s2">"Made to Flourish"</span><span class="p">,</span> <span class="s2">"Pastor-led theology of work across a church network"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Art Rainer"</span><span class="p">,</span> <span class="s2">"Institute for Christian Financial Health"</span><span class="p">,</span> <span class="s2">"Practical household finance for churches"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Greg Forster"</span><span class="p">,</span> <span class="s2">"Oikonomia Network"</span><span class="p">,</span> <span class="s2">"Theology of economics and vocation"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Chris Horst"</span><span class="p">,</span> <span class="s2">"HOPE International"</span><span class="p">,</span> <span class="s2">"Poverty, enterprise, and development"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"World Religions"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Harold Netland"</span><span class="p">,</span> <span class="s2">"Trinity Evangelical"</span><span class="p">,</span> <span class="s2">"Religious pluralism; the scholarly standard"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Gerald McDermott"</span><span class="p">,</span> <span class="s2">"Anglican theologian"</span><span class="p">,</span> <span class="s2">"World religions and Christian theology"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Ayman Ibrahim"</span><span class="p">,</span> <span class="s2">"Southern Seminary"</span><span class="p">,</span> <span class="s2">"Islam, taught fairly and firsthand"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Matthew Bennett"</span><span class="p">,</span> <span class="s2">"Cedarville University"</span><span class="p">,</span> <span class="s2">"Islam and Christian witness"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Miriam Adeney"</span><span class="p">,</span> <span class="s2">"Seattle Pacific University"</span><span class="p">,</span> <span class="s2">"Global Christianity and cross-cultural ministry"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Christian Thought"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Alan Jacobs"</span><span class="p">,</span> <span class="s2">"Baylor University"</span><span class="p">,</span> <span class="s2">"Reading, attention, and the Christian intellectual life"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jessica Hooten Wilson"</span><span class="p">,</span> <span class="s2">"Pepperdine University"</span><span class="p">,</span> <span class="s2">"Literature as formation; superb teacher"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"James K. A. Smith"</span><span class="p">,</span> <span class="s2">"Calvin University"</span><span class="p">,</span> <span class="s2">"Desire, habit, and the modern self"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Craig Bartholomew"</span><span class="p">,</span> <span class="s2">"Kirby Laing Centre"</span><span class="p">,</span> <span class="s2">"Christian philosophy and the biblical worldview"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Holly Ordway"</span><span class="p">,</span> <span class="s2">"Word on Fire Institute"</span><span class="p">,</span> <span class="s2">"Imagination and apologetics; Catholic, so edition-scope it"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Culture and Technology"</span><span class="p">,</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Felicia Wu Song"</span><span class="p">,</span> <span class="s2">"Westmont College"</span><span class="p">,</span> <span class="s2">"Restless Devices; digital life and the self"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Jason Thacker"</span><span class="p">,</span> <span class="s2">"Boyce College and ERLC"</span><span class="p">,</span> <span class="s2">"AI ethics from an evangelical frame"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Derek Schuurman"</span><span class="p">,</span> <span class="s2">"Calvin University"</span><span class="p">,</span> <span class="s2">"Computing and Christian faith; actual technical depth"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Tony Reinke"</span><span class="p">,</span> <span class="s2">"Desiring God"</span><span class="p">,</span> <span class="s2">"Smartphones, technology, and the soul"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Read Mercer Schuchardt"</span><span class="p">,</span> <span class="s2">"Wheaton College"</span><span class="p">,</span> <span class="s2">"Media ecology and attention"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+<span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">EDITIONS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Church Edition"</span><span class="p">,</span> <span class="s2">"no"</span><span class="p">,</span> <span class="s2">"Customized to that church's Pastor's Library"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The church's own sermon archive becomes the illustration and application layer. Their pastor</span>
+<span class="sd"> introduces each session. Their doctrinal line is set where the course presents options. Their name</span>
+<span class="sd"> is on the certificate. This edition is the most valuable one commercially and it is the one that</span>
+<span class="sd"> must never carry a seminary's endorsement, because the moment a school blesses a product a pastor</span>
+<span class="sd"> can edit, it has blessed five hundred things it cannot see. Do not ask for the blessing here. Do</span>
+<span class="sd"> not accept it if offered."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Network Edition"</span><span class="p">,</span> <span class="s2">"denomination"</span><span class="p">,</span> <span class="s2">"Positions set by the denomination, blessed by the denomination"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""A denomination or network licenses the library, its own theologians settle the disputed pages,</span>
+<span class="sd"> and the credential becomes theirs. The endorsement here is denominational rather than academic,</span>
+<span class="sd"> which is the right currency: a Wesleyan pastor cares more that the Wesleyan network stands behind</span>
+<span class="sd"> the material than that a seminary reviewed it. This is also where lay licensing recognition</span>
+<span class="sd"> eventually comes from."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Pathway Edition"</span><span class="p">,</span> <span class="s2">"seminary"</span><span class="p">,</span> <span class="s2">"Locked, unmodifiable, reviewed by the partner school"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""A fixed subset of courses, frozen at the version the partner seminary reviewed, with no</span>
+<span class="sd"> customization permitted at all. Same content, same faculty, same scripts. The only difference is</span>
+<span class="sd"> that nobody can touch it. This is the only edition that carries a school's name, and it is</span>
+<span class="sd"> deliberately the smallest of the three."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">PCT</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Everyone exposed inside a licensed church"</span><span class="p">,</span> <span class="s2">"100%"</span><span class="p">,</span>
+ <span class="s2">"Participants, in the sense that the material is available to them and most will encounter it in some group."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Start at least one full course"</span><span class="p">,</span> <span class="s2">"25 to 40%"</span><span class="p">,</span>
+ <span class="s2">"Of adults in an engaged congregation, over a two-year window. Higher where the pastor makes it normative from the platform, materially lower where it is offered as an option among options."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Finish a course they start"</span><span class="p">,</span> <span class="s2">"60 to 75%"</span><span class="p">,</span>
+ <span class="s2">"Small groups hold people far better than online courses do. Open online course completion sits in the single digits to low teens; a cohort meeting weekly with people who notice absence is a different animal entirely."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Want a certificate for it"</span><span class="p">,</span> <span class="s2">"12 to 20%"</span><span class="p">,</span>
+ <span class="s2">"Of those who finish. The certificate matters to a specific temperament and to people in seasons of transition, and it is close to irrelevant to everyone else."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Pursue a multi-course credential"</span><span class="p">,</span> <span class="s2">"3 to 5%"</span><span class="p">,</span>
+ <span class="s2">"Of finishers. This is the group that finishes twelve or twenty-four courses over years, and it is the real spine of the program's reputation."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Pursue accredited credit through a partner"</span><span class="p">,</span> <span class="s2">"1 to 2%"</span><span class="p">,</span>
+ <span class="s2">"Of finishers. Small as a percentage and large as a number, and it is the entire pipeline argument you will make to a seminary."</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">PROCESS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Declaration"</span><span class="p">,</span> <span class="s2">"The student enrolls in the Pathway Edition and knows from day one it is different"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Locked content, real deadlines, submitted work, and a named reviewer. The declaration matters</span>
+<span class="sd"> psychologically as much as administratively. People behave differently when they have said out loud</span>
+<span class="sd"> that they are going for it."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Assessed work"</span><span class="p">,</span> <span class="s2">"Written responses, one substantial paper per course, and a taught session"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The taught session is the differentiator and the thing a seminary cannot easily replicate at</span>
+<span class="sd"> distance: the student teaches sixty minutes to a real group in their own church, filmed, and both</span>
+<span class="sd"> the reviewer and the student's pastor evaluate it."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Named reviewer"</span><span class="p">,</span> <span class="s2">"A faculty member from the hundred, or a partner-school adjunct"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Compensated per portfolio, not per hour. The reviewer can and does return work as insufficient.</span>
+<span class="sd"> This is the single line item that costs real money, and it applies to three to five percent of</span>
+<span class="sd"> finishers rather than all of them, which is what makes it affordable."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Portfolio"</span><span class="p">,</span> <span class="s2">"The student's complete body of work, packaged to the partner's specification"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Not a transcript claim. The actual work: papers, the filmed teaching session, the pastor's</span>
+<span class="sd"> evaluation, the reviewer's assessments. Prior learning assessment runs on evidence, not on</span>
+<span class="sd"> assertion."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Award by the partner"</span><span class="p">,</span> <span class="s2">"Advanced standing or credit, granted by the accredited institution"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The degree is theirs and always was. You are the preparation and the evidence pipeline. That</span>
+<span class="sd"> sentence, said early and repeated, is what turns an institutional threat into an institutional</span>
+<span class="sd"> asset."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">();</span> <span class="n">W</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">write</span>
+    <span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--ink:#0c1723;--ink2:#08111c;--gold:#c19a4b;--goldlt:#e2c689;--parch:#f7f3ea;</span>
+<span class="s2">--parch2:#efe8da;--rule:#d9cfbc;--body:#2b2a26;--muted:#6d6759;--mutedlt:#9fb0c1;}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--parch);color:var(--body);</span>
+<span class="s2">font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;line-height:1.62}</span>
+<span class="s2">.wrap{max-width:940px;margin:0 auto;padding:0 30px}</span>
+<span class="s2">.narrow{max-width:700px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;margin:0;letter-spacing:-.01em}</span>
+<span class="s2">.eyebrow{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.26em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);display:block}</span>
+<span class="s2">p{margin:0 0 15px}</span>
+<span class="s2">header{background:var(--ink);color:#f3efe6;padding:72px 0 60px;position:relative;overflow:hidden}</span>
+<span class="s2">header:before{content:"";position:absolute;inset:0;</span>
+<span class="s2">background:radial-gradient(112</span><span class="si">% 78%</span><span class="s2"> at 7</span><span class="si">% 0%</span><span class="s2">,rgba(193,154,75,.18),transparent 62%)}</span>
+<span class="s2">header .wrap{position:relative}</span>
+<span class="s2">header .eyebrow{color:var(--goldlt)}</span>
+<span class="s2">header h1{font-size:clamp(35px,6.4vw,64px);line-height:1.0;color:#fbf8f1;margin-top:18px}</span>
+<span class="s2">header h1 em{font-style:italic;font-weight:400;color:var(--goldlt)}</span>
+<span class="s2">header .lede{font-size:22px;color:#cfc7b8;max-width:640px;margin-top:24px}</span>
+<span class="s2">section{padding:62px 0 54px;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">section.dark{background:var(--ink2);color:#e6e0d3;border-bottom:none}</span>
+<span class="s2">section.dark h2,section.dark h3,section.dark h4{color:#fbf8f1}</span>
+<span class="s2">section.dark p{color:#d6cec0}</span>
+<span class="s2">section.dark .kick{color:var(--mutedlt)}</span>
+<span class="s2">section.tone{background:var(--parch2)}</span>
+<span class="s2">h2.sec{font-size:clamp(27px,4.3vw,40px);line-height:1.09;margin-top:15px}</span>
+<span class="s2">.kick{font-style:italic;color:var(--muted);margin:14px 0 0;max-width:640px;font-size:20px}</span>
+<span class="s2">.pull{font-family:"Playfair Display",serif;font-size:23px;line-height:1.42;</span>
+<span class="s2">border-left:3px solid var(--gold);padding-left:24px;margin:28px 0;max-width:660px}</span>
+<span class="s2">section.dark .pull{color:var(--goldlt)}</span>
+<span class="s2">.item{display:flex;gap:24px;padding:24px 0;border-top:1px solid var(--rule)}</span>
+<span class="s2">section.dark .item{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">.item .n{flex:0 0 46px;font-family:"Playfair Display",serif;font-size:30px;line-height:1;</span>
+<span class="s2">color:transparent;-webkit-text-stroke:1px var(--gold);padding-top:3px}</span>
+<span class="s2">section.dark .item .n{-webkit-text-stroke-color:var(--goldlt)}</span>
+<span class="s2">.item .c{flex:1 1 auto;max-width:660px}</span>
+<span class="s2">.item h4{font-size:20px;line-height:1.25;margin-bottom:8px}</span>
+<span class="s2">.item p{margin:0 0 10px;font-size:18px}</span>
+<span class="s2">.item p:last-child{margin-bottom:0}</span>
+<span class="s2">.bless{font-family:"Lato",sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.15em;</span>
+<span class="s2">text-transform:uppercase;padding:4px 9px;display:inline-block;margin-bottom:9px}</span>
+<span class="s2">.bless.no{border:1px solid var(--rule);color:var(--muted)}</span>
+<span class="s2">.bless.denomination{border:1px solid var(--gold);color:var(--gold)}</span>
+<span class="s2">.bless.seminary{background:var(--gold);color:#fff}</span>
+<span class="s2">table{width:100%;border-collapse:collapse;margin-top:26px;font-size:17px}</span>
+<span class="s2">th{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.15em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);text-align:left;padding:0 14px 11px 0;</span>
+<span class="s2">border-bottom:1px solid var(--rule);vertical-align:bottom}</span>
+<span class="s2">td{padding:14px 14px 14px 0;border-bottom:1px solid var(--rule);vertical-align:top}</span>
+<span class="s2">td.k{font-family:"Playfair Display",serif;font-size:18px;width:34%}</span>
+<span class="s2">td.pc{font-family:"Lato",sans-serif;font-weight:700;font-size:16px;color:var(--gold);white-space:nowrap;width:16%}</span>
+<span class="s2">td.s{color:var(--muted);font-size:16.5px}</span>
+<span class="s2">.disc{padding:26px 0;border-top:1px solid var(--rule)}</span>
+<span class="s2">.disc h3{font-size:20px;font-family:"Lato",sans-serif;font-weight:800;font-size:11px;</span>
+<span class="s2">letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}</span>
+<span class="s2">.fac{display:flex;gap:16px;padding:9px 0;border-bottom:1px solid rgba(217,207,188,.55);align-items:baseline}</span>
+<span class="s2">.fac:last-child{border-bottom:none}</span>
+<span class="s2">.fac .nm{flex:0 0 210px;font-family:"Playfair Display",serif;font-size:17.5px}</span>
+<span class="s2">.fac .af{flex:0 0 190px;font-family:"Lato",sans-serif;font-size:11.5px;color:var(--muted);</span>
+<span class="s2">letter-spacing:.04em;line-height:1.5}</span>
+<span class="s2">.fac .wh{flex:1 1 auto;font-style:italic;color:var(--muted);font-size:16.5px}</span>
+<span class="s2">.warm{font-family:"Lato",sans-serif;font-size:8.5px;font-weight:800;letter-spacing:.12em;</span>
+<span class="s2">text-transform:uppercase;background:var(--gold);color:#fff;padding:2px 6px;margin-left:7px;</span>
+<span class="s2">white-space:nowrap;vertical-align:middle}</span>
+<span class="s2">@media(max-width:760px){.fac{flex-direction:column;gap:2px;padding:11px 0}</span>
+<span class="s2">.fac .nm,.fac .af{flex:none}.item{gap:14px}.item .n{flex:0 0 32px;font-size:24px}}</span>
+<span class="s2">.warnbox{border:1px solid var(--gold);padding:22px 24px;margin-top:26px;background:#fff}</span>
+<span class="s2">.warnbox p{margin:0 0 10px;font-family:"Lato",sans-serif;font-size:13.5px;line-height:1.75;color:var(--body)}</span>
+<span class="s2">.warnbox p:last-child</span><span class="si">{margin:0}</span>
+<span class="s2">.warnbox b{color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-size:10px}</span>
+<span class="s2">.note{font-family:"Lato",sans-serif;font-size:13px;line-height:1.75;color:var(--muted);</span>
+<span class="s2">border-top:1px solid var(--rule);margin-top:32px;padding-top:16px;max-width:720px}</span>
+<span class="s2">section.dark .note{color:var(--mutedlt);border-color:rgba(255,255,255,.15)}</span>
+<span class="s2">.close{background:var(--ink);color:#efeae0;padding:70px 0;text-align:center}</span>
+<span class="s2">.close h2{font-size:clamp(26px,4.3vw,40px);color:#fbf8f1}</span>
+<span class="s2">.close p{max-width:620px;margin:20px auto 0;color:#c9c0b0}</span>
+<span class="s2">footer{background:#070d15;color:#7d8b99;padding:26px 0;font-family:"Lato",sans-serif;</span>
+<span class="s2">font-size:10.5px;letter-spacing:.1em;text-align:center;text-transform:uppercase}</span>
+<span class="s2">@media(max-width:720px){body{font-size:18px}.wrap{padding:0 20px}section{padding:46px 0 40px}}</span>
+<span class="s2">"""</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;Editions, Certification, and the Hundred&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@300;400;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;"""</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;&lt;/head&gt;&lt;body&gt;"</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;header&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Doing Seminary Together &amp;nbsp;&amp;middot;&amp;nbsp; Architecture and Faculty&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;Three editions,&lt;br&gt;&lt;em&gt;one of them frozen&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Where the seminary blessing attaches, how many people actually want a credential,</span>
+<span class="s2">what the certification path looks like, and a hundred names to build it with.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Compete or Coordinate&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Customization and accreditation are opposites&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;This is the whole answer to which edition gets blessed, and it falls out of one</span>
+<span class="s2">constraint rather than a negotiation.&lt;/p&gt;</span>
+<span class="s2">&lt;div style="margin-top:22px;max-width:700px"&gt;</span>
+<span class="s2">&lt;p&gt;A seminary cannot endorse a product that a pastor is free to edit. The instant the church edition</span>
+<span class="s2">pulls in that congregation's own sermon library, sets its own doctrinal positions, and adds its own</span>
+<span class="s2">pastor's introductions, it has become five hundred different products, and no institution can put its</span>
+<span class="s2">name on something it will never see. That is not institutional stubbornness. It is the correct</span>
+<span class="s2">position and you should not ask them to take a different one.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;So the blessing attaches to the version nobody can touch. Same content, same faculty, same</span>
+<span class="s2">scripts, frozen at the reviewed version. It will be the smallest of the three editions by enrollment</span>
+<span class="s2">and the most important of the three by reputation.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bless</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">EDITIONS</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"no"</span><span class="p">:</span> <span class="s2">"No seminary endorsement, by design"</span><span class="p">,</span>
+                 <span class="s2">"denomination"</span><span class="p">:</span> <span class="s2">"Blessed by the denomination"</span><span class="p">,</span>
+                 <span class="s2">"seminary"</span><span class="p">:</span> <span class="s2">"Blessed by the seminary"</span><span class="p">}[</span><span class="n">bless</span><span class="p">]</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;'</span>
+          <span class="s1">'&lt;span class="bless </span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;'</span>
+          <span class="s1">'&lt;p style="font-style:italic;color:var(--muted);margin-bottom:9px"&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">bless</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="pull"&gt;You do both, and the answer to compete-or-coordinate is that you compete in</span>
+<span class="s2">the church edition, coordinate in the pathway edition, and never let the two share a</span>
+<span class="s2">certificate.&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Take Rate&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;What percentage actually want certification&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Estimates, not data. Reasoned from adjacent categories and clearly labeled as</span>
+<span class="s2">guesses, because nobody has run this exact program at scale.&lt;/p&gt;</span>
+<span class="s2">&lt;table style="color:#e6e0d3"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Stage&lt;/th&gt;&lt;th&gt;Estimate&lt;/th&gt;&lt;th&gt;Reasoning&lt;/th&gt;&lt;/tr&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">pc</span><span class="p">,</span> <span class="n">why</span> <span class="ow">in</span> <span class="n">PCT</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;tr&gt;&lt;td class="k" style="color:#fbf8f1"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;td class="pc" style="color:var(--goldlt)"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;'</span>
+          <span class="s1">'&lt;td class="s" style="color:var(--mutedlt)"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">pc</span><span class="p">,</span> <span class="n">why</span><span class="p">))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;/table&gt;</span>
+<span class="s2">&lt;div class="pull"&gt;The low certification number is not a weakness in the model. It is the reason the</span>
+<span class="s2">model works.&lt;/div&gt;</span>
+<span class="s2">&lt;p&gt;Run it through a real congregation. A church of two thousand adults, thirty percent of whom start</span>
+<span class="s2">a course over two years, is six hundred students. Around four hundred finish. Sixty to eighty want a</span>
+<span class="s2">certificate, which costs you a sheet of paper. Perhaps twenty pursue a multi-course credential.</span>
+<span class="s2">Four to eight go after accredited credit through your partner.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;Those last four to eight are the entire argument you make to a seminary, and it is a good one:</span>
+<span class="s2">one church produced them, they did not exist before, and every one of them enrolls at your partner</span>
+<span class="s2">school. Multiply by a hundred churches and you are the largest single feeder into that institution in</span>
+<span class="s2">the country.&lt;/p&gt;</span>
+<span class="s2">&lt;p class="note"&gt;The eighty-five percent who never want a credential are what make this a licensing</span>
+<span class="s2">business rather than a tuition business. If most people wanted certification, you would need a</span>
+<span class="s2">registrar, a reader corps, an appeals process, and everything else you deliberately declined to</span>
+<span class="s2">build. Low take-rate is what keeps the cost structure a publisher's.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Process&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;What certification actually looks like, and who to do it with&lt;/h2&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">PROCESS</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;'</span>
+          <span class="s1">'&lt;p style="font-style:italic;color:var(--muted);margin-bottom:9px"&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;h3 style="font-size:24px;margin-top:40px"&gt;Who to do it with, in order&lt;/h3&gt;</span>
+<span class="s2">&lt;table&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Partner&lt;/th&gt;&lt;th&gt;Case for&lt;/th&gt;&lt;th&gt;Case against&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Talbot&lt;/td&gt;&lt;td class="s"&gt;Talbot Embedded already exists and needs local ministry</span>
+<span class="s2">contexts. Stetzer's mandate is expanding access. You are an alum, which is the single best door in</span>
+<span class="s2">institutional life.&lt;/td&gt;&lt;td class="s"&gt;A dean cannot get ahead of his faculty on credentialing. Slow,</span>
+<span class="s2">and the framing has to be perfect.&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;A competency-based accredited school&lt;/td&gt;&lt;td class="s"&gt;Already built for portfolio</span>
+<span class="s2">assessment and mentor teams. Will move faster and argue less, because you are describing what they</span>
+<span class="s2">already do.&lt;/td&gt;&lt;td class="s"&gt;Less brand weight with the churches you are selling to. Solves the</span>
+<span class="s2">mechanics, not the credibility.&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Acquire a small accredited school&lt;/td&gt;&lt;td class="s"&gt;Fastest route to owning the</span>
+<span class="s2">credential outright. Schools in this position exist right now and some are actively seeking</span>
+<span class="s2">partners.&lt;/td&gt;&lt;td class="s"&gt;You would be buying an institution with an institution's costs, which is</span>
+<span class="s2">the exact cost structure the whole model was designed to avoid.&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Recommendation: pursue Talbot as the named partner and a competency-based school as</span>
+<span class="s2">the fallback, and open both conversations in the same quarter. Do not open the acquisition</span>
+<span class="s2">conversation until one of the first two has failed, because acquiring reverses the economics that</span>
+<span class="s2">make this worth doing.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="narrow"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Sending Model&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;On the Latter-day Saint comparison&lt;/h2&gt;</span>
+<span class="s2">&lt;div style="margin-top:20px"&gt;</span>
+<span class="s2">&lt;p&gt;The instinct is a good one and worth taking seriously rather than as a throwaway. It is also worth</span>
+<span class="s2">knowing that the parallel is closer than you may realize: the Latter-day Saints already run a lay</span>
+<span class="s2">seminary system, and it enrolls hundreds of thousands of teenagers in daily scripture study before</span>
+<span class="s2">school. They did not build a program. They built an expectation.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;Four mechanisms transfer cleanly. The first is that it is &lt;em&gt;normative rather than</span>
+<span class="s2">elective&lt;/em&gt; — not something offered among the options in the bulletin, but what people here do,</span>
+<span class="s2">announced from the platform by the pastor as the church's ordinary path. That single decision moves</span>
+<span class="s2">participation more than any marketing you could buy, and it is a pastor's decision, not</span>
+<span class="s2">yours.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;The second is that &lt;em&gt;everyone is expected to teach&lt;/em&gt;. A structure with no paid local clergy</span>
+<span class="s2">has to produce teachers or it collapses, which is precisely the condition your five hundred churches</span>
+<span class="s2">are already in without admitting it. The third is &lt;em&gt;public commissioning&lt;/em&gt;: named, in front of</span>
+<span class="s2">the congregation, on a Sunday. The fourth is that finishing is an &lt;em&gt;assignment rather than a</span>
+<span class="s2">graduation&lt;/em&gt;. Not you have completed the coursework, but you now have a group, a class, or a</span>
+<span class="s2">place to go.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="pull"&gt;A school ends with a diploma. A sending system ends with an</span>
+<span class="s2">assignment.&lt;/div&gt;</span>
+<span class="s2">&lt;p&gt;What does not transfer is the part that makes theirs work: centralized authority, a correlated</span>
+<span class="s2">curriculum, and structural obligation. Evangelical churches are congregational and voluntary. You</span>
+<span class="s2">cannot mandate anything, and any attempt to will fail loudly. You can only make something normative,</span>
+<span class="s2">which is slower, and depends entirely on whether the senior pastor will stand up and say this is what</span>
+<span class="s2">we do here.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;One practical caution. The comparison is genuinely illuminating internally and will land badly in</span>
+<span class="s2">public materials with a fair number of pastors, for reasons that have nothing to do with the</span>
+<span class="s2">mechanism. Use the mechanism. Do not use the name.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Hundred&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Faculty and advisor prospects, five per discipline&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Selected for one criterion above all others: people who already teach the church and</span>
+<span class="s2">not only the academy, because they are the ones who will say yes.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="warnbox"&gt;</span>
+<span class="s2">&lt;p&gt;&lt;b&gt;Read this before using the list&lt;/b&gt;&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;Nobody named here has been contacted, has agreed to anything, or has any association with this</span>
+<span class="s2">project. This is a prospect list assembled from public work and public affiliation, and it should</span>
+<span class="s2">never be presented to anyone as a faculty roster, an advisory board, or a list of participants.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;Institutional affiliations shift constantly and some of these are certain to be out of date.</span>
+<span class="s2">Verify every name, title, and institution before a single outreach email goes out. Confirm each</span>
+<span class="s2">person is currently living and active; a prospect list of this length assembled from prior knowledge</span>
+<span class="s2">will contain errors of that kind.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;The list itself is a positioning decision, not a neutral inventory. It deliberately spans Reformed,</span>
+<span class="s2">Wesleyan, Baptist, Anglican, and broadly evangelical scholarship, plus one Catholic voice, because</span>
+<span class="s2">denominational editions are impossible without that breadth. That same breadth guarantees objections</span>
+<span class="s2">from both flanks. Decide the theological perimeter before you recruit, not after.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">disc</span><span class="p">,</span> <span class="n">people</span> <span class="ow">in</span> <span class="n">FACULTY</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="disc"&gt;&lt;h3&gt;</span><span class="si">%s</span><span class="s1">&lt;/h3&gt;'</span> <span class="o">%</span> <span class="n">disc</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">nm</span><span class="p">,</span> <span class="n">af</span><span class="p">,</span> <span class="n">wh</span><span class="p">,</span> <span class="n">warm</span> <span class="ow">in</span> <span class="n">people</span><span class="p">:</span>
+            <span class="n">badge</span> <span class="o">=</span> <span class="s2">""</span>
+            <span class="k">if</span> <span class="n">warm</span> <span class="o">==</span> <span class="s2">"prior"</span><span class="p">:</span>
+                <span class="n">badge</span> <span class="o">=</span> <span class="s1">'&lt;span class="warm"&gt;Prior collaborator&lt;/span&gt;'</span>
+            <span class="k">elif</span> <span class="n">warm</span> <span class="o">==</span> <span class="s2">"client"</span><span class="p">:</span>
+                <span class="n">badge</span> <span class="o">=</span> <span class="s1">'&lt;span class="warm"&gt;Current client&lt;/span&gt;'</span>
+            <span class="k">elif</span> <span class="n">warm</span> <span class="o">==</span> <span class="s2">"talbot"</span><span class="p">:</span>
+                <span class="n">badge</span> <span class="o">=</span> <span class="s1">'&lt;span class="warm"&gt;Talbot&lt;/span&gt;'</span>
+            <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="fac"&gt;&lt;span class="nm"&gt;</span><span class="si">%s%s</span><span class="s1">&lt;/span&gt;&lt;span class="af"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;'</span>
+              <span class="s1">'&lt;span class="wh"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">badge</span><span class="p">,</span> <span class="n">af</span><span class="p">,</span> <span class="n">wh</span><span class="p">))</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;p class="note"&gt;Sequence the outreach by warmth rather than by prestige. Strauss and Wilkins</span>
+<span class="s2">have already taught for you and should be the first two calls, not because they are the most famous</span>
+<span class="s2">names on the page but because the second call is easier when the first one said yes. Ron Blue anchors</span>
+<span class="s2">the stewardship discipline through an existing working relationship. The Talbot cluster gives you a</span>
+<span class="s2">natural reason to be in front of Stetzer. Recruit those seven or eight first, then use their names to</span>
+<span class="s2">open the next thirty, and expect the last twenty to be genuinely hard.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="close"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;h2&gt;Compete in the church edition.&lt;br&gt;Coordinate in the pathway edition.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;Never let the two share a certificate, and recruit the first eight faculty from people who have</span>
+<span class="s2">already said yes to you once.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; Doing Seminary Together &amp;middot; Editions,</span>
+<span class="s2">certification, and faculty prospects &amp;middot; August 2026&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">build</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/doing-seminary-together-editions-and-faculty.html"</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">FACULTY</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="s2">"| faculty:"</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="s2">"| disciplines:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">FACULTY</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"div balance:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;div"</span><span class="p">)</span> <span class="o">-</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/div&gt;"</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/editions.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

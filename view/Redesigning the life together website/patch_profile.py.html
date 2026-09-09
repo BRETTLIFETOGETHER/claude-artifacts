@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>patch_profile.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>patch_profile.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">16 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/patch_profile.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the Pastor Profile intake: things to know, things to bring, storage, and wiring into studio and library</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="n">s</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">'page_create.py'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># ================= CSS =================</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/* canva hand-off modal */"</span><span class="p">,</span><span class="s2">"""/* pastor profile */</span>
+<span class="s2">.pp-sec{background:#fff;border:1px solid var(--line);border-radius:3px;padding:26px 30px;margin-bottom:18px}</span>
+<span class="s2">.pp-sec&gt;b{font-size:16.5px;color:var(--ink);display:block;margin-bottom:4px}</span>
+<span class="s2">.pp-sec&gt;.sub{font-size:13.5px;color:var(--mute);margin-bottom:18px;display:block}</span>
+<span class="s2">.pp-q{margin-bottom:18px}</span>
+<span class="s2">.pp-q:last-child{margin-bottom:0}</span>
+<span class="s2">.pp-priv{background:#F4F4EF;border-left:6px solid var(--lt-blue);border-radius:3px;padding:16px 20px;font-size:13.5px;color:#4A4A45;line-height:1.6;margin:0 0 22px}</span>
+<span class="s2">.pp-done{display:none;background:#EAF0E2;border-left:6px solid var(--lt-green);border-radius:3px;padding:14px 18px;font-size:14px;color:#44622C;margin-bottom:18px}</span>
+<span class="s2">.pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}</span>
+<span class="s2">@media(max-width:760px){.pp-grid{grid-template-columns:1fr}}</span>
+<span class="s2">/* canva hand-off modal */"""</span><span class="p">)</span>
+
+<span class="c1"># ================= PROFILE STAGE (before st-upload) =================</span>
+<span class="n">PROFILE_STAGE</span> <span class="o">=</span> <span class="s1">'''</span>
+<span class="s1">&lt;!-- STAGE · PASTOR PROFILE --&gt;</span>
+<span class="s1">&lt;section class="stage" id="st-pprofile"&gt;</span>
+<span class="s1">  &lt;div class="cwrap" style="max-width:860px"&gt;</span>
+<span class="s1">    &lt;span class="eyebrow"&gt;Pastor Profile · Church Intelligence&lt;/span&gt;</span>
+<span class="s1">    &lt;h2 class="mt16"&gt;Four minutes that make&lt;br&gt;everything &lt;em&gt;yours.&lt;/em&gt;&lt;/h2&gt;</span>
+<span class="s1">    &lt;p class="lede mt16"&gt;Every build gets shaped by this — your voice, your room, your outcomes. Click, don&amp;rsquo;t compose: nothing here is an essay question.&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="pp-priv mt24"&gt;&lt;b&gt;For you and you only.&lt;/b&gt; Your profile personalizes what the platform builds for you. It is never shared, never published, and never used for anything except your own builds. Every field is optional.&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="pp-done" id="ppDone"&gt;✓ Profile on file — saved on this device. Edit anything below and save again.&lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="pp-sec"&gt;</span>
+<span class="s1">      &lt;b&gt;You &amp;amp; your church&lt;/b&gt;</span>
+<span class="s1">      &lt;span class="sub"&gt;Things to know — so the build fits the room it&amp;rsquo;s walking into.&lt;/span&gt;</span>
+<span class="s1">      &lt;div class="pp-grid"&gt;</span>
+<span class="s1">        &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Your name&lt;/label&gt;&lt;input class="input" id="ppName" placeholder="Pastor Dave Miller"&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Church name&lt;/label&gt;&lt;input class="input" id="ppChurch" placeholder="Grace Community Church"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Weekly attendance&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-pp="size"&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="100 or fewer"&gt;100 or fewer&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="around 250"&gt;~250&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="around 500"&gt;~500&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="around 1,000"&gt;~1,000&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="2,500 or more"&gt;2,500+&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Tradition&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-pp="denom"&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Non-denominational"&gt;Non-denominational&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Baptist"&gt;Baptist&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Methodist / Wesleyan"&gt;Methodist / Wesleyan&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Presbyterian / Reformed"&gt;Presbyterian / Reformed&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Lutheran"&gt;Lutheran&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Pentecostal / Charismatic"&gt;Pentecostal / Charismatic&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Anglican / Episcopal"&gt;Anglican / Episcopal&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="Another tradition"&gt;Another&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Who&amp;rsquo;s in front of you most weeks?&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-pp="room"&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="mostly mature believers"&gt;Mostly mature believers&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="a mixed room"&gt;A mixed room&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="many exploring faith"&gt;Many exploring faith&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="pp-sec"&gt;</span>
+<span class="s1">      &lt;b&gt;Your teaching&lt;/b&gt;</span>
+<span class="s1">      &lt;span class="sub"&gt;Your voice, so the engine writes in it — not over it.&lt;/span&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Style &lt;span style="text-transform:none;letter-spacing:0;font-weight:400"&gt;(pick up to two)&lt;/span&gt;&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-ppm="style" data-max="2"&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="verse-by-verse"&gt;Verse-by-verse&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="topical"&gt;Topical&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="thematic series"&gt;Thematic series&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="narrative &amp; story-driven"&gt;Narrative &amp;amp; story&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="conversational"&gt;Conversational&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="bold challenge"&gt;Bold challenge&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-grid"&gt;</span>
+<span class="s1">        &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Typical sermon length&lt;/label&gt;</span>
+<span class="s1">          &lt;div class="pills" data-pp="length"&gt;</span>
+<span class="s1">            &lt;button class="pill" data-v="20–25 min"&gt;20–25&lt;/button&gt;</span>
+<span class="s1">            &lt;button class="pill" data-v="30 min"&gt;30&lt;/button&gt;</span>
+<span class="s1">            &lt;button class="pill" data-v="35–40 min"&gt;35–40&lt;/button&gt;</span>
+<span class="s1">            &lt;button class="pill" data-v="45+ min"&gt;45+&lt;/button&gt;</span>
+<span class="s1">          &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Humor&lt;/label&gt;</span>
+<span class="s1">          &lt;div class="pills" data-pp="humor"&gt;</span>
+<span class="s1">            &lt;button class="pill" data-v="none"&gt;None&lt;/button&gt;</span>
+<span class="s1">            &lt;button class="pill" data-v="a little"&gt;A little&lt;/button&gt;</span>
+<span class="s1">            &lt;button class="pill" data-v="regularly"&gt;Regularly&lt;/button&gt;</span>
+<span class="s1">          &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;How personal do you go?&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-pp="personal"&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="guarded"&gt;Guarded&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="selectively open"&gt;Selectively open&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="openly — struggles included"&gt;Openly — struggles included&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Voices that have shaped you &lt;span style="text-transform:none;letter-spacing:0;font-weight:400"&gt;(tap any, add your own)&lt;/span&gt;&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-ppm="voices" data-max="4"&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="Rick Warren"&gt;Rick Warren&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="Max Lucado"&gt;Max Lucado&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="Tony Evans"&gt;Tony Evans&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="David Jeremiah"&gt;David Jeremiah&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="Christine Caine"&gt;Christine Caine&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="Craig Groeschel"&gt;Craig Groeschel&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="Tim Keller"&gt;Tim Keller&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">        &lt;input class="input mt8" id="ppVoicesX" placeholder="Others — commentaries, mentors, theologians…"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="pp-sec"&gt;</span>
+<span class="s1">      &lt;b&gt;Your aims&lt;/b&gt;</span>
+<span class="s1">      &lt;span class="sub"&gt;Every sermon leads somewhere. Tell the engine where you&amp;rsquo;re leading.&lt;/span&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Primary outcomes &lt;span style="text-transform:none;letter-spacing:0;font-weight:400"&gt;(up to three)&lt;/span&gt;&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-ppm="outcomes" data-max="3"&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="take people deeper"&gt;Take people deeper&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="move people into groups"&gt;Move people into groups&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="mobilize for serving"&gt;Mobilize for serving&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="reach people for Christ"&gt;Reach people for Christ&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="strengthen families"&gt;Strengthen families&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="grow generosity"&gt;Grow generosity&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill multi" data-v="raise up leaders"&gt;Raise up leaders&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Gospel presentation&lt;/label&gt;</span>
+<span class="s1">        &lt;div class="pills" data-pp="gospel"&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="every week"&gt;Every week&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="when the text calls for it"&gt;When the text calls for it&lt;/button&gt;</span>
+<span class="s1">          &lt;button class="pill" data-v="rarely — discipleship focus"&gt;Rarely — discipleship focus&lt;/button&gt;</span>
+<span class="s1">        &lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="pp-sec"&gt;</span>
+<span class="s1">      &lt;b&gt;Things to bring&lt;/b&gt;</span>
+<span class="s1">      &lt;span class="sub"&gt;All optional. Links and pastes only — nothing to compose. The more you bring, the more the platform sounds like you.&lt;/span&gt;</span>
+<span class="s1">      &lt;div class="pp-grid"&gt;</span>
+<span class="s1">        &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Church website&lt;/label&gt;&lt;input class="input" id="ppWeb" placeholder="https://…"&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Sermon library link &lt;span style="text-transform:none;letter-spacing:0;font-weight:400"&gt;(YouTube, podcast, site)&lt;/span&gt;&lt;/label&gt;&lt;input class="input" id="ppLib" placeholder="https://…"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Mission, vision &amp;amp; values &lt;span style="text-transform:none;letter-spacing:0;font-weight:400"&gt;(paste as-is)&lt;/span&gt;&lt;/label&gt;</span>
+<span class="s1">        &lt;textarea class="input" id="ppMVV" rows="3" placeholder="Paste your church&amp;rsquo;s mission, vision, and values…"&gt;&lt;/textarea&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="pp-q"&gt;&lt;label class="lbl"&gt;Ten sermons that best carry your heart &lt;span style="text-transform:none;letter-spacing:0;font-weight:400"&gt;(titles or links, one per line — even three helps)&lt;/span&gt;&lt;/label&gt;</span>
+<span class="s1">        &lt;textarea class="input" id="ppTen" rows="3" placeholder="The sermons that best communicate your passion, theology, and philosophy of ministry…"&gt;&lt;/textarea&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="stage-nav" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap"&gt;</span>
+<span class="s1">      &lt;button class="btn btn-ghost" onclick="go('landing')"&gt;← Back&lt;/button&gt;</span>
+<span class="s1">      &lt;button class="btn btn-primary btn-lg" onclick="saveProfilePP()"&gt;Save my profile &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/section&gt;</span>
+
+<span class="s1">'''</span>
+<span class="n">i</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'&lt;!-- STAGE'</span><span class="p">)</span>  <span class="c1"># first stage marker? ensure insertion before upload stage</span>
+<span class="n">u</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'&lt;section class="stage" id="st-upload"'</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[:</span><span class="n">u</span><span class="p">]</span><span class="o">+</span><span class="n">PROFILE_STAGE</span><span class="o">+</span><span class="n">s</span><span class="p">[</span><span class="n">u</span><span class="p">:]</span>
+
+<span class="c1"># ================= landing button =================</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'''          &lt;a class="btn btn-ghost btn-lg" href="messages.html"&gt;No message yet? Start from the Sermon Library →&lt;/a&gt;'''</span><span class="p">,</span>
+<span class="sd">'''          &lt;a class="btn btn-ghost btn-lg" href="messages.html"&gt;No message yet? Start from the Sermon Library →&lt;/a&gt;</span>
+<span class="sd">        &lt;/div&gt;</span>
+<span class="sd">        &lt;div class="mt16"&gt;</span>
+<span class="sd">          &lt;button class="btn btn-outline" id="ppEntry" onclick="go('pprofile')"&gt;Complete your Pastor Profile · 4 minutes&lt;/button&gt;'''</span><span class="p">)</span>
+
+<span class="c1"># ================= JS: state, handlers, wiring =================</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/* ---------- prototype account layer"</span><span class="p">,</span><span class="s2">"""/* ---------- pastor profile ---------- */</span>
+<span class="s2">function ppGet(){try{return JSON.parse(localStorage.getItem('lt_pastor_profile')||'null')}catch(e){return null}}</span>
+<span class="s2">const PP={name:'',church:'',size:'',denom:'',room:'',style:[],length:'',humor:'',personal:'',voices:[],voicesx:'',outcomes:[],gospel:'',web:'',lib:'',mvv:'',ten:''};</span>
+<span class="s2">function saveProfilePP(){</span>
+<span class="s2">  PP.name=v('ppName');PP.church=v('ppChurch');PP.voicesx=v('ppVoicesX');</span>
+<span class="s2">  PP.web=v('ppWeb');PP.lib=v('ppLib');PP.mvv=v('ppMVV');PP.ten=v('ppTen');</span>
+<span class="s2">  localStorage.setItem('lt_pastor_profile',JSON.stringify({...PP,date:new Date().toISOString()}));</span>
+<span class="s2">  ppSync();go('landing');</span>
+<span class="s2">  function v(id){return (document.getElementById(id)||</span><span class="si">{}</span><span class="s2">).value?.trim()||''}</span>
+<span class="s2">}</span>
+<span class="s2">function ppSync(){</span>
+<span class="s2">  const p=ppGet();</span>
+<span class="s2">  const e=document.getElementById('ppEntry');</span>
+<span class="s2">  const d=document.getElementById('ppDone');</span>
+<span class="s2">  if(!p)return;</span>
+<span class="s2">  if(e){e.textContent='</span><span class="se">\\</span><span class="s2">u2713 Pastor Profile on file </span><span class="se">\\</span><span class="s2">u2014 edit';e.classList.remove('btn-outline');e.classList.add('btn-gold');}</span>
+<span class="s2">  if(d)d.style.display='block';</span>
+<span class="s2">  Object.assign(PP,p);</span>
+<span class="s2">  const set=(id,val)=&gt;{const el=document.getElementById(id);if(el)el.value=val||''};</span>
+<span class="s2">  set('ppName',p.name);set('ppChurch',p.church);set('ppVoicesX',p.voicesx);</span>
+<span class="s2">  set('ppWeb',p.web);set('ppLib',p.lib);set('ppMVV',p.mvv);set('ppTen',p.ten);</span>
+<span class="s2">  document.querySelectorAll('[data-pp]').forEach(g=&gt;{</span>
+<span class="s2">    g.querySelectorAll('.pill').forEach(b=&gt;b.classList.toggle('sel',b.dataset.v===p[g.dataset.pp]));</span>
+<span class="s2">  });</span>
+<span class="s2">  document.querySelectorAll('[data-ppm]').forEach(g=&gt;{</span>
+<span class="s2">    const arr=p[g.dataset.ppm]||[];</span>
+<span class="s2">    g.querySelectorAll('.pill').forEach(b=&gt;b.classList.toggle('sel',arr.includes(b.dataset.v)));</span>
+<span class="s2">  });</span>
+<span class="s2">}</span>
+<span class="s2">document.addEventListener('DOMContentLoaded',()=&gt;{</span>
+<span class="s2">  document.querySelectorAll('[data-pp]').forEach(g=&gt;{</span>
+<span class="s2">    g.querySelectorAll('.pill').forEach(b=&gt;b.addEventListener('click',()=&gt;{</span>
+<span class="s2">      g.querySelectorAll('.pill').forEach(x=&gt;x.classList.remove('sel'));</span>
+<span class="s2">      b.classList.add('sel');PP[g.dataset.pp]=b.dataset.v;</span>
+<span class="s2">    }));</span>
+<span class="s2">  });</span>
+<span class="s2">  document.querySelectorAll('[data-ppm]').forEach(g=&gt;{</span>
+<span class="s2">    const max=+g.dataset.max||9;</span>
+<span class="s2">    g.querySelectorAll('.pill').forEach(b=&gt;b.addEventListener('click',()=&gt;{</span>
+<span class="s2">      const k=g.dataset.ppm;PP[k]=PP[k]||[];</span>
+<span class="s2">      if(b.classList.contains('sel')){b.classList.remove('sel');PP[k]=PP[k].filter(x=&gt;x!==b.dataset.v);}</span>
+<span class="s2">      else{if(PP[k].length&gt;=max){const f=PP[k].shift();const fb=g.querySelector(`[data-v="$</span><span class="si">{f}</span><span class="s2">"]`);if(fb)fb.classList.remove('sel');}</span>
+<span class="s2">        b.classList.add('sel');PP[k].push(b.dataset.v);}</span>
+<span class="s2">    }));</span>
+<span class="s2">  });</span>
+<span class="s2">  ppSync();</span>
+<span class="s2">  const q=new URLSearchParams(location.search);</span>
+<span class="s2">  if(q.get('profile')) go('pprofile');</span>
+<span class="s2">});</span>
+
+<span class="s2">/* ---------- prototype account layer"""</span><span class="p">)</span>
+
+<span class="c1"># prefs prefill from profile + analysis chip</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""function goPrefs(){"""</span><span class="p">,</span><span class="s2">"""function goPrefs(){</span>
+<span class="s2">  const p=ppGet();</span>
+<span class="s2">  if(p){</span>
+<span class="s2">    if(p.church&amp;&amp;!document.getElementById('pChurch').value)document.getElementById('pChurch').value=p.church;</span>
+<span class="s2">    if(p.name&amp;&amp;!document.getElementById('pPastor').value)document.getElementById('pPastor').value=p.name;</span>
+<span class="s2">  }"""</span><span class="p">)</span> <span class="k">if</span> <span class="s2">"function goPrefs(){"</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">else</span> <span class="n">s</span>
+
+<span class="c1"># analysis screen chip</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""  document.getElementById('aTone').textContent=analysis.tone;"""</span><span class="p">,</span>
+<span class="sd">"""  document.getElementById('aTone').textContent=analysis.tone;</span>
+<span class="sd">  try{</span>
+<span class="sd">    const p=ppGet();</span>
+<span class="sd">    const host=document.getElementById('aTone').parentElement;</span>
+<span class="sd">    let chip=document.getElementById('ppChip');</span>
+<span class="sd">    if(p&amp;&amp;!chip){</span>
+<span class="sd">      chip=document.createElement('p');chip.id='ppChip';chip.className='mt8';</span>
+<span class="sd">      chip.innerHTML=`&lt;span class="chip gold"&gt;\\u2713 Pastor Profile applied&lt;/span&gt; &lt;span class="small"&gt;${[p.style&amp;&amp;p.style.length?p.style.join(' + '):null,p.humor?p.humor+' humor':null,p.room||null].filter(Boolean).join(' \\u00b7 ')} \\u2014 the platform engine reads the full profile.&lt;/span&gt;`;</span>
+<span class="sd">      host.appendChild(chip);</span>
+<span class="sd">    }</span>
+<span class="sd">  }catch(e){}"""</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="s1">'page_create.py'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"profile stage installed"</span><span class="p">)</span>
+
+<span class="c1"># ================= LIBRARY: profile card =================</span>
+<span class="n">s</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">'page_account.py'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""  &lt;div class="lib-sec"&gt;</span>
+<span class="s2">    &lt;div class="sh"&gt;&lt;h3&gt;My path&lt;/h3&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div id="pathHost"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;"""</span><span class="p">,</span><span class="s2">"""  &lt;div class="lib-sec"&gt;</span>
+<span class="s2">    &lt;div class="sh"&gt;&lt;h3&gt;My path&lt;/h3&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div id="pathHost"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="lib-sec"&gt;</span>
+<span class="s2">    &lt;div class="sh"&gt;&lt;h3&gt;Pastor Profile&lt;/h3&gt;&lt;span class="small"&gt;For you and you only — shapes every build&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div id="ppHost"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;"""</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"""  // best of shelf"""</span><span class="p">,</span><span class="s2">"""  // pastor profile card</span>
+<span class="s2">  const pp=JSON.parse(localStorage.getItem('lt_pastor_profile')||'null');</span>
+<span class="s2">  document.getElementById('ppHost').innerHTML = pp ? `</span>
+<span class="s2">    &lt;div class="pathcard"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b style="font-size:16.5px;color:var(--ink)"&gt;✓ Profile on file${pp.church?' · '+pp.church:''}&lt;/b&gt;</span>
+<span class="s2">      &lt;div class="small" style="margin-top:4px"&gt;${[pp.style&amp;&amp;pp.style.length?pp.style.join(' + '):null,pp.size||null,pp.room||null,(pp.outcomes&amp;&amp;pp.outcomes.length?('aims: '+pp.outcomes.join(', ')):null)].filter(Boolean).join(' · ')||'Saved'}&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;a class="btn btn-outline btn-sm" href="create.html?profile=1"&gt;Edit profile&lt;/a&gt;</span>
+<span class="s2">    &lt;/div&gt;` : `</span>
+<span class="s2">    &lt;div class="empty"&gt;No profile yet. &lt;a href="create.html?profile=1"&gt;Four minutes of clicks&lt;/a&gt; makes every build sound like you — your voice, your room, your outcomes.&lt;/div&gt;`;</span>
+<span class="s2">  // best of shelf"""</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s1">'page_account.py'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"library profile card"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/patch_profile.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

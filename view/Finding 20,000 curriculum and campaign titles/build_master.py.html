@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_master.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Finding 20,000 curriculum and campaign titles</div>
+<h1>build_master.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">20 KB</span>
+<a class="btn" href="../../artifacts/Finding%2020%2C000%20curriculum%20and%20campaign%20titles/build_master.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Render the unified master file with three-level drill-down and the devotional delivery system</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">DATA</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">'/home/claude/work/master_payload.json'</span><span class="p">))</span>
+<span class="n">NCAT</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">DATA</span><span class="p">[</span><span class="s2">"cats"</span><span class="p">])</span>
+<span class="n">NTIT</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s2">"i"</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s2">"t"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">DATA</span><span class="p">[</span><span class="s2">"cats"</span><span class="p">])</span>
+<span class="n">NSERM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">DATA</span><span class="p">[</span><span class="s2">"sermons"</span><span class="p">])</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--navy:#101a33;--navy-2:#16213d;--navy-3:#1c2a4a;--gold:#b8934e;</span>
+<span class="s2">--gold-lt:#d9bc82;--cream:#f7f3ea;--rule:rgba(184,147,78,.28)}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--navy);color:var(--cream);</span>
+<span class="s2">font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.65;</span>
+<span class="s2">-webkit-text-size-adjust:100%}</span>
+<span class="s2">.wrap{max-width:860px;margin:0 auto;padding:0 22px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:600;line-height:1.15;margin:0}</span>
+<span class="s2">.label{font-family:'Lato',system-ui,sans-serif;font-size:11px;letter-spacing:.22em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);font-weight:700}</span>
+<span class="s2">.cover{padding:54px 0 38px;text-align:center;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.cover .label{display:block;margin-bottom:16px}</span>
+<span class="s2">.cover h1{font-size:42px}</span>
+<span class="s2">.cover h1 em{display:block;font-style:italic;font-size:22px;color:var(--gold-lt);margin-top:9px;font-weight:400}</span>
+<span class="s2">.cover .dek{font-size:19px;color:#e6dfd0;margin:16px auto 0;max-width:580px}</span>
+<span class="s2">.stats{display:flex;gap:1px;background:var(--rule);border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.stat{flex:1;min-width:0;background:var(--navy);padding:18px 6px;text-align:center}</span>
+<span class="s2">.stat b{display:block;font-family:'Playfair Display',serif;font-size:27px;color:var(--gold-lt)}</span>
+<span class="s2">.stat span{font-family:'Lato',sans-serif;font-size:9px;letter-spacing:.12em;</span>
+<span class="s2">text-transform:uppercase;color:#b9b0a0}</span>
+<span class="s2">.tabs{position:sticky;top:0;z-index:30;background:var(--navy-3);</span>
+<span class="s2">border-bottom:1px solid var(--rule);overflow-x:auto;-webkit-overflow-scrolling:touch}</span>
+<span class="s2">.tabs .inner{display:flex;max-width:860px;margin:0 auto;padding:0 12px}</span>
+<span class="s2">.tab{flex:0 0 auto;background:none;border:0;color:#b9b0a0;font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:15px 14px;cursor:pointer;</span>
+<span class="s2">border-bottom:2px solid transparent;white-space:nowrap;font-weight:700}</span>
+<span class="s2">.tab.on{color:var(--gold-lt);border-bottom-color:var(--gold)}</span>
+<span class="s2">.srch{padding:12px 0;border-bottom:1px solid var(--rule);background:var(--navy-2)}</span>
+<span class="s2">.srch input{width:100%;background:var(--navy);color:var(--cream);border:1px solid var(--rule);</span>
+<span class="s2">border-radius:2px;padding:11px 14px;font-family:'Cormorant Garamond',serif;font-size:18px}</span>
+<span class="s2">.srch input::placeholder{color:#8d8579}</span>
+<span class="s2">#view{padding:30px 0 70px}</span>
+<span class="s2">.lead{color:#e6dfd0;margin:0 0 20px;font-size:19px}</span>
+<span class="s2">.crumb{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">color:#8d8579;margin-bottom:14px}</span>
+<span class="s2">.back{background:none;border:1px solid var(--rule);color:var(--gold-lt);font-family:'Lato',sans-serif;</span>
+<span class="s2">font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:9px 16px;cursor:pointer;</span>
+<span class="s2">margin-bottom:20px;font-weight:700}</span>
+<span class="s2">.vol{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);padding:26px 0 8px;border-bottom:1px solid var(--rule);font-weight:700}</span>
+<span class="s2">.item{display:flex;gap:13px;align-items:baseline;padding:15px 2px;</span>
+<span class="s2">border-bottom:1px solid rgba(184,147,78,.14);cursor:pointer}</span>
+<span class="s2">.item:hover .iname{color:var(--gold-lt)}</span>
+<span class="s2">.item .inum{font-family:'Lato',sans-serif;font-size:11px;color:var(--gold);min-width:26px;flex-shrink:0}</span>
+<span class="s2">.item .ibody</span><span class="si">{flex:1}</span>
+<span class="s2">.item .iname{font-family:'Playfair Display',serif;font-size:21px;line-height:1.25}</span>
+<span class="s2">.item .isub{color:#a9a094;font-size:17px;margin-top:3px;line-height:1.4}</span>
+<span class="s2">.item .c{font-family:'Lato',sans-serif;font-size:11px;color:#9d958a;flex-shrink:0}</span>
+<span class="s2">.item .arrow{color:var(--gold);font-size:19px;flex-shrink:0}</span>
+<span class="s2">.item.hide{display:none}</span>
+<span class="s2">.dh h2{font-size:33px}</span>
+<span class="s2">.dh .df{font-style:italic;color:#c8c0b2;font-size:19px;margin-top:7px}</span>
+<span class="s2">.intro{margin-top:18px;color:#e9e2d4;font-size:19px}</span>
+<span class="s2">.xp{margin-top:20px;background:var(--navy-2);border-left:2px solid var(--gold);padding:16px 20px}</span>
+<span class="s2">.xp b{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);display:block;margin-bottom:6px;font-weight:700}</span>
+<span class="s2">.xp span{color:#ded6c6;font-size:18px}</span>
+<span class="s2">.hinge{margin-top:18px;border:1px solid var(--rule)}</span>
+<span class="s2">.hrow{display:flex;gap:14px;padding:11px 18px;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.hrow:last-child{border-bottom:0}</span>
+<span class="s2">.hrow .k{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold-lt);min-width:120px;flex-shrink:0;padding-top:3px}</span>
+<span class="s2">.hrow .v{flex:1;color:#e6dfd0;font-size:17px}</span>
+<span class="s2">.trk{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold-lt);font-style:italic;</span>
+<span class="s2">margin-top:26px;padding-bottom:6px;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.meta{margin-top:18px;border-top:1px solid rgba(184,147,78,.18);</span>
+<span class="s2">border-bottom:1px solid rgba(184,147,78,.18);padding:13px 0}</span>
+<span class="s2">.row{display:flex;gap:13px;padding:6px 0;align-items:baseline}</span>
+<span class="s2">.row .k{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);min-width:76px;flex-shrink:0}</span>
+<span class="s2">.row .v{flex:1;color:#efe9dc}</span>
+<span class="s2">.row .v.idea{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold-lt);font-style:italic;line-height:1.35}</span>
+<span class="s2">.sec{margin-top:28px}</span>
+<span class="s2">.sec .sh{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);border-bottom:1px solid var(--rule);padding-bottom:9px;margin-bottom:6px;font-weight:700}</span>
+<span class="s2">.sec .shn{font-family:'Cormorant Garamond',serif;font-size:17px;color:#9d958a;</span>
+<span class="s2">text-transform:none;letter-spacing:0;font-weight:400;display:block;margin-top:6px;font-style:italic}</span>
+<span class="s2">.mov{display:flex;gap:13px;padding:10px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.mov .mn{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);min-width:22px;flex-shrink:0}</span>
+<span class="s2">.mov .mt{flex:1;color:#e6dfd0;font-size:18px}</span>
+<span class="s2">.day{display:flex;gap:13px;padding:11px 0;border-bottom:1px solid rgba(184,147,78,.12)}</span>
+<span class="s2">.day .dn{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.14em;color:var(--gold);</span>
+<span class="s2">min-width:50px;flex-shrink:0;padding-top:5px}</span>
+<span class="s2">.day .dt{font-family:'Playfair Display',serif;font-size:19px}</span>
+<span class="s2">.day .ds{color:#b6ac9d;font-size:17px;margin-top:2px;line-height:1.4}</span>
+<span class="s2">.draft{margin-top:8px;background:var(--navy-2);border:1px solid var(--rule);padding:24px}</span>
+<span class="s2">.draft p{margin:0 0 15px;color:#e9e2d4;font-size:18px;line-height:1.72}</span>
+<span class="s2">.draft p:last-child{margin-bottom:0}</span>
+<span class="s2">.draft p.slot{color:var(--gold);font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.12em;</span>
+<span class="s2">text-transform:uppercase;border-left:2px solid var(--gold);padding-left:14px;font-weight:700}</span>
+<span class="s2">.ships{margin-top:30px;border:2px solid var(--gold);background:var(--navy-2)}</span>
+<span class="s2">.ships .sht{font-family:'Playfair Display',serif;font-size:23px;color:var(--gold-lt);padding:20px 22px 5px}</span>
+<span class="s2">.ships .shs{padding:0 22px 14px;color:#c3bbad;font-size:17px}</span>
+<span class="s2">.ships .tier{border-top:1px solid var(--rule);padding:15px 22px}</span>
+<span class="s2">.ships .tn{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);font-weight:700;margin-bottom:7px}</span>
+<span class="s2">.ships ul{margin:0;padding-left:18px;color:#ded6c6}</span>
+<span class="s2">.ships li{margin-bottom:6px;font-size:17px}</span>
+<span class="s2">.card{border:1px solid var(--rule);background:var(--navy-2);padding:22px;margin-top:20px}</span>
+<span class="s2">.card h3{font-size:22px;color:var(--gold-lt)}</span>
+<span class="s2">.card p{margin-top:10px;color:#ded6c6;font-size:18px}</span>
+<span class="s2">.step{padding:18px 0;border-bottom:1px solid rgba(184,147,78,.14)}</span>
+<span class="s2">.step h4{font-size:21px;color:var(--gold-lt)}</span>
+<span class="s2">.step p{margin-top:7px;color:#ded6c6;font-size:18px}</span>
+<span class="s2">.mail{padding:16px 0;border-bottom:1px solid rgba(184,147,78,.13)}</span>
+<span class="s2">.mail .mh{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">color:var(--gold);margin-bottom:5px}</span>
+<span class="s2">.mail .ms{font-family:'Playfair Display',serif;font-size:19px}</span>
+<span class="s2">.mail .mb{color:#ded6c6;font-size:17px;margin-top:6px;line-height:1.55}</span>
+<span class="s2">footer{padding:32px 0 56px;text-align:center;font-family:'Lato',sans-serif;font-size:11px;</span>
+<span class="s2">letter-spacing:.14em;text-transform:uppercase;color:#8d8579;border-top:1px solid var(--rule)}</span>
+<span class="s2">@media(max-width:620px){</span>
+<span class="s2">body{font-size:18px}.cover h1{font-size:29px}.cover h1 em{font-size:18px}</span>
+<span class="s2">.dh h2{font-size:25px}.item .iname{font-size:20px}.stat b{font-size:22px}</span>
+<span class="s2">.row{flex-direction:column;gap:2px}.row .k{min-width:0}</span>
+<span class="s2">.hrow{flex-direction:column;gap:3px}.hrow .k{min-width:0}</span>
+<span class="s2">.day{flex-direction:column;gap:2px}.day .dn{min-width:0}</span>
+<span class="s2">.draft{padding:18px}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="n">JS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">var D = window.__M__;</span>
+<span class="s2">var st = {tab:'lib', cat:null, serm:null};</span>
+
+<span class="s2">function sermonFor(name){</span>
+<span class="s2">  for (var i = 0; i &lt; D.sermons.length; i++){</span>
+<span class="s2">    if (D.sermons[i].t === name){ return i; }</span>
+<span class="s2">  }</span>
+<span class="s2">  return -1;</span>
+<span class="s2">}</span>
+
+<span class="s2">function catList(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Forty-eight categories. Tap one to read what it is for, how to make it memorable, and every message inside it.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="srch"&gt;&lt;input id="q" type="search" placeholder="Search categories&amp;hellip;" autocomplete="off"&gt;&lt;/div&gt;';</span>
+<span class="s2">  var vol = '';</span>
+<span class="s2">  for (var i = 0; i &lt; D.cats.length; i++){</span>
+<span class="s2">    var c = D.cats[i], n = 0;</span>
+<span class="s2">    for (var t = 0; t &lt; c.t.length; t++){ n += c.t[t].i.length; }</span>
+<span class="s2">    if (c.v !== vol){ vol = c.v; h += '&lt;div class="vol"&gt;' + vol + '&lt;/div&gt;'; }</span>
+<span class="s2">    h += '&lt;div class="item cat" data-i="' + i + '" data-s="' + (c.n + ' ' + c.e).toLowerCase().replace(/"/g, '') + '"&gt;';</span>
+<span class="s2">    h += '&lt;span class="ibody"&gt;&lt;span class="iname"&gt;' + c.n + '&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="isub"&gt;' + c.e + '&lt;/span&gt;&lt;/span&gt;';</span>
+<span class="s2">    h += '&lt;span class="c"&gt;' + n + '&lt;/span&gt;&lt;span class="arrow"&gt;&amp;rsaquo;&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function catDetail(i){</span>
+<span class="s2">  var c = D.cats[i];</span>
+<span class="s2">  var h = '&lt;button class="back" id="bk"&gt;&amp;larr; All categories&lt;/button&gt;';</span>
+<span class="s2">  h += '&lt;div class="crumb"&gt;' + c.v + '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="dh"&gt;&lt;h2&gt;' + c.n + '&lt;/h2&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;p class="intro"&gt;' + c.e + '&lt;/p&gt;';</span>
+<span class="s2">  if (c.x){ h += '&lt;div class="xp"&gt;&lt;b&gt;Make it an experience&lt;/b&gt;&lt;span&gt;' + c.x + '&lt;/span&gt;&lt;/div&gt;'; }</span>
+<span class="s2">  if (c.h){</span>
+<span class="s2">    h += '&lt;div class="hinge"&gt;';</span>
+<span class="s2">    var keys = [['Rolls into','roll'],['Giving moment','give'],['Gospel moment','gospel'],['Call to action','act']];</span>
+<span class="s2">    for (var k = 0; k &lt; keys.length; k++){</span>
+<span class="s2">      h += '&lt;div class="hrow"&gt;&lt;div class="k"&gt;' + keys[k][0] + '&lt;/div&gt;&lt;div class="v"&gt;' + c.h[keys[k][1]] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">    }</span>
+<span class="s2">    h += '&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  for (var t = 0; t &lt; c.t.length; t++){</span>
+<span class="s2">    var tr = c.t[t];</span>
+<span class="s2">    if (tr.n){ h += '&lt;div class="trk"&gt;' + tr.n + '&lt;/div&gt;'; }</span>
+<span class="s2">    else { h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;' + tr.i.length + ' messages&lt;/div&gt;&lt;/div&gt;'; }</span>
+<span class="s2">    for (var j = 0; j &lt; tr.i.length; j++){</span>
+<span class="s2">      var si = sermonFor(tr.i[j][0]);</span>
+<span class="s2">      h += '&lt;div class="item' + (si &gt;= 0 ? ' serm' : '') + '"' + (si &gt;= 0 ? ' data-s2="' + si + '"' : '') + '&gt;';</span>
+<span class="s2">      h += '&lt;span class="inum"&gt;' + (j &lt; 9 ? '0' : '') + (j + 1) + '&lt;/span&gt;';</span>
+<span class="s2">      h += '&lt;span class="ibody"&gt;&lt;span class="iname"&gt;' + tr.i[j][0] + '&lt;/span&gt;';</span>
+<span class="s2">      h += '&lt;span class="isub"&gt;' + tr.i[j][1] + '&lt;/span&gt;&lt;/span&gt;';</span>
+<span class="s2">      if (si &gt;= 0){ h += '&lt;span class="c"&gt;Built&lt;/span&gt;&lt;span class="arrow"&gt;&amp;rsaquo;&lt;/span&gt;'; }</span>
+<span class="s2">      h += '&lt;/div&gt;';</span>
+<span class="s2">    }</span>
+<span class="s2">  }</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function shipsBlock(exp){</span>
+<span class="s2">  var h = '&lt;div class="ships"&gt;&lt;div class="sht"&gt;If you download this message&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="shs"&gt;Twenty-five components in five tiers, plus the experiential ideas written for this message specifically.&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The message&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Full outline and the complete sermon draft above, as an editable document&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Landing lines written out: opening, transitions, and the last sentence&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Illustration slots, plus the excavation prompts that surface your own story&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Cross-purpose Scripture &amp;mdash; four passages that illustrate the same idea&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Deeper study: exegetical notes and the commentary you did not have time for&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The experience &amp;mdash; written for this message&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; exp.length; i++){ h += '&lt;li&gt;' + exp[i] + '&lt;/li&gt;'; }</span>
+<span class="s2">  h += '&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The service&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Run sheet &amp;mdash; minute by minute, with timings and handoffs&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;PowerPoint and Keynote decks, title and lower-third graphics&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Cold open script, sixty seconds&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Worship set suggestions keyed to the big idea, in singable keys&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Prayer guide for the service and for the household&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The response&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Bulletin insert, print-ready&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Commitment card, signed and collected in the room&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Invitation card and the three invite scripts&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Follow-up sequence: four texts or emails across the week&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;What to count &amp;mdash; the numbers that tell you it worked&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="tier"&gt;&lt;div class="tn"&gt;The week&lt;/div&gt;&lt;ul&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Seven-day devotional, print and digital&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Seven iPhone video scripts and the seven pastor emails&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Printable participant journal, ready for a local printer&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Small group session with next steps for the person, family, and group&lt;/li&gt;';</span>
+<span class="s2">  h += '&lt;li&gt;Kids and student versions of the same big idea&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;';</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function sermDetail(i){</span>
+<span class="s2">  var s = D.sermons[i];</span>
+<span class="s2">  var h = '&lt;button class="back" id="bk2"&gt;&amp;larr; Back to ' + s.cat + '&lt;/button&gt;';</span>
+<span class="s2">  h += '&lt;div class="crumb"&gt;' + s.cat + '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="dh"&gt;&lt;h2&gt;' + s.t + '&lt;/h2&gt;&lt;p class="df"&gt;' + s.s + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="meta"&gt;&lt;div class="row"&gt;&lt;div class="k"&gt;Text&lt;/div&gt;&lt;div class="v"&gt;' + s.x + ' (NIV)&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="row"&gt;&lt;div class="k"&gt;Big idea&lt;/div&gt;&lt;div class="v idea"&gt;' + s.b + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;The outline&lt;/div&gt;';</span>
+<span class="s2">  for (var m = 0; m &lt; s.m.length; m++){</span>
+<span class="s2">    h += '&lt;div class="mov"&gt;&lt;div class="mn"&gt;' + (m + 1) + '&lt;/div&gt;&lt;div class="mt"&gt;' + s.m[m] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  if (s.draft &amp;&amp; s.draft.length){</span>
+<span class="s2">    h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;The draft';</span>
+<span class="s2">    h += '&lt;span class="shn"&gt;The spine, written out. Roughly fifteen minutes as it stands. The bracketed slots are yours &amp;mdash; drop your own stories in and it becomes a thirty-minute message in your voice.&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="draft"&gt;';</span>
+<span class="s2">    for (var p = 0; p &lt; s.draft.length; p++){</span>
+<span class="s2">      var txt = s.draft[p];</span>
+<span class="s2">      var isSlot = txt.charAt(0) === '[';</span>
+<span class="s2">      h += '&lt;p' + (isSlot ? ' class="slot"' : '') + '&gt;' + txt + '&lt;/p&gt;';</span>
+<span class="s2">    }</span>
+<span class="s2">    h += '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;Where the week goes &amp;mdash; the seven daily devotions&lt;/div&gt;';</span>
+<span class="s2">  for (var d = 0; d &lt; s.dev.length; d++){</span>
+<span class="s2">    h += '&lt;div class="day"&gt;&lt;div class="dn"&gt;Day ' + (d + 1) + '&lt;/div&gt;&lt;div&gt;';</span>
+<span class="s2">    h += '&lt;div class="dt"&gt;' + s.dev[d][0] + '&lt;/div&gt;&lt;div class="ds"&gt;' + s.dev[d][1] + '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  h += shipsBlock(s.exp);</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+
+<span class="s2">function studioView(){</span>
+<span class="s2">  var h = '&lt;p class="lead"&gt;Seven daily videos, shot in one sitting, delivered by email in the pastor</span><span class="se">\\</span><span class="s2">'s own voice. The written devotional, the video scripts and these emails are one asset in three formats &amp;mdash; written once, shipped three ways.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;The five-step setup&lt;span class="shn"&gt;Do steps one and two once. Steps three through five repeat every week and take ninety minutes.&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  for (var i = 0; i &lt; D.delivery.steps.length; i++){</span>
+<span class="s2">    h += '&lt;div class="step"&gt;&lt;h4&gt;' + D.delivery.steps[i][0] + '&lt;/h4&gt;&lt;p&gt;' + D.delivery.steps[i][1] + '&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;The six beats, ninety seconds each&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Verse&lt;/strong&gt; read, not paraphrased, ten seconds. &lt;strong&gt;Story&lt;/strong&gt; &amp;mdash; yours, one scene, thirty seconds. &lt;strong&gt;Teaching&lt;/strong&gt;, twenty-five. &lt;strong&gt;Application&lt;/strong&gt;, ten. &lt;strong&gt;Next step&lt;/strong&gt; &amp;mdash; something done today, ten. &lt;strong&gt;Prayer&lt;/strong&gt;, one or two sentences, short enough to pray along with.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="card"&gt;&lt;h3&gt;It has to come from him&lt;/h3&gt;&lt;p&gt;A devotional that arrives from the church sounds like a program. The same devotional arriving from a pastor with two sentences of his own on top sounds like a person who read it first and thought of you. That difference is worth more than production value, and it costs about four minutes a week.&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;p&gt;The system generates the email &amp;mdash; sermon title, the day</span><span class="se">\\</span><span class="s2">'s devotional, the video &amp;mdash; and leaves one field blank. He writes two sentences. That is the entire ask, and it is the only part nobody can do for him.&lt;/p&gt;&lt;/div&gt;';</span>
+<span class="s2">  h += '&lt;div class="sec"&gt;&lt;div class="sh"&gt;Seven pastor emails, drafted&lt;span class="shn"&gt;From the week built on &lt;em&gt;He</span><span class="se">\\</span><span class="s2">'s Not Where You Left Him&lt;/em&gt;. These are drafts in his voice to react to, not templates to send as written.&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  for (var e = 0; e &lt; D.delivery.emails.length; e++){</span>
+<span class="s2">    var m = D.delivery.emails[e];</span>
+<span class="s2">    h += '&lt;div class="mail"&gt;&lt;div class="mh"&gt;Day ' + m[0] + ' &amp;middot; sends 6:00 a.m.&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="ms"&gt;Subject: ' + m[1] + '&lt;/div&gt;';</span>
+<span class="s2">    h += '&lt;div class="mb"&gt;' + m[2] + '&lt;/div&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  return h + '&lt;/div&gt;';</span>
+<span class="s2">}</span>
+
+<span class="s2">function render(){</span>
+<span class="s2">  var v = document.getElementById('view'), h = '';</span>
+<span class="s2">  if (st.tab === 'studio'){ h = studioView(); }</span>
+<span class="s2">  else if (st.serm !== null){ h = sermDetail(st.serm); }</span>
+<span class="s2">  else if (st.cat !== null){ h = catDetail(st.cat); }</span>
+<span class="s2">  else { h = catList(); }</span>
+<span class="s2">  v.innerHTML = '&lt;div class="wrap"&gt;' + h + '&lt;/div&gt;';</span>
+<span class="s2">  window.scrollTo(0, 0);</span>
+<span class="s2">  var cs = v.querySelectorAll('.item.cat');</span>
+<span class="s2">  for (var i = 0; i &lt; cs.length; i++){</span>
+<span class="s2">    cs[i].onclick = function(){ st.cat = parseInt(this.getAttribute('data-i'), 10); st.serm = null; render(); };</span>
+<span class="s2">  }</span>
+<span class="s2">  var ss = v.querySelectorAll('.item.serm');</span>
+<span class="s2">  for (var j = 0; j &lt; ss.length; j++){</span>
+<span class="s2">    ss[j].onclick = function(){ st.serm = parseInt(this.getAttribute('data-s2'), 10); render(); };</span>
+<span class="s2">  }</span>
+<span class="s2">  var b1 = document.getElementById('bk');</span>
+<span class="s2">  if (b1){ b1.onclick = function(){ st.cat = null; render(); }; }</span>
+<span class="s2">  var b2 = document.getElementById('bk2');</span>
+<span class="s2">  if (b2){ b2.onclick = function(){ st.serm = null; render(); }; }</span>
+<span class="s2">  var q = document.getElementById('q');</span>
+<span class="s2">  if (q){</span>
+<span class="s2">    q.oninput = function(){</span>
+<span class="s2">      var val = q.value.toLowerCase().trim();</span>
+<span class="s2">      var its = v.querySelectorAll('.item.cat');</span>
+<span class="s2">      for (var k = 0; k &lt; its.length; k++){</span>
+<span class="s2">        var ok = (val === '' || its[k].getAttribute('data-s').indexOf(val) !== -1);</span>
+<span class="s2">        if (ok){ its[k].classList.remove('hide'); } else { its[k].classList.add('hide'); }</span>
+<span class="s2">      }</span>
+<span class="s2">    };</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+
+<span class="s2">var tabs = document.querySelectorAll('.tab');</span>
+<span class="s2">for (var t = 0; t &lt; tabs.length; t++){</span>
+<span class="s2">  tabs[t].onclick = function(){</span>
+<span class="s2">    for (var k = 0; k &lt; tabs.length; k++){ tabs[k].classList.remove('on'); }</span>
+<span class="s2">    this.classList.add('on');</span>
+<span class="s2">    st.tab = this.getAttribute('data-t');</span>
+<span class="s2">    st.cat = null; st.serm = null;</span>
+<span class="s2">    render();</span>
+<span class="s2">  };</span>
+<span class="s2">}</span>
+<span class="s2">render();</span>
+<span class="s2">"""</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;title&gt;Catalytic Sundays &amp;mdash; The Master File | LifeTogether&lt;/title&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;style&gt;'</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s1">'&lt;/style&gt;&lt;/head&gt;&lt;body&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="wrap cover"&gt;&lt;span class="label"&gt;LifeTogether &amp;middot; The Master File&lt;/span&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;h1&gt;Catalytic Sundays&lt;em&gt;Every category. Every message. All the way down.&lt;/em&gt;&lt;/h1&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;p class="dek"&gt;Tap a category to see what it is for. Tap a message to see the outline, the draft, and what arrives when you download it.&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stats"&gt;'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">NCAT</span><span class="p">,</span> <span class="s2">"Categories"</span><span class="p">),</span> <span class="p">(</span><span class="n">NTIT</span><span class="p">,</span> <span class="s2">"Messages"</span><span class="p">),</span> <span class="p">(</span><span class="n">NSERM</span><span class="p">,</span> <span class="s2">"Full Drafts"</span><span class="p">),</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="s2">"Kit Parts"</span><span class="p">)]:</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="stat"&gt;&lt;b&gt;'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;&lt;span&gt;'</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">'&lt;/span&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;div class="tabs"&gt;&lt;div class="inner"&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;button class="tab on" data-t="lib"&gt;The Library&lt;/button&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;button class="tab" data-t="studio"&gt;Devotional Studio&lt;/button&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;/div&gt;&lt;/div&gt;&lt;div id="view"&gt;&lt;/div&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; Catalytic Sundays &amp;middot; The Master File &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NCAT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Categories &amp;middot; '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NTIT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' Messages&lt;/div&gt;&lt;/footer&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;script&gt;window.__M__ = '</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">DATA</span><span class="p">)</span> <span class="o">+</span> <span class="s1">';&lt;/script&gt;'</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&lt;script&gt;'</span> <span class="o">+</span> <span class="n">JS</span> <span class="o">+</span> <span class="s1">'&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;'</span><span class="p">)</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'/mnt/user-data/outputs/catalytic-sundays-MASTER.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"categories:"</span><span class="p">,</span> <span class="n">NCAT</span><span class="p">,</span> <span class="s2">"messages:"</span><span class="p">,</span> <span class="n">NTIT</span><span class="p">,</span> <span class="s2">"drafts:"</span><span class="p">,</span> <span class="n">NSERM</span><span class="p">,</span> <span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build_master.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

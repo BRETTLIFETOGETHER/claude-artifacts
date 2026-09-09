@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>model.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>model.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">23 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/model.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Business model document for certificate-of-completion-only, plus the faculty model and denominational editions</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Doing Seminary Together — the business model when you never sell a degree."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--ink:#0c1723;--ink2:#08111c;--gold:#c19a4b;--goldlt:#e2c689;--parch:#f7f3ea;</span>
+<span class="s2">--parch2:#efe8da;--rule:#d9cfbc;--body:#2b2a26;--muted:#6d6759;--mutedlt:#9fb0c1;}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--parch);color:var(--body);</span>
+<span class="s2">font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;line-height:1.62}</span>
+<span class="s2">.wrap{max-width:940px;margin:0 auto;padding:0 30px}</span>
+<span class="s2">.narrow{max-width:700px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;margin:0;letter-spacing:-.01em}</span>
+<span class="s2">.eyebrow{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.26em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);display:block}</span>
+<span class="s2">p{margin:0 0 15px}</span>
+<span class="s2">header{background:var(--ink);color:#f3efe6;padding:74px 0 62px;position:relative;overflow:hidden}</span>
+<span class="s2">header:before{content:"";position:absolute;inset:0;</span>
+<span class="s2">background:radial-gradient(112</span><span class="si">% 78%</span><span class="s2"> at 7</span><span class="si">% 0%</span><span class="s2">,rgba(193,154,75,.18),transparent 62%)}</span>
+<span class="s2">header .wrap{position:relative}</span>
+<span class="s2">header .eyebrow{color:var(--goldlt)}</span>
+<span class="s2">header h1{font-size:clamp(36px,6.6vw,66px);line-height:1.0;color:#fbf8f1;margin-top:18px}</span>
+<span class="s2">header h1 em{font-style:italic;font-weight:400;color:var(--goldlt)}</span>
+<span class="s2">header .lede{font-size:22px;color:#cfc7b8;max-width:640px;margin-top:24px}</span>
+<span class="s2">section{padding:64px 0 56px;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">section.dark{background:var(--ink2);color:#e6e0d3;border-bottom:none}</span>
+<span class="s2">section.dark h2,section.dark h3,section.dark h4{color:#fbf8f1}</span>
+<span class="s2">section.dark .kick{color:var(--mutedlt)}</span>
+<span class="s2">section.dark p{color:#d6cec0}</span>
+<span class="s2">section.tone{background:var(--parch2)}</span>
+<span class="s2">h2.sec{font-size:clamp(27px,4.3vw,40px);line-height:1.09;margin-top:15px}</span>
+<span class="s2">.kick{font-style:italic;color:var(--muted);margin:14px 0 0;max-width:640px;font-size:20px}</span>
+<span class="s2">.pull{font-family:"Playfair Display",serif;font-size:24px;line-height:1.4;</span>
+<span class="s2">border-left:3px solid var(--gold);padding-left:24px;margin:28px 0;max-width:660px}</span>
+<span class="s2">section.dark .pull{color:var(--goldlt)}</span>
+<span class="s2">.item{display:flex;gap:26px;padding:24px 0;border-top:1px solid var(--rule)}</span>
+<span class="s2">section.dark .item{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">.item .n{flex:0 0 50px;font-family:"Playfair Display",serif;font-size:32px;line-height:1;</span>
+<span class="s2">color:transparent;-webkit-text-stroke:1px var(--gold);padding-top:2px}</span>
+<span class="s2">section.dark .item .n{-webkit-text-stroke-color:var(--goldlt)}</span>
+<span class="s2">.item .c{flex:1 1 auto;max-width:660px}</span>
+<span class="s2">.item h4{font-size:21px;line-height:1.25;margin-bottom:8px}</span>
+<span class="s2">.item p{margin:0 0 11px;font-size:18px}</span>
+<span class="s2">.item p:last-child{margin-bottom:0}</span>
+<span class="s2">.price{font-family:"Lato",sans-serif;font-size:12.5px;line-height:1.85;color:var(--muted);</span>
+<span class="s2">border-left:2px solid var(--gold);padding-left:16px;margin:12px 0 0}</span>
+<span class="s2">section.dark .price{color:var(--mutedlt)}</span>
+<span class="s2">@media(max-width:640px){.item{gap:14px}.item .n{flex:0 0 34px;font-size:25px}}</span>
+<span class="s2">table{width:100%;border-collapse:collapse;margin-top:28px;font-size:17px}</span>
+<span class="s2">th{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.15em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);text-align:left;padding:0 14px 11px 0;</span>
+<span class="s2">border-bottom:1px solid var(--rule);vertical-align:bottom}</span>
+<span class="s2">td{padding:14px 14px 14px 0;border-bottom:1px solid var(--rule);vertical-align:top}</span>
+<span class="s2">td.k{font-family:"Playfair Display",serif;font-size:18px;width:26%}</span>
+<span class="s2">td.s{color:var(--muted);font-size:16px}</span>
+<span class="s2">td.num{font-family:"Lato",sans-serif;font-size:14px;white-space:nowrap}</span>
+<span class="s2">.two{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}</span>
+<span class="s2">.two h4{font-size:20px;margin-bottom:9px}</span>
+<span class="s2">.note{font-family:"Lato",sans-serif;font-size:13px;line-height:1.75;color:var(--muted);</span>
+<span class="s2">border-top:1px solid var(--rule);margin-top:34px;padding-top:16px;max-width:720px}</span>
+<span class="s2">section.dark .note{color:var(--mutedlt);border-color:rgba(255,255,255,.15)}</span>
+<span class="s2">.close{background:var(--ink);color:#efeae0;padding:70px 0;text-align:center}</span>
+<span class="s2">.close h2{font-size:clamp(27px,4.4vw,40px);color:#fbf8f1}</span>
+<span class="s2">.close p{max-width:620px;margin:20px auto 0;color:#c9c0b0}</span>
+<span class="s2">footer{background:#070d15;color:#7d8b99;padding:26px 0;font-family:"Lato",sans-serif;</span>
+<span class="s2">font-size:10.5px;letter-spacing:.1em;text-align:center;text-transform:uppercase}</span>
+<span class="s2">@media(max-width:720px){body{font-size:18px}.wrap{padding:0 20px}section{padding:48px 0 42px}</span>
+<span class="s2">.two{grid-template-columns:1fr;gap:24px}}</span>
+<span class="s2">"""</span>
+
+<span class="n">LINES</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Church site license"</span><span class="p">,</span> <span class="s2">"The floor. Recurring, unglamorous, and not where you win."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Annual, tiered by attendance, unlimited members and unlimited courses, all four delivery editions</span>
+<span class="sd"> included, certificates printed by the church from the platform. This is the same budget line a church</span>
+<span class="sd"> already spends on a video library, which sets both the price band and the ceiling. It is a real</span>
+<span class="sd"> business and it is a grind: won one church at a time, renewed one church at a time."""</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"Under 250 attendance &amp;nbsp;&amp;mdash;&amp;nbsp; $1,200 / year"</span><span class="p">,</span>
+  <span class="s2">"250 to 999 &amp;nbsp;&amp;mdash;&amp;nbsp; $2,400 / year"</span><span class="p">,</span>
+  <span class="s2">"1,000 to 2,999 &amp;nbsp;&amp;mdash;&amp;nbsp; $4,800 / year"</span><span class="p">,</span>
+  <span class="s2">"3,000 and above &amp;nbsp;&amp;mdash;&amp;nbsp; $7,500 / year"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Denominational and network license"</span><span class="p">,</span> <span class="s2">"This is the actual company."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""One signature covers two hundred to two thousand churches. It is also the motion you have run for</span>
+<span class="sd"> twenty-five years, and the one nobody else attempting this can run at all. A network licenses the</span>
+<span class="sd"> full library for its churches, sets its own doctrinal line, and handles distribution internally,</span>
+<span class="sd"> which means your cost of sale collapses and your renewal risk moves from a thousand small decisions</span>
+<span class="sd"> to a handful of relationships. The recognition problem solves itself in the same stroke: a</span>
+<span class="sd"> denomination that licenses the curriculum will eventually recognize the credential for lay</span>
+<span class="sd"> licensing, because it is now their credential."""</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"Small network, under 100 churches &amp;nbsp;&amp;mdash;&amp;nbsp; $30,000 / year"</span><span class="p">,</span>
+  <span class="s2">"Mid network, 100 to 500 &amp;nbsp;&amp;mdash;&amp;nbsp; $80,000 / year"</span><span class="p">,</span>
+  <span class="s2">"Large denomination, 500 plus &amp;nbsp;&amp;mdash;&amp;nbsp; $150,000 to $400,000 / year"</span><span class="p">,</span>
+  <span class="s2">"Priced per church, discounted steeply against the direct rate"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Denominational editions"</span><span class="p">,</span> <span class="s2">"Where the doctrinal problem becomes the product line."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""A twenty-discipline catalog necessarily touches baptism, eschatology, Calvinism, gender, and</span>
+<span class="sd"> governance. Teaching all positions neutrally is the right default and it satisfies nobody</span>
+<span class="sd"> completely. The edition solves it: the Reformed edition takes the Reformed position, the Wesleyan</span>
+<span class="sd"> edition takes the Wesleyan one, and the denomination's own theologians sign the pages where it</span>
+<span class="sd"> matters. Charge a setup fee for the customization and then the ongoing license on top. The deeper</span>
+<span class="sd"> value is not the fee. It is that a denomination that has edited the curriculum now owns it, and</span>
+<span class="sd"> organizations do not abandon what they have put their name inside."""</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"Edition setup, light &amp;mdash; positions and language only &amp;nbsp;&amp;mdash;&amp;nbsp; $25,000"</span><span class="p">,</span>
+  <span class="s2">"Edition setup, full &amp;mdash; positions, added courses, branding &amp;nbsp;&amp;mdash;&amp;nbsp; $75,000"</span><span class="p">,</span>
+  <span class="s2">"Then the network license rate on top, annually"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Individual and leader subscription"</span><span class="p">,</span> <span class="s2">"The funnel, not the business."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""A leader whose church has not licensed can subscribe directly. Keep it cheap, keep it simple, and</span>
+<span class="sd"> do not build the model on it. Its real job is demand generation: a small group leader who finds it</span>
+<span class="sd"> and loves it becomes the person who walks into the executive pastor's office and asks the church to</span>
+<span class="sd"> buy it."""</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"$24 / month, or $199 / year"</span><span class="p">,</span>
+  <span class="s2">"Converts to a free seat the moment the leader's church licenses"</span><span class="p">]),</span>
+<span class="p">(</span><span class="s2">"Library and rights licensing"</span><span class="p">,</span> <span class="s2">"The long tail nobody sees coming."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Once a hundred credentialed faculty have taught on film, you hold a video library with real</span>
+<span class="sd"> academic names attached to it. That is licensable well beyond the local church: to seminaries for</span>
+<span class="sd"> their own non-degree tiers, to Bible colleges, to Christian schools, to international partners, and</span>
+<span class="sd"> to publishers for derivative print. It is also the asset that makes the whole thing acquirable if</span>
+<span class="sd"> you ever want that."""</span><span class="p">,</span>
+ <span class="p">[</span><span class="s2">"Institutional library license &amp;nbsp;&amp;mdash;&amp;nbsp; negotiated, typically $25,000 to $100,000 / year"</span><span class="p">,</span>
+  <span class="s2">"International and translation rights &amp;nbsp;&amp;mdash;&amp;nbsp; granted free where the church cannot pay"</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">FACULTY</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Do not ask them to write. Ask them to correct."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""This is the move that makes four hundred courses possible, and it inverts every cost in</span>
+<span class="sd"> traditional curriculum development. Asking a scholar to author a twelve-session course is asking for</span>
+<span class="sd"> a hundred and fifty hours and eighteen months, and most will decline. Handing that same scholar a</span>
+<span class="sd"> finished script in their own specialty and asking them to mark it up is asking for twenty hours, and</span>
+<span class="sd"> most will say yes. The intellectual contribution is nearly identical. The friction is not</span>
+<span class="sd"> comparable."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Pay them properly and give them the reach."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Honorarium plus a royalty on the course, not a favor and not exposure. But name the second thing</span>
+<span class="sd"> honestly too: a professor whose course runs in two thousand churches has a platform no academic</span>
+<span class="sd"> publisher can offer, and for many mid-career faculty that is the more valuable half of the</span>
+<span class="sd"> deal."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"One scholar carries three to five courses."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Nobody reviews four hundred courses and nobody should. A New Testament scholar takes the four or</span>
+<span class="sd"> five in their actual specialty. A hundred faculty at four courses each is the full catalog, and it</span>
+<span class="sd"> is the only arithmetic in which four hundred is a real number rather than an aspiration."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The review is the doctrinal guardrail, and it is also the marketing."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The heresy objection dies the moment every course carries a named author and a named reviewer with</span>
+<span class="sd"> printed credentials. That same page is the strongest sales asset you will ever have, because a</span>
+<span class="sd"> pastor deciding whether to trust this is not evaluating a platform, he is looking for names he</span>
+<span class="sd"> recognizes."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Film while you have them."</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""A scholar who has already reviewed the script can teach it on camera in a single day. Capture the</span>
+<span class="sd"> master session then, or you will be negotiating a second yes eighteen months later with someone</span>
+<span class="sd"> whose calendar has moved on."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">PHASES</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Year One"</span><span class="p">,</span> <span class="s2">"Build the row, sign the first network"</span><span class="p">,</span>
+ <span class="s2">"20 flagship courses (the 101 row, one per discipline), 20 to 25 faculty recruited, "</span>
+ <span class="s2">"the Tommy pilot running all four delivery editions, one denominational conversation to signature."</span><span class="p">,</span>
+ <span class="s2">"~$300,000 build"</span><span class="p">,</span> <span class="s2">"~$150,000 revenue"</span><span class="p">,</span> <span class="s2">"Net negative. This is the investment year and should be named as one."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Year Two"</span><span class="p">,</span> <span class="s2">"Depth in the disciplines churches ask for"</span><span class="p">,</span>
+ <span class="s2">"80 more courses, 60 faculty total, first two denominational editions shipped, "</span>
+ <span class="s2">"150 churches direct, three network licenses."</span><span class="p">,</span>
+ <span class="s2">"~$1,200,000 build"</span><span class="p">,</span> <span class="s2">"~$1,000,000 revenue"</span><span class="p">,</span> <span class="s2">"Approaching breakeven on operations, still funding content."</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Year Three"</span><span class="p">,</span> <span class="s2">"Catalog past 200, editions as a real line"</span><span class="p">,</span>
+ <span class="s2">"100 more courses, the individual subscription opened, library licensing begins, "</span>
+ <span class="s2">"500 churches direct, eight networks."</span><span class="p">,</span>
+ <span class="s2">"~$1,500,000 build"</span><span class="p">,</span> <span class="s2">"~$3,000,000 revenue"</span><span class="p">,</span> <span class="s2">"First materially profitable year. Content spend continues by choice, not necessity."</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">();</span> <span class="n">W</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">write</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;The Business Model &amp;mdash; Doing Seminary Together&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@300;400;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;"""</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;&lt;/head&gt;&lt;body&gt;"</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;header&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Doing Seminary Together &amp;nbsp;&amp;middot;&amp;nbsp; Business Model&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;What you sell&lt;br&gt;&lt;em&gt;when you never sell a degree&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Certificate of completion only. No accreditation, no assessment obligation, no</span>
+<span class="s2">registrar. That is not a lesser business than an accredited one. It is a structurally better one,</span>
+<span class="s2">and this is why.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;&lt;div class="narrow"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Reframe&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Drop the certification and the economics stop being a school's&lt;/h2&gt;</span>
+<span class="s2">&lt;div style="margin-top:22px"&gt;</span>
+<span class="s2">&lt;p&gt;Every expensive thing about a seminary comes from the credential rather than the content. The</span>
+<span class="s2">registrar exists because credits transfer. Financial aid administration exists because degrees</span>
+<span class="s2">qualify for it. Accreditation compliance, faculty tenure, library requirements, student services, the</span>
+<span class="s2">reader who has to grade every paper because the grade means something legally — all of it is</span>
+<span class="s2">downstream of granting a degree.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;Remove the degree and every one of those costs disappears. What remains is content production,</span>
+<span class="s2">faculty honoraria, a platform, and account support. That is a publishing cost structure. You build a</span>
+<span class="s2">course once and license it indefinitely at no marginal cost per student, which means the hundredth</span>
+<span class="s2">church costs almost nothing to serve and the thousandth costs less.&lt;/p&gt;</span>
+<span class="s2">&lt;div class="pull"&gt;You are not selling education to students. You are selling formation</span>
+<span class="s2">infrastructure to institutions, and the certificate is the thing that makes the institution look</span>
+<span class="s2">good for buying it.&lt;/div&gt;</span>
+<span class="s2">&lt;p&gt;That single sentence determines everything else. The customer is the church or the denomination,</span>
+<span class="s2">not the member. The product is a system a church can run, not a course a person takes. And the</span>
+<span class="s2">certificate, which generates no revenue at all, is the highest-leverage object in the entire model</span>
+<span class="s2">because it is what makes completion visible, repeatable, and worth celebrating from a platform on a</span>
+<span class="s2">Sunday morning.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Revenue&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Five lines, and only one of them is the company&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Numbers below are straw. They are here to be argued with, not believed.&lt;/p&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">prices</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">LINES</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;'</span>
+          <span class="s1">'&lt;p style="font-style:italic;color:var(--goldlt);margin-bottom:10px"&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;'</span>
+          <span class="s1">'&lt;div class="price"&gt;</span><span class="si">%s</span><span class="s1">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span> <span class="s2">"&lt;br&gt;"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prices</span><span class="p">)))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;p class="note"&gt;The honest read on line one: church-by-church licensing puts you in the most</span>
+<span class="s2">crowded band in church media, competing against video libraries that have been buying that budget</span>
+<span class="s2">line for a decade. You will win some of it and it will never be the business. Lines two and three are</span>
+<span class="s2">the business, and they are the two nobody else attempting this can execute, because they run on</span>
+<span class="s2">denominational relationships rather than on marketing spend.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;&lt;div class="narrow"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Certificate&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;It earns nothing and it is the most valuable thing you make&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="two"&gt;</span>
+<span class="s2">&lt;div&gt;&lt;h4&gt;What it actually does&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;&lt;b&gt;Retention.&lt;/b&gt; A member with eleven completed courses on record does not restart that record</span>
+<span class="s2">somewhere else. Nobody in church media has a switching cost. You would.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;&lt;b&gt;Status.&lt;/b&gt; The church gets something to hand somebody in front of the congregation. Public</span>
+<span class="s2">completion is the single best enrollment driver a program like this has, and it costs you a sheet of</span>
+<span class="s2">paper.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;&lt;b&gt;Proof.&lt;/b&gt; Completions are the only metric that demonstrates the product works, and that</span>
+<span class="s2">number is what you carry into a denominational negotiation and into the first conversation with an</span>
+<span class="s2">accredited school.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;div&gt;&lt;h4&gt;What you deliberately do not sell&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;&lt;b&gt;Tuition.&lt;/b&gt; The moment a student pays for education rather than a church paying for</span>
+<span class="s2">curriculum, you have implied an assessment obligation you have chosen not to carry.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;&lt;b&gt;Degrees, or anything that sounds like one.&lt;/b&gt; Legal exposure, and a promise you cannot</span>
+<span class="s2">keep.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;&lt;b&gt;Per-course fees as the primary line.&lt;/b&gt; They suppress exactly the volume that makes the</span>
+<span class="s2">certificate valuable. Let the courses be free inside a license and charge for the license.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Print the ceiling on the certificate itself: hours completed, what was covered, and in</span>
+<span class="s2">the same size type, that it is not a degree, not accreditation, and not a qualification for ordination</span>
+<span class="s2">or counseling. This is the integrity objection, and it is fully answerable for the cost of one line of</span>
+<span class="s2">type.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Production&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;The hundred faculty model&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Your instinct here is the thing that makes the catalog buildable. It deserves to be</span>
+<span class="s2">written down as a method rather than left as a hunch.&lt;/p&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">FACULTY</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;table&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Per course, all in&lt;/th&gt;&lt;th&gt;Straw cost&lt;/th&gt;&lt;th&gt;Note&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Script&lt;/td&gt;&lt;td class="num"&gt;$3,000 &amp;ndash; 5,000&lt;/td&gt;&lt;td class="s"&gt;Twelve sessions written to the fixed six-stage shape&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Faculty review&lt;/td&gt;&lt;td class="num"&gt;$2,000 &amp;ndash; 4,000&lt;/td&gt;&lt;td class="s"&gt;Share of a set honorarium covering three to five courses&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Filming&lt;/td&gt;&lt;td class="num"&gt;$4,000 &amp;ndash; 7,000&lt;/td&gt;&lt;td class="s"&gt;One day per scholar, multiple courses captured together&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Workbook and design&lt;/td&gt;&lt;td class="num"&gt;$2,000 &amp;ndash; 3,000&lt;/td&gt;&lt;td class="s"&gt;Participant, facilitator, and the four editions&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Total&lt;/td&gt;&lt;td class="num"&gt;$12,000 &amp;ndash; 19,000&lt;/td&gt;&lt;td class="s"&gt;Call it $15,000 straw. Four hundred courses is roughly $6M, which is why the twenty-course Year One row is the only sane starting point&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Every existing asset that converts is a course you do not pay full freight for.</span>
+<span class="s2">Deepening Life Together, the Adult Bible Fellowship material, and the campaign backlist are all</span>
+<span class="s2">conversion candidates, and conversion runs at a fraction of new build. Audit the shelf before</span>
+<span class="s2">commissioning anything.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Three Year Straw&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;What the shape looks like&lt;/h2&gt;</span>
+<span class="s2">&lt;table style="color:#e6e0d3"&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Year&lt;/th&gt;&lt;th&gt;Focus&lt;/th&gt;&lt;th&gt;Build&lt;/th&gt;&lt;th&gt;Revenue&lt;/th&gt;&lt;/tr&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">yr</span><span class="p">,</span> <span class="n">focus</span><span class="p">,</span> <span class="n">detail</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="n">rev</span><span class="p">,</span> <span class="n">note</span> <span class="ow">in</span> <span class="n">PHASES</span><span class="p">:</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;tr&gt;&lt;td class="k" style="color:#fbf8f1"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;'</span>
+          <span class="s1">'&lt;td&gt;&lt;b style="font-family:Playfair Display,serif"&gt;</span><span class="si">%s</span><span class="s1">&lt;/b&gt;&lt;br&gt;'</span>
+          <span class="s1">'&lt;span style="color:var(--mutedlt);font-size:16px"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/td&gt;'</span>
+          <span class="s1">'&lt;td class="num" style="color:var(--mutedlt)"&gt;</span><span class="si">%s</span><span class="s1">&lt;/td&gt;'</span>
+          <span class="s1">'&lt;td class="num" style="color:var(--goldlt)"&gt;</span><span class="si">%s</span><span class="s1">&lt;br&gt;'</span>
+          <span class="s1">'&lt;span style="color:var(--mutedlt);font-size:12px"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">yr</span><span class="p">,</span> <span class="n">focus</span><span class="p">,</span> <span class="n">detail</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="n">rev</span><span class="p">,</span> <span class="n">note</span><span class="p">))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;/table&gt;</span>
+<span class="s2">&lt;p class="note"&gt;The load-bearing assumption in all of this is the denominational line. If networks</span>
+<span class="s2">sign, the model works at these numbers and probably better. If they do not, this becomes a</span>
+<span class="s2">church-by-church media business with a good product and ordinary economics, and the honest move at</span>
+<span class="s2">that point is to say so early rather than to grind.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Open Decisions&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Four things that have to be settled before the pilot&lt;/h2&gt;</span>
+
+<span class="s2">&lt;div class="item"&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;div class="c"&gt;</span>
+<span class="s2">&lt;h4&gt;The name. Doing Seminary Together is better than Small Group Seminary.&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;It sits inside the family you already built — Doing Life Together, then Deepening Life Together,</span>
+<span class="s2">now this — which means it arrives carrying twenty-five years of recognition rather than starting</span>
+<span class="s2">from zero. It also does something quieter and more useful: making seminary the thing you are doing</span>
+<span class="s2">together rather than the institution you are attending lowers the credential claim without hiding</span>
+<span class="s2">anything, which is exactly the posture the integrity objection requires. Keep SmallGroupSeminary.com</span>
+<span class="s2">as the domain and the search asset. Lead with Doing Seminary Together as the brand.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;div class="item"&gt;&lt;span class="n"&gt;2&lt;/span&gt;&lt;div class="c"&gt;</span>
+<span class="s2">&lt;h4&gt;The cat is out of the bag, and how you say that determines who your allies are.&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;The underlying claim is true. Laypeople are already pursuing theological formation without</span>
+<span class="s2">institutional oversight, on video platforms and increasingly by asking a chatbot doctrinal questions</span>
+<span class="s2">at midnight, and no institution is going to put that back. But there are two ways to say it. Said one</span>
+<span class="s2">way it means the seminaries have lost and should get out of the road, which starts a fight you cannot</span>
+<span class="s2">win and do not need. Said the other way it means unsupervised theological formation is now the</span>
+<span class="s2">default, and the only open question is whether it happens with a curriculum, a named faculty, and a</span>
+<span class="s2">church around it. That version makes every dean in the country an ally.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;div class="item"&gt;&lt;span class="n"&gt;3&lt;/span&gt;&lt;div class="c"&gt;</span>
+<span class="s2">&lt;h4&gt;Placing this under the Rick arrangement.&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;I do not know the terms, so this is a flag rather than a recommendation. Three things change</span>
+<span class="s2">depending on the answer. Distribution and credibility accelerate enormously, and that is the obvious</span>
+<span class="s2">half. Less obvious: the terms will govern who owns the filmed faculty content and the derivative</span>
+<span class="s2">rights, which is the single most valuable long-term asset in the model, and that needs to be explicit</span>
+<span class="s2">before a hundred scholars are recorded. And the association narrows you slightly with confessional</span>
+<span class="s2">and Reformed networks who read Purpose Driven as a theological position rather than a method —</span>
+<span class="s2">which matters precisely because denominational licensing is the business. Worth mapping which</span>
+<span class="s2">networks it opens and which it closes before signing.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s2">&lt;div class="item"&gt;&lt;span class="n"&gt;4&lt;/span&gt;&lt;div class="c"&gt;</span>
+<span class="s2">&lt;h4&gt;What the Tommy pilot has to produce.&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;Not enrollment. A pilot that produces enthusiasm and no artifacts has cost you a year. It has to</span>
+<span class="s2">produce four things: a defensible transcript for at least one finished student, completion and drop</span>
+<span class="s2">rates by delivery edition, a facilitator who was trained rather than gifted and still succeeded, and</span>
+<span class="s2">a signed testimonial from the senior pastor about what changed in the church. Those four are what you</span>
+<span class="s2">carry into the first denominational meeting and into the first conversation with Talbot. Design the</span>
+<span class="s2">pilot backward from them.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="close"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;h2&gt;Sell the license. Give away the certificate.&lt;br&gt;The certificate is what makes the license</span>
+<span class="s2">renew.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;Church and network licensing carries the revenue, denominational editions carry the margin and the</span>
+<span class="s2">loyalty, and the hundred faculty carry the credibility that makes all three possible.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; Doing Seminary Together &amp;middot; Business</span>
+<span class="s2">model straw &amp;middot; August 2026&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">build</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/doing-seminary-together-business-model.html"</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="s2">"| div balance:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;div"</span><span class="p">)</span> <span class="o">-</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/div&gt;"</span><span class="p">),</span>
+          <span class="s2">"| sections:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;section"</span><span class="p">),</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/section&gt;"</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/model.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

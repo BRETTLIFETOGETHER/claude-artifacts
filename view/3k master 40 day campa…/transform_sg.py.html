@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>transform_sg.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; 3k master 40 day campa…</div>
+<h1>transform_sg.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">1 edit</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">3 KB</span>
+<a class="btn" href="../../artifacts/3k%20master%2040%20day%20campa%E2%80%A6/transform_sg.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Transform engine converting the 40-day master into 6-session Small Group Finder format</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data</span><span class="w"> </span><span class="kn">import</span> <span class="n">CATEGORIES</span> <span class="k">as</span> <span class="n">MASTER40</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_theme</span>
+
+<span class="c1"># Categories flagged as giving a pastor a competitive "edge right now" —</span>
+<span class="c1"># addressing live cultural conversations most churches have no ready answer for.</span>
+<span class="n">EDGE_CATEGORIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"XXIX"</span><span class="p">:</span> <span class="s2">"AI is the single most-discussed topic in American life with almost no pastoral guidance attached to it. A church running this series first, in its city, owns the conversation."</span><span class="p">,</span>
+    <span class="s2">"XXVIII"</span><span class="p">:</span> <span class="s2">"The deconstruction/doubt conversation is already happening in your congregation, mostly in private or on someone else's podcast. Naming it from the stage first is the edge."</span><span class="p">,</span>
+    <span class="s2">"XXVI"</span><span class="p">:</span> <span class="s2">"Anxiety is the most commonly named felt need in American church life right now, and most churches still only address it pastorally, not practically. This series does both."</span><span class="p">,</span>
+    <span class="s2">"XXVII"</span><span class="p">:</span> <span class="s2">"Grief support is usually a ministry, not a series. Making it a small group curriculum signals the church will go there with people, not just refer them out."</span><span class="p">,</span>
+    <span class="s2">"XXV"</span><span class="p">:</span> <span class="s2">"Identity confusion, driven by social comparison, is arguably the defining discipleship problem for under-40s right now. Most churches are still running 2015-era self-esteem content."</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Video-companion recommendation logic — grounded in the earlier Small Group</span>
+<span class="c1"># Finder/Builder strategy conversation: felt-need, cultural-moment topics now</span>
+<span class="c1"># carry a video-first market expectation; classic discipleship formation topics</span>
+<span class="c1"># perform fine print-only.</span>
+<span class="n">VIDEO_RECOMMENDED_CATEGORIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"XXV"</span><span class="p">,</span> <span class="s2">"XXVI"</span><span class="p">,</span> <span class="s2">"XXVII"</span><span class="p">,</span> <span class="s2">"XXVIII"</span><span class="p">,</span> <span class="s2">"XXIX"</span><span class="p">,</span>  <span class="c1"># the 5 edge categories</span>
+    <span class="s2">"IV"</span><span class="p">,</span> <span class="s2">"XII"</span><span class="p">,</span> <span class="s2">"XIII"</span><span class="p">,</span>  <span class="c1"># Freedom/Breakthrough, Healing, Family — high felt-need, video expected</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sg_title_from_forty</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">formula</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert a 40-day title into a 6-session small group series title."""</span>
+    <span class="n">hook</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">=</span> <span class="n">extract_theme</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">formula</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"Promise"</span><span class="p">,</span> <span class="s2">"Single-Word"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">outcome</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hook</span><span class="si">}</span><span class="s2">: A 6-Session Series to </span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hook</span><span class="si">}</span><span class="s2">: A 6-Session Small Group Series"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hook</span><span class="si">}</span><span class="s2">: A 6-Session Small Group Series"</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_small_group_categories</span><span class="p">():</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">MASTER40</span><span class="p">:</span>
+        <span class="n">new_cat</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"roman"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">],</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="s2">"tag"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"tag"</span><span class="p">],</span>
+            <span class="s2">"tagline"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"tagline"</span><span class="p">],</span> <span class="s2">"description"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"description"</span><span class="p">],</span>
+            <span class="s2">"is_edge"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span> <span class="ow">in</span> <span class="n">EDGE_CATEGORIES</span><span class="p">,</span>
+            <span class="s2">"edge_note"</span><span class="p">:</span> <span class="n">EDGE_CATEGORIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]),</span>
+            <span class="s2">"video_recommended"</span><span class="p">:</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span> <span class="ow">in</span> <span class="n">VIDEO_RECOMMENDED_CATEGORIES</span><span class="p">,</span>
+            <span class="s2">"titles"</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">formula</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cat</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]:</span>
+            <span class="n">sg_title</span> <span class="o">=</span> <span class="n">sg_title_from_forty</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">formula</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">sg_title</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">new_cat</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">sg_title</span><span class="p">,</span> <span class="s2">"6-Session Series"</span><span class="p">,</span> <span class="n">desc</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_cat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">cats</span> <span class="o">=</span> <span class="n">build_small_group_categories</span><span class="p">()</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"titles"</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Categories:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cats</span><span class="p">),</span> <span class="s2">"Total series:"</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s2">"is_edge"</span><span class="p">]]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Edge categories:"</span><span class="p">,</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Sample:"</span><span class="p">,</span> <span class="n">cats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"titles"</span><span class="p">][:</span><span class="mi">3</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Sample edge:"</span><span class="p">,</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s2">"roman"</span><span class="p">]</span><span class="o">==</span><span class="s2">"XXIX"</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">"titles"</span><span class="p">][:</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/transform_sg.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

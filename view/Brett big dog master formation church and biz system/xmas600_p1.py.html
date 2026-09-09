@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>xmas600_p1.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Brett big dog master formation church and biz system</div>
+<h1>xmas600_p1.py</h1>
+<div class="meta"><span class="ext e-py">py</span>
+<span class="b">11 KB</span>
+<a class="btn" href="../../artifacts/Brett%20big%20dog%20master%20formation%20church%20and%20biz%20system/xmas600_p1.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">600 Christmas campaign titles - build script part 1: styles and helpers</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""</span>
+<span class="sd">600 Christmas/Advent/Epiphany campaigns across 12 NEW categories</span>
+<span class="sd">(none repeat the 20 existing categories)</span>
+<span class="sd">Each category has 50 campaigns split: ~25 coming INTO, ~25 coming OUT OF</span>
+<span class="sd">Title · Subtitle · Hook · Duration · Scripture</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">html</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hlib</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">e</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="k">return</span> <span class="n">hlib</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+
+<span class="n">STYLES</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{</span>
+<span class="s2">  --navy:#020408;--gold:#c9a84c;--gold-lt:#e2c97e;--gold-dk:#8a6e30;</span>
+<span class="s2">  --cream:#f7f3ea;--ink:#0d1018;--muted:#6a6a7a;</span>
+<span class="s2">  --into:#2a4060;--out:#603020;--new:#2a5040;</span>
+<span class="s2">  --rule:rgba(201,168,76,0.09);</span>
+<span class="s2">}</span>
+<span class="s2">*{margin:0;padding:0;box-sizing:border-box;}</span>
+<span class="s2">html{scroll-behavior:smooth;}</span>
+<span class="s2">body{font-family:'Lato',sans-serif;background:#c4c0b8;color:var(--ink);}</span>
+<span class="s2">.page{max-width:1280px;margin:0 auto;background:var(--cream);box-shadow:0 4px 80px rgba(0,0,0,.25);}</span>
+
+<span class="s2">/* COVER */</span>
+<span class="s2">.cover{background:var(--navy);min-height:96vh;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;}</span>
+<span class="s2">.cover-bg{position:absolute;inset:0;background:</span>
+<span class="s2">  radial-gradient(ellipse at 15</span><span class="si">% 80%</span><span class="s2">,rgba(42,64,96,.15),transparent 50%),</span>
+<span class="s2">  radial-gradient(ellipse at 85</span><span class="si">% 20%</span><span class="s2">,rgba(96,48,32,.1),transparent 50%),</span>
+<span class="s2">  radial-gradient(ellipse at 50</span><span class="si">% 50%</span><span class="s2">,rgba(42,80,64,.06),transparent 70%),</span>
+<span class="s2">  linear-gradient(180deg,#010204,#020308);}</span>
+<span class="s2">.cover-top{padding:48px 80px 0;position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;}</span>
+<span class="s2">.cover-logo{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.3);letter-spacing:2px;}</span>
+<span class="s2">.cover-vol{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:var(--gold-dk);border:1px solid rgba(201,168,76,.18);padding:4px 12px;}</span>
+<span class="s2">.cover-body{padding:60px 80px 72px;position:relative;z-index:2;}</span>
+<span class="s2">.cover-kk{font-size:8px;letter-spacing:5px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.75);display:flex;align-items:center;gap:14px;margin-bottom:20px;}</span>
+<span class="s2">.cover-kk::before{content:'';width:30px;height:1px;background:rgba(201,168,76,.5);}</span>
+<span class="s2">.cover-h1{font-family:'Playfair Display',serif;font-size:clamp(42px,6vw,96px);font-weight:400;line-height:.86;color:#fff;letter-spacing:-3px;margin-bottom:22px;}</span>
+<span class="s2">.cover-h1 em{font-style:italic;color:var(--gold);}</span>
+<span class="s2">.cover-rule{display:flex;align-items:center;gap:14px;margin:24px 0;}</span>
+<span class="s2">.cover-rl{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}</span>
+<span class="s2">.cover-rd{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;}</span>
+<span class="s2">.cover-sub{font-family:'Playfair Display',serif;font-size:clamp(15px,1.9vw,22px);font-weight:300;font-style:italic;color:rgba(210,195,165,.82);max-width:720px;line-height:1.58;margin-bottom:44px;}</span>
+<span class="s2">.cover-stats{display:grid;grid-template-columns:repeat(6,1fr);max-width:900px;border:1px solid rgba(201,168,76,.16);}</span>
+<span class="s2">.cs{padding:16px 18px;border-right:1px solid rgba(201,168,76,.1);text-align:center;}</span>
+<span class="s2">.cs:last-child{border-right:none;}</span>
+<span class="s2">.cs-n{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);display:block;line-height:1;}</span>
+<span class="s2">.cs-l{font-size:6px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.18);font-weight:700;display:block;margin-top:4px;}</span>
+
+<span class="s2">/* SECTION BANNERS */</span>
+<span class="s2">.sec-banner{padding:42px 80px 22px;border-top:5px solid;}</span>
+<span class="s2">.sec-banner.into{background:linear-gradient(135deg,#020508,#040810);border-color:var(--into);}</span>
+<span class="s2">.sec-banner.out{background:linear-gradient(135deg,#060402,#0a0604);border-color:var(--out);}</span>
+<span class="s2">.sec-banner.new{background:linear-gradient(135deg,#020605,#040a07);border-color:var(--new);}</span>
+<span class="s2">.sb-kk{font-size:8px;letter-spacing:5px;text-transform:uppercase;font-weight:700;display:flex;align-items:center;gap:10px;margin-bottom:14px;}</span>
+<span class="s2">.sb-kk::before{content:'';width:16px;height:1px;background:currentColor;}</span>
+<span class="s2">.into .sb-kk{color:#6a8aba;}</span>
+<span class="s2">.out .sb-kk{color:#c09870;}</span>
+<span class="s2">.new .sb-kk{color:#6aaa88;}</span>
+<span class="s2">.sb-h2{font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,56px);font-weight:400;line-height:.9;color:#fff;margin-bottom:10px;}</span>
+<span class="s2">.sb-h2 em{font-style:italic;}</span>
+<span class="s2">.sb-sub{font-family:'Georgia',serif;font-size:14px;line-height:1.72;max-width:820px;margin-bottom:8px;}</span>
+<span class="s2">.into .sb-sub{color:rgba(170,195,220,.65);}</span>
+<span class="s2">.out .sb-sub{color:rgba(220,185,155,.65);}</span>
+<span class="s2">.new .sb-sub{color:rgba(160,210,185,.65);}</span>
+<span class="s2">.sb-count{font-size:8px;letter-spacing:3px;text-transform:uppercase;font-weight:700;border:1px solid;display:inline-block;padding:4px 13px;margin-top:6px;}</span>
+<span class="s2">.into .sb-count{border-color:rgba(80,130,180,.3);color:#6a8aba;}</span>
+<span class="s2">.out .sb-count{border-color:rgba(180,130,80,.3);color:#c09870;}</span>
+<span class="s2">.new .sb-count{border-color:rgba(80,160,120,.3);color:#6aaa88;}</span>
+
+<span class="s2">/* CATEGORY HEADER */</span>
+<span class="s2">.cat-hdr{display:flex;align-items:flex-start;gap:22px;padding:28px 80px 14px;border-bottom:2px solid var(--rule);}</span>
+<span class="s2">.cat-num-big{font-family:'Playfair Display',serif;font-size:52px;font-weight:400;color:rgba(201,168,76,.12);line-height:1;flex-shrink:0;margin-top:-8px;}</span>
+<span class="s2">.cat-hdr-text</span><span class="si">{}</span>
+<span class="s2">.cat-name{font-family:'Playfair Display',serif;font-size:clamp(20px,2.8vw,36px);font-weight:400;font-style:italic;}</span>
+<span class="s2">.cat-name.into{color:var(--into);}</span>
+<span class="s2">.cat-name.out{color:#905030;}</span>
+<span class="s2">.cat-name.new{color:var(--new);}</span>
+<span class="s2">.cat-desc{font-size:12px;color:#888;margin-top:4px;line-height:1.5;max-width:860px;}</span>
+<span class="s2">.cat-badge{display:inline-block;font-size:7px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:2px 8px;border:1px solid;margin-top:6px;}</span>
+<span class="s2">.cat-badge.into{color:var(--into);border-color:rgba(42,64,96,.3);}</span>
+<span class="s2">.cat-badge.out{color:#905030;border-color:rgba(144,80,48,.3);}</span>
+<span class="s2">.cat-badge.new{color:var(--new);border-color:rgba(42,80,64,.3);}</span>
+
+<span class="s2">/* CAMPAIGN GRID — 5 column for 50 per category */</span>
+<span class="s2">.camp-wrap{padding:0 80px 20px;}</span>
+<span class="s2">.camp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:10px;}</span>
+<span class="s2">/* Hero — first card spans full width */</span>
+<span class="s2">.camp-grid .c-hero{grid-column:1/-1;}</span>
+<span class="s2">/* Large cards — positions 2,3 */</span>
+<span class="s2">.camp-grid .c-lg{grid-column:span 2;}</span>
+
+<span class="s2">/* BASE CARD */</span>
+<span class="s2">.cc{padding:13px 15px;border:1px solid rgba(0,0,0,.065);background:rgba(255,255,255,.5);position:relative;}</span>
+<span class="s2">.cc.c-hero{background:rgba(255,255,255,.85);border-width:2px;padding:18px 22px;}</span>
+<span class="s2">.cc.c-lg{background:rgba(255,255,255,.65);}</span>
+<span class="s2">.cc.into{border-top:3px solid var(--into);}</span>
+<span class="s2">.cc.out{border-top:3px solid #905030;}</span>
+<span class="s2">.cc.new{border-top:3px solid var(--new);}</span>
+<span class="s2">.cc.c-hero.into{border-color:rgba(42,64,96,.4);}</span>
+<span class="s2">.cc.c-hero.out{border-color:rgba(144,80,48,.4);}</span>
+<span class="s2">.cc.c-hero.new{border-color:rgba(42,80,64,.4);}</span>
+
+<span class="s2">/* CARD INTERNALS */</span>
+<span class="s2">.cc-n{font-size:7.5px;letter-spacing:2px;color:#ccc;font-weight:700;display:block;margin-bottom:4px;}</span>
+<span class="s2">.cc-arc{font-size:6.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:2px 6px;border:1px solid;display:inline-block;margin-bottom:6px;}</span>
+<span class="s2">.cc.into .cc-arc{color:var(--into);border-color:rgba(42,64,96,.25);background:rgba(42,64,96,.04);}</span>
+<span class="s2">.cc.out .cc-arc{color:#905030;border-color:rgba(144,80,48,.25);background:rgba(144,80,48,.04);}</span>
+<span class="s2">.cc.new .cc-arc{color:var(--new);border-color:rgba(42,80,64,.25);background:rgba(42,80,64,.04);}</span>
+<span class="s2">.cc-title{font-family:'Playfair Display',serif;font-style:italic;color:var(--ink);line-height:1.22;margin-bottom:4px;}</span>
+<span class="s2">.cc-title{font-size:13.5px;}</span>
+<span class="s2">.cc.c-hero .cc-title{font-size:19px;margin-bottom:7px;}</span>
+<span class="s2">.cc.c-lg .cc-title{font-size:14.5px;}</span>
+<span class="s2">.cc-sub{font-size:9.5px;color:#7a6a58;line-height:1.38;font-family:'Georgia',serif;font-style:italic;margin-bottom:5px;}</span>
+<span class="s2">.cc.c-hero .cc-sub{font-size:12px;margin-bottom:8px;}</span>
+<span class="s2">.cc.c-lg .cc-sub{font-size:10.5px;}</span>
+<span class="s2">.cc-hook{font-size:8.5px;color:#4a4a5a;line-height:1.42;padding:5px 9px;border-left:2px solid;background:rgba(0,0,0,.025);}</span>
+<span class="s2">.cc.into .cc-hook{border-color:rgba(42,64,96,.25);}</span>
+<span class="s2">.cc.out .cc-hook{border-color:rgba(144,80,48,.25);}</span>
+<span class="s2">.cc.new .cc-hook{border-color:rgba(42,80,64,.25);}</span>
+<span class="s2">.cc.c-hero .cc-hook{font-size:11px;padding:9px 13px;margin-bottom:8px;}</span>
+<span class="s2">.cc-meta{display:flex;gap:8px;align-items:center;margin-top:5px;flex-wrap:wrap;}</span>
+<span class="s2">.cc-dur{font-size:7.5px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--gold-dk);}</span>
+<span class="s2">.cc-ref{font-size:7.5px;color:#bbb;font-style:italic;}</span>
+
+<span class="s2">/* DIVIDERS */</span>
+<span class="s2">.hdiv{height:3px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.22),transparent);}</span>
+<span class="s2">.sdiv{height:1px;background:var(--rule);margin:0 80px;}</span>
+<span class="s2">.cat-sdiv{height:1px;background:var(--rule);}</span>
+<span class="s2">.bridge{padding:28px 80px;background:linear-gradient(90deg,#030508,#060a0e,#030508);text-align:center;}</span>
+<span class="s2">.bridge-inner{max-width:680px;margin:0 auto;}</span>
+<span class="s2">.bridge p{font-family:'Playfair Display',serif;font-size:clamp(14px,2vw,20px);font-style:italic;color:rgba(201,168,76,.6);line-height:1.55;}</span>
+<span class="s2">.bridge-rule{display:flex;align-items:center;gap:14px;max-width:680px;margin:12px auto 0;}</span>
+<span class="s2">.bridge-rl{flex:1;height:1px;background:rgba(201,168,76,.15);}</span>
+<span class="s2">.bridge-sym{font-size:18px;color:rgba(201,168,76,.3);}</span>
+
+<span class="s2">/* BACK */</span>
+<span class="s2">.back{background:#010305;padding:52px 80px;text-align:center;}</span>
+<span class="s2">.back-q{font-family:'Playfair Display',serif;font-size:clamp(14px,2vw,20px);font-style:italic;color:var(--cream);max-width:760px;margin:0 auto 16px;line-height:1.55;}</span>
+<span class="s2">.back-a{font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;}</span>
+<span class="s2">.back-c{margin-top:12px;font-size:12px;color:#4a5a6a;}</span>
+<span class="s2">.back-c a{color:var(--gold-lt);text-decoration:none;}</span>
+<span class="s2">.lm{font-family:'Playfair Display',serif;font-size:30px;color:#fff;font-style:italic;margin-top:22px;}</span>
+
+<span class="s2">@media(max-width:1000px){</span>
+<span class="s2">  .cover-top,.cover-body,.sec-banner,.cat-hdr,.camp-wrap,.bridge,.back{padding-left:28px;padding-right:28px;}</span>
+<span class="s2">  .camp-grid{grid-template-columns:1fr 1fr;}</span>
+<span class="s2">  .camp-grid .c-hero,.camp-grid .c-lg{grid-column:auto;}</span>
+<span class="s2">  .cover-stats{grid-template-columns:repeat(3,1fr);}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cc</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">arc</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">hook</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">hero</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">sz</span> <span class="o">=</span> <span class="s2">"c-hero"</span> <span class="k">if</span> <span class="n">hero</span> <span class="k">else</span> <span class="p">(</span><span class="s2">"c-lg"</span> <span class="k">if</span> <span class="n">lg</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"cc </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sz</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="</span><span class="si">{</span><span class="n">classes</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">  &lt;span class="cc-n"&gt;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">  &lt;span class="cc-arc"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">arc</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">  &lt;h3 class="cc-title"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h3&gt;</span>
+<span class="s2">  &lt;p class="cc-sub"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;p class="cc-hook"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">hook</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="cc-meta"&gt;&lt;span class="cc-dur"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">dur</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;span class="cc-ref"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_cat</span><span class="p">(</span><span class="n">cat_n</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">badge</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">entries</span><span class="p">,</span> <span class="n">global_start</span><span class="p">):</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">entries</span><span class="p">):</span>
+        <span class="n">arc</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">hook</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">ref</span> <span class="o">=</span> <span class="n">entry</span>
+        <span class="n">is_hero</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">is_lg</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">global_start</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">cards</span> <span class="o">+=</span> <span class="n">cc</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">arc</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">hook</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">is_hero</span><span class="p">,</span> <span class="n">is_lg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="cat-hdr"&gt;</span>
+<span class="s2">  &lt;div class="cat-num-big"&gt;</span><span class="si">{</span><span class="n">cat_n</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="cat-hdr-text"&gt;</span>
+<span class="s2">    &lt;h2 class="cat-name </span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s2">"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="cat-desc"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;span class="cat-badge </span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s2">"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">badge</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;div class="camp-wrap"&gt;&lt;div class="camp-grid"&gt;</span><span class="si">{</span><span class="n">cards</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sec_banner</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">kk</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="hdiv"&gt;&lt;/div&gt;&lt;div class="sec-banner </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">  &lt;p class="sb-kk"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">kk</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;h2 class="sb-h2"&gt;</span><span class="si">{</span><span class="n">h2</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">  &lt;p class="sb-sub"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;span class="sb-count"&gt;</span><span class="si">{</span><span class="n">e</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/tmp/xmas600_p1.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

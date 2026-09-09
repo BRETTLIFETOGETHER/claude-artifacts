@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>wire.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Terry Parker Interviews</div>
+<h1>wire.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">4 KB</span>
+<a class="btn" href="../../artifacts/Terry%20Parker%20Interviews/wire.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Script to inject the shared mega-menu nav into the older HTML pages and verify all links resolve</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">glob</span>
+
+<span class="n">OUT</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs"</span>
+
+<span class="n">NAV</span> <span class="o">=</span> <span class="s2">"""&lt;nav class="main"&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Begin&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Start Here&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="index.html"&gt;The Archive&lt;/a&gt;&lt;a href="deep-well-brochure-navy.html"&gt;Find Your Starting Point&lt;/a&gt;&lt;a href="deep-well-platform.html"&gt;Platform Overview&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Manuscripts&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Written Work&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="The_Deep_Well_Family_Edition_Outline.html"&gt;The Deep Well · Outline&lt;/a&gt;&lt;a href="Deep_Well_Ch1_Ch5_Ch6.html"&gt;Chapters One, Five &amp;amp; Six&lt;/a&gt;&lt;a href="Deep_Well_Ch3_Amos.html"&gt;Chapter Three · Amos&lt;/a&gt;&lt;a href="Deep_Well_Ch4_and_40_Day_Outline.html"&gt;Chapter Four &amp;amp; Forty Days&lt;/a&gt;&lt;a href="Two_Books_Instead_of_One_draft.html"&gt;Two Books Instead of One&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Advisor&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Practitioner Edition&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="Different_Kind_of_Advisor_Three_Editions.html"&gt;Three Editions&lt;/a&gt;&lt;a href="Advisor_Book_Ch7_The_Conversation_That_Costs_You.html"&gt;The Conversation That Costs You&lt;/a&gt;&lt;a href="case-studies-and-voices.html"&gt;Case Studies &amp;amp; Voices&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Instruments&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Diagnostics &amp;amp; Tools&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="Deep_Well_Assessments_and_Tools.html"&gt;The Assessments&lt;/a&gt;&lt;a href="Deep_Well_Toolbox_Expanded.html"&gt;The Toolbox&lt;/a&gt;&lt;a href="family-library-interactive.html"&gt;Take the Assessment&lt;/a&gt;&lt;a href="family-library.html"&gt;The Family Library&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="navitem"&gt;&lt;span class="navlink"&gt;Operations&lt;/span&gt;&lt;div class="mega"&gt;&lt;h5&gt;Build &amp;amp; Partners&lt;/h5&gt;</span>
+<span class="s2">        &lt;a href="Treasure_Principle_40_Day_Campaign_Proposal.html"&gt;Treasure Principle Proposal&lt;/a&gt;&lt;a href="video-access-golive.html"&gt;Video, Access &amp;amp; Go-Live&lt;/a&gt;&lt;a href="deep-well-blue.html"&gt;Blue Prototype&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/nav&gt;"""</span>
+
+<span class="c1"># navy pages get the shared nav; blue page keeps its own step system</span>
+<span class="n">NAVY</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"index.html"</span><span class="p">,</span><span class="s2">"deep-well-platform.html"</span><span class="p">,</span><span class="s2">"family-library.html"</span><span class="p">,</span>
+        <span class="s2">"family-library-interactive.html"</span><span class="p">,</span><span class="s2">"case-studies-and-voices.html"</span><span class="p">,</span>
+        <span class="s2">"video-access-golive.html"</span><span class="p">,</span><span class="s2">"deep-well-brochure-navy.html"</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">NAVY</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="c1"># replace the existing &lt;nav class="main"&gt;...&lt;/nav&gt; block with the shared one</span>
+    <span class="n">new</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">subn</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;nav class="main"&gt;.*?&lt;/nav&gt;'</span><span class="p">,</span> <span class="n">NAV</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"NO NAV FOUND:"</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">continue</span>
+    <span class="c1"># brand always returns to the archive</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'&lt;a class="brand" href="#top"&gt;'</span><span class="p">,</span> <span class="s1">'&lt;a class="brand" href="index.html"&gt;'</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"nav wired:"</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># ---- verify every internal href resolves ----</span>
+<span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="s2">"*.html"</span><span class="p">)))</span>
+<span class="n">existing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">files</span><span class="p">)</span>
+<span class="n">bad</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'href="([^"]+)"'</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"http"</span><span class="p">,</span> <span class="s2">"#"</span><span class="p">,</span> <span class="s2">"mailto:"</span><span class="p">)):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="s2">"' +"</span> <span class="ow">in</span> <span class="n">m</span> <span class="ow">or</span> <span class="s2">"'+"</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing</span><span class="p">:</span>
+            <span class="n">bad</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">target</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">checked"</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="s2">"internal links across"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">),</span> <span class="s2">"pages"</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">bad</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"BROKEN:"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bad</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"  "</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"all internal links resolve"</span><span class="p">)</span>
+
+<span class="c1"># check JS-built catalog hrefs point at real files</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'href:"([^"]+)"'</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"BROKEN CATALOG HREF in"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"catalog hrefs verified"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">files in site:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/wire.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

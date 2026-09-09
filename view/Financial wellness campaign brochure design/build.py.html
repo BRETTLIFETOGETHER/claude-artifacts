@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Financial wellness campaign brochure design</div>
+<h1>build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">1 edit</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">19 KB</span>
+<a class="btn" href="../../artifacts/Financial%20wellness%20campaign%20brochure%20design/build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">HTML generator that builds the brochure from content.py with embedded fonts</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">content</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLATFORM</span><span class="p">,</span> <span class="n">THEMES</span><span class="p">,</span> <span class="n">SERIES</span>
+
+<span class="n">FONT_DIR</span> <span class="o">=</span> <span class="s2">"/home/claude/work/fonts"</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">b64</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FONT_DIR</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="n">FONT_FACE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Playfair Display'; font-weight:400 900; font-style:normal;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="s1">'PlayfairDisplay.ttf'</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('truetype'); font-display:swap; </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Playfair Display'; font-weight:400 900; font-style:italic;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="s1">'PlayfairDisplay-Italic.ttf'</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('truetype'); font-display:swap; </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Archivo'; font-weight:100 900; font-style:normal;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="s1">'Archivo.ttf'</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('truetype'); font-display:swap; </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Spectral'; font-weight:400; font-style:normal;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="s1">'Spectral-Regular.ttf'</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('truetype'); font-display:swap; </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Spectral'; font-weight:500; font-style:normal;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="s1">'Spectral-Medium.ttf'</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('truetype'); font-display:swap; </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Spectral'; font-weight:600; font-style:normal;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="s1">'Spectral-SemiBold.ttf'</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('truetype'); font-display:swap; </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Spectral'; font-weight:400; font-style:italic;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">b64</span><span class="p">(</span><span class="s1">'Spectral-Italic.ttf'</span><span class="p">)</span><span class="si">}</span><span class="s2">) format('truetype'); font-display:swap; </span><span class="se">}}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">esc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">lspace</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="c1"># letter-spaced eyebrow rendering handled by CSS; just return escaped</span>
+    <span class="k">return</span> <span class="n">esc</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tags_html</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="s2">"tag"</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="</span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">)</span>
+
+<span class="c1"># ---------- COVER ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cover</span><span class="p">():</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">PLATFORM</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">"title_lines"</span><span class="p">]</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="page cover"&gt;</span>
+<span class="s2">  &lt;div class="cover-frame"&gt;</span>
+<span class="s2">    &lt;div class="kicker gold"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">'kicker'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;h1 class="cover-title"&gt;</span>
+<span class="s2">      &lt;span class="ct-1"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="ct-2"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="ct-3"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="cover-deck"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">'deck'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="cover-grid"&gt;</span>
+<span class="s2">      </span><span class="si">{</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cover_chip</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">SERIES</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-foot"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">'footer'</span><span class="p">])</span><span class="si">}</span><span class="s2"> &lt;span class="lt"&gt;Lifetogether&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cover_chip</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">th</span> <span class="o">=</span> <span class="n">THEMES</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">"theme"</span><span class="p">]]</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="chip" style="--edge:</span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="s1">'edge'</span><span class="p">]</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">      &lt;span class="chip-n"&gt;</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'n'</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">      &lt;span class="chip-t"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;"""</span>
+
+<span class="c1"># ---------- FRAMEWORK PAGE ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">framework</span><span class="p">():</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">PLATFORM</span>
+    <span class="n">intro</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">par</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;"</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">p</span><span class="p">[</span><span class="s2">"intro"</span><span class="p">])</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="page framework"&gt;</span>
+<span class="s2">  &lt;div class="fw-head"&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;THE FLOURISHING OF FINANCES&lt;/div&gt;</span>
+<span class="s2">    &lt;h2 class="fw-title"&gt;Six things you can feel.&lt;br&gt;One way God designed money to work.&lt;/h2&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="fw-sentence"&gt;</span>
+<span class="s2">    &lt;div class="kicker gold"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">'framework_label'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="fw-quote"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">'framework_sentence'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="fw-body"&gt;</span><span class="si">{</span><span class="n">intro</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="fw-grid"&gt;</span>
+<span class="s2">    </span><span class="si">{</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">grid_card</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">SERIES</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">grid_card</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">th</span> <span class="o">=</span> <span class="n">THEMES</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">"theme"</span><span class="p">]]</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span>
+    <span class="n">scr_ref</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">"scripture"</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" (NIV)"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="gcard" style="--dark:</span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="s1">'dark'</span><span class="p">]</span><span class="si">}</span><span class="s2">;--edge:</span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="s1">'edge'</span><span class="p">]</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">      &lt;div class="gcard-bar"&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="gcard-body"&gt;</span>
+<span class="s2">        &lt;div class="gcard-n"&gt;</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'n'</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="gcard-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="gcard-cat"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'category'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'· '</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="gcard-meta"&gt;&lt;span&gt;40-Day&lt;/span&gt;&lt;span&gt;6-Session&lt;/span&gt;&lt;span&gt;Tier 1&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;"""</span>
+
+<span class="c1"># ---------- SERIES SECTION ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">series_section</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">th</span> <span class="o">=</span> <span class="n">THEMES</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">"theme"</span><span class="p">]]</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"--dark:</span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="s1">'dark'</span><span class="p">]</span><span class="si">}</span><span class="s2">;--deep:</span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="s1">'deep'</span><span class="p">]</span><span class="si">}</span><span class="s2">;--tint:</span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="s1">'tint'</span><span class="p">]</span><span class="si">}</span><span class="s2">;--edge:</span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="s1">'edge'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">title_h</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;span class="st-a"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"title"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/span&gt; &lt;span class="st-b"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"title"</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+    <span class="n">scr_text</span><span class="p">,</span> <span class="n">scr_ref</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">"scripture"</span><span class="p">]</span>
+    <span class="n">subs</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;div class='sub'&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;"</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">"subtitles"</span><span class="p">])</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">"info"</span><span class="p">]</span>
+    <span class="n">info_rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"Format"</span><span class="p">,</span> <span class="s2">"40-Day Journey + 6-Session Small Group"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Audience"</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s2">"Audience"</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"Best Season"</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s2">"Best Season"</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"Tier"</span><span class="p">,</span> <span class="s2">"Tier 1 — highest market demand"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Best For"</span><span class="p">,</span> <span class="s2">"Church · Company"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Core Felt Need"</span><span class="p">,</span> <span class="s2">"Debt · budgeting · money stress · simplicity"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Why It Matters"</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s2">"Why it matters"</span><span class="p">]),</span>
+    <span class="p">]</span>
+    <span class="n">info_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"&lt;div class='inforow'&gt;&lt;span class='infok'&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;"</span>
+        <span class="sa">f</span><span class="s2">"&lt;span class='infov'&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;"</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info_rows</span><span class="p">)</span>
+
+    <span class="n">sessions</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">session_card</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sess</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"sessions"</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="page series" style="</span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">  &lt;div class="band"&gt;</span>
+<span class="s2">    &lt;div class="band-num"&gt;</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'n'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="band-inner"&gt;</span>
+<span class="s2">      &lt;div class="kicker band-cat"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'category'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="band-title"&gt;</span><span class="si">{</span><span class="n">title_h</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="band-line"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'band_line'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="content"&gt;</span>
+<span class="s2">    &lt;div class="lead"&gt;</span>
+<span class="s2">      &lt;blockquote class="pull"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'pull'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/blockquote&gt;</span>
+<span class="s2">      &lt;div class="lead-body"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'body'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="scripture"&gt;</span>
+<span class="s2">        &lt;div class="kicker"&gt;Core Scripture&lt;/div&gt;</span>
+<span class="s2">        &lt;p class="scr-text"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">scr_text</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;p class="scr-ref"&gt;— </span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">scr_ref</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;aside class="side"&gt;</span>
+<span class="s2">      &lt;div class="info"&gt;</span>
+<span class="s2">        &lt;div class="kicker"&gt;Series Information&lt;/div&gt;</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">info_html</span><span class="si">}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="subs"&gt;</span>
+<span class="s2">        &lt;div class="kicker"&gt;Subtitle Options&lt;/div&gt;</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">subs</span><span class="si">}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/aside&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="bigidea"&gt;</span>
+<span class="s2">    &lt;div class="kicker"&gt;The Big Idea&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="bi-text"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'bigidea'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="tags"&gt;</span><span class="si">{</span><span class="n">tags_html</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="curriculum"&gt;</span>
+<span class="s2">    &lt;div class="kicker cur-label"&gt;Small Group Curriculum — Six Sessions&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="sessions"&gt;</span><span class="si">{</span><span class="n">sessions</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">session_card</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;li&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/li&gt;"</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">[</span><span class="s2">"q"</span><span class="p">])</span>
+    <span class="n">tag_line</span> <span class="o">=</span> <span class="n">tags_html</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">],</span> <span class="s2">"stag"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"commit"</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">:</span>
+        <span class="n">step_block</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;div class='step commit'&gt;&lt;div class='kicker step-k'&gt;Commitment Step&lt;/div&gt;"</span>
+                      <span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">'commit'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">step_block</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;div class='step'&gt;&lt;div class='kicker step-k'&gt;This Week</span><span class="se">\u2019</span><span class="s2">s Step&lt;/div&gt;"</span>
+                      <span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">'step'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;&lt;/div&gt;"</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;span class="sc-a"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s2">"t"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/span&gt; &lt;span class="sc-b"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s2">"t"</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="session"&gt;</span>
+<span class="s2">      &lt;div class="sc-head"&gt;</span>
+<span class="s2">        &lt;div class="kicker sc-eyebrow"&gt;Session </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;h3 class="sc-title"&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&lt;/h3&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="sc-body"&gt;</span>
+<span class="s2">        &lt;p class="sc-verse"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">sess</span><span class="p">[</span><span class="s1">'v'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;div class="stags"&gt;</span><span class="si">{</span><span class="n">tag_line</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="kicker sc-q-label"&gt;Discussion Questions&lt;/div&gt;</span>
+<span class="s2">        &lt;ol class="sc-q"&gt;</span><span class="si">{</span><span class="n">qs</span><span class="si">}</span><span class="s2">&lt;/ol&gt;</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">step_block</span><span class="si">}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;"""</span>
+
+<span class="c1"># ---------- CLOSING ----------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">closing</span><span class="p">():</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">PLATFORM</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;span&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;"</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">p</span><span class="p">[</span><span class="s2">"closing_title"</span><span class="p">])</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="page closing"&gt;</span>
+<span class="s2">  &lt;div class="close-inner"&gt;</span>
+<span class="s2">    &lt;h2 class="close-title"&gt;</span><span class="si">{</span><span class="n">lines</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="close-body"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">'closing_body'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="close-stats"&gt;</span>
+<span class="s2">      &lt;div class="stat"&gt;&lt;div class="stat-n"&gt;10&lt;/div&gt;&lt;div class="stat-l"&gt;40-Day Campaigns&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="stat"&gt;&lt;div class="stat-n"&gt;60&lt;/div&gt;&lt;div class="stat-l"&gt;Small Group Sessions&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="stat"&gt;&lt;div class="stat-n"&gt;1&lt;/div&gt;&lt;div class="stat-l"&gt;Transformed Relationship&lt;br&gt;with Money&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="close-cta"&gt;</span>
+<span class="s2">      &lt;div class="cta-lead"&gt;Start the journey&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cta-line"&gt;Choose your church</span><span class="se">\u2019</span><span class="s2">s first title </span><span class="se">\u2014</span><span class="s2"> and launch a season no one comes through unchanged.&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="cta-tag gold"&gt;brett@lifetogether.com&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-foot light"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">'footer'</span><span class="p">])</span><span class="si">}</span><span class="s2"> · Complete Reference &lt;span class="lt"&gt;Lifetogether&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;"""</span>
+
+<span class="c1"># ---------- ASSEMBLE ----------</span>
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">*{margin:0;padding:0;box-sizing:border-box}</span>
+<span class="s2">:root{</span>
+<span class="s2">  --gold:#c4a35a; --gold-bright:#d8bd7c;</span>
+<span class="s2">  --ink:#22252b; --ink-soft:#4a4d54;</span>
+<span class="s2">  --cream:#f7f3ea; --cream-2:#efe9dc; --navy:#15233c;</span>
+<span class="s2">  --rule:rgba(34,37,43,.14);</span>
+<span class="s2">}</span>
+<span class="s2">html{-webkit-print-color-adjust:exact;print-color-adjust:exact}</span>
+<span class="s2">body{font-family:'Spectral',Georgia,serif;color:var(--ink);background:#3a3f47;</span>
+<span class="s2">  line-height:1.7;font-size:16px;-webkit-font-smoothing:antialiased}</span>
+<span class="s2">.page{position:relative;width:8.5in;min-height:11in;margin:0 auto;background:var(--cream);</span>
+<span class="s2">  overflow:hidden}</span>
+<span class="s2">@media screen{.page{margin:22px auto;box-shadow:0 24px 60px rgba(0,0,0,.4)}}</span>
+
+<span class="s2">.kicker{font-family:'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.26em;</span>
+<span class="s2">  font-size:10.5px;font-weight:600;color:var(--ink-soft)}</span>
+<span class="s2">.kicker.gold{color:var(--gold)}</span>
+<span class="s2">.gold{color:var(--gold)}</span>
+<span class="s2">.lt{font-family:'Playfair Display',serif;font-style:italic;letter-spacing:0}</span>
+
+<span class="s2">/* ---------------- COVER ---------------- */</span>
+<span class="s2">.cover{background:var(--navy);color:#f3ede0;display:flex;padding:0}</span>
+<span class="s2">.cover-frame{border:1px solid rgba(196,163,90,.5);margin:.42in;padding:.62in .6in .5in;</span>
+<span class="s2">  width:100%;display:flex;flex-direction:column}</span>
+<span class="s2">.cover .kicker{color:var(--gold-bright);letter-spacing:.24em}</span>
+<span class="s2">.cover-title{font-family:'Playfair Display',serif;font-weight:500;line-height:.94;</span>
+<span class="s2">  margin-top:.5in;letter-spacing:-.01em}</span>
+<span class="s2">.cover-title span{display:block}</span>
+<span class="s2">.ct-1{font-size:46px;font-style:italic;color:#cfd6e2;font-weight:400}</span>
+<span class="s2">.ct-2{font-size:108px;color:#f3ede0}</span>
+<span class="s2">.ct-3{font-size:108px;color:var(--gold-bright);font-style:italic;font-weight:500}</span>
+<span class="s2">.cover-deck{font-size:17.5px;line-height:1.62;max-width:5.6in;margin-top:.34in;</span>
+<span class="s2">  color:#d9ddE6;font-weight:400}</span>
+<span class="s2">.cover-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px 20px;margin-top:auto;</span>
+<span class="s2">  padding-top:.4in}</span>
+<span class="s2">.chip{display:flex;align-items:baseline;gap:12px;padding:9px 2px;</span>
+<span class="s2">  border-top:1px solid rgba(196,163,90,.28)}</span>
+<span class="s2">.chip-n{font-family:'Archivo',sans-serif;font-size:11px;font-weight:700;color:var(--edge);</span>
+<span class="s2">  letter-spacing:.1em;min-width:24px}</span>
+<span class="s2">.chip-t{font-family:'Playfair Display',serif;font-size:17px;color:#ede6d6}</span>
+<span class="s2">.cover-foot{font-family:'Archivo',sans-serif;font-size:9.5px;letter-spacing:.12em;</span>
+<span class="s2">  text-transform:uppercase;color:#9aa3b4;margin-top:.34in;display:flex;justify-content:space-between;</span>
+<span class="s2">  border-top:1px solid rgba(196,163,90,.28);padding-top:12px}</span>
+<span class="s2">.cover-foot .lt{font-size:13px;color:var(--gold-bright);text-transform:none;letter-spacing:0}</span>
+
+<span class="s2">/* ---------------- FRAMEWORK ---------------- */</span>
+<span class="s2">.framework{padding:.7in .68in .55in}</span>
+<span class="s2">.fw-title{font-family:'Playfair Display',serif;font-weight:500;font-size:33px;line-height:1.16;</span>
+<span class="s2">  margin-top:12px;color:var(--navy);letter-spacing:-.01em}</span>
+<span class="s2">.fw-sentence{background:var(--navy);color:#eee7d8;padding:26px 30px;margin:26px 0 24px;</span>
+<span class="s2">  border-left:4px solid var(--gold)}</span>
+<span class="s2">.fw-quote{font-family:'Playfair Display',serif;font-style:italic;font-size:18.5px;line-height:1.6;</span>
+<span class="s2">  margin-top:12px;color:#f1ead c;color:#f1eadc}</span>
+<span class="s2">.fw-body{columns:2;column-gap:34px;font-size:13.5px;line-height:1.66;color:var(--ink-soft);</span>
+<span class="s2">  text-align:justify}</span>
+<span class="s2">.fw-body p{margin-bottom:11px;break-inside:avoid}</span>
+<span class="s2">.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}</span>
+<span class="s2">.gcard{display:flex;background:#fff;border:1px solid var(--rule);overflow:hidden;</span>
+<span class="s2">  break-inside:avoid}</span>
+<span class="s2">.gcard-bar{width:7px;background:var(--dark);flex:none}</span>
+<span class="s2">.gcard-body{padding:13px 15px;flex:1}</span>
+<span class="s2">.gcard-n{font-family:'Archivo',sans-serif;font-size:11px;font-weight:700;color:var(--edge);</span>
+<span class="s2">  letter-spacing:.12em}</span>
+<span class="s2">.gcard-title{font-family:'Playfair Display',serif;font-size:21px;color:var(--ink);margin:2px 0 4px;</span>
+<span class="s2">  font-weight:600}</span>
+<span class="s2">.gcard-cat{font-family:'Archivo',sans-serif;font-size:9px;letter-spacing:.13em;text-transform:uppercase;</span>
+<span class="s2">  color:var(--ink-soft);line-height:1.35}</span>
+<span class="s2">.gcard-meta{display:flex;gap:8px;margin-top:8px}</span>
+<span class="s2">.gcard-meta span{font-family:'Archivo',sans-serif;font-size:8.5px;letter-spacing:.1em;</span>
+<span class="s2">  text-transform:uppercase;color:var(--dark);border:1px solid var(--rule);padding:2px 7px;border-radius:2px}</span>
+
+<span class="s2">/* ---------------- SERIES ---------------- */</span>
+<span class="s2">.series{padding:0 0 .5in}</span>
+<span class="s2">.band{background:var(--dark);color:#f1ece0;padding:.46in .68in .42in;position:relative;overflow:hidden}</span>
+<span class="s2">.band-num{position:absolute;left:.34in;top:50%;transform:translateY(-50%);</span>
+<span class="s2">  font-family:'Playfair Display',serif;font-size:150px;font-weight:600;</span>
+<span class="s2">  color:rgba(255,255,255,.06);line-height:1;pointer-events:none}</span>
+<span class="s2">.band-inner{position:relative;padding-left:.1in}</span>
+<span class="s2">.band-cat{color:var(--edge);letter-spacing:.22em}</span>
+<span class="s2">.band-title{font-family:'Playfair Display',serif;font-weight:500;font-size:50px;line-height:1;</span>
+<span class="s2">  margin:10px 0 12px;letter-spacing:-.01em}</span>
+<span class="s2">.st-a{color:#f3 efe2;color:#f3efe2}</span>
+<span class="s2">.st-b{color:var(--edge);font-style:italic}</span>
+<span class="s2">.band-line{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;line-height:1.5;</span>
+<span class="s2">  max-width:6in;color:#d9d3c4;font-weight:400}</span>
+
+<span class="s2">.content{display:grid;grid-template-columns:1.55fr 1fr;gap:30px;padding:.4in .68in .1in}</span>
+<span class="s2">.pull{font-family:'Playfair Display',serif;font-style:italic;font-size:25px;line-height:1.32;</span>
+<span class="s2">  color:var(--navy);border-left:3px solid var(--edge);padding-left:18px;margin-bottom:18px}</span>
+<span class="s2">.series .pull{color:var(--dark)}</span>
+<span class="s2">.lead-body{font-size:14px;line-height:1.72;color:#34373d;text-align:justify}</span>
+<span class="s2">.scripture{background:var(--dark);color:#efe9da;padding:22px 24px;margin-top:22px;break-inside:avoid}</span>
+<span class="s2">.scr-text{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;line-height:1.5;</span>
+<span class="s2">  margin-top:10px;color:#f2ecdd}</span>
+<span class="s2">.scr-ref{font-family:'Archivo',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">  margin-top:12px;color:var(--edge)}</span>
+
+<span class="s2">.side{display:flex;flex-direction:column;gap:18px}</span>
+<span class="s2">.info,.subs{background:var(--tint);padding:18px 20px;border-top:3px solid var(--dark)}</span>
+<span class="s2">.info .kicker,.subs .kicker{margin-bottom:12px;display:block}</span>
+<span class="s2">.inforow{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:12px}</span>
+<span class="s2">.inforow:last-child{border-bottom:none}</span>
+<span class="s2">.infok{font-family:'Archivo',sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;</span>
+<span class="s2">  color:var(--ink-soft);min-width:78px;flex:none;padding-top:1px}</span>
+<span class="s2">.infov{color:var(--ink);font-size:12.5px;line-height:1.42}</span>
+<span class="s2">.sub{font-style:italic;font-size:13px;color:#3c3f45;padding:7px 0;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">.sub:last-child{border-bottom:none}</span>
+
+<span class="s2">.bigidea{background:var(--deep);color:#f0eadb;margin:.34in .68in 0;padding:26px 30px;break-inside:avoid}</span>
+<span class="s2">.bigidea .kicker{color:var(--edge);margin-bottom:12px;display:block}</span>
+<span class="s2">.bi-text{font-family:'Playfair Display',serif;font-style:italic;font-size:21px;line-height:1.48;</span>
+<span class="s2">  color:#f3eede}</span>
+<span class="s2">.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}</span>
+<span class="s2">.tag{font-family:'Archivo',sans-serif;font-size:9px;letter-spacing:.08em;text-transform:uppercase;</span>
+<span class="s2">  color:#e9e2d2;border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:2px}</span>
+
+<span class="s2">.curriculum{padding:.36in .68in 0}</span>
+<span class="s2">.cur-label{display:block;color:var(--edge);margin-bottom:16px;</span>
+<span class="s2">  border-bottom:1px solid var(--rule);padding-bottom:12px}</span>
+<span class="s2">.sessions{display:grid;grid-template-columns:1fr 1fr;gap:16px}</span>
+<span class="s2">.session{border:1px solid var(--rule);background:#fff;break-inside:avoid;display:flex;flex-direction:column}</span>
+<span class="s2">.sc-head{background:var(--dark);color:#f1ece0;padding:13px 17px}</span>
+<span class="s2">.sc-eyebrow{color:var(--edge);letter-spacing:.18em;font-size:9px}</span>
+<span class="s2">.sc-title{font-family:'Playfair Display',serif;font-weight:500;font-size:21px;line-height:1.08;margin-top:5px}</span>
+<span class="s2">.sc-a{color:#f3efe3}.sc-b{color:var(--edge);font-style:italic}</span>
+<span class="s2">.sc-body{padding:15px 17px 17px;flex:1;display:flex;flex-direction:column}</span>
+<span class="s2">.sc-verse{font-family:'Playfair Display',serif;font-style:italic;font-size:13px;line-height:1.4;</span>
+<span class="s2">  color:var(--dark);margin-bottom:11px}</span>
+<span class="s2">.stags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px}</span>
+<span class="s2">.stag{font-family:'Archivo',sans-serif;font-size:8px;letter-spacing:.06em;text-transform:uppercase;</span>
+<span class="s2">  color:var(--ink-soft);background:var(--tint);padding:3px 7px;border-radius:2px}</span>
+<span class="s2">.sc-q-label{display:block;color:var(--edge);font-size:9px;margin-bottom:8px}</span>
+<span class="s2">.sc-q{list-style:none;counter-reset:q;flex:1}</span>
+<span class="s2">.sc-q li{position:relative;padding-left:20px;font-size:12px;line-height:1.5;color:#34373d;</span>
+<span class="s2">  margin-bottom:9px;counter-increment:q}</span>
+<span class="s2">.sc-q li::before{content:counter(q);position:absolute;left:0;top:0;</span>
+<span class="s2">  font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;color:var(--edge);</span>
+<span class="s2">  border:1px solid var(--edge);width:14px;height:14px;border-radius:50%;</span>
+<span class="s2">  display:flex;align-items:center;justify-content:center;line-height:1}</span>
+<span class="s2">.step{background:var(--tint);padding:12px 14px;margin-top:8px;border-left:3px solid var(--edge)}</span>
+<span class="s2">.step.commit{border-left-color:var(--dark)}</span>
+<span class="s2">.step-k{color:var(--dark);font-size:9px;margin-bottom:6px;display:block}</span>
+<span class="s2">.step p{font-size:11.5px;line-height:1.52;color:#34373d}</span>
+
+<span class="s2">/* ---------------- CLOSING ---------------- */</span>
+<span class="s2">.closing{background:var(--navy);color:#f1ece0;display:flex}</span>
+<span class="s2">.close-inner{border:1px solid rgba(196,163,90,.5);margin:.42in;padding:.7in .62in .5in;</span>
+<span class="s2">  width:100%;display:flex;flex-direction:column}</span>
+<span class="s2">.close-title{font-family:'Playfair Display',serif;font-weight:500;font-size:54px;line-height:1.02;</span>
+<span class="s2">  letter-spacing:-.01em;margin-top:.3in}</span>
+<span class="s2">.close-title span{display:block}</span>
+<span class="s2">.close-title span:nth-child(2){color:#cfd6e2;font-style:italic;font-weight:400}</span>
+<span class="s2">.close-title span:nth-child(3){color:var(--gold-bright);font-style:italic}</span>
+<span class="s2">.close-body{font-size:16.5px;line-height:1.66;max-width:5.6in;margin-top:.32in;color:#d9ddE6}</span>
+<span class="s2">.close-stats{display:flex;gap:48px;margin-top:.46in;padding-top:.32in;</span>
+<span class="s2">  border-top:1px solid rgba(196,163,90,.3)}</span>
+<span class="s2">.stat-n{font-family:'Playfair Display',serif;font-size:60px;color:var(--gold-bright);line-height:1;font-weight:500}</span>
+<span class="s2">.stat-l{font-family:'Archivo',sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">  color:#aeb6c5;margin-top:10px;line-height:1.5}</span>
+<span class="s2">.close-cta{margin-top:auto;padding-top:.5in}</span>
+<span class="s2">.cta-lead{font-family:'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:11px;</span>
+<span class="s2">  color:var(--gold-bright);font-weight:600}</span>
+<span class="s2">.cta-line{font-family:'Playfair Display',serif;font-style:italic;font-size:23px;line-height:1.35;</span>
+<span class="s2">  margin-top:12px;max-width:5.4in;color:#f1ead c;color:#f1eadc}</span>
+<span class="s2">.cta-tag{font-family:'Archivo',sans-serif;letter-spacing:.14em;font-size:13px;margin-top:16px;font-weight:600}</span>
+<span class="s2">.cover-foot.light{color:#9aa3b4;margin-top:.4in}</span>
+
+<span class="s2">/* ---------------- PRINT ---------------- */</span>
+<span class="s2">@page{size:8.5in 11in;margin:0}</span>
+<span class="s2">@media print{</span>
+<span class="s2">  body{background:#fff}</span>
+<span class="s2">  .page{margin:0;box-shadow:none}</span>
+<span class="s2">  .framework,.series,.closing{page-break-before:always;break-before:page}</span>
+<span class="s2">  .cover{page-break-before:avoid}</span>
+<span class="s2">  .session,.scripture,.bigidea,.gcard,.fw-sentence,.info,.subs{page-break-inside:avoid;break-inside:avoid}</span>
+<span class="s2">  .sessions,.content,.fw-grid{page-break-inside:auto}</span>
+<span class="s2">}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">cover</span><span class="p">()</span> <span class="o">+</span> <span class="n">framework</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SERIES</span><span class="p">:</span>
+        <span class="n">body</span> <span class="o">+=</span> <span class="n">series_section</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">+=</span> <span class="n">closing</span><span class="p">()</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;The Finances Series · Lifetogether&lt;/title&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">FONT_FACE</span><span class="si">}{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;&lt;body&gt;</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&lt;/body&gt;&lt;/html&gt;"""</span>
+    <span class="k">return</span> <span class="n">doc</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">build</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/work/Finances_Series_Complete.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"HTML bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/work/build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

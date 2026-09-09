@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_v2b.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Financial course curriculum overview</div>
+<h1>build_v2b.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">3 KB</span>
+<a class="btn" href="../../artifacts/Financial%20course%20curriculum%20overview/build_v2b.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build engine for Volume 2 Part 2 (sections 4-6); reuses page builders from build_v2</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Finances Campaign Architecture — Volume 2, Part Two build."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">build</span><span class="w"> </span><span class="kn">import</span> <span class="n">FONT_CSS</span><span class="p">,</span> <span class="n">CSS</span><span class="p">,</span> <span class="n">esc</span><span class="p">,</span> <span class="n">sprig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">build_v2</span><span class="w"> </span><span class="kn">import</span> <span class="n">EXTRA_CSS</span><span class="p">,</span> <span class="n">campaign_arch_page</span>   <span class="c1"># reuse page template</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_v2_batch2</span><span class="w"> </span><span class="kn">import</span> <span class="n">ARCH</span><span class="p">,</span> <span class="n">GROUP_DESC</span>
+
+<span class="n">SECTION_START</span> <span class="o">=</span> <span class="mi">4</span>   <span class="c1"># these are the 4th-6th sections of the full Volume 2</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cover_v2b</span><span class="p">():</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="page cover"&gt;</span>
+<span class="s2">  &lt;div class="frame"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="topkick"&gt;A LifeTogether Campaign Catalog &amp;nbsp;&amp;middot;&amp;nbsp; Volume Two&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="inner"&gt;</span>
+<span class="s2">    &lt;div class="sprigwrap"&gt;</span><span class="si">{</span><span class="n">sprig</span><span class="p">(</span><span class="s1">'#c9a35c'</span><span class="p">,</span><span class="mi">34</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;h1&gt;Finances&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class="sub1"&gt;Campaign Architecture&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="rule"&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="blurb"&gt;Expanded one-page blueprints for the campaigns behind the library &amp;mdash; positioning, six-session structure, and a scriptural backbone for every title.&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="count"&gt;Part Two &amp;nbsp;&amp;middot;&amp;nbsp; 19 Campaign Blueprints&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="wm"&gt;</span>
+<span class="s2">    &lt;div class="lt"&gt;LifeTogether&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="tag"&gt;Churchwide &amp;amp; Workplace Campaigns&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">group_divider</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">pg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;div class="page divider"&gt;</span>
+<span class="s2">  &lt;div class="dsprig"&gt;</span><span class="si">{</span><span class="n">sprig</span><span class="p">(</span><span class="s1">'var(--ever)'</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dk"&gt;Section </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> &amp;nbsp;&amp;middot;&amp;nbsp; The Complete Library, Expanded&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dnum"&gt;</span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dt"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="drule"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dd"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">GROUP_DESC</span><span class="p">[</span><span class="n">group</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="dcount"&gt;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> Campaigns&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="foot-mark"&gt;LifeTogether &amp;middot; Finances Campaign Catalog&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pgnum"&gt;</span><span class="si">{</span><span class="n">pg</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_html</span><span class="p">():</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ARCH</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">'group'</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'group'</span><span class="p">])</span>
+    <span class="n">pages</span> <span class="o">=</span> <span class="p">[</span><span class="n">cover_v2b</span><span class="p">()]</span>
+    <span class="n">pg</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">for</span> <span class="n">offset</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">SECTION_START</span> <span class="o">+</span> <span class="n">offset</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ARCH</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">'group'</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="p">]</span>
+        <span class="n">pages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_divider</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">members</span><span class="p">),</span> <span class="n">idx</span><span class="p">,</span> <span class="n">pg</span><span class="p">));</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+            <span class="n">pages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">campaign_arch_page</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">pg</span><span class="p">));</span> <span class="n">pg</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">pages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'class="page"'</span><span class="p">,</span> <span class="s1">'class="page last"'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pages</span><span class="p">)</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset='utf-8'&gt;"</span>
+            <span class="sa">f</span><span class="s2">"&lt;style&gt;</span><span class="si">{</span><span class="n">FONT_CSS</span><span class="si">}{</span><span class="n">CSS</span><span class="si">}{</span><span class="n">EXTRA_CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;&lt;/head&gt;&lt;body&gt;</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&lt;/body&gt;&lt;/html&gt;"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">html</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pages</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">html</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">build_html</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">'catalog_v2b.html'</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HTML written: </span><span class="si">{</span><span class="n">out</span><span class="si">}</span><span class="s2"> | pages composed: </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> | size </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">html</span><span class="p">)</span><span class="o">//</span><span class="mi">1024</span><span class="si">}</span><span class="s2"> KB"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/finances_catalog/build_v2b.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

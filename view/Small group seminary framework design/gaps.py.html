@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>gaps.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>gaps.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">22 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/gaps.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Syllabus gap analysis against MDiv cores, missing pieces, alternative models, and the accreditation-coalition answer</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Gaps, models, and the third-party validation answer."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{--ink:#0c1723;--ink2:#08111c;--gold:#c19a4b;--goldlt:#e2c689;--parch:#f7f3ea;</span>
+<span class="s2">--parch2:#efe8da;--rule:#d9cfbc;--body:#2b2a26;--muted:#6d6759;--mutedlt:#9fb0c1;}</span>
+<span class="s2">*{box-sizing:border-box}</span>
+<span class="s2">body{margin:0;background:var(--parch);color:var(--body);</span>
+<span class="s2">font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;line-height:1.62}</span>
+<span class="s2">.wrap{max-width:920px;margin:0 auto;padding:0 30px}</span>
+<span class="s2">h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;margin:0;letter-spacing:-.01em}</span>
+<span class="s2">.eyebrow{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.26em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);display:block}</span>
+<span class="s2">p{margin:0 0 15px}</span>
+<span class="s2">header{background:var(--ink);color:#f3efe6;padding:66px 0 54px;position:relative;overflow:hidden}</span>
+<span class="s2">header:before{content:"";position:absolute;inset:0;</span>
+<span class="s2">background:radial-gradient(112</span><span class="si">% 78%</span><span class="s2"> at 7</span><span class="si">% 0%</span><span class="s2">,rgba(193,154,75,.18),transparent 62%)}</span>
+<span class="s2">header .wrap{position:relative}header .eyebrow{color:var(--goldlt)}</span>
+<span class="s2">header h1{font-size:clamp(33px,5.8vw,56px);line-height:1.03;color:#fbf8f1;margin-top:16px}</span>
+<span class="s2">header h1 em{font-style:italic;font-weight:400;color:var(--goldlt)}</span>
+<span class="s2">header .lede{font-size:21px;color:#cfc7b8;max-width:620px;margin-top:22px}</span>
+<span class="s2">section{padding:58px 0 50px;border-bottom:1px solid var(--rule)}</span>
+<span class="s2">section.dark{background:var(--ink2);color:#e6e0d3;border-bottom:none}</span>
+<span class="s2">section.dark h2,section.dark h3,section.dark h4{color:#fbf8f1}</span>
+<span class="s2">section.dark p{color:#d6cec0}</span>
+<span class="s2">section.tone{background:var(--parch2)}</span>
+<span class="s2">h2.sec{font-size:clamp(26px,4.1vw,38px);line-height:1.1;margin-top:13px;max-width:780px}</span>
+<span class="s2">.kick{font-style:italic;color:var(--muted);margin:13px 0 0;max-width:640px;font-size:20px}</span>
+<span class="s2">section.dark .kick{color:var(--mutedlt)}</span>
+<span class="s2">.verdict{font-family:"Playfair Display",serif;font-size:22px;line-height:1.42;</span>
+<span class="s2">border-left:3px solid var(--gold);padding-left:22px;margin:24px 0;max-width:660px}</span>
+<span class="s2">section.dark .verdict{color:var(--goldlt)}</span>
+<span class="s2">.item{display:flex;gap:22px;padding:20px 0;border-top:1px solid var(--rule)}</span>
+<span class="s2">section.dark .item{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">.item .n{flex:0 0 44px;font-family:"Playfair Display",serif;font-size:28px;line-height:1;</span>
+<span class="s2">color:transparent;-webkit-text-stroke:1px var(--gold);padding-top:3px}</span>
+<span class="s2">section.dark .item .n{-webkit-text-stroke-color:var(--goldlt)}</span>
+<span class="s2">.item .c{flex:1 1 auto;max-width:670px}</span>
+<span class="s2">.item h4{font-size:20px;line-height:1.25;margin-bottom:7px}</span>
+<span class="s2">.item p{margin:0 0 9px;font-size:18px}.item p:last-child{margin-bottom:0}</span>
+<span class="s2">.sev{font-family:"Lato",sans-serif;font-size:9px;font-weight:800;letter-spacing:.15em;</span>
+<span class="s2">text-transform:uppercase;padding:3px 8px;margin-left:8px;white-space:nowrap;vertical-align:middle}</span>
+<span class="s2">.sev.new{background:var(--gold);color:#fff}</span>
+<span class="s2">.sev.add{border:1px solid var(--gold);color:var(--gold)}</span>
+<span class="s2">.sev.cant{border:1px solid var(--rule);color:var(--muted)}</span>
+<span class="s2">table{width:100%;border-collapse:collapse;margin-top:24px;font-size:17px}</span>
+<span class="s2">th{font-family:"Lato",sans-serif;font-weight:800;font-size:10px;letter-spacing:.15em;</span>
+<span class="s2">text-transform:uppercase;color:var(--gold);text-align:left;padding:0 14px 11px 0;</span>
+<span class="s2">border-bottom:1px solid var(--rule);vertical-align:bottom}</span>
+<span class="s2">td{padding:13px 14px 13px 0;border-bottom:1px solid var(--rule);vertical-align:top}</span>
+<span class="s2">td.k{font-family:"Playfair Display",serif;font-size:17.5px;width:27%}</span>
+<span class="s2">td.s{color:var(--muted);font-size:16.5px}</span>
+<span class="s2">section.dark td{border-color:rgba(255,255,255,.13)}</span>
+<span class="s2">section.dark td.k{color:#fbf8f1}section.dark td.s{color:var(--mutedlt)}</span>
+<span class="s2">.note{font-family:"Lato",sans-serif;font-size:13px;line-height:1.75;color:var(--muted);</span>
+<span class="s2">border-top:1px solid var(--rule);margin-top:30px;padding-top:15px;max-width:710px}</span>
+<span class="s2">section.dark .note{color:var(--mutedlt);border-color:rgba(255,255,255,.15)}</span>
+<span class="s2">.close{background:var(--ink);color:#efeae0;padding:66px 0;text-align:center}</span>
+<span class="s2">.close h2{font-size:clamp(25px,4vw,38px);color:#fbf8f1}</span>
+<span class="s2">.close p{max-width:600px;margin:18px auto 0;color:#c9c0b0}</span>
+<span class="s2">footer{background:#070d15;color:#7d8b99;padding:24px 0;font-family:"Lato",sans-serif;</span>
+<span class="s2">font-size:10.5px;letter-spacing:.1em;text-align:center;text-transform:uppercase}</span>
+<span class="s2">@media(max-width:720px){body{font-size:18px}.wrap{padding:0 20px}section{padding:44px 0 38px}</span>
+<span class="s2">.item{gap:13px}.item .n{flex:0 0 30px;font-size:22px}}</span>
+<span class="s2">"""</span>
+
+<span class="n">GAPS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Theological research and writing"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Nearly every top-ten core opens with a research and writing course, and the catalog has nothing</span>
+<span class="sd"> like it. Theological Method sits at ST 305 and teaches how a doctrine is built, not how to use a</span>
+<span class="sd"> library, evaluate a commentary, tell a good source from a confident one, or write a paper somebody</span>
+<span class="sd"> will grade. It is the prerequisite for the entire Fellow track and it is absent. Add it early in</span>
+<span class="sd"> Hermeneutics, not late."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Next Generation ministry"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The largest structural hole. Twenty disciplines and not one course on children's or student</span>
+<span class="sd"> ministry, while next-gen is the hardest staffing need in most congregations and a standard</span>
+<span class="sd"> concentration in every seminary on the list. The Family discipline covers parenting, which is a</span>
+<span class="sd"> different subject from ministering to somebody else's fourteen-year-old. This should be discipline</span>
+<span class="sd"> twenty-one, twenty courses, and it will sell faster than several of the twenty you have."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Church administration, law, and safeguarding"</span><span class="p">,</span> <span class="s2">"new"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Polity and bylaws, employment law, clergy tax, liability and insurance, background checks,</span>
+<span class="sd"> mandatory reporting, and a written child protection policy. Seminaries have been adding this for a</span>
+<span class="sd"> decade because the consequences of not knowing it have become severe. For a program training</span>
+<span class="sd"> volunteers rather than clergy, this is not merely a curriculum gap, it is the largest liability</span>
+<span class="sd"> exposure in the whole model. Discipline twenty-two."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Field education as an architecture"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""You have practicum courses. Accredited programs have field education, which is a different</span>
+<span class="sd"> animal: a defined placement, logged hours, a supervisor with standing, a mid-term and final</span>
+<span class="sd"> evaluation on a rubric, and a learning covenant signed before it starts. The four practicum courses</span>
+<span class="sd"> in the catalog imply this without providing it. Build the architecture once and every practicum</span>
+<span class="sd"> course inherits it."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"The integrative capstone"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Master's programs end with synthesis, and the credential ladder promises a capstone at Rung Four</span>
+<span class="sd"> that no course teaches anybody how to do. Add one course on the integrative project itself: framing</span>
+<span class="sd"> a question, gathering evidence across disciplines, and defending a conclusion in front of</span>
+<span class="sd"> people."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Chaplaincy and institutional ministry"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Hospital, hospice, military, prison, first responder, and workplace chaplaincy. A growing track</span>
+<span class="sd"> in accredited programs and an enormous lay-adjacent field, and the catalog does not mention it. Two</span>
+<span class="sd"> or three courses inside Pastoral Care, with the honest note that formal chaplaincy endorsement runs</span>
+<span class="sd"> through denominations and certifying bodies you are not part of."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Denominational polity and ordination preparation"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Required for ordination nearly everywhere and structurally impossible to teach generically, which</span>
+<span class="sd"> is exactly why it belongs in the denominational editions rather than the master catalog. Specify it</span>
+<span class="sd"> as a required module every edition must supply, so the gap is filled by the partner rather than left</span>
+<span class="sd"> open."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Rural, small-church, and revitalization ministry"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Your stated buyer is the bivocational pastor and the church under two hundred and fifty. The</span>
+<span class="sd"> catalog is written for a church with departments. Nothing addresses the pastor who is the entire</span>
+<span class="sd"> staff, the congregation of sixty that has declined for fifteen years, or the revitalization</span>
+<span class="sd"> question that dominates that conversation. This is a positioning gap more than a content one."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Ministry with people with disabilities"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Now standard in accredited programs and represented in the catalog only by one faculty prospect's</span>
+<span class="sd"> specialty. One course in Pastoral Care, one in Next Generation, and an accessibility pass across the</span>
+<span class="sd"> delivery editions themselves."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Greek and Hebrew exegesis of specific books"</span><span class="p">,</span> <span class="s2">"cant"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Worth stating precisely rather than under the general heading of languages. The core requirement</span>
+<span class="sd"> at the schools you are benchmarking against is not language survey, it is four to six courses of</span>
+<span class="sd"> exegesis in the original text. That is the actual gap, it is intentional, and naming it at that</span>
+<span class="sd"> level of specificity is more credible than conceding languages in the abstract."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Clinical Pastoral Education"</span><span class="p">,</span> <span class="s2">"cant"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""A unit of CPE requires a certified supervisor and a clinical placement, and the certification runs</span>
+<span class="sd"> through a body you cannot join. It cannot be replicated, approximated, or renamed. Put it on the</span>
+<span class="sd"> published list of what this program does not deliver, alongside the languages, and point to where a</span>
+<span class="sd"> student can go get it."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">MISSING</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"There is no diagnostic, and the diagnostic is your proven front door"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Every other platform you have built opens with an assessment, and the price list treats the</span>
+<span class="sd"> twenty-two diagnostics as the funnel that is never gated. This has none. A ten-question instrument</span>
+<span class="sd"> that tells a member which discipline to start in, and tells a pastor how much theological capacity</span>
+<span class="sd"> his congregation actually has, is the cheapest thing on this list and probably the highest</span>
+<span class="sd"> yielding."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Nothing yet speaks to the student"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Every document produced so far addresses pastors, deans, denominations, faculty, and donors. Not</span>
+<span class="sd"> one addresses the forty-six-year-old small group leader who would actually take the course. She is</span>
+<span class="sd"> the person the whole thing exists for and she has not been written to once."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"There is no date"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""This is architecture without a calendar. Name the first cohort start, the church, and the six</span>
+<span class="sd"> courses, and the entire project stops being a concept. Everything else on this page can wait behind</span>
+<span class="sd"> that."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Spanish"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The campaign platform already ships in three languages. The fastest-growing segment of the</span>
+<span class="sd"> American church is Hispanic, the training gap there is the widest in the country, and a</span>
+<span class="sd"> church-based, language-light, cohort-delivered model is close to the ideal instrument for it. It is</span>
+<span class="sd"> also the single strongest donor story in the whole plan and it is currently absent."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Prison, recovery, and reentry as delivery contexts"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""A credential that requires no campus, no prerequisite, and no tuition is close to purpose-built</span>
+<span class="sd"> for correctional and recovery settings, where demand for exactly this is enormous and chronically</span>
+<span class="sd"> unmet. It is also the context where the certificate means the most to the person holding it."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Women, and a decision rather than a default"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Women carry a large share of the lay teaching load in most congregations and are roughly a</span>
+<span class="sd"> quarter of the faculty prospect list. The denominational editions make the ordination question</span>
+<span class="sd"> navigable, but who teaches, who is recruited, and how the courses on gender are written all need a</span>
+<span class="sd"> stated position rather than an accumulation of defaults."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">MODELS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">"Alpha"</span><span class="p">,</span> <span class="s2">"Distribution without a credential"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""The closest analogue for reach. Free or nearly free, run by local volunteers, translated</span>
+<span class="sd"> everywhere, tens of millions of participants, and no credential at all. The lesson worth taking is</span>
+<span class="sd"> that the local host is the non-negotiable and the certificate is not; Alpha scaled on trained hosts</span>
+<span class="sd"> and a fixed format, not on academic weight."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Financial Peace University"</span><span class="p">,</span> <span class="s2">"The commercial proof"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Licensed video curriculum, a trained local coordinator, a fee, and a church that runs it on a</span>
+<span class="sd"> calendar. It is the clearest existing proof that a congregation will pay real money for a course</span>
+<span class="sd"> with a name and a completion moment, and it is structurally almost identical to what you are</span>
+<span class="sd"> proposing minus the transcript."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Theological Education by Extension"</span><span class="p">,</span> <span class="s2">"The movement you are rejoining"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""TEE has existed for decades: training church leaders in their own context rather than removing</span>
+<span class="sd"> them to a campus, with regional associations worldwide and affiliate status in some accrediting</span>
+<span class="sd"> bodies specifically for lay training institutes and extension centers. You are not inventing a</span>
+<span class="sd"> category. Adopting the vocabulary connects you to precedent, literature, and a network, and it makes</span>
+<span class="sd"> the idea legible to any international partner immediately."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Third Millennium Ministries"</span><span class="p">,</span> <span class="s2">"Donor-funded, given away, multilingual"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Seminary-level curriculum produced with credentialed faculty, funded by donors, distributed free</span>
+<span class="sd"> and translated widely. It is the donor-funded model already proven inside this exact category, which</span>
+<span class="sd"> is useful evidence when you take the discipline-endowment idea to a funder."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Logos and Faithlife Mobile Ed"</span><span class="p">,</span> <span class="s2">"Competitor and channel at once"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""They already sell seminary-level video courses from named faculty, and Dallas hands every</span>
+<span class="sd"> incoming student a Logos package. That makes them a direct competitor for the content layer and the</span>
+<span class="sd"> single most efficient distribution partner for it. Worth a conversation before they are worth a</span>
+<span class="sd"> comparison chart."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Evangelical Training Association"</span><span class="p">,</span> <span class="s2">"The institution closest to what you are building"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""ETA has been credentialing church teachers and ministry leaders since the 1930s and is listed by</span>
+<span class="sd"> the Association for Biblical Higher Education among its peer associations. It occupies almost</span>
+<span class="sd"> exactly your category at a fraction of your ambition. Partner, license, or acquire &amp;mdash; but do</span>
+<span class="sd"> not build past it without having looked at it."""</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">"Church residency networks"</span><span class="p">,</span> <span class="s2">"Be the curriculum, not the competitor"</span><span class="p">,</span>
+<span class="w"> </span><span class="sd">"""Large churches increasingly run their own pastoral residencies with no curriculum behind them</span>
+<span class="sd"> beyond whatever the executive pastor assembles. Supplying the course of study inside existing</span>
+<span class="sd"> residencies is faster than recruiting churches to start one."""</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">():</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">();</span> <span class="n">W</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">write</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;Gaps, Models, and Validation&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@300;400;700;800&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;"""</span> <span class="o">+</span> <span class="n">CSS</span> <span class="o">+</span> <span class="s2">"&lt;/style&gt;&lt;/head&gt;&lt;body&gt;"</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;header&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Doing Seminary Together &amp;nbsp;&amp;middot;&amp;nbsp; Gap Analysis&lt;/span&gt;</span>
+<span class="s2">&lt;h1&gt;What the syllabus&lt;br&gt;&lt;em&gt;is still missing&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">&lt;p class="lede"&gt;Eleven gaps measured against a top-ten evangelical core, six things missing that are</span>
+<span class="s2">not curriculum at all, seven models worth borrowing, and the third-party validation route that</span>
+<span class="s2">actually exists.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/header&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Coverage&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Eleven gaps against a top-ten core&lt;/h2&gt;</span>
+<span class="s2">&lt;p class="kick"&gt;Three should become new disciplines or courses immediately. Six are additions inside</span>
+<span class="s2">existing disciplines. Two you cannot deliver and should publish as such.&lt;/p&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sev</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">GAPS</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"new"</span><span class="p">:</span> <span class="s2">"Build it"</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">:</span> <span class="s2">"Add inside"</span><span class="p">,</span> <span class="s2">"cannot"</span><span class="p">:</span> <span class="s2">"Cannot deliver"</span><span class="p">,</span>
+                 <span class="s2">"cant"</span><span class="p">:</span> <span class="s2">"Cannot deliver"</span><span class="p">}[</span><span class="n">sev</span><span class="p">]</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="s2">"new"</span> <span class="k">if</span> <span class="n">sev</span> <span class="o">==</span> <span class="s2">"new"</span> <span class="k">else</span> <span class="p">(</span><span class="s2">"add"</span> <span class="k">if</span> <span class="n">sev</span> <span class="o">==</span> <span class="s2">"add"</span> <span class="k">else</span> <span class="s2">"cant"</span><span class="p">)</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;'</span>
+          <span class="s1">'&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;span class="sev </span><span class="si">%s</span><span class="s1">"&gt;</span><span class="si">%s</span><span class="s1">&lt;/span&gt;&lt;/h4&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="verdict"&gt;Two new disciplines takes the catalog from twenty by twenty to</span>
+<span class="s2">twenty-two by twenty, four hundred and forty courses &amp;mdash; and both new ones will sell faster than</span>
+<span class="s2">several of the twenty already there.&lt;/div&gt;</span>
+<span class="s2">&lt;p class="note"&gt;One methodological caution. This is measured against MDiv and MA cores as I know</span>
+<span class="s2">them, not against pulled syllabi. Before any of it goes into a partnership conversation, run the</span>
+<span class="s2">actual coverage matrix: extract the required core from ten schools, map every required course to one</span>
+<span class="s2">of your disciplines, and treat anything with no home as a confirmed gap rather than a suspected</span>
+<span class="s2">one.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="dark"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Beyond the Catalog&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Six things missing that are not courses&lt;/h2&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">MISSING</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;'</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="verdict"&gt;The third one is the only one that matters this month. Everything else</span>
+<span class="s2">on this page waits behind a first cohort with a date on it.&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section class="tone"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;Models&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;Seven models worth borrowing from&lt;/h2&gt;"""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">MODELS</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span><span class="p">(</span><span class="s1">'&lt;div class="item"&gt;&lt;span class="n"&gt;</span><span class="si">%d</span><span class="s1">&lt;/span&gt;&lt;div class="c"&gt;&lt;h4&gt;</span><span class="si">%s</span><span class="s1">&lt;/h4&gt;'</span>
+          <span class="s1">'&lt;p style="font-style:italic;color:var(--muted);margin-bottom:8px"&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;&lt;p&gt;</span><span class="si">%s</span><span class="s1">&lt;/p&gt;'</span>
+          <span class="s1">'&lt;/div&gt;&lt;/div&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+    <span class="n">W</span><span class="p">(</span><span class="s2">"&lt;/div&gt;&lt;/section&gt;"</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;section&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;span class="eyebrow"&gt;The Validation Question&lt;/span&gt;</span>
+<span class="s2">&lt;h2 class="sec"&gt;A loose accrediting body does exist, and it is not the one you would guess&lt;/h2&gt;</span>
+<span class="s2">&lt;div class="verdict"&gt;Not ABHE, which is closed to you. Credit recommendation through ACE or NCCRS</span>
+<span class="s2">&amp;mdash; independent faculty review that produces a defensible sentence without requiring you to</span>
+<span class="s2">become an institution.&lt;/div&gt;</span>
+<span class="s2">&lt;div style="max-width:700px;margin-top:22px"&gt;</span>
+<span class="s2">&lt;p&gt;The obvious candidate turns out to be a dead end. Membership in the Association for Biblical</span>
+<span class="s2">Higher Education is limited to institutions already accredited by ABHE's own commission or another</span>
+<span class="s2">federally or CHEA-recognised accreditor, with dues in the thousands. There is no door there for a</span>
+<span class="s2">publisher with a curriculum, only for a school. Same for the theological school associations. That</span>
+<span class="s2">route reopens only if you acquire an accredited school, which reverses the economics that made this</span>
+<span class="s2">worth doing.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;The route that does exist is credit recommendation, and it is close to exactly what you described.</span>
+<span class="s2">The American Council on Education runs Learning Evaluations, in which faculty teams drawn from</span>
+<span class="s2">accredited colleges assess training produced outside the academy and publish a credit</span>
+<span class="s2">recommendation. The National College Credit Recommendation Service does the same and reports more</span>
+<span class="s2">than thirteen hundred cooperating institutions that will consider granting credit on the strength of</span>
+<span class="s2">it. The best-known recent example is the Google career certificates, which carry ACE recommendations</span>
+<span class="s2">of up to twelve credits.&lt;/p&gt;</span>
+<span class="s2">&lt;h4 style="font-size:20px;margin:26px 0 10px"&gt;Why this fits your posture precisely&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;NCCRS states plainly that it is not an accrediting body and that a recommended course must never</span>
+<span class="s2">be described as credit-bearing. The permitted phrase is recommended for college credit, and the</span>
+<span class="s2">receiving institution always decides. That is the same discipline you have already adopted</span>
+<span class="s2">voluntarily about the word seminary, and adopting an external body that enforces it for you is worth</span>
+<span class="s2">more than any claim you could make about yourself.&lt;/p&gt;</span>
+<span class="s2">&lt;table&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;th&gt;Route&lt;/th&gt;&lt;th&gt;Open to you&lt;/th&gt;&lt;th&gt;What it produces&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;ACE Learning Evaluations&lt;/td&gt;&lt;td class="s"&gt;Yes&lt;/td&gt;&lt;td class="s"&gt;Faculty-led review, a published entry in the ACE national guide, and a credit recommendation the receiving school weighs&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;NCCRS&lt;/td&gt;&lt;td class="s"&gt;Yes&lt;/td&gt;&lt;td class="s"&gt;The same, with a stated network of 1,300-plus cooperating institutions and explicit language rules&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;ABHE membership&lt;/td&gt;&lt;td class="s"&gt;No&lt;/td&gt;&lt;td class="s"&gt;Requires existing recognised accreditation. A door only after acquisition&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;ICETE and regional associations&lt;/td&gt;&lt;td class="s"&gt;Partly&lt;/td&gt;&lt;td class="s"&gt;The global route. Some regional bodies carry affiliate tiers explicitly for lay training institutes and extension centres&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;tr&gt;&lt;td class="k"&gt;Unrecognised accreditors&lt;/td&gt;&lt;td class="s"&gt;Avoid&lt;/td&gt;&lt;td class="s"&gt;Seals are purchasable and the purchase is discoverable. One of these would end the project&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">&lt;/table&gt;</span>
+<span class="s2">&lt;h4 style="font-size:20px;margin:28px 0 10px"&gt;Two honest limits&lt;/h4&gt;</span>
+<span class="s2">&lt;p&gt;Credit recommendations in this system skew undergraduate. That fits the positioning you have</span>
+<span class="s2">already chosen, which is Bible-college tier rather than seminary tier, but it means the outcome is</span>
+<span class="s2">credit toward a bachelor's rather than advanced standing in a Master of Divinity. Do not let anyone</span>
+<span class="s2">in the room believe otherwise.&lt;/p&gt;</span>
+<span class="s2">&lt;p&gt;And these bodies require official records from the provider, not a badge or a completion screen.</span>
+<span class="s2">Which returns you to the same conclusion as every other thread this month: the transcript is not a</span>
+<span class="s2">nice-to-have feature, it is the load-bearing element that the credential, the denominational sale,</span>
+<span class="s2">the seminary pipeline and now the credit recommendation all sit on top of.&lt;/p&gt;</span>
+<span class="s2">&lt;p class="note"&gt;Recommendation: submit the six-course Year One Certificate for review by one of the</span>
+<span class="s2">two, as soon as those six courses exist. It is the cheapest independent validation available in the</span>
+<span class="s2">entire landscape, it produces a sentence no competitor in church media can say, and it costs a</span>
+<span class="s2">review fee rather than an institution.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;"""</span><span class="p">)</span>
+
+    <span class="n">W</span><span class="p">(</span><span class="s2">"""&lt;div class="close"&gt;&lt;div class="wrap"&gt;</span>
+<span class="s2">&lt;h2&gt;Two new disciplines, one date,&lt;br&gt;and a credit recommendation.&lt;/h2&gt;</span>
+<span class="s2">&lt;p&gt;Next Generation and Church Administration go in the catalog. A first cohort goes on a calendar.</span>
+<span class="s2">And the six courses go to ACE or NCCRS the week they are finished.&lt;/p&gt;</span>
+<span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">&lt;footer&gt;&lt;div class="wrap"&gt;LifeTogether Ministries &amp;middot; Doing Seminary Together &amp;middot; Gap</span>
+<span class="s2">analysis and validation routes &amp;middot; August 2026&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">build</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/doing-seminary-together-gaps-and-validation.html"</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="s2">"| div:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;div"</span><span class="p">)</span> <span class="o">-</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/div&gt;"</span><span class="p">),</span>
+          <span class="s2">"| sections:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;section"</span><span class="p">),</span> <span class="n">out</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"&lt;/section&gt;"</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/gaps.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

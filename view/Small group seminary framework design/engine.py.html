@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>engine.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Small group seminary framework design</div>
+<h1>engine.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">17 KB</span>
+<a class="btn" href="../../artifacts/Small%20group%20seminary%20framework%20design/engine.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Course engine: classifies all 400 courses into archetypes and generates 12-lesson build sheets in-browser</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""Wire a deterministic course engine into the catalog.</span>
+
+<span class="sd">Classifies all 400 courses into six pedagogical archetypes, then replaces the</span>
+<span class="sd">generic 'course frame' modal with a generated 12-lesson build sheet specific to</span>
+<span class="sd">that course. Generation happens in the browser from template banks, the same</span>
+<span class="sd">pattern as the campaign platform's engine.js.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">SRC</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/smallgroupseminary-framework-and-catalog.html"</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">SRC</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">ROW</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'data-code="([^"]+)" data-title="([^"]+)" data-sub="([^"]+)" data-disc="([^"]+)"'</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="n">ROW</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"courses found:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span>
+
+<span class="n">BOOKS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"genesis patriarchs exodus joshua judges kings chronicles torah psalms proverbs "</span>
+         <span class="s2">"ecclesiastes job isaiah jeremiah lamentations ezekiel daniel twelve hosea malachi "</span>
+         <span class="s2">"ezra nehemiah esther mark matthew luke john acts romans corinthians galatians "</span>
+         <span class="s2">"ephesians philippians colossians pastoral hebrews james peter jude revelation "</span>
+         <span class="s2">"confessions"</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">SKILL_HINTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"how to interpreting teaching preaching leading building writing asking praying "</span>
+               <span class="s2">"listening structuring delivery reading study method toolkit getting developing "</span>
+               <span class="s2">"coaching facilitat training discipling launching planning"</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">ISSUE_HINTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"ethics sexuality race justice politics government war creation care technology "</span>
+               <span class="s2">"artificial intelligence pornography screens privacy divorce infertility poverty "</span>
+               <span class="s2">"wealth doubt suffering deconstruction objection abuse addiction trauma "</span>
+               <span class="s2">"immigration gender"</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">SURVEY_HINTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"story of survey whole bible one story why history matters world entered "</span>
+                <span class="s2">"story of the storyline"</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">archetype</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">disc</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">title</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">sub</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">disc</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">"practicum"</span> <span class="ow">in</span> <span class="n">t</span> <span class="ow">or</span> <span class="s2">" lab"</span> <span class="ow">in</span> <span class="n">t</span> <span class="ow">or</span> <span class="n">t</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"lab"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"P"</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">SURVEY_HINTS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"V"</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s2">"old testament"</span> <span class="ow">in</span> <span class="n">d</span> <span class="ow">or</span> <span class="s2">"new testament"</span> <span class="ow">in</span> <span class="n">d</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">BOOKS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">"B"</span>
+    <span class="k">if</span> <span class="s2">"reading the confessions"</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"B"</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">SKILL_HINTS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"S"</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"homiletics and teaching"</span><span class="p">,</span> <span class="s2">"hermeneutics and bible study methods"</span><span class="p">,</span>
+             <span class="s2">"evangelism and personal witness"</span><span class="p">,</span> <span class="s2">"discipleship and small group multiplication"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"S"</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">ISSUE_HINTS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"I"</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"christian ethics and worldview"</span><span class="p">,</span> <span class="s2">"culture, technology and digital discernment"</span><span class="p">,</span>
+             <span class="s2">"world religions and comparative belief"</span><span class="p">,</span> <span class="s2">"apologetics"</span><span class="p">,</span>
+             <span class="s2">"marriage, family and household discipleship"</span><span class="p">,</span> <span class="s2">"money, work and vocation"</span><span class="p">,</span>
+             <span class="s2">"pastoral care and counseling"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"I"</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"systematic theology"</span><span class="p">,</span> <span class="s2">"biblical theology and redemptive history"</span><span class="p">,</span>
+             <span class="s2">"church history"</span><span class="p">,</span> <span class="s2">"christian thought and the great tradition"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"D"</span>
+    <span class="k">return</span> <span class="s2">"D"</span>
+
+
+<span class="n">assign</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">disc</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">archetype</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">disc</span><span class="p">)</span>
+    <span class="n">assign</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="n">counts</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"archetype spread:"</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span>
+
+<span class="c1"># ---------------------------------------------------------------- archetypes</span>
+<span class="n">ARCH</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s2">"V"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Survey"</span><span class="p">,</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="s2">"A whole corpus read as one shape before any part is studied closely."</span><span class="p">,</span>
+ <span class="s2">"L"</span><span class="p">:</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Why the Whole Matters"</span><span class="p">,</span> <span class="s2">"You cannot understand a part until you have seen the shape of the whole."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Beginnings"</span><span class="p">,</span> <span class="s2">"Where a story starts determines what it is able to mean."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Break"</span><span class="p">,</span> <span class="s2">"Something goes wrong, and everything after is a response to it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Promise"</span><span class="p">,</span> <span class="s2">"A commitment made early that the rest of the story is measured against."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Long Middle"</span><span class="p">,</span> <span class="s2">"What happens to a people while a promise is delayed."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Turning"</span><span class="p">,</span> <span class="s2">"The hinge the whole account swings on."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Center"</span><span class="p">,</span> <span class="s2">"The moment everything before was building toward."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Community Formed"</span><span class="p">,</span> <span class="s2">"What the turning produces in the people who witness it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Outward"</span><span class="p">,</span> <span class="s2">"The story stops being about one people and becomes about all of them."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The End Already Begun"</span><span class="p">,</span> <span class="s2">"How it resolves, and the sense in which it has not yet."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Placing Any Passage on the Map"</span><span class="p">,</span> <span class="s2">"Reading a single text inside the shape you now know."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Handing On the Shape"</span><span class="p">,</span> <span class="s2">"Teaching the whole to somebody who has only ever seen pieces."</span><span class="p">),</span>
+ <span class="p">]},</span>
+<span class="s2">"B"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Single book"</span><span class="p">,</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="s2">"One biblical book worked through from occasion to theology to teaching it."</span><span class="p">,</span>
+ <span class="s2">"L"</span><span class="p">:</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Meeting the Book"</span><span class="p">,</span> <span class="s2">"Who wrote it, to whom, and what occasion called it into existence."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The World Behind the Text"</span><span class="p">,</span> <span class="s2">"The setting and the first hearers, before any application."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Shape of the Argument"</span><span class="p">,</span> <span class="s2">"Structure at a glance, so no passage is read orphaned."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Opening Movement"</span><span class="p">,</span> <span class="s2">"Where the book begins, and what that beginning announces."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Second Movement"</span><span class="p">,</span> <span class="s2">"The argument or the narrative gathers weight."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Third Movement"</span><span class="p">,</span> <span class="s2">"Where the pressure builds and the stakes become clear."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Hinge"</span><span class="p">,</span> <span class="s2">"The passage the whole book turns on."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Fourth Movement"</span><span class="p">,</span> <span class="s2">"Consequence and application worked out inside the book itself."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Closing Movement"</span><span class="p">,</span> <span class="s2">"How it ends, and why it could not have ended otherwise."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Passage People Stumble Over"</span><span class="p">,</span> <span class="s2">"The hard text, addressed rather than avoided."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"What This Book Alone Contributes"</span><span class="p">,</span> <span class="s2">"The theology no other book supplies in the same way."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Teaching It"</span><span class="p">,</span> <span class="s2">"Leading a group or a congregation through the whole book."</span><span class="p">),</span>
+ <span class="p">]},</span>
+<span class="s2">"D"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Doctrine"</span><span class="p">,</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="s2">"A teaching traced from the question it answers to the pastoral use it serves."</span><span class="p">,</span>
+ <span class="s2">"L"</span><span class="p">:</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Why This Matters on a Tuesday"</span><span class="p">,</span> <span class="s2">"What changes in an ordinary life if this is true."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Question Underneath"</span><span class="p">,</span> <span class="s2">"The problem this teaching came into existence to answer."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Gathering the Texts"</span><span class="p">,</span> <span class="s2">"Collecting the biblical data before drawing any conclusion."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Texts That Complicate It"</span><span class="p">,</span> <span class="s2">"Passages that resist the tidy version, held rather than resolved."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"How the Church Said It"</span><span class="p">,</span> <span class="s2">"Councils, confessions, and the language that was fought for."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Classic Errors"</span><span class="p">,</span> <span class="s2">"What was tried and rejected, and why each was attractive at the time."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Stating It Carefully"</span><span class="p">,</span> <span class="s2">"Putting the affirmation into your own words without losing it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Where Christians Disagree"</span><span class="p">,</span> <span class="s2">"The live debate, each position in the words its holders would use."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"What It Is Not"</span><span class="p">,</span> <span class="s2">"Clearing away the distortions that attach themselves to this teaching."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"At the Bedside"</span><span class="p">,</span> <span class="s2">"How this doctrine functions in crisis, decision, and grief."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Living Inside It"</span><span class="p">,</span> <span class="s2">"The practices that follow from believing it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Handing It On"</span><span class="p">,</span> <span class="s2">"Teaching this doctrine to one person who has never considered it."</span><span class="p">),</span>
+ <span class="p">]},</span>
+<span class="s2">"S"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Skill"</span><span class="p">,</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="s2">"A competence built by practice, with two supervised attempts inside the twelve weeks."</span><span class="p">,</span>
+ <span class="s2">"L"</span><span class="p">:</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"What Becomes Possible"</span><span class="p">,</span> <span class="s2">"Why this skill is worth twelve weeks of your life."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Watching It Done Well"</span><span class="p">,</span> <span class="s2">"A worked example before any theory, taken apart together."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The First Move"</span><span class="p">,</span> <span class="s2">"The step almost everybody skips, and what skipping it costs."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Second Move"</span><span class="p">,</span> <span class="s2">"Building on a foundation that is now actually there."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Third Move"</span><span class="p">,</span> <span class="s2">"Where most people plateau, and what carries you past it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"First Attempt"</span><span class="p">,</span> <span class="s2">"Practising in front of the room, with a small assignment."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Five Common Failures"</span><span class="p">,</span> <span class="s2">"The mistakes that account for most poor work in this discipline."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Receiving Critique"</span><span class="p">,</span> <span class="s2">"How to hear feedback without either collapsing or dismissing it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Harder Material"</span><span class="p">,</span> <span class="s2">"Applying the skill where it does not come naturally."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Doing It as Yourself"</span><span class="p">,</span> <span class="s2">"Finding your own voice rather than imitating a model."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Second Attempt"</span><span class="p">,</span> <span class="s2">"A full assignment, with everything from the first eleven weeks."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Teaching the Skill"</span><span class="p">,</span> <span class="s2">"Reproduction is the real test of whether you have it."</span><span class="p">),</span>
+ <span class="p">]},</span>
+<span class="s2">"I"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Applied question"</span><span class="p">,</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="s2">"A contested or practical question worked from the question itself to a posture."</span><span class="p">,</span>
+ <span class="s2">"L"</span><span class="p">:</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"Naming the Question"</span><span class="p">,</span> <span class="s2">"What is actually being asked, underneath the argument people are having."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Why It Is Genuinely Hard"</span><span class="p">,</span> <span class="s2">"The real difficulty rather than the caricature of the other side."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"How We Got Here"</span><span class="p">,</span> <span class="s2">"The history that produced the conversation we are now inside."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"What Scripture Says Directly"</span><span class="p">,</span> <span class="s2">"The texts that address this head on, read carefully."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"What Scripture Assumes"</span><span class="p">,</span> <span class="s2">"The larger convictions that bear on it without naming it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Positions, Fairly Stated"</span><span class="p">,</span> <span class="s2">"Each view in the words its own holders would recognise."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Weighing Them"</span><span class="p">,</span> <span class="s2">"Testing each position against the text, the tradition, and the fruit."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"The Hard Cases"</span><span class="p">,</span> <span class="s2">"Where every position, including yours, becomes uncomfortable."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Who This Costs"</span><span class="p">,</span> <span class="s2">"The actual people affected by how the church answers this."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Conviction Without Contempt"</span><span class="p">,</span> <span class="s2">"Holding a position while respecting the person who does not."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"What Changes on Monday"</span><span class="p">,</span> <span class="s2">"The practice that follows, in a real week."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Having the Conversation"</span><span class="p">,</span> <span class="s2">"Talking about this with somebody who disagrees, and staying in the room."</span><span class="p">),</span>
+ <span class="p">]},</span>
+<span class="s2">"P"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Practicum"</span><span class="p">,</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="s2">"Supervised practice with structured observation, attempts, and assessed evaluation."</span><span class="p">,</span>
+ <span class="s2">"L"</span><span class="p">:</span> <span class="p">[</span>
+ <span class="p">(</span><span class="s2">"The Framework"</span><span class="p">,</span> <span class="s2">"What competent practice looks like, before anybody attempts it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Structured Observation"</span><span class="p">,</span> <span class="s2">"Watching a practitioner with a defined lens rather than an impression."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Debrief"</span><span class="p">,</span> <span class="s2">"What you saw, what you missed, and what that reveals about your lens."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Preparation"</span><span class="p">,</span> <span class="s2">"Planning a first attempt in writing, submitted before you do it."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"First Attempt"</span><span class="p">,</span> <span class="s2">"Doing it, with a supervisor present and taking notes."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"First Feedback"</span><span class="p">,</span> <span class="s2">"Structured critique from the supervisor, then from the room."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"One Adjustment"</span><span class="p">,</span> <span class="s2">"Naming a single thing to change, and changing only that."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Second Attempt"</span><span class="p">,</span> <span class="s2">"The same work under harder circumstances."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Peer Review"</span><span class="p">,</span> <span class="s2">"Critique from people carrying the same assignment as you."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Edge Cases"</span><span class="p">,</span> <span class="s2">"The situations the framework does not cleanly cover."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Final Attempt"</span><span class="p">,</span> <span class="s2">"Assessed work, evaluated by the supervisor and the ministry mentor."</span><span class="p">),</span>
+ <span class="p">(</span><span class="s2">"Supervising Someone Else"</span><span class="p">,</span> <span class="s2">"Running the first attempt for a person coming behind you."</span><span class="p">),</span>
+ <span class="p">]},</span>
+<span class="p">}</span>
+
+<span class="n">MOVES</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s2">"V"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Orient the room to </span><span class="si">{T}</span><span class="s2"> as a single shape rather than a collection"</span><span class="p">,</span>
+      <span class="s2">"Trace where the material in this session sits inside </span><span class="si">{D}</span><span class="s2">"</span><span class="p">,</span>
+      <span class="s2">"Name what </span><span class="si">{S}</span><span class="s2"> contributes at this point in the arc"</span><span class="p">],</span>
+<span class="s2">"B"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Work the passage in front of the group rather than summarising it"</span><span class="p">,</span>
+      <span class="s2">"Show how this section serves the book's larger argument"</span><span class="p">,</span>
+      <span class="s2">"Connect it outward: what </span><span class="si">{D}</span><span class="s2"> does with this material"</span><span class="p">],</span>
+<span class="s2">"D"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"State the claim plainly, then test it against the text"</span><span class="p">,</span>
+      <span class="s2">"Show where this teaching sits within </span><span class="si">{D}</span><span class="s2"> as a whole"</span><span class="p">,</span>
+      <span class="s2">"Trace one practical consequence of holding it, or of not"</span><span class="p">],</span>
+<span class="s2">"S"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Demonstrate the move before explaining it"</span><span class="p">,</span>
+      <span class="s2">"Break it into steps the group can attempt this week"</span><span class="p">,</span>
+      <span class="s2">"Name the failure mode this step is designed to prevent"</span><span class="p">],</span>
+<span class="s2">"I"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Establish what is genuinely at stake before taking any position"</span><span class="p">,</span>
+      <span class="s2">"Set the strongest form of each view side by side"</span><span class="p">,</span>
+      <span class="s2">"Bring it back to </span><span class="si">{D}</span><span class="s2"> and to a decision somebody has to make"</span><span class="p">],</span>
+<span class="s2">"P"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Review the framework against what actually happened"</span><span class="p">,</span>
+      <span class="s2">"Work one real case supplied by a participant"</span><span class="p">,</span>
+      <span class="s2">"Assign and prepare the next supervised attempt"</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">QS</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s2">"V"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Where did you previously think this material began, and what changes if it begins where the text puts it?"</span><span class="p">,</span>
+      <span class="s2">"What part of </span><span class="si">{T}</span><span class="s2"> have you never seen connected to the rest of it?"</span><span class="p">],</span>
+<span class="s2">"B"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"What did the first hearers of this passage need that you do not, and the reverse?"</span><span class="p">,</span>
+      <span class="s2">"Where in this section were you tempted to skip ahead, and why?"</span><span class="p">],</span>
+<span class="s2">"D"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Where have you seen this doctrine held badly, and what did the bad version cost somebody?"</span><span class="p">,</span>
+      <span class="s2">"What would change in your week if you actually believed this rather than affirmed it?"</span><span class="p">],</span>
+<span class="s2">"S"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"What is the specific thing about this skill that you are most afraid of getting wrong?"</span><span class="p">,</span>
+      <span class="s2">"Whose example are you unconsciously copying, and is it serving you?"</span><span class="p">],</span>
+<span class="s2">"I"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"State the strongest version of the position you disagree with. Can you do it without sneering?"</span><span class="p">,</span>
+      <span class="s2">"Where does your own position become uncomfortable, and what do you do with that?"</span><span class="p">],</span>
+<span class="s2">"P"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"What did you notice this week that you would not have noticed in week one?"</span><span class="p">,</span>
+      <span class="s2">"What is the one thing you are still avoiding in this practice?"</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">EXS</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s2">"V"</span><span class="p">:</span> <span class="s2">"Map this session's material onto a single page timeline you keep and add to for twelve weeks."</span><span class="p">,</span>
+<span class="s2">"B"</span><span class="p">:</span> <span class="s2">"Read the assigned section twice this week, once in a different translation, and note every question it raises."</span><span class="p">,</span>
+<span class="s2">"D"</span><span class="p">:</span> <span class="s2">"Write this doctrine in one paragraph, in your own words, for a fifteen-year-old. Bring it."</span><span class="p">,</span>
+<span class="s2">"S"</span><span class="p">:</span> <span class="s2">"Practise the move once this week on real material and bring what you produced, finished or not."</span><span class="p">,</span>
+<span class="s2">"I"</span><span class="p">:</span> <span class="s2">"Find someone who holds a different position and ask them to explain it. Listen only. Write half a page."</span><span class="p">,</span>
+<span class="s2">"P"</span><span class="p">:</span> <span class="s2">"Complete the assigned attempt or observation and submit your written reflection before the next session."</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># ---------------------------------------------------------------- JS payload</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">"assign"</span><span class="p">:</span> <span class="n">assign</span><span class="p">,</span>
+  <span class="s2">"arch"</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="s2">"desc"</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="s2">"desc"</span><span class="p">],</span> <span class="s2">"L"</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="s2">"L"</span><span class="p">]}</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ARCH</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+  <span class="s2">"moves"</span><span class="p">:</span> <span class="n">MOVES</span><span class="p">,</span> <span class="s2">"qs"</span><span class="p">:</span> <span class="n">QS</span><span class="p">,</span> <span class="s2">"exs"</span><span class="p">:</span> <span class="n">EXS</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">JS_ENGINE</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">var ENGINE = """</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">","</span><span class="p">,</span> <span class="s2">":"</span><span class="p">))</span> <span class="o">+</span> <span class="s2">""";</span>
+
+<span class="s2">function fill(str, T, S, D){</span>
+<span class="s2">  return str.replace(/</span><span class="se">\\</span><span class="s2">{T</span><span class="se">\\</span><span class="s2">}/g, T).replace(/</span><span class="se">\\</span><span class="s2">{S</span><span class="se">\\</span><span class="s2">}/g, S).replace(/</span><span class="se">\\</span><span class="s2">{D</span><span class="se">\\</span><span class="s2">}/g, D);</span>
+<span class="s2">}</span>
+
+<span class="s2">function buildSheet(code, title, sub, disc, status){</span>
+<span class="s2">  var a = ENGINE.assign[code] || "D";</span>
+<span class="s2">  var A = ENGINE.arch[a];</span>
+<span class="s2">  var h = '&lt;div class="mcode"&gt;'+code+' &amp;nbsp;&amp;middot;&amp;nbsp; Generated build sheet&lt;/div&gt;'+</span>
+<span class="s2">    '&lt;h3 id="mtitle"&gt;'+title+'&lt;/h3&gt;&lt;p class="msub"&gt;'+sub+'&lt;/p&gt;'+</span>
+<span class="s2">    '&lt;div class="genwarn"&gt;&lt;b&gt;Generated draft, not curriculum&lt;/b&gt;'+</span>
+<span class="s2">    'This twelve-lesson map was produced by the course engine from the title, subtitle, discipline '+</span>
+<span class="s2">    'and course archetype. The structure is right and the specifics are thin, because specifics are '+</span>
+<span class="s2">    'what the author pass and the faculty review supply. Treat it as the outline a writer starts '+</span>
+<span class="s2">    'from, never as a course. ST 101 shows what the same sheet looks like after that work.&lt;/div&gt;'+</span>
+<span class="s2">    '&lt;h5&gt;Course profile&lt;/h5&gt;&lt;p&gt;&lt;b&gt;Archetype:&lt;/b&gt; '+A.name+'. '+A.desc+'&lt;br&gt;'+</span>
+<span class="s2">    '&lt;b&gt;Discipline:&lt;/b&gt; '+disc+' &amp;nbsp;&amp;middot;&amp;nbsp; &lt;b&gt;Status:&lt;/b&gt; '+status+'&lt;br&gt;'+</span>
+<span class="s2">    '&lt;b&gt;Shape:&lt;/b&gt; 12 sessions, 90 minutes, six stages each &amp;mdash; open, three movements, discuss, close.&lt;/p&gt;'+</span>
+<span class="s2">    '&lt;h5&gt;The twelve lessons&lt;/h5&gt;';</span>
+<span class="s2">  for(var k=0;k&lt;A.L.length;k++){</span>
+<span class="s2">    var n = (k+1)&lt;10 ? '0'+(k+1) : ''+(k+1);</span>
+<span class="s2">    h += '&lt;div class="lrow"&gt;&lt;b&gt;'+n+'&lt;/b&gt;&lt;span&gt;'+fill(A.L[k][0],title,sub,disc)+</span>
+<span class="s2">         '&lt;i&gt;'+fill(A.L[k][1],title,sub,disc)+'&lt;/i&gt;&lt;/span&gt;&lt;/div&gt;';</span>
+<span class="s2">  }</span>
+<span class="s2">  h += '&lt;h5&gt;Session pattern applied to every lesson&lt;/h5&gt;&lt;p&gt;&lt;b&gt;Three movements&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;';</span>
+<span class="s2">  var mv = ENGINE.moves[a];</span>
+<span class="s2">  for(var m=0;m&lt;mv.length;m++){ h += '&lt;li&gt;'+fill(mv[m],title,sub,disc)+'&lt;/li&gt;'; }</span>
+<span class="s2">  h += '&lt;/ul&gt;&lt;p&gt;&lt;b&gt;Two discussion questions, never three&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;';</span>
+<span class="s2">  var qq = ENGINE.qs[a];</span>
+<span class="s2">  for(var q=0;q&lt;qq.length;q++){ h += '&lt;li&gt;'+fill(qq[q],title,sub,disc)+'&lt;/li&gt;'; }</span>
+<span class="s2">  h += '&lt;/ul&gt;&lt;p&gt;&lt;b&gt;Weekly exercise&lt;/b&gt;&lt;/p&gt;&lt;p&gt;'+fill(ENGINE.exs[a],title,sub,disc)+'&lt;/p&gt;';</span>
+<span class="s2">  h += '&lt;h5&gt;What the author pass adds&lt;/h5&gt;&lt;ul&gt;'+</span>
+<span class="s2">    '&lt;li&gt;The actual key text for each of the twelve sessions&lt;/li&gt;'+</span>
+<span class="s2">    '&lt;li&gt;Movements written to this material rather than to the archetype&lt;/li&gt;'+</span>
+<span class="s2">    '&lt;li&gt;Questions that could only be asked about this course&lt;/li&gt;'+</span>
+<span class="s2">    '&lt;li&gt;The reading list, and the primary source for the depth track&lt;/li&gt;'+</span>
+<span class="s2">    '&lt;li&gt;A full teaching script per session, roughly 1,200 words each&lt;/li&gt;&lt;/ul&gt;'+</span>
+<span class="s2">    '&lt;p style="font-family:Lato,sans-serif;font-size:13px;color:var(--muted);'+</span>
+<span class="s2">    'border-top:1px solid var(--rule);padding-top:14px;margin-top:24px"&gt;Engine output is '+</span>
+<span class="s2">    'deterministic: this sheet renders identically every time. Regenerating is not editing.&lt;/p&gt;';</span>
+<span class="s2">  return h;</span>
+<span class="s2">}</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">GENCSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">.genwarn{border:1px solid var(--gold);background:#fffdf8;padding:16px 18px;margin:18px 0 6px;</span>
+<span class="s2"> font-family:"Lato",sans-serif;font-size:12.5px;line-height:1.7;color:var(--body)}</span>
+<span class="s2">.genwarn b{display:block;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;</span>
+<span class="s2"> font-size:9.5px;margin-bottom:7px}</span>
+<span class="s2">"""</span>
+
+<span class="c1"># swap the modal dispatcher to call the engine</span>
+<span class="n">old_call</span> <span class="o">=</span> <span class="s2">"mbody.innerHTML = (c === 'ST 101') ? fullST101(c,t,u) : frame(c,t,u,d,st);"</span>
+<span class="n">new_call</span> <span class="o">=</span> <span class="s2">"mbody.innerHTML = (c === 'ST 101') ? fullST101(c,t,u) : buildSheet(c,t,u,d,st);"</span>
+<span class="k">assert</span> <span class="n">old_call</span> <span class="ow">in</span> <span class="n">s</span><span class="p">,</span> <span class="s2">"dispatcher not found"</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old_call</span><span class="p">,</span> <span class="n">new_call</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># button label: the frame is now a real draft</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;See the course frame &amp;nbsp;&amp;rarr;&lt;"</span><span class="p">,</span> <span class="s2">"&gt;Open 12-lesson build sheet &amp;nbsp;&amp;rarr;&lt;"</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;/style&gt;"</span><span class="p">,</span> <span class="n">GENCSS</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">&lt;/style&gt;"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;script&gt;"</span><span class="p">,</span> <span class="n">JS_ENGINE</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">&lt;script&gt;"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="n">SRC</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"engine wired. bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"build sheet buttons:"</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"Open 12-lesson build sheet"</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/engine.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

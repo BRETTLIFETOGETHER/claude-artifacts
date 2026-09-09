@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Prompt_Curriculum_Version_Comparison.md</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Comparing Allen&#x27;s file edits</div>
+<h1>Prompt_Curriculum_Version_Comparison.md</h1>
+<div class="meta"><span class="ext e-md">md</span><span class="b ok" title="This file was delivered to you in the conversation">delivered</span>
+<span class="b">6 KB</span>
+<a class="btn" href="../../artifacts/Comparing%20Allen%27s%20file%20edits/Prompt_Curriculum_Version_Comparison.md" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Reusable prompt for running the same version-comparison edit log on any other curriculum tier</p>
+</div></header>
+<article class="doc"><h1 id="reusable-prompt-curriculum-version-comparison-edit-log">Reusable Prompt — Curriculum Version Comparison &amp; Edit Log</h1>
+<p>Paste the block below into a new chat with <strong>both DOCX versions attached</strong>. Replace the bracketed line with the tier you're checking. Everything else stays as written.</p>
+<hr />
+<p>I'm attaching two versions of the same curriculum document: <strong>[Generous Living — Student Edition / Elementary Leader Guide / Preschool Leader Guide / Off Script scripts / 40-Day Devotional]</strong>. One is a live working file, one is an older snapshot. An editorial collaborator made changes and did not use tracked changes. I need to know exactly what changed, where, and what's now broken.</p>
+<p>Work as my senior editor, not as a diff tool. I want judgment, not just a list.</p>
+<p><strong>Method</strong></p>
+<p>Convert both files with <code>pandoc -t markdown --wrap=none file.docx -o file.md</code>, then run a standard <code>diff</code>. Before that, unzip each DOCX and check <code>word/document.xml</code> for <code>&lt;w:ins</code>, <code>&lt;w:del</code>, and <code>&lt;w:commentReference</code> in case there is a redline record I don't know about, and check <code>docProps/core.xml</code> for author and revision metadata.</p>
+<p>Determine which file is newer by looking at the direction of the edits rather than the filename, and tell me what the evidence was. Cleanup moves — added punctuation, repaired garbled sentences, corrections that only make sense in one direction — reveal which way the work flowed.</p>
+<p>For page numbers, render the current file to PDF and extract text per page, then map each change to a page. Tell me the total page count so I can sanity-check against Word. If the document contains more than one guide in a single file, identify the boundary page and label every change by guide and session, since shared content appears twice and I need both locations.</p>
+<p><strong>What I need to know first</strong></p>
+<p>Separate structural change from line editing. Did anything get added, deleted, reordered, or restructured — headings, locked titles and subtitles, fill-in blanks, assessment items, day listings, scripture references? Say so plainly up front. If it's purely a line-editing pass, say that too.</p>
+<p><strong>Audit against these standing rules</strong></p>
+<p>Flag any change that violates or introduces a violation of:</p>
+<ul>
+<li>Em-dashes and en-dashes are prohibited in original prose. Search for both characters separately; they are easy to miss with one search.</li>
+<li>"Legacy" is retired from published, viewer-facing session-level titles and replaced with "Impact." Internal alignment tags and devotional day titles are exempt.</li>
+<li>Self-help language is excluded from original prose.</li>
+<li>Triplet rhetorical structures are avoided in original prose.</li>
+<li>Psalm 24:1 cannot appear; it is anchored in the companion Master Your Money study.</li>
+<li>Scripture is NIV unless a documented exception applies to this tier. Flag any silent substitution.</li>
+<li>All LifeTogether interviewees are anonymized by default. Flag inconsistent anonymization phrasing.</li>
+<li>No guilt-driven generosity framing.</li>
+<li>Icebreaker questions must match the video's actual opening.</li>
+<li>Discussion questions create tension rather than deliver conclusions.</li>
+</ul>
+<p>Beyond the rule list, catch what a careful editor catches: typos introduced, find-and-replace collateral damage, tense and parallelism breaks inside numbered assessment blocks, sentences left grammatically incomplete, number-style drift, and any half-finished global replacement where some instances were caught and others weren't.</p>
+<p><strong>Where the same content appears in more than one place, check sync.</strong> Scripts, stories, questions, and assessments that are supposed to be word-for-word identical across guides or across tiers must still match after the edits. A half-applied pass that leaves a leader reading one thing while the room reads another is the most expensive error in this document, and it is invisible in a normal read.</p>
+<p><strong>Deliverable</strong></p>
+<p>A single markdown file containing:</p>
+<ol>
+<li>A short header stating what was compared, which file is newer, the paragraph-level change count, and whether structure moved.</li>
+<li>A fix list at the top — every change that introduces an error, in a table, with page numbers, the exact was/now wording, and one line on why it's a problem. Anything I have to act on goes here so I don't have to read the full log to work.</li>
+<li>The full log, grouped by guide and session, each entry showing page number, a locator such as "Item 4" or "Welcome script" or "Leader cue," and the was/now wording with enough surrounding words that I can find it in the file. Merge adjacent edits inside one paragraph into a single coherent revision rather than fragmenting them.</li>
+<li>An appendix for any global pass that was started and not finished, listing every surviving instance with page number and section.</li>
+</ol>
+<p>Flag entries inline: <strong>[FIX]</strong> for errors to correct, <strong>[EVE]</strong> or a comparable tag for changes that are part of an intentional pass I should keep but complete.</p>
+<p><strong>Discipline</strong></p>
+<p>Don't reconstruct project history from inference. If you're unsure whether something is an error or a deliberate call I made, say so and ask rather than assuming. If a change is defensible and I'd likely disagree with reverting it, say that too — I want your read on which of these are improvements, not a list of everything that moved.</p>
+<p>Close with any cross-tier implication: if a change here is really a campaign-wide voice or style decision, name it and tell me which other tiers it touches before they lock.</p>
+<hr />
+<h2 id="notes-for-reuse">Notes for reuse</h2>
+<p><strong>Devotionals and scripts need one change.</strong> The devotional has no Leader/Participant split, so drop the boundary-detection line and add: <em>check that anchor titles and locked title/subtitle pairings are preserved word-for-word across format versions.</em> For Off Script scripts, add: <em>flag any prohibited word appearing in on-screen or viewer-facing copy as distinct from spoken script.</em></p>
+<p><strong>Google Docs exports carry no redline.</strong> Every file exported from Google Docs will come back clean on the tracked-changes check. That's expected, not a sign nothing was edited. If you want a real redline going forward, the fix is upstream: have collaborators work in Word with track changes on, or pull the version history from Google Docs directly before exporting.</p>
+<p><strong>If the two files came from Google Docs version history,</strong> the named-version timestamp in the filename is the reliable marker of which is older, but confirm it against edit direction anyway. Filenames get copied and renamed.</p></article>
+<footer><div class="wrap">Reconstructed from <code>/mnt/user-data/outputs/Prompt_Curriculum_Version_Comparison.md</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

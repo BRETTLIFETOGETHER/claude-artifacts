@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_ecosystem.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Family Legacy Ecosystem Diagram</div>
+<h1>build_ecosystem.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">1 edit</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">17 KB</span>
+<a class="btn" href="../../artifacts/Family%20Legacy%20Ecosystem%20Diagram/build_ecosystem.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Generator script for the Family Legacy Ecosystem diagram (self-contained HTML with embedded fonts)</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""Family Legacy Ecosystem Diagram generator.</span>
+<span class="sd">Reference-styled against Print_version-FLBD_Report.pdf:</span>
+<span class="sd">deep forest green, gold + terracotta accents, tree logo, Poppins headings,</span>
+<span class="sd">soft rounded cards, angled green shapes. Self-contained HTML w/ embedded fonts.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span><span class="o">,</span><span class="w"> </span><span class="nn">pathlib</span>
+
+<span class="n">FONTS</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/fonts"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">b64</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">((</span><span class="n">FONTS</span> <span class="o">/</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="n">poppins_b</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Poppins-Bold.ttf"</span><span class="p">)</span>
+<span class="n">poppins_sb</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Poppins-SemiBold.ttf"</span><span class="p">)</span>
+<span class="n">poppins_m</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Poppins-Medium.ttf"</span><span class="p">)</span>
+<span class="n">inter</span> <span class="o">=</span> <span class="n">b64</span><span class="p">(</span><span class="s2">"Inter.ttf"</span><span class="p">)</span>
+
+<span class="c1"># ---- Palette (sampled from the report) ----</span>
+<span class="n">INK</span>      <span class="o">=</span> <span class="s2">"#1d2622"</span>
+<span class="n">FOREST</span>   <span class="o">=</span> <span class="s2">"#0e3a2d"</span>   <span class="c1"># deep header / platform band</span>
+<span class="n">FOREST2</span>  <span class="o">=</span> <span class="s2">"#15503c"</span>
+<span class="n">LEAF</span>     <span class="o">=</span> <span class="s2">"#4a7c2f"</span>   <span class="c1"># olive/leaf green accent shapes</span>
+<span class="n">GOLD</span>     <span class="o">=</span> <span class="s2">"#f5a623"</span>   <span class="c1"># primary accent</span>
+<span class="n">BRICK</span>    <span class="o">=</span> <span class="s2">"#a04e3c"</span>   <span class="c1"># secondary accent / pill labels</span>
+<span class="n">CREAM</span>    <span class="o">=</span> <span class="s2">"#f7f5f0"</span>
+<span class="n">CARD</span>     <span class="o">=</span> <span class="s2">"#ffffff"</span>
+<span class="n">MUTE</span>     <span class="o">=</span> <span class="s2">"#5d6b62"</span>
+
+<span class="c1"># ---- Tree logo (white) — simple stylized family tree ----</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tree_logo</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"#ffffff"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">58</span><span class="p">):</span>
+    <span class="n">sw</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">branches</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"M50 60 C 46 48, 40 42, 30 36"</span><span class="p">,</span>
+        <span class="s2">"M50 60 C 54 48, 60 42, 70 36"</span><span class="p">,</span>
+        <span class="s2">"M50 56 C 48 46, 44 40, 36 50"</span><span class="p">,</span>
+        <span class="s2">"M50 56 C 52 46, 56 40, 64 50"</span><span class="p">,</span>
+        <span class="s2">"M50 52 C 50 42, 50 36, 50 26"</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;path d="</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">" stroke="</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">" stroke-width="</span><span class="si">{</span><span class="n">sw</span><span class="si">}</span><span class="s1">" stroke-linecap="round" fill="none"/&gt;'</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">branches</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;svg width="</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">" height="</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;</span>
+<span class="s1">      &lt;g fill="</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">"&gt;</span>
+<span class="s1">        &lt;path d="M46 58 q4 -6 8 0 v28 a4 4 0 0 1 -8 0 z"/&gt;</span>
+<span class="s1">        </span><span class="si">{</span><span class="n">paths</span><span class="si">}</span>
+<span class="s1">        &lt;circle cx="50" cy="22" r="10"/&gt;</span>
+<span class="s1">        &lt;circle cx="30" cy="33" r="8"/&gt;&lt;circle cx="70" cy="33" r="8"/&gt;</span>
+<span class="s1">        &lt;circle cx="34" cy="50" r="7"/&gt;&lt;circle cx="66" cy="50" r="7"/&gt;</span>
+<span class="s1">        &lt;circle cx="22" cy="46" r="6"/&gt;&lt;circle cx="78" cy="46" r="6"/&gt;</span>
+<span class="s1">      &lt;/g&gt;</span>
+<span class="s1">    &lt;/svg&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">chip</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;span class="chip"&gt;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+
+<span class="c1"># ---- Content data ----</span>
+<span class="n">audiences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Legacy Families"</span><span class="p">,</span> <span class="s2">"M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"High-capacity families"</span><span class="p">,</span> <span class="s2">"Multi-generational families"</span><span class="p">,</span>
+      <span class="s2">"Focused on stewardship, values,"</span><span class="p">,</span> <span class="s2">"generosity &amp;amp; succession"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"Christian Advisors"</span><span class="p">,</span> <span class="s2">"M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"Wealth advisors &amp;amp; financial planners"</span><span class="p">,</span> <span class="s2">"Family office advisors"</span><span class="p">,</span>
+      <span class="s2">"Estate planners"</span><span class="p">,</span> <span class="s2">"Professionals guiding families"</span><span class="p">,</span> <span class="s2">"through legacy decisions"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"Affinity Groups"</span><span class="p">,</span> <span class="s2">"M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"</span><span class="p">,</span>
+     <span class="p">[</span><span class="s2">"Business Owners &amp;middot; Attorneys &amp;middot; CPAs"</span><span class="p">,</span> <span class="s2">"Executive Coaches &amp;middot; Counselors"</span><span class="p">,</span>
+      <span class="s2">"Donors &amp;middot; Nonprofit Leaders"</span><span class="p">,</span> <span class="s2">"Pastors &amp;middot; Ministry Leaders &amp;middot; Family Offices"</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">foundations</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"6 Core Coaching Series"</span><span class="p">,</span> <span class="s2">"6 Family Series"</span><span class="p">,</span> <span class="s2">"Family Legacy Curriculum"</span><span class="p">,</span>
+               <span class="s2">"Family Legacy Devotionals"</span><span class="p">,</span> <span class="s2">"Family Legacy Workshops"</span><span class="p">]</span>
+<span class="n">editions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Business Owner"</span><span class="p">,</span> <span class="s2">"Attorney"</span><span class="p">,</span> <span class="s2">"CPA"</span><span class="p">,</span> <span class="s2">"Advisor"</span><span class="p">,</span>
+            <span class="s2">"Family Office"</span><span class="p">,</span> <span class="s2">"Executive Coach"</span><span class="p">,</span> <span class="s2">"Pastor"</span><span class="p">,</span> <span class="s2">"Counselor"</span><span class="p">]</span>
+<span class="n">libraries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Family Legacy"</span><span class="p">,</span> <span class="s2">"Next Generations"</span><span class="p">,</span> <span class="s2">"Purpose at Work"</span><span class="p">,</span> <span class="s2">"Stewardship"</span><span class="p">,</span>
+             <span class="s2">"Generosity"</span><span class="p">,</span> <span class="s2">"Financial Wisdom"</span><span class="p">,</span> <span class="s2">"Multiplication"</span><span class="p">,</span> <span class="s2">"Kingdom Impact"</span><span class="p">]</span>
+<span class="n">formats</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"6-Session Study"</span><span class="p">,</span> <span class="s2">"4-Session Study"</span><span class="p">,</span> <span class="s2">"21-Day Experience"</span><span class="p">,</span> <span class="s2">"30-Day Experience"</span><span class="p">,</span>
+           <span class="s2">"40-Day Experience"</span><span class="p">,</span> <span class="s2">"Workshop"</span><span class="p">,</span> <span class="s2">"Devotional"</span><span class="p">,</span> <span class="s2">"Family Conversation Guide"</span><span class="p">]</span>
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Legacy Letters"</span><span class="p">,</span> <span class="s2">"Family Covenant"</span><span class="p">,</span> <span class="s2">"Family Meeting Guides"</span><span class="p">,</span>
+         <span class="s2">"Conflict Resolution Tools"</span><span class="p">,</span> <span class="s2">"Gen 2 Conversation Guides"</span><span class="p">,</span> <span class="s2">"Facilitation Scripts"</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">chips</span><span class="p">(</span><span class="n">items</span><span class="p">):</span> <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">chip</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span>
+
+<span class="n">audience_cards</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">icon</span><span class="p">,</span> <span class="n">bullets</span> <span class="ow">in</span> <span class="n">audiences</span><span class="p">:</span>
+    <span class="n">blist</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;li&gt;</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&lt;/li&gt;"</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bullets</span><span class="p">)</span>
+    <span class="n">audience_cards</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">      &lt;div class="aud-card"&gt;</span>
+<span class="s1">        &lt;div class="aud-ic"&gt;&lt;svg viewBox="0 0 24 24" width="26" height="26"&gt;&lt;path d="</span><span class="si">{</span><span class="n">icon</span><span class="si">}</span><span class="s1">"/&gt;&lt;/svg&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;h3&gt;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&lt;/h3&gt;</span>
+<span class="s1">        &lt;ul&gt;</span><span class="si">{</span><span class="n">blist</span><span class="si">}</span><span class="s1">&lt;/ul&gt;</span>
+<span class="s1">      &lt;/div&gt;'''</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''&lt;!doctype html&gt;&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s1">&lt;style&gt;</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Poppins';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">poppins_b</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:700;</span><span class="se">}}</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Poppins';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">poppins_sb</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:600;</span><span class="se">}}</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Poppins';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">poppins_m</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:500;</span><span class="se">}}</span>
+<span class="s1">@font-face</span><span class="se">{{</span><span class="s1">font-family:'Inter';src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">inter</span><span class="si">}</span><span class="s1">) format('truetype');font-weight:400 700;</span><span class="se">}}</span>
+<span class="s1">*</span><span class="se">{{</span><span class="s1">margin:0;padding:0;box-sizing:border-box;</span><span class="se">}}</span>
+<span class="s1">:root</span><span class="se">{{</span><span class="s1">--ink:</span><span class="si">{</span><span class="n">INK</span><span class="si">}</span><span class="s1">;--forest:</span><span class="si">{</span><span class="n">FOREST</span><span class="si">}</span><span class="s1">;--forest2:</span><span class="si">{</span><span class="n">FOREST2</span><span class="si">}</span><span class="s1">;--leaf:</span><span class="si">{</span><span class="n">LEAF</span><span class="si">}</span><span class="s1">;--gold:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s1">;--brick:</span><span class="si">{</span><span class="n">BRICK</span><span class="si">}</span><span class="s1">;--cream:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s1">;--mute:</span><span class="si">{</span><span class="n">MUTE</span><span class="si">}</span><span class="s1">;</span><span class="se">}}</span>
+<span class="s1">html,body</span><span class="se">{{</span><span class="s1">background:#dfe3df;font-family:'Inter',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;</span><span class="se">}}</span>
+<span class="s1">.page</span><span class="se">{{</span><span class="s1">width:1400px;margin:0 auto;background:var(--cream);position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">h1,h2,h3,.font-p</span><span class="se">{{</span><span class="s1">font-family:'Poppins',sans-serif;</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- HEADER ---------- */</span>
+<span class="s1">.hdr</span><span class="se">{{</span><span class="s1">position:relative;background:var(--forest);padding:34px 60px 40px;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">.hdr:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;top:0;right:-120px;width:520px;height:200%;</span>
+<span class="s1">  background:var(--leaf);transform:skewX(-20deg);opacity:.30;</span><span class="se">}}</span>
+<span class="s1">.hdr:before</span><span class="se">{{</span><span class="s1">content:"";position:absolute;bottom:-60px;right:120px;width:360px;height:200%;</span>
+<span class="s1">  background:var(--forest2);transform:skewX(-20deg);opacity:.55;</span><span class="se">}}</span>
+<span class="s1">.brandrow</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;gap:14px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.brandrow .bn</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;color:#fff;line-height:.98;font-size:19px;</span><span class="se">}}</span>
+<span class="s1">.brandrow .bn span</span><span class="se">{{</span><span class="s1">font-weight:500;font-size:13px;color:#cfe0d4;letter-spacing:.06em;display:block;</span><span class="se">}}</span>
+<span class="s1">.hdr h1</span><span class="se">{{</span><span class="s1">position:relative;z-index:2;color:#fff;font-size:50px;font-weight:700;line-height:1.02;margin-top:20px;letter-spacing:-.5px;</span><span class="se">}}</span>
+<span class="s1">.hdr .sub</span><span class="se">{{</span><span class="s1">position:relative;z-index:2;color:#e7efe8;font-size:17px;margin-top:12px;max-width:760px;font-weight:400;</span><span class="se">}}</span>
+<span class="s1">.hdr .sub b</span><span class="se">{{</span><span class="s1">color:var(--gold);font-weight:600;</span><span class="se">}}</span>
+<span class="s1">.goldrule</span><span class="se">{{</span><span class="s1">width:88px;height:5px;background:var(--gold);border-radius:3px;margin-top:18px;position:relative;z-index:2;</span><span class="se">}}</span>
+
+<span class="s1">.body</span><span class="se">{{</span><span class="s1">padding:38px 60px 0;</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- section label ---------- */</span>
+<span class="s1">.seclabel</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;gap:13px;margin:4px 0 20px;</span><span class="se">}}</span>
+<span class="s1">.seclabel .sq</span><span class="se">{{</span><span class="s1">width:18px;height:18px;background:var(--gold);border-radius:4px;flex:none;</span><span class="se">}}</span>
+<span class="s1">.seclabel h2</span><span class="se">{{</span><span class="s1">font-size:25px;font-weight:700;color:var(--forest);letter-spacing:-.3px;</span><span class="se">}}</span>
+<span class="s1">.seclabel .tag</span><span class="se">{{</span><span class="s1">margin-left:auto;font-size:12.5px;color:var(--mute);font-weight:500;font-family:'Poppins';</span>
+<span class="s1">  background:#ece9e1;padding:6px 14px;border-radius:20px;</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- audience cards ---------- */</span>
+<span class="s1">.aud-grid</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:repeat(3,1fr);gap:22px;</span><span class="se">}}</span>
+<span class="s1">.aud-card</span><span class="se">{{</span><span class="s1">background:var(--card);border-radius:18px;padding:24px 24px 22px;</span>
+<span class="s1">  box-shadow:0 10px 26px rgba(14,58,45,.09);border-top:5px solid var(--leaf);</span><span class="se">}}</span>
+<span class="s1">.aud-card .aud-ic</span><span class="se">{{</span><span class="s1">width:50px;height:50px;border-radius:13px;background:#eef3ec;</span>
+<span class="s1">  display:flex;align-items:center;justify-content:center;margin-bottom:14px;</span><span class="se">}}</span>
+<span class="s1">.aud-card .aud-ic svg</span><span class="se">{{</span><span class="s1">fill:var(--forest);</span><span class="se">}}</span>
+<span class="s1">.aud-card h3</span><span class="se">{{</span><span class="s1">font-size:20px;font-weight:600;color:var(--forest);margin-bottom:11px;</span><span class="se">}}</span>
+<span class="s1">.aud-card ul</span><span class="se">{{</span><span class="s1">list-style:none;</span><span class="se">}}</span>
+<span class="s1">.aud-card li</span><span class="se">{{</span><span class="s1">font-size:14px;color:var(--ink);line-height:1.55;padding-left:18px;position:relative;</span><span class="se">}}</span>
+<span class="s1">.aud-card li:before</span><span class="se">{{</span><span class="s1">content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:var(--gold);</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- flow connector ---------- */</span>
+<span class="s1">.flow</span><span class="se">{{</span><span class="s1">display:flex;flex-direction:column;align-items:center;margin:22px 0 8px;</span><span class="se">}}</span>
+<span class="s1">.flow .ftxt</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;font-size:13px;letter-spacing:.12em;</span>
+<span class="s1">  text-transform:uppercase;color:var(--brick);margin-bottom:6px;</span><span class="se">}}</span>
+<span class="s1">.flow .arrow</span><span class="se">{{</span><span class="s1">width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;</span>
+<span class="s1">  border-top:15px solid var(--gold);</span><span class="se">}}</span>
+<span class="s1">.flow .stem</span><span class="se">{{</span><span class="s1">width:3px;height:14px;background:var(--gold);</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- platform band ---------- */</span>
+<span class="s1">.platform</span><span class="se">{{</span><span class="s1">position:relative;background:var(--forest);border-radius:22px;padding:30px 36px 32px;</span>
+<span class="s1">  overflow:hidden;box-shadow:0 16px 34px rgba(14,58,45,.22);</span><span class="se">}}</span>
+<span class="s1">.platform:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;top:-40px;left:-60px;width:300px;height:200%;</span>
+<span class="s1">  background:var(--leaf);opacity:.16;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.platform .phead</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;gap:14px;position:relative;z-index:2;margin-bottom:6px;</span><span class="se">}}</span>
+<span class="s1">.platform .phead .pl-ic</span><span class="se">{{</span><span class="s1">width:46px;height:46px;border-radius:12px;background:rgba(245,166,35,.18);</span>
+<span class="s1">  display:flex;align-items:center;justify-content:center;</span><span class="se">}}</span>
+<span class="s1">.platform h2</span><span class="se">{{</span><span class="s1">color:#fff;font-size:26px;font-weight:700;</span><span class="se">}}</span>
+<span class="s1">.platform .psub</span><span class="se">{{</span><span class="s1">color:#bcd2c2;font-size:14px;position:relative;z-index:2;margin-bottom:20px;</span><span class="se">}}</span>
+<span class="s1">.lanes</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.lane</span><span class="se">{{</span><span class="s1">background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:15px 16px;</span><span class="se">}}</span>
+<span class="s1">.lane .lh</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;color:var(--gold);font-size:14px;margin-bottom:5px;</span><span class="se">}}</span>
+<span class="s1">.lane p</span><span class="se">{{</span><span class="s1">color:#e6efe8;font-size:13px;line-height:1.5;</span><span class="se">}}</span>
+<span class="s1">.lane.add</span><span class="se">{{</span><span class="s1">background:rgba(245,166,35,.14);border-color:rgba(245,166,35,.45);</span><span class="se">}}</span>
+<span class="s1">.lane.add .lh</span><span class="se">{{</span><span class="s1">color:#ffd089;</span><span class="se">}}</span>
+<span class="s1">.infinity</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- engine ---------- */</span>
+<span class="s1">.engine</span><span class="se">{{</span><span class="s1">background:var(--card);border-radius:22px;padding:28px 30px 26px;</span>
+<span class="s1">  box-shadow:0 10px 26px rgba(14,58,45,.10);border:1px solid #e8e4da;</span><span class="se">}}</span>
+<span class="s1">.mult</span><span class="se">{{</span><span class="s1">display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr 38px 1fr;align-items:stretch;gap:0;</span><span class="se">}}</span>
+<span class="s1">.op</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:700;</span>
+<span class="s1">  font-size:30px;color:var(--gold);</span><span class="se">}}</span>
+<span class="s1">.eblock</span><span class="se">{{</span><span class="s1">background:#f5f3ec;border-radius:15px;padding:16px 16px 15px;border-top:4px solid var(--forest);</span>
+<span class="s1">  display:flex;flex-direction:column;</span><span class="se">}}</span>
+<span class="s1">.eblock.out</span><span class="se">{{</span><span class="s1">border-top-color:var(--brick);background:#faf4f1;</span><span class="se">}}</span>
+<span class="s1">.eblock .ehead</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:600;font-size:15.5px;color:var(--forest);margin-bottom:3px;</span><span class="se">}}</span>
+<span class="s1">.eblock.out .ehead</span><span class="se">{{</span><span class="s1">color:var(--brick);</span><span class="se">}}</span>
+<span class="s1">.eblock .ekick</span><span class="se">{{</span><span class="s1">font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);</span>
+<span class="s1">  font-family:'Poppins';font-weight:600;margin-bottom:11px;</span><span class="se">}}</span>
+<span class="s1">.chipwrap</span><span class="se">{{</span><span class="s1">display:flex;flex-wrap:wrap;gap:6px;</span><span class="se">}}</span>
+<span class="s1">.chip</span><span class="se">{{</span><span class="s1">background:#fff;border:1px solid #ddd7ca;border-radius:7px;padding:5px 9px;font-size:11.5px;</span>
+<span class="s1">  color:var(--ink);font-weight:500;line-height:1.2;</span><span class="se">}}</span>
+<span class="s1">.eblock.out .chip</span><span class="se">{{</span><span class="s1">border-color:#e7cbc1;</span><span class="se">}}</span>
+
+<span class="s1">.toolsbar</span><span class="se">{{</span><span class="s1">margin-top:18px;background:linear-gradient(90deg,#143d31,#0e3a2d);border-radius:15px;</span>
+<span class="s1">  padding:17px 22px;display:flex;align-items:center;gap:22px;position:relative;overflow:hidden;</span><span class="se">}}</span>
+<span class="s1">.toolsbar:after</span><span class="se">{{</span><span class="s1">content:"";position:absolute;right:-40px;top:0;width:200px;height:300%;</span>
+<span class="s1">  background:var(--gold);opacity:.10;transform:skewX(-18deg);</span><span class="se">}}</span>
+<span class="s1">.toolsbar .tl-label</span><span class="se">{{</span><span class="s1">flex:none;max-width:185px;position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.toolsbar .tl-label .h</span><span class="se">{{</span><span class="s1">font-family:'Poppins';font-weight:700;color:#fff;font-size:17px;line-height:1.1;</span><span class="se">}}</span>
+<span class="s1">.toolsbar .tl-label .k</span><span class="se">{{</span><span class="s1">color:var(--gold);font-size:11px;font-family:'Poppins';font-weight:600;</span>
+<span class="s1">  letter-spacing:.07em;text-transform:uppercase;margin-top:3px;</span><span class="se">}}</span>
+<span class="s1">.toolsbar .chipwrap</span><span class="se">{{</span><span class="s1">position:relative;z-index:2;</span><span class="se">}}</span>
+<span class="s1">.toolsbar .chip</span><span class="se">{{</span><span class="s1">background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.22);color:#eef4ef;</span><span class="se">}}</span>
+
+<span class="s1">.scalenote</span><span class="se">{{</span><span class="s1">display:flex;align-items:center;gap:10px;margin-top:14px;justify-content:center;</span>
+<span class="s1">  font-family:'Poppins';font-weight:600;font-size:13.5px;color:var(--forest);</span><span class="se">}}</span>
+<span class="s1">.scalenote .pill</span><span class="se">{{</span><span class="s1">background:var(--gold);color:#5a3a00;border-radius:20px;padding:4px 13px;font-size:12.5px;</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- equation strip ---------- */</span>
+<span class="s1">.eq</span><span class="se">{{</span><span class="s1">margin:26px 0 0;text-align:center;font-family:'Poppins';font-weight:600;color:var(--forest2);</span>
+<span class="s1">  font-size:15px;line-height:1.7;</span><span class="se">}}</span>
+<span class="s1">.eq b</span><span class="se">{{</span><span class="s1">color:var(--brick);font-weight:700;</span><span class="se">}}</span>
+<span class="s1">.eq .x</span><span class="se">{{</span><span class="s1">color:var(--gold);font-weight:700;</span><span class="se">}}</span>
+
+<span class="s1">/* ---------- footer ---------- */</span>
+<span class="s1">.foot</span><span class="se">{{</span><span class="s1">margin-top:30px;background:var(--forest);padding:20px 60px;display:flex;align-items:center;</span>
+<span class="s1">  justify-content:space-between;</span><span class="se">}}</span>
+<span class="s1">.foot .pres</span><span class="se">{{</span><span class="s1">color:#cfe0d4;font-size:13px;font-family:'Poppins';font-weight:500;</span><span class="se">}}</span>
+<span class="s1">.foot .pres b</span><span class="se">{{</span><span class="s1">color:#fff;font-weight:700;</span><span class="se">}}</span>
+<span class="s1">.foot .lt</span><span class="se">{{</span><span class="s1">color:#fff;font-family:'Poppins';font-weight:700;font-size:18px;</span><span class="se">}}</span>
+<span class="s1">.foot .lt .t</span><span class="se">{{</span><span class="s1">color:var(--gold);</span><span class="se">}}</span>
+<span class="s1">&lt;/style&gt;&lt;/head&gt;</span>
+<span class="s1">&lt;body&gt;</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+
+<span class="s1">  &lt;!-- HEADER --&gt;</span>
+<span class="s1">  &lt;div class="hdr"&gt;</span>
+<span class="s1">    &lt;div class="brandrow"&gt;</span><span class="si">{</span><span class="n">tree_logo</span><span class="p">()</span><span class="si">}</span><span class="s1">&lt;div class="bn"&gt;Family Legacy&lt;br&gt;&lt;span&gt;BY DESIGN&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1&gt;The Family Legacy Ecosystem&lt;/h1&gt;</span>
+<span class="s1">    &lt;div class="sub"&gt;From a library of books &amp;amp; workshops into a &lt;b&gt;scalable content ecosystem&lt;/b&gt; and &lt;b&gt;membership platform&lt;/b&gt; &amp;mdash; one engine serving families, advisors, and the communities around them.&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="goldrule"&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+
+<span class="s1">  &lt;div class="body"&gt;</span>
+
+<span class="s1">    &lt;!-- AUDIENCES --&gt;</span>
+<span class="s1">    &lt;div class="seclabel"&gt;&lt;div class="sq"&gt;&lt;/div&gt;&lt;h2&gt;Who the Ecosystem Serves&lt;/h2&gt;</span>
+<span class="s1">      &lt;div class="tag"&gt;Three primary audiences&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="aud-grid"&gt;</span><span class="si">{</span><span class="n">audience_cards</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="flow"&gt;&lt;div class="ftxt"&gt;All access the ecosystem through&lt;/div&gt;&lt;div class="stem"&gt;&lt;/div&gt;&lt;div class="arrow"&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s1">    &lt;!-- PLATFORM --&gt;</span>
+<span class="s1">    &lt;div class="platform"&gt;</span>
+<span class="s1">      &lt;div class="phead"&gt;</span>
+<span class="s1">        &lt;div class="pl-ic"&gt;&lt;svg viewBox="0 0 24 24" width="24" height="24" fill="</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s1">"&gt;&lt;path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/&gt;&lt;/svg&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;h2&gt;The Membership Platform&lt;/h2&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">      &lt;div class="psub"&gt;The unifying hub where every audience accesses the right resources &amp;mdash; and where the catalog never stops growing.&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="lanes"&gt;</span>
+<span class="s1">        &lt;div class="lane"&gt;&lt;div class="lh"&gt;Legacy Families&lt;/div&gt;&lt;p&gt;Access curriculum, devotionals, workshops &amp;amp; conversation guides.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="lane"&gt;&lt;div class="lh"&gt;Christian Advisors&lt;/div&gt;&lt;p&gt;Access advisor tools, facilitation resources &amp;amp; certification.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="lane"&gt;&lt;div class="lh"&gt;Affinity Groups&lt;/div&gt;&lt;p&gt;Access specialized editions built for their profession.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="lane add"&gt;&lt;div class="lh"&gt;&lt;span class="infinity"&gt;&amp;infin;&lt;/span&gt; Always Expanding&lt;/div&gt;&lt;p&gt;New campaign libraries &amp;amp; editions added continually.&lt;/p&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="flow"&gt;&lt;div class="ftxt"&gt;Continuously powered by&lt;/div&gt;&lt;div class="stem"&gt;&lt;/div&gt;&lt;div class="arrow"&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s1">    &lt;!-- ENGINE --&gt;</span>
+<span class="s1">    &lt;div class="seclabel"&gt;&lt;div class="sq"&gt;&lt;/div&gt;&lt;h2&gt;The Content Engine&lt;/h2&gt;</span>
+<span class="s1">      &lt;div class="tag"&gt;How a fixed core scales into an endless catalog&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="engine"&gt;</span>
+<span class="s1">      &lt;div class="mult"&gt;</span>
+<span class="s1">        &lt;div class="eblock"&gt;</span>
+<span class="s1">          &lt;div class="ehead"&gt;Family Legacy Foundations&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="ekick"&gt;The Core IP&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="chipwrap"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="p">(</span><span class="n">foundations</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">        &lt;div class="op"&gt;&amp;times;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="eblock"&gt;</span>
+<span class="s1">          &lt;div class="ehead"&gt;Affinity Editions&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="ekick"&gt;Tailored by audience&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="chipwrap"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="p">(</span><span class="n">editions</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">        &lt;div class="op"&gt;&amp;times;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="eblock"&gt;</span>
+<span class="s1">          &lt;div class="ehead"&gt;Campaign Libraries&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="ekick"&gt;Tailored by theme&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="chipwrap"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="p">(</span><span class="n">libraries</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">        &lt;div class="op"&gt;&amp;rarr;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="eblock out"&gt;</span>
+<span class="s1">          &lt;div class="ehead"&gt;Content Formats&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="ekick"&gt;Delivered as&lt;/div&gt;</span>
+<span class="s1">          &lt;div class="chipwrap"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="p">(</span><span class="n">formats</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+
+<span class="s1">      &lt;div class="toolsbar"&gt;</span>
+<span class="s1">        &lt;div class="tl-label"&gt;&lt;div class="h"&gt;Advisor Tools&lt;/div&gt;&lt;div class="k"&gt;Professional &amp;amp; certification layer&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="chipwrap"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;/div&gt;</span>
+
+<span class="s1">      &lt;div class="scalenote"&gt;&lt;span class="pill"&gt;Scalability&lt;/span&gt;</span>
+<span class="s1">        A handful of foundations &amp;times; editions &amp;times; libraries &amp;times; formats = thousands of tailored resources from one body of work.&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+
+<span class="s1">    &lt;div class="eq"&gt;</span>
+<span class="s1">      &lt;b&gt;Foundations&lt;/b&gt; &lt;span class="x"&gt;&amp;times;&lt;/span&gt; &lt;b&gt;Affinity Editions&lt;/b&gt; &lt;span class="x"&gt;&amp;times;&lt;/span&gt; &lt;b&gt;Campaign Libraries&lt;/b&gt; &lt;span class="x"&gt;&amp;times;&lt;/span&gt; &lt;b&gt;Formats&lt;/b&gt; &lt;span class="x"&gt;&amp;rarr;&lt;/span&gt; delivered through &lt;b&gt;one membership platform&lt;/b&gt; to &lt;b&gt;families, advisors &amp;amp; affinity groups.&lt;/b&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+
+<span class="s1">  &lt;!-- FOOTER --&gt;</span>
+<span class="s1">  &lt;div class="foot"&gt;</span>
+<span class="s1">    &lt;div class="pres"&gt;Family Legacy by Design &amp;nbsp;&amp;bull;&amp;nbsp; A long-term vision for a scalable legacy content ecosystem&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="pres"&gt;Presented by &lt;span class="lt"&gt;life&lt;span class="t"&gt;together&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">&lt;/body&gt;&lt;/html&gt;'''</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/home/claude/family_legacy_ecosystem.html"</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">HTML</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"wrote"</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">HTML</span><span class="p">),</span> <span class="s2">"bytes"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_ecosystem.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

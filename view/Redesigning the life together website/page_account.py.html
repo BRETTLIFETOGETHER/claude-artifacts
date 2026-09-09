@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>page_account.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Redesigning the life together website</div>
+<h1>page_account.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">11 KB</span>
+<a class="btn" href="../../artifacts/Redesigning%20the%20life%20together%20website/page_account.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the login page and My Library dashboard with localStorage persistence</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">shell</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+
+<span class="c1"># ============================== LOGIN ==============================</span>
+<span class="n">L_HEAD</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="s2">.login-wrap{max-width:980px;margin:0 auto;padding:70px 30px 100px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}</span>
+<span class="s2">.login-card{background:#fff;border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow-lg);padding:42px}</span>
+<span class="s2">.login-card h2{font-size:30px;margin-bottom:8px}</span>
+<span class="s2">.login-card .sub{font-size:14.5px;color:var(--mute);margin-bottom:26px}</span>
+<span class="s2">.login-card .fld{margin-bottom:18px}</span>
+<span class="s2">.login-tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:2px solid var(--line)}</span>
+<span class="s2">.login-tabs button{font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:12px 20px;color:var(--mute);border-bottom:3px solid transparent;margin-bottom:-2px}</span>
+<span class="s2">.login-tabs button.sel{color:var(--ink);border-bottom-color:var(--lt-green)}</span>
+<span class="s2">.login-note{background:#F4F4EF;border:1px solid var(--line);border-radius:3px;padding:14px 18px;font-size:13px;color:#5A5A52;line-height:1.6;margin-top:22px}</span>
+<span class="s2">.login-side .pt{display:flex;gap:14px;align-items:flex-start;margin-top:22px}</span>
+<span class="s2">.login-side .pt i{width:34px;height:34px;flex-shrink:0;border-radius:2px;background:#EAF0E2;color:#5F8540;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700}</span>
+<span class="s2">.login-side .pt b{display:block;font-size:15.5px;color:var(--ink)}</span>
+<span class="s2">.login-side .pt span{font-size:14px;color:var(--body);line-height:1.55}</span>
+<span class="s2">@media(max-width:920px){.login-wrap{grid-template-columns:1fr;gap:40px}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">L_BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="login-wrap"&gt;</span>
+<span class="s2">  &lt;div class="login-side"&gt;</span>
+<span class="s2">    &lt;span class="eyebrow"&gt;Your Lifetogether account&lt;/span&gt;</span>
+<span class="s2">    &lt;h1 class="mt16" style="font-size:clamp(34px,4.4vw,50px)"&gt;One library.&lt;br&gt;&lt;em&gt;Yours&lt;/em&gt; and ours.&lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="lede mt16"&gt;Sign in to keep everything in one place — the sermons you upload, the curriculum the platform builds from them, your assessment path, and the best of the Lifetogether flagship library.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="pt"&gt;&lt;i&gt;✓&lt;/i&gt;&lt;div&gt;&lt;b&gt;Upload your teaching library&lt;/b&gt;&lt;span&gt;Every sermon you bring in is saved, analyzed, and ready to become curriculum whenever you are.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="pt"&gt;&lt;i&gt;✓&lt;/i&gt;&lt;div&gt;&lt;b&gt;Keep what the platform builds&lt;/b&gt;&lt;span&gt;Generated curricula stay in your library — reopen, re-edit, and re-export any time.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="pt"&gt;&lt;i&gt;✓&lt;/i&gt;&lt;div&gt;&lt;b&gt;The best of Lifetogether, built in&lt;/b&gt;&lt;span&gt;The flagship shelf sits beside your own work — one library, both sources.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="login-card"&gt;</span>
+<span class="s2">    &lt;div class="login-tabs"&gt;</span>
+<span class="s2">      &lt;button class="sel" id="tabIn" onclick="tab('in')"&gt;Sign in&lt;/button&gt;</span>
+<span class="s2">      &lt;button id="tabUp" onclick="tab('up')"&gt;Create account&lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;h2 id="formTitle"&gt;Welcome back.&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="sub" id="formSub"&gt;Your library is waiting.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="fld" id="nameFld" style="display:none"&gt;</span>
+<span class="s2">      &lt;label class="lbl"&gt;Your name&lt;/label&gt;</span>
+<span class="s2">      &lt;input class="input" id="fName" placeholder="Pastor Dave Miller"&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="fld" id="churchFld" style="display:none"&gt;</span>
+<span class="s2">      &lt;label class="lbl"&gt;Church&lt;/label&gt;</span>
+<span class="s2">      &lt;input class="input" id="fChurch" placeholder="Grace Community Church"&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="fld"&gt;</span>
+<span class="s2">      &lt;label class="lbl"&gt;Email&lt;/label&gt;</span>
+<span class="s2">      &lt;input class="input" id="fEmail" type="email" placeholder="you@yourchurch.org"&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="fld"&gt;</span>
+<span class="s2">      &lt;label class="lbl"&gt;Password&lt;/label&gt;</span>
+<span class="s2">      &lt;input class="input" id="fPass" type="password" placeholder="••••••••"&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" onclick="doAuth()"&gt;Enter my library &lt;span class="arrow"&gt;→&lt;/span&gt;&lt;/button&gt;</span>
+<span class="s2">    &lt;div class="login-note"&gt;&lt;b&gt;Prototype sign-in.&lt;/b&gt; This preview stores your session on this device only — no server, no real password check. The production platform uses secure accounts with church-level roles.&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">L_SCRIPTS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">let mode='in';</span>
+<span class="s2">function tab(m){</span>
+<span class="s2">  mode=m;</span>
+<span class="s2">  document.getElementById('tabIn').classList.toggle('sel',m==='in');</span>
+<span class="s2">  document.getElementById('tabUp').classList.toggle('sel',m==='up');</span>
+<span class="s2">  document.getElementById('nameFld').style.display=m==='up'?'block':'none';</span>
+<span class="s2">  document.getElementById('churchFld').style.display=m==='up'?'block':'none';</span>
+<span class="s2">  document.getElementById('formTitle').textContent=m==='in'?'Welcome back.':'Start your library.';</span>
+<span class="s2">  document.getElementById('formSub').textContent=m==='in'?'Your library is waiting.':'Free while the platform is in preview.';</span>
+<span class="s2">}</span>
+<span class="s2">function doAuth(){</span>
+<span class="s2">  const email=document.getElementById('fEmail').value.trim();</span>
+<span class="s2">  if(!email||!email.includes('@')){alert('Enter your email to continue.');return;}</span>
+<span class="s2">  const existing=ltUser();</span>
+<span class="s2">  const name=(mode==='up'?document.getElementById('fName').value.trim():'')||(existing&amp;&amp;existing.name)||email.split('@')[0].replace(/[._-]/g,' ').replace(/</span><span class="se">\\</span><span class="s2">b</span><span class="se">\\</span><span class="s2">w/g,c=&gt;c.toUpperCase());</span>
+<span class="s2">  const church=(mode==='up'?document.getElementById('fChurch').value.trim():'')||(existing&amp;&amp;existing.church)||'';</span>
+<span class="s2">  ltSetUser({email,name,church,since:existing&amp;&amp;existing.since||new Date().toISOString()});</span>
+<span class="s2">  location.href='library.html';</span>
+<span class="s2">}</span>
+<span class="s2">document.addEventListener('DOMContentLoaded',()=&gt;{</span>
+<span class="s2">  const u=ltUser();</span>
+<span class="s2">  if(u){document.getElementById('fEmail').value=u.email;}</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">write</span><span class="p">(</span><span class="s2">"login.html"</span><span class="p">,</span> <span class="s2">"Sign In — Your Lifetogether Library"</span><span class="p">,</span> <span class="n">L_BODY</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">head</span><span class="o">=</span><span class="n">L_HEAD</span><span class="p">,</span> <span class="n">scripts</span><span class="o">=</span><span class="n">L_SCRIPTS</span><span class="p">)</span>
+
+
+<span class="c1"># ============================== MY LIBRARY ==============================</span>
+<span class="n">LIB_HEAD</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="s2">.lib{max-width:1180px;margin:0 auto;padding:60px 30px 100px}</span>
+<span class="s2">.lib-top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:16px}</span>
+<span class="s2">.lib-top .who{font-size:14px;color:var(--mute)}</span>
+<span class="s2">.lib-bars{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 44px}</span>
+<span class="s2">.lib-sec{margin-bottom:64px}</span>
+<span class="s2">.lib-sec .sh{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}</span>
+<span class="s2">.itемs</span><span class="si">{}</span>
+<span class="s2">.item-list{display:flex;flex-direction:column;gap:12px}</span>
+<span class="s2">.itm{background:#fff;border:1px solid var(--line);border-left:6px solid var(--lt-blue);border-radius:3px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}</span>
+<span class="s2">.itm.sermon{border-left-color:var(--lt-green)}</span>
+<span class="s2">.itm.cur{border-left-color:var(--lt-orange)}</span>
+<span class="s2">.itm b{display:block;font-size:16.5px;color:var(--ink)}</span>
+<span class="s2">.itm .meta{font-size:12.5px;color:var(--mute);margin-top:3px}</span>
+<span class="s2">.itm .acts{display:flex;gap:10px;flex-wrap:wrap}</span>
+<span class="s2">.empty{background:#F4F4EF;border:1px dashed #C9C9BE;border-radius:3px;padding:34px;text-align:center;color:var(--mute);font-size:15px}</span>
+<span class="s2">.empty a{color:var(--lt-orange);font-weight:700}</span>
+<span class="s2">.pathcard{background:#fff;border:1px solid var(--line);border-radius:3px;padding:26px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}</span>
+<span class="s2">.pathcard .dot{width:12px;height:12px;display:inline-block;margin-right:8px}</span>
+<span class="s2">.shelf4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}</span>
+<span class="s2">@media(max-width:1080px){.shelf4{grid-template-columns:repeat(2,1fr)}}</span>
+<span class="s2">@media(max-width:560px){.shelf4{grid-template-columns:1fr}}</span>
+<span class="s2">&lt;/style&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">LIB_BODY</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;div class="lib"&gt;</span>
+<span class="s2">  &lt;div class="lib-top"&gt;</span>
+<span class="s2">    &lt;div&gt;</span>
+<span class="s2">      &lt;span class="eyebrow"&gt;My Library&lt;/span&gt;</span>
+<span class="s2">      &lt;h1 class="mt16" style="font-size:clamp(32px,4.2vw,48px)" id="libGreet"&gt;Your library.&lt;/h1&gt;</span>
+<span class="s2">      &lt;p class="who" id="libWho"&gt;&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div style="display:flex;gap:12px;flex-wrap:wrap"&gt;</span>
+<span class="s2">      &lt;a class="btn btn-primary" href="create.html"&gt;Upload a sermon&lt;/a&gt;</span>
+<span class="s2">      &lt;button class="btn btn-outline" onclick="ltSignOut()"&gt;Sign out&lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="lib-bars"&gt;</span>
+<span class="s2">    &lt;span class="lbl-bar green"&gt;My Uploads&lt;/span&gt;</span>
+<span class="s2">    &lt;span class="lbl-bar orange"&gt;My Curriculum&lt;/span&gt;</span>
+<span class="s2">    &lt;span class="lbl-bar blue"&gt;My Path&lt;/span&gt;</span>
+<span class="s2">    &lt;span class="lbl-bar gray"&gt;Lifetogether Flagships&lt;/span&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="lib-sec"&gt;</span>
+<span class="s2">    &lt;div class="sh"&gt;&lt;h3&gt;Uploaded sermons&lt;/h3&gt;&lt;span class="small"&gt;Saved on this device in the preview&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="item-list" id="sermonList"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="lib-sec"&gt;</span>
+<span class="s2">    &lt;div class="sh"&gt;&lt;h3&gt;Generated curriculum&lt;/h3&gt;&lt;span class="small"&gt;Reopen to edit or export again&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="item-list" id="curList"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="lib-sec"&gt;</span>
+<span class="s2">    &lt;div class="sh"&gt;&lt;h3&gt;My path&lt;/h3&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div id="pathHost"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="lib-sec"&gt;</span>
+<span class="s2">    &lt;div class="sh"&gt;&lt;h3&gt;The best of Lifetogether&lt;/h3&gt;&lt;a class="btn btn-outline btn-sm" href="browse.html"&gt;Full library →&lt;/a&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="shelf4" id="bestShelf"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">LIB_SCRIPTS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">&lt;script&gt;</span>
+<span class="s2">document.addEventListener('DOMContentLoaded',()=&gt;{</span>
+<span class="s2">  const u=ltUser();</span>
+<span class="s2">  if(!u){location.href='login.html';return;}</span>
+<span class="s2">  const first=u.name.split(' ')[0];</span>
+<span class="s2">  document.getElementById('libGreet').innerHTML=`$</span><span class="si">{first}</span><span class="s2">&amp;rsquo;s library.`;</span>
+<span class="s2">  document.getElementById('libWho').textContent=`$</span><span class="si">{u.email}</span><span class="s2">${u.church?' · '+u.church:''}`;</span>
+
+<span class="s2">  // sermons</span>
+<span class="s2">  const sermons=ltGet('lt_sermons');</span>
+<span class="s2">  document.getElementById('sermonList').innerHTML = sermons.length ? sermons.map(s=&gt;`</span>
+<span class="s2">    &lt;div class="itm sermon"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;$</span><span class="si">{s.title}</span><span class="s2">&lt;/b&gt;&lt;span class="meta"&gt;$</span><span class="si">{s.words}</span><span class="s2"> words · uploaded ${new Date(s.date).toLocaleDateString()}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="acts"&gt;</span>
+<span class="s2">        &lt;a class="btn btn-primary btn-sm" href="create.html?draft=$</span><span class="si">{s.id}</span><span class="s2">"&gt;Build from this&lt;/a&gt;</span>
+<span class="s2">        &lt;button class="btn btn-outline btn-sm" onclick="ltDel('lt_sermons','$</span><span class="si">{s.id}</span><span class="s2">');location.reload()"&gt;Remove&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;`).join('') :</span>
+<span class="s2">    `&lt;div class="empty"&gt;No sermons yet. &lt;a href="create.html"&gt;Upload your first message&lt;/a&gt; — it saves here automatically.&lt;/div&gt;`;</span>
+
+<span class="s2">  // curricula</span>
+<span class="s2">  const curs=ltGet('lt_curricula');</span>
+<span class="s2">  document.getElementById('curList').innerHTML = curs.length ? curs.map(c=&gt;`</span>
+<span class="s2">    &lt;div class="itm cur"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;$</span><span class="si">{c.title}</span><span class="s2">&lt;/b&gt;&lt;span class="meta"&gt;$</span><span class="si">{c.sessions}</span><span class="s2"> sessions · $</span><span class="si">{c.church}</span><span class="s2"> · saved ${new Date(c.date).toLocaleDateString()}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="acts"&gt;</span>
+<span class="s2">        &lt;a class="btn btn-primary btn-sm" href="create.html?cur=$</span><span class="si">{c.id}</span><span class="s2">"&gt;Reopen in the studio&lt;/a&gt;</span>
+<span class="s2">        &lt;button class="btn btn-outline btn-sm" onclick="ltDel('lt_curricula','$</span><span class="si">{c.id}</span><span class="s2">');location.reload()"&gt;Remove&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;`).join('') :</span>
+<span class="s2">    `&lt;div class="empty"&gt;Nothing generated yet. Build a curriculum from any uploaded sermon and it will live here.&lt;/div&gt;`;</span>
+
+<span class="s2">  // path</span>
+<span class="s2">  const pf=JSON.parse(localStorage.getItem('lt_profile')||'null');</span>
+<span class="s2">  document.getElementById('pathHost').innerHTML = pf ? `</span>
+<span class="s2">    &lt;div class="pathcard"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b style="font-family:var(--display);font-size:19px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink)"&gt;&lt;span class="dot" style="background:var($</span><span class="si">{pf.v}</span><span class="s2">)"&gt;&lt;/span&gt;$</span><span class="si">{pf.area}</span><span class="s2">&lt;/b&gt;</span>
+<span class="s2">      &lt;div class="small" style="margin-top:4px"&gt;Taken ${new Date(pf.date).toLocaleDateString()} · $</span><span class="si">{pf.fmt}</span><span class="s2">-day path · first campaign: $</span><span class="si">{pf.camp}</span><span class="s2">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;a class="btn btn-primary btn-sm" href="reader.html?a=$</span><span class="si">{pf.k}</span><span class="s2">&amp;c=$</span><span class="si">{pf.slug}</span><span class="s2">&amp;f=$</span><span class="si">{pf.fmt}</span><span class="s2">&amp;n=${encodeURIComponent(pf.name||'')}"&gt;Continue Day One →&lt;/a&gt;</span>
+<span class="s2">    &lt;/div&gt;` :</span>
+<span class="s2">    `&lt;div class="empty"&gt;You haven&amp;rsquo;t taken the assessment yet. &lt;a href="assessment.html"&gt;Find your path&lt;/a&gt; in about ten minutes.&lt;/div&gt;`;</span>
+
+<span class="s2">  // best of shelf</span>
+<span class="s2">  renderCards('#bestShelf',[FLAG['life-together'],FLAG['prayer'],FLAG['purpose'],FLAG['god-owns-it-all'],FLAG['living-light'],FLAG['a-life-worth'],FLAG['soul-care'],FLAG['proverbs']]);</span>
+<span class="s2">});</span>
+<span class="s2">&lt;/script&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">write</span><span class="p">(</span><span class="s2">"library.html"</span><span class="p">,</span> <span class="s2">"My Library — Lifetogether"</span><span class="p">,</span> <span class="n">LIB_BODY</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">head</span><span class="o">=</span><span class="n">LIB_HEAD</span><span class="p">,</span> <span class="n">scripts</span><span class="o">=</span><span class="n">LIB_SCRIPTS</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/page_account.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

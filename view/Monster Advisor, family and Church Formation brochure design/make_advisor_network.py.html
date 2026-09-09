@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>make_advisor_network.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Monster Advisor, family and Church Formation brochure design</div>
+<h1>make_advisor_network.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b" title="Incremental edits replayed onto this file">2 edits</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">37 KB</span>
+<a class="btn" href="../../artifacts/Monster%20Advisor%2C%20family%20and%20Church%20Formation%20brochure%20design/make_advisor_network.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Portrait 8.5x11 brochure for the Christian Advisor Network, matching established brand system</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"/home/claude/build"</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">diagrams</span><span class="w"> </span><span class="kn">import</span> <span class="n">step_chain_vertical</span><span class="p">,</span> <span class="n">vertical_levels</span><span class="p">,</span> <span class="n">fixed</span>
+
+<span class="n">PAGES</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">html</span><span class="p">):</span> <span class="n">PAGES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">photo</span><span class="p">(</span><span class="n">caption</span><span class="p">,</span> <span class="n">extra_style</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="photo" style="</span><span class="si">{</span><span class="n">extra_style</span><span class="si">}</span><span class="s1">"&gt;</span>
+<span class="s1">        &lt;div class="corner tl"&gt;&lt;/div&gt;&lt;div class="corner br"&gt;&lt;/div&gt;</span>
+<span class="s1">        &lt;div class="cap"&gt;</span><span class="si">{</span><span class="n">caption</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">folio</span><span class="p">(</span><span class="n">chapter</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'''&lt;div class="folio"&gt;&lt;div class="thread"&gt;</span><span class="si">{</span><span class="n">chapter</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div&gt;</span><span class="si">{</span><span class="n">num</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'''</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">col_list</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+    <span class="n">lis</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;li&gt;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&lt;/li&gt;'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">])</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;div class="col-block"&gt;&lt;div class="col-title"&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;ul class="col-list"&gt;</span><span class="si">{</span><span class="n">lis</span><span class="si">}</span><span class="s1">&lt;/ul&gt;&lt;/div&gt;'</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">chips_static</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">'&lt;div style="display:flex; flex-wrap:wrap; gap:0.1in;"&gt;'</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="track-chip"&gt;</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">items</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'&lt;/div&gt;'</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 1 — COVER</span>
+<span class="c1"># =================================================================</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="photo" style="position:absolute; inset:0; border-radius:0;"&gt;</span>
+<span class="s1">    &lt;div class="cap" style="right:0.68in; bottom:0.5in; left:auto; text-align:right; font-size:6.8pt;"&gt;PHOTOGRAPHY — ADVISOR IN CONVERSATION WITH A MULTI-GENERATIONAL FAMILY&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div style="position:absolute; inset:0; background:linear-gradient(190deg, rgba(16,30,56,0.4) 0%, rgba(16,30,56,0.88) 55%, rgba(16,30,56,0.98) 100%);"&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="frame" style="display:flex; flex-direction:column; justify-content:flex-end;"&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:600; font-size:9pt; letter-spacing:0.2em; color:#D9B876; margin-bottom:2in;"&gt;FOR CHRISTIAN FINANCIAL ADVISORS&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:26pt; color:#FBF8F1; line-height:1.15;"&gt;Build a Practice That Reflects Your Faith and Changes Families for Generations&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p style="font-family:'Playfair'; font-style:italic; font-weight:500; font-size:12.5pt; color:#D9B876; line-height:1.5;"&gt;</span>
+<span class="s1">      Grow your faith. Build your practice. Serve families. Strengthen churches.</span>
+<span class="s1">      Multiply Kingdom impact.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede" style="font-size:9.8pt; color:rgba(251,248,241,0.75);"&gt;</span>
+<span class="s1">      A comprehensive growth, discipleship, client-engagement, family-legacy, and</span>
+<span class="s1">      church-partnership platform created specifically for Christian financial advisors.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.3in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.3in;"&gt;</span>
+<span class="s1">      &lt;div class="gsm-mark"&gt;&lt;div class="gsm-word"&gt;GROW&lt;/div&gt;&lt;div class="gsm-sub"&gt;personally&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="gsm-mark"&gt;&lt;div class="gsm-word"&gt;SERVE&lt;/div&gt;&lt;div class="gsm-sub"&gt;families&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div class="gsm-mark"&gt;&lt;div class="gsm-word"&gt;MULTIPLY&lt;/div&gt;&lt;div class="gsm-sub"&gt;Kingdom impact&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.4in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:500; font-size:8pt; letter-spacing:0.1em; color:rgba(251,248,241,0.55);"&gt;CHRISTIAN ADVISOR NETWORK&amp;trade;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 2 — MORE THAN A PROFESSIONAL ASSOCIATION</span>
+<span class="c1"># =================================================================</span>
+<span class="n">becomes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Stronger follower of Christ"</span><span class="p">,</span> <span class="s2">"More effective practice leader"</span><span class="p">,</span> <span class="s2">"Trusted guide to families"</span><span class="p">,</span> <span class="s2">"Equipper of the next generation"</span><span class="p">,</span> <span class="s2">"Strategic partner to pastors and churches"</span><span class="p">,</span> <span class="s2">"Catalyst for biblical financial wisdom and generous living"</span><span class="p">]</span>
+<span class="n">enables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Personal and spiritual growth"</span><span class="p">,</span> <span class="s2">"A differentiated, values-aligned practice"</span><span class="p">,</span> <span class="s2">"Deeper and more meaningful client conversations"</span><span class="p">,</span> <span class="s2">"Multi-generational family engagement"</span><span class="p">,</span> <span class="s2">"Ethical, compliance-aware church partnerships"</span><span class="p">,</span> <span class="s2">"Repeatable resources for every stage of service"</span><span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;MORE THAN A PROFESSIONAL ASSOCIATION&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:21pt; color:var(--navy);"&gt;A resource, relationship, training, and ministry ecosystem&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede"&gt;</span>
+<span class="s1">      The Christian Advisor Network equips advisors with biblically sound resources they</span>
+<span class="s1">      can use personally, professionally, with client families, and in partnership with</span>
+<span class="s1">      local churches. It is designed to help Christian advisors become &amp;mdash; and enable</span>
+<span class="s1">      them to build:</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.4in;"&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"WHO THE ADVISOR BECOMES"</span><span class="p">,</span><span class="w"> </span><span class="n">becomes</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"WHAT THE PLATFORM ENABLES"</span><span class="p">,</span><span class="w"> </span><span class="n">enables</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"More Than a Professional Association"</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 3 — THE CENTRAL PROMISE</span>
+<span class="c1"># =================================================================</span>
+<span class="n">kit_items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Advisor PDF guide"</span><span class="p">,</span> <span class="s2">"Small-group edition"</span><span class="p">,</span> <span class="s2">"Client-facing PDF"</span><span class="p">,</span> <span class="s2">"Seminar edition"</span><span class="p">,</span> <span class="s2">"Advisor preparation notes"</span><span class="p">,</span> <span class="s2">"Church partnership edition"</span><span class="p">,</span> <span class="s2">"Client invitation email"</span><span class="p">,</span> <span class="s2">"Senior pastor overview"</span><span class="p">,</span> <span class="s2">"Client conversation script"</span><span class="p">,</span> <span class="s2">"Presentation slides"</span><span class="p">,</span> <span class="s2">"Discovery questions"</span><span class="p">,</span> <span class="s2">"Social media copy"</span><span class="p">,</span> <span class="s2">"Family discussion guide"</span><span class="p">,</span> <span class="s2">"Website copy"</span><span class="p">,</span> <span class="s2">"Interactive worksheet"</span><span class="p">,</span> <span class="s2">"Short video scripts"</span><span class="p">,</span> <span class="s2">"Follow-up email"</span><span class="p">,</span> <span class="s2">"Customizable advisor-branded edition"</span><span class="p">,</span> <span class="s2">"Next-step recommendations"</span><span class="p">,</span> <span class="s2">"Measurement and follow-up tools"</span><span class="p">]</span>
+<span class="n">kit_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="kit-item"&gt;&lt;span class="kit-check"&gt;&amp;#10003;&lt;/span&gt;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kit_items</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE CENTRAL PROMISE&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:18pt; color:var(--navy); line-height:1.3;"&gt;Everything a Christian advisor needs to grow personally and serve families meaningfully&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.12in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede" style="font-size:10pt;"&gt;</span>
+<span class="s1">      The advisor no longer has to wonder what to send, what to say, how to begin the</span>
+<span class="s1">      conversation, or how to serve the entire family. The Network provides the answer,</span>
+<span class="s1">      the script, the exercise, the presentation, the follow-up, and the next step.</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:600; font-size:9pt; letter-spacing:0.12em; color:var(--gold);"&gt;FROM CONTENT TO TRANSFORMATION&lt;/div&gt;</span>
+<span class="s1">    &lt;p style="font-family:'Inter'; font-size:9.4pt; color:var(--gray); margin:0.06in 0 0.14in;"&gt;Every major resource includes a complete, transferable implementation kit.&lt;/p&gt;</span>
+<span class="s1">    &lt;div class="kit-grid"&gt;</span><span class="si">{</span><span class="n">kit_html</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;One resource, many uses&lt;/span&gt;</span>
+<span class="s1">      Personal growth &amp;middot; client engagement &amp;middot; family conversations &amp;middot; team development &amp;middot; church ministry</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Central Promise"</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 4 — THE COMPLETE RESOURCE RACK</span>
+<span class="c1"># =================================================================</span>
+<span class="n">rack</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"1. Faith &amp;amp; Spiritual Formation"</span><span class="p">,</span> <span class="s2">"Faith and finances, uncertainty, contentment, calling, spiritual disciplines, eternal perspective."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"2. Marriage &amp;amp; Money"</span><span class="p">,</span> <span class="s2">"Money personalities, conflict, transparency, debt, blended families, retirement expectations."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"3. Parenting &amp;amp; Next Generation"</span><span class="p">,</span> <span class="s2">"Wise children, generosity, responsibility, entitlement, preparing heirs, grandparent influence."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"4. Family Communication &amp;amp; Unity"</span><span class="p">,</span> <span class="s2">"Family meetings, conflict, shared vision, governance, constitutions, councils, legacy retreats."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"5. Life Purpose &amp;amp; Calling"</span><span class="p">,</span> <span class="s2">"Purpose, career transition, retirement identity, mentoring, life planning, multiplying a life message."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"6. Financial Wisdom &amp;amp; Stewardship"</span><span class="p">,</span> <span class="s2">"God owns it all, margin, debt, goals, saving, investing, finish lines, gratitude and contentment."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"7. Generosity &amp;amp; Kingdom Impact"</span><span class="p">,</span> <span class="s2">"Family giving, philanthropy, donor-advised funds, missions, foundations, legacy giving."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"8. Health, Wholeness &amp;amp; Resilience"</span><span class="p">,</span> <span class="s2">"Stress, burnout, health crises, caregiving, Sabbath, grief, resilience, whole-life stewardship."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"9. Retirement &amp;amp; Major Transitions"</span><span class="p">,</span> <span class="s2">"Retirement, business sale, widowhood, relocation, inheritance, empty nesting, end-of-life planning."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"10. Family Legacy"</span><span class="p">,</span> <span class="s2">"Legacy letters, family stories, faith stories, values, traditions, ethical wills, family videos."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">rack_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="rack-cell"&gt;&lt;div class="rack-title"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="rack-desc"&gt;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">rack</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE COMPLETE RESOURCE RACK&amp;trade;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:19pt; color:var(--navy);"&gt;A biblical resource for every conversation, transition, and family need&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.06in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede" style="font-size:9.6pt;"&gt;Christian advisors encounter issues that go far beyond investments. The Resource Rack equips them for the whole person, the whole family, and the whole journey.&lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="rack-grid"&gt;</span><span class="si">{</span><span class="n">rack_html</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;The foundation&lt;/span&gt;</span>
+<span class="s1">      Ron Blue&amp;rsquo;s biblical financial wisdom + LifeTogether&amp;rsquo;s campaign, curriculum, conversation, personalization, and churchwide implementation systems.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Complete Resource Rack"</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 5 — THE SEVEN BREAKTHROUGH RESOURCES (navy divider)</span>
+<span class="c1"># =================================================================</span>
+<span class="n">breakthroughs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"Faith &amp;amp; Practice Alignment Assessment&amp;trade;"</span><span class="p">,</span> <span class="s2">"See where faith, life, family, leadership, practice, and Kingdom impact are aligned &amp;mdash; and build a 90-day growth plan."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span> <span class="s2">"Christian Advisor Vision &amp;amp; Values Builder&amp;trade;"</span><span class="p">,</span> <span class="s2">"Create a fully custom vision, mission, values, client promise, team covenant, and ten-year legacy vision."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span> <span class="s2">"Legacy Family Conversation System&amp;trade;"</span><span class="p">,</span> <span class="s2">"Turn financial-planning meetings into meaningful multi-generational conversations."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span> <span class="s2">"Family Legacy Builder&amp;trade;"</span><span class="p">,</span> <span class="s2">"Help families transfer faith, wisdom, values, stories, generosity, and wealth."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span> <span class="s2">"40-Day Christian Advisor Growth Builder&amp;trade;"</span><span class="p">,</span> <span class="s2">"A guided faith-and-practice journey combining spiritual formation with practical growth actions."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"6"</span><span class="p">,</span> <span class="s2">"Advisor-Church Partnership Playbook&amp;trade;"</span><span class="p">,</span> <span class="s2">"Serve churches with wisdom, integrity, clear boundaries, and scalable ministry pathways."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"7"</span><span class="p">,</span> <span class="s2">"Pastor Sermon &amp;amp; Seminar Library&amp;trade;"</span><span class="p">,</span> <span class="s2">"Equip pastors with biblically rich, pastorally sensitive teaching on stewardship, generosity, and legacy."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">bt_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;div class="bt-row"&gt;</span>
+<span class="s1">      &lt;div class="bt-num"&gt;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div&gt;&lt;div class="bt-title"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="bt-desc"&gt;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;'''</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">breakthroughs</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE SEVEN BREAKTHROUGH RESOURCES&amp;trade;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:19pt; color:#FBF8F1;"&gt;Flagship systems that solve major advisor problems and deepen client relationships&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">bt_html</span><span class="si">}</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Seven Breakthrough Resources"</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 6 — 1+2: ALIGN THE ADVISOR, DEFINE THE PRACTICE</span>
+<span class="c1"># =================================================================</span>
+<span class="n">assessment_items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"50-question assessment"</span><span class="p">,</span> <span class="s2">"Automated scorecard"</span><span class="p">,</span> <span class="s2">"Personal spiritual health"</span><span class="p">,</span> <span class="s2">"Marriage and family alignment"</span><span class="p">,</span> <span class="s2">"Leadership capacity"</span><span class="p">,</span> <span class="s2">"Practice vision and client experience"</span><span class="p">,</span> <span class="s2">"Team culture and stewardship"</span><span class="p">,</span> <span class="s2">"Kingdom impact and church engagement"</span><span class="p">,</span> <span class="s2">"Succession readiness"</span><span class="p">,</span> <span class="s2">"Personal and practice recommendations"</span><span class="p">,</span> <span class="s2">"90-day growth plan"</span><span class="p">,</span> <span class="s2">"Coaching discussion guide"</span><span class="p">]</span>
+<span class="n">values_items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Personal calling statement"</span><span class="p">,</span> <span class="s2">"Practice vision and mission"</span><span class="p">,</span> <span class="s2">"Five to seven core values"</span><span class="p">,</span> <span class="s2">"Ideal client definition"</span><span class="p">,</span> <span class="s2">"Distinctive value proposition"</span><span class="p">,</span> <span class="s2">"Client experience promise"</span><span class="p">,</span> <span class="s2">"Team culture covenant"</span><span class="p">,</span> <span class="s2">"Kingdom impact goals"</span><span class="p">,</span> <span class="s2">"Ten-year legacy vision"</span><span class="p">,</span> <span class="s2">"Founder story and biblical foundations"</span><span class="p">,</span> <span class="s2">"Website and brochure copy"</span><span class="p">,</span> <span class="s2">"Annual vision review"</span><span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;1 + 2 &amp;mdash; ALIGN THE ADVISOR. DEFINE THE PRACTICE.&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:18pt; color:var(--navy);"&gt;Two foundational systems for personal clarity and organizational distinction&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.35in;"&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"FAITH &amp;amp; PRACTICE ALIGNMENT ASSESSMENT&amp;trade;"</span><span class="p">,</span><span class="w"> </span><span class="n">assessment_items</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"VISION &amp;amp; VALUES BUILDER&amp;trade;"</span><span class="p">,</span><span class="w"> </span><span class="n">values_items</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Custom, branded, and ready to use&lt;/span&gt;</span>
+<span class="s1">      Each advisor can receive a polished, advisor-branded document: &lt;i&gt;The Vision and Values of [Practice Name].&lt;/i&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.12in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Client adaptation&lt;/span&gt;</span>
+<span class="s1">      The Whole-Life Stewardship Assessment&amp;trade; opens a meaningful conversation about faith, family, finances, health, purpose, generosity, future, and legacy.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Align the Advisor, Define the Practice"</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 7 — 3+4: TURN PLANNING INTO LEGACY</span>
+<span class="c1"># =================================================================</span>
+<span class="n">legacy_conv_items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"100 Legacy Questions"</span><span class="p">,</span> <span class="s2">"Family Values Card Sort"</span><span class="p">,</span> <span class="s2">"Legacy Timeline"</span><span class="p">,</span> <span class="s2">"Family Story Interview"</span><span class="p">,</span> <span class="s2">"Family Mission Builder"</span><span class="p">,</span> <span class="s2">"Family Generosity Map"</span><span class="p">,</span> <span class="s2">"Family Wisdom Inventory"</span><span class="p">,</span> <span class="s2">"Next-Generation Readiness Assessment"</span><span class="p">,</span> <span class="s2">"Family Meeting Agenda"</span><span class="p">,</span> <span class="s2">"Annual Legacy Review"</span><span class="p">]</span>
+<span class="n">legacy_builder_items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"1. Remember Your Story"</span><span class="p">,</span> <span class="s2">"2. Clarify Your Values"</span><span class="p">,</span> <span class="s2">"3. Define Your Purpose"</span><span class="p">,</span> <span class="s2">"4. Prepare the Next Generation"</span><span class="p">,</span> <span class="s2">"5. Build a Generosity Legacy"</span><span class="p">,</span> <span class="s2">"6. Create the Family Legacy Plan"</span><span class="p">,</span> <span class="s2">"Mission statement and legacy letter"</span><span class="p">,</span> <span class="s2">"Family meeting rhythm"</span><span class="p">,</span> <span class="s2">"Next-generation development plan"</span><span class="p">,</span> <span class="s2">"Annual retreat and ten-year vision"</span><span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;3 + 4 &amp;mdash; TURN PLANNING INTO LEGACY&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:18pt; color:#FBF8F1;"&gt;Move beyond asset transfer to the transfer of wisdom, faith, values, stories, and responsibility&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="pull-quote" style="font-size:12pt; color:#FBF8F1;"&gt;&lt;span class="mark"&gt;&amp;ldquo;&lt;/span&gt;Most financial planning focuses on what your family will receive. We also want to help you think about what your family will remember, what they will believe, and how they will be prepared.&lt;span class="mark"&gt;&amp;rdquo;&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.18in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.35in;"&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"LEGACY FAMILY CONVERSATION SYSTEM&amp;trade;"</span><span class="p">,</span><span class="w"> </span><span class="n">legacy_conv_items</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"FAMILY LEGACY BUILDER&amp;trade; &amp;mdash; SIX MOVEMENTS"</span><span class="p">,</span><span class="w"> </span><span class="n">legacy_builder_items</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;The difference&lt;/span&gt;</span>
+<span class="s1">      The advisor becomes more than a manager of money. The advisor becomes a trusted guide who helps families prepare people, preserve unity, and build what lasts.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Turn Planning into Legacy"</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 8 — 5: THE 40-DAY CHRISTIAN ADVISOR GROWTH BUILDER</span>
+<span class="c1"># =================================================================</span>
+<span class="n">growth_areas</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Faith and spiritual formation"</span><span class="p">,</span> <span class="s2">"Personal leadership"</span><span class="p">,</span> <span class="s2">"Practice growth"</span><span class="p">,</span> <span class="s2">"Client relationships"</span><span class="p">,</span> <span class="s2">"Family legacy"</span><span class="p">,</span> <span class="s2">"Kingdom and church impact"</span><span class="p">]</span>
+<span class="n">daily_includes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Scripture"</span><span class="p">,</span> <span class="s2">"Devotional teaching"</span><span class="p">,</span> <span class="s2">"Advisor reflection"</span><span class="p">,</span> <span class="s2">"Personal application"</span><span class="p">,</span> <span class="s2">"Practice-building action"</span><span class="p">,</span> <span class="s2">"Client conversation idea"</span><span class="p">,</span> <span class="s2">"Prayer"</span><span class="p">,</span> <span class="s2">"Team discussion option"</span><span class="p">]</span>
+<span class="n">supporting</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"40 daily devotionals"</span><span class="p">,</span> <span class="s2">"Six weekly videos"</span><span class="p">,</span> <span class="s2">"Six masterclasses"</span><span class="p">,</span> <span class="s2">"Small-group guide"</span><span class="p">,</span> <span class="s2">"Coaching guide"</span><span class="p">,</span> <span class="s2">"Team edition"</span><span class="p">,</span> <span class="s2">"Implementation workbook"</span><span class="p">,</span> <span class="s2">"90-day growth plan"</span><span class="p">,</span> <span class="s2">"Advisor accountability groups"</span><span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;5 &amp;mdash; THE 40-DAY CHRISTIAN ADVISOR GROWTH BUILDER&amp;trade;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:19pt; color:var(--navy);"&gt;A faith-and-practice-building journey&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p class="lede" style="font-size:9.8pt;"&gt;Forty days of spiritual formation, personal leadership, practice growth, client service, family legacy, and Kingdom impact.&lt;/p&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.35in;"&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"SIX AREAS OF GROWTH"</span><span class="p">,</span><span class="w"> </span><span class="n">growth_areas</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"EACH DAY INCLUDES"</span><span class="p">,</span><span class="w"> </span><span class="n">daily_includes</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:600; font-size:9pt; letter-spacing:0.12em; color:var(--gold); margin-bottom:0.1in;"&gt;THE SUPPORTING SYSTEM&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">chips_static</span><span class="p">(</span><span class="n">supporting</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p style="font-family:'Inter'; font-style:italic; font-size:9.6pt; color:var(--gray);"&gt;Not inspiration alone &amp;mdash; a repeatable growth rhythm that produces action, accountability, and implementation.&lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The 40-Day Christian Advisor Growth Builder"</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 9 — 6: THE ADVISOR-CHURCH PARTNERSHIP PLAYBOOK</span>
+<span class="c1"># =================================================================</span>
+<span class="n">pastor_fears</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Prospecting disguised as ministry"</span><span class="p">,</span> <span class="s2">"Implied endorsement of a business"</span><span class="p">,</span> <span class="s2">"Pressure on church members"</span><span class="p">,</span> <span class="s2">"Transactional financial content"</span><span class="p">,</span> <span class="s2">"Unclear biblical or ministry alignment"</span><span class="p">,</span> <span class="s2">"Targeting wealthy families"</span><span class="p">,</span> <span class="s2">"Loss of control or confidentiality"</span><span class="p">]</span>
+<span class="n">advisor_fears</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Being viewed as salespeople"</span><span class="p">,</span> <span class="s2">"Unclear expectations and boundaries"</span><span class="p">,</span> <span class="s2">"Low pastor engagement"</span><span class="p">,</span> <span class="s2">"Compliance concerns"</span><span class="p">,</span> <span class="s2">"Investing time without support"</span><span class="p">,</span> <span class="s2">"Competing advisors"</span><span class="p">,</span> <span class="s2">"Being expected to provide unlimited free work"</span><span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;6 &amp;mdash; THE CHRISTIAN ADVISOR-CHURCH PARTNERSHIP PLAYBOOK&amp;trade;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:18pt; color:var(--navy);"&gt;Serve pastors and churches with wisdom, integrity, and clear boundaries&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.35in;"&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"WHAT PASTORS FEAR"</span><span class="p">,</span><span class="w"> </span><span class="n">pastor_fears</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"WHAT ADVISORS FEAR"</span><span class="p">,</span><span class="w"> </span><span class="n">advisor_fears</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;The partnership covenant&lt;/span&gt;</span>
+<span class="s1">      No selling from the platform &amp;middot; No church-member lists &amp;middot; No product promotion &amp;middot; No implied endorsement &amp;middot; Clear compliance standards &amp;middot; Pastor oversight &amp;middot; Voluntary participation &amp;middot; Confidentiality &amp;middot; Transparent expectations &amp;middot; Family-first service</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="pull-quote" style="font-size:13pt;"&gt;Ministry first. Relationships second. &lt;span class="mark"&gt;Business outcomes, when appropriate, emerge through trust &amp;mdash; never pressure.&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Advisor-Church Partnership Playbook"</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 10 — FIVE LEVELS OF CHURCH PARTNERSHIP</span>
+<span class="c1"># =================================================================</span>
+<span class="n">partnership_levels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"Resource Provider"</span><span class="p">,</span> <span class="s2">"Articles, devotionals, PDFs, family conversation guides, sermon-support resources."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"2"</span><span class="p">,</span> <span class="s2">"Seminar Partner"</span><span class="p">,</span> <span class="s2">"Financial wisdom, retirement, family legacy, generosity, and estate-planning education."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"3"</span><span class="p">,</span> <span class="s2">"Small-Group Partner"</span><span class="p">,</span> <span class="s2">"Six-week studies, 21-day challenges, 40-day campaigns, legacy and generous-living groups."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"4"</span><span class="p">,</span> <span class="s2">"Ministry Builder"</span><span class="p">,</span> <span class="s2">"Financial wisdom, legacy family, generosity, business owner, widow, and young-family ministries."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"5"</span><span class="p">,</span> <span class="s2">"Strategic Ministry Partner"</span><span class="p">,</span> <span class="s2">"An annual plan with campaigns, training, workshops, ministry measurement, and leadership planning."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;FIVE LEVELS OF CHURCH PARTNERSHIP&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:19pt; color:var(--navy);"&gt;Begin with service. Build trust. Expand only when ministry value is proven.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="text-align:center;"&gt;</span><span class="si">{</span><span class="n">fixed</span><span class="p">(</span><span class="n">vertical_levels</span><span class="p">(</span><span class="n">partnership_levels</span><span class="p">),</span><span class="w"> </span><span class="mf">7.1</span><span class="p">,</span><span class="w"> </span><span class="mf">5.1</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;A good first pilot&lt;/span&gt;</span>
+<span class="s1">      7 Days of Financial Wisdom &amp;middot; Marriage and Money Seminar &amp;middot; Family Legacy Workshop &amp;middot; Retirement with Purpose &amp;middot; Generosity Conversation Night &amp;middot; Business Owner Stewardship Roundtable</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"Five Levels of Church Partnership"</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 11 — 7: THE PASTOR SERMON &amp; SEMINAR LIBRARY</span>
+<span class="c1"># =================================================================</span>
+<span class="n">sermon_cats</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"God Owns It All"</span><span class="p">,</span> <span class="s2">"The Owner and the Manager &amp;middot; Freedom from Control &amp;middot; Faithful with What Is in Your Hands &amp;middot; Living for What Lasts"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Financial Wisdom for Real Life"</span><span class="p">,</span> <span class="s2">"Wisdom Before Wealth &amp;middot; The Freedom of Margin &amp;middot; Debt, Desire, and Discipline &amp;middot; Generosity That Changes the Heart"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The Generous Life"</span><span class="p">,</span> <span class="s2">"The God Who Gives &amp;middot; Rich Toward God &amp;middot; Giving as Worship &amp;middot; A Family Culture of Generosity"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Built for Legacy"</span><span class="p">,</span> <span class="s2">"What Are You Really Leaving? &amp;middot; Tell the Next Generation &amp;middot; Passing Wisdom Before Wealth &amp;middot; Finishing Faithfully"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Faith, Family &amp;amp; Finances"</span><span class="p">,</span> <span class="s2">"Marriage and Money &amp;middot; Teaching Children to Steward &amp;middot; Preparing Rather Than Entitling &amp;middot; A Family on Mission"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Wisdom for Every Season"</span><span class="p">,</span> <span class="s2">"Trusting God in Transition &amp;middot; Purpose Beyond Your Profession &amp;middot; Caring for Aging Parents &amp;middot; Finishing Well"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">sermon_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="exp-row"&gt;&lt;div class="exp-name"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="exp-desc"&gt;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">sermon_cats</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;7 &amp;mdash; THE PASTOR SERMON &amp;amp; SEMINAR LIBRARY&amp;trade;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:18pt; color:var(--navy);"&gt;Biblically rich, pastorally sensitive, transformational teaching resources&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.12in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">sermon_html</span><span class="si">}</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Not generic financial talks&lt;/span&gt;</span>
+<span class="s1">      Resources help pastors preach biblical truth with clarity while giving families practical next steps for stewardship, generosity, unity, preparation, and legacy.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Pastor Sermon &amp; Seminar Library"</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 12 — A SEMINAR FOR EVERY SEASON</span>
+<span class="c1"># =================================================================</span>
+<span class="n">seminars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"God Owns It All"</span><span class="p">,</span> <span class="s2">"Financial Wisdom for Families"</span><span class="p">,</span> <span class="s2">"Marriage and Money"</span><span class="p">,</span> <span class="s2">"Raising Financially Wise Children"</span><span class="p">,</span> <span class="s2">"Preparing Children for Wealth"</span><span class="p">,</span> <span class="s2">"Retirement with Purpose"</span><span class="p">,</span> <span class="s2">"Biblical Estate Planning"</span><span class="p">,</span> <span class="s2">"Family Legacy Planning"</span><span class="p">,</span> <span class="s2">"Generous Living"</span><span class="p">,</span> <span class="s2">"Giving as a Family"</span><span class="p">,</span> <span class="s2">"Navigating Financial Anxiety"</span><span class="p">,</span> <span class="s2">"Caring for Aging Parents"</span><span class="p">,</span> <span class="s2">"Wisdom for Widows"</span><span class="p">,</span> <span class="s2">"Selling a Business Well"</span><span class="p">,</span> <span class="s2">"Avoiding Family Conflict Around Inheritance"</span><span class="p">,</span> <span class="s2">"Creating a Family Mission Statement"</span><span class="p">,</span> <span class="s2">"Stewardship for Business Owners"</span><span class="p">,</span> <span class="s2">"Legacy Letters and Family Stories"</span><span class="p">,</span> <span class="s2">"Faith-Based Investing"</span><span class="p">,</span> <span class="s2">"The Purpose of Prosperity"</span><span class="p">,</span> <span class="s2">"Building a Multi-Generational Family Vision"</span><span class="p">]</span>
+<span class="n">sem_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="aud-cell"&gt;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seminars</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;A SEMINAR FOR EVERY SEASON&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:19pt; color:var(--navy);"&gt;Turn trusted teaching into practical family action&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.14in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="aud-grid"&gt;</span><span class="si">{</span><span class="n">sem_html</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Every seminar includes&lt;/span&gt;</span>
+<span class="s1">      Pastor introduction &amp;middot; Biblical foundation &amp;middot; Advisor notes &amp;middot; Participant workbook &amp;middot; Discussion questions &amp;middot; Exercises &amp;middot; Next steps &amp;middot; Follow-up resources &amp;middot; Compliance-safe language &amp;middot; No-sales policy</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"A Seminar for Every Season"</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 13 — HOW TO PARTNER WITH A LOCAL CHURCH</span>
+<span class="c1"># =================================================================</span>
+<span class="n">partner_steps</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"BEGIN WITH SERVICE, NOT SALES"</span><span class="p">,</span> <span class="s2">"Ask what pressures families face and what support the church needs."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"LEARN THE PASTOR'S VISION"</span><span class="p">,</span> <span class="s2">"Understand mission, discipleship, sermon calendar, groups, generosity philosophy, and concerns."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"OFFER ONE PRACTICAL RESOURCE"</span><span class="p">,</span> <span class="s2">"Start with a useful article, devotional, worksheet, research packet, or client-neutral seminar."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"ESTABLISH BOUNDARIES"</span><span class="p">,</span> <span class="s2">"Clarify roles, privacy, referrals, branding, compliance, follow-up, and financial responsibilities."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"PILOT A SMALL EXPERIENCE"</span><span class="p">,</span> <span class="s2">"Launch a low-risk, high-value event or short journey."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"MEASURE MINISTRY OUTCOMES"</span><span class="p">,</span> <span class="s2">"Track participation, family conversations, completed exercises, and transformation stories &amp;mdash; not only leads."</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"BUILD AN ANNUAL PLAN"</span><span class="p">,</span> <span class="s2">"Create a four-quarter rhythm around wisdom, family, purpose, generosity, legacy, and year-end giving."</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;HOW TO PARTNER WITH A LOCAL CHURCH&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.12in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:18pt; color:#FBF8F1;"&gt;A seven-step pathway from first conversation to annual ministry plan&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="text-align:center;"&gt;</span><span class="si">{</span><span class="n">fixed</span><span class="p">(</span><span class="n">step_chain_vertical</span><span class="p">(</span><span class="n">partner_steps</span><span class="p">),</span><span class="w"> </span><span class="mf">7.1</span><span class="p">,</span><span class="w"> </span><span class="mf">6.6</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"How to Partner with a Local Church"</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 14 — ONE NETWORK, FIVE GROWTH PATHWAYS</span>
+<span class="c1"># =================================================================</span>
+<span class="n">pathways</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Grow Yourself"</span><span class="p">,</span> <span class="s2">"40-Day Growth Builder &amp;middot; Alignment Assessment &amp;middot; Spiritual formation &amp;middot; Advisor devotionals"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Grow Your Practice"</span><span class="p">,</span> <span class="s2">"Practice Builder &amp;middot; Vision and Values &amp;middot; Marketing &amp;middot; Client experience &amp;middot; Team &amp;middot; Succession"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Serve Families"</span><span class="p">,</span> <span class="s2">"Family Legacy Builder &amp;middot; Conversation guides &amp;middot; Workshops &amp;middot; Next generation &amp;middot; Generosity &amp;middot; Transitions"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Partner with Churches"</span><span class="p">,</span> <span class="s2">"Playbook &amp;middot; Pastor resources &amp;middot; Sermons &amp;middot; Seminars &amp;middot; Small groups &amp;middot; Campaigns &amp;middot; Ministry systems"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Build Community"</span><span class="p">,</span> <span class="s2">"Advisor groups &amp;middot; Coaching &amp;middot; Masterclasses &amp;middot; Events &amp;middot; Certification &amp;middot; Regional networks"</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">path_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="offer-card" style="margin-bottom:0.18in;"&gt;&lt;div style="width:26px;height:2px;background:var(--gold);margin-bottom:0.1in;"&gt;&lt;/div&gt;&lt;div style="font-family:</span><span class="se">\'</span><span class="s1">Playfair</span><span class="se">\'</span><span class="s1">; font-weight:700; font-size:13.5pt; color:var(--navy);"&gt;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div style="font-family:</span><span class="se">\'</span><span class="s1">Inter</span><span class="se">\'</span><span class="s1">; font-size:9.2pt; color:var(--ink); margin-top:0.06in; line-height:1.5;"&gt;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;ONE NETWORK. FIVE GROWTH PATHWAYS.&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:19pt; color:var(--navy);"&gt;A clear member experience built around the advisor&amp;rsquo;s real work&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">path_html</span><span class="si">}</span>
+<span class="s1">    &lt;div style="height:0.1in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Homepage message&lt;/span&gt;</span>
+<span class="s1">      Build a Practice That Reflects Your Faith and Changes Families for Generations. The growth, client-engagement, family-legacy, and church-partnership platform built specifically for Christian financial advisors.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"One Network, Five Growth Pathways"</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 15 — THE STRATEGIC ADVANTAGE</span>
+<span class="c1"># =================================================================</span>
+<span class="n">most_provide</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Practice management"</span><span class="p">,</span> <span class="s2">"Investment platforms"</span><span class="p">,</span> <span class="s2">"Compliance"</span><span class="p">,</span> <span class="s2">"Technology"</span><span class="p">,</span> <span class="s2">"Marketing"</span><span class="p">,</span> <span class="s2">"Networking"</span><span class="p">]</span>
+<span class="n">network_adds</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Spiritual formation"</span><span class="p">,</span> <span class="s2">"Biblically sound financial wisdom"</span><span class="p">,</span> <span class="s2">"Transferable client conversation tools"</span><span class="p">,</span> <span class="s2">"Family legacy and next-generation resources"</span><span class="p">,</span> <span class="s2">"Marriage and family content"</span><span class="p">,</span> <span class="s2">"Generosity tools"</span><span class="p">,</span> <span class="s2">"Church partnership systems"</span><span class="p">,</span> <span class="s2">"Pastor sermon support"</span><span class="p">,</span> <span class="s2">"Customizable campaigns"</span><span class="p">,</span> <span class="s2">"Advisor-branded family journeys"</span><span class="p">]</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE STRATEGIC ADVANTAGE&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:19pt; color:#FBF8F1;"&gt;What traditional advisor networks provide &amp;mdash; and what is usually missing&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="display:flex; gap:0.35in;"&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"MOST ADVISOR NETWORKS PROVIDE"</span><span class="p">,</span><span class="w"> </span><span class="n">most_provide</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="flex:1;"&gt;</span><span class="si">{</span><span class="n">col_list</span><span class="p">(</span><span class="s2">"THE CHRISTIAN ADVISOR NETWORK ADDS"</span><span class="p">,</span><span class="w"> </span><span class="n">network_adds</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;A differentiated promise&lt;/span&gt;</span>
+<span class="s1">      We help Christian advisors grow personally, build thriving practices, deepen client relationships, serve entire families, partner with churches, and multiply Kingdom impact.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.12in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;p style="font-family:'Archivo'; font-weight:500; font-size:8.4pt; letter-spacing:0.04em; color:rgba(251,248,241,0.55); line-height:1.7;"&gt;</span>
+<span class="s1">      BRAND ARCHITECTURE: Christian Advisor Network&amp;trade; &amp;middot; Christian Advisor Growth Builder&amp;trade; &amp;middot;</span>
+<span class="s1">      Christian Advisor Practice Builder&amp;trade; &amp;middot; Family Legacy Builder&amp;trade; &amp;middot; Financial Wisdom Ministry&amp;trade; &amp;middot;</span>
+<span class="s1">      Pastor and Church Resource Library&amp;trade; &amp;middot; Trusted Guide Academy&amp;trade;</span>
+<span class="s1">    &lt;/p&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Strategic Advantage"</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 16 — CLOSING: ULTIMATE ADVISOR MEMBERSHIP PROMISE</span>
+<span class="c1"># =================================================================</span>
+<span class="n">promises</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Something meaningful to send every client"</span><span class="p">,</span>
+    <span class="s2">"Something useful to discuss in every meeting"</span><span class="p">,</span>
+    <span class="s2">"Something timely for every family transition"</span><span class="p">,</span>
+    <span class="s2">"Something biblically sound for every financial question"</span><span class="p">,</span>
+    <span class="s2">"Something valuable for every generation"</span><span class="p">,</span>
+    <span class="s2">"Something practical to offer every pastor"</span><span class="p">,</span>
+    <span class="s2">"Something transformational to launch in every church"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">promise_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">'&lt;div class="check-item-navy"&gt;&lt;span class="check-mark"&gt;&amp;#10003;&lt;/span&gt;</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">promises</span><span class="p">])</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="photo" style="position:absolute; inset:0; border-radius:0;"&gt;</span>
+<span class="s1">    &lt;div class="cap" style="right:0.68in; bottom:0.5in; left:auto; text-align:right; font-size:6.8pt;"&gt;PHOTOGRAPHY — ADVISOR'S OFFICE, WARM LIGHT, FAMILY PHOTO ON DESK&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  &lt;div style="position:absolute; inset:0; background:linear-gradient(190deg, rgba(16,30,56,0.5) 0%, rgba(16,30,56,0.92) 55%, rgba(16,30,56,0.98) 100%);"&gt;&lt;/div&gt;</span>
+<span class="s1">  &lt;div class="frame" style="display:flex; flex-direction:column; justify-content:flex-end;"&gt;</span>
+<span class="s1">    &lt;div class="eyebrow"&gt;THE ULTIMATE ADVISOR MEMBERSHIP PROMISE&lt;/div&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;h1 class="display" style="font-size:20pt; color:#FBF8F1;"&gt;Something meaningful for every client, every family, every transition, and every church.&lt;/h1&gt;</span>
+<span class="s1">    &lt;div style="height:0.16in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    </span><span class="si">{</span><span class="n">promise_html</span><span class="si">}</span>
+<span class="s1">    &lt;div style="height:0.24in;"&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div class="takeaway"&gt;</span>
+<span class="s1">      &lt;span class="label"&gt;Join the Network&lt;/span&gt;</span>
+<span class="s1">      Grow Your Faith. Grow Your Practice. Grow Your Impact.</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">  </span><span class="si">{</span><span class="n">folio</span><span class="p">(</span><span class="s2">"The Ultimate Advisor Membership Promise"</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="si">}</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># PAGE 17 — BACK COVER</span>
+<span class="c1"># =================================================================</span>
+<span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">&lt;div class="page navy"&gt;</span>
+<span class="s1">  &lt;div class="frame" style="display:flex; flex-direction:column; justify-content:space-between; align-items:center; text-align:center;"&gt;</span>
+<span class="s1">    &lt;div&gt;&lt;/div&gt;</span>
+<span class="s1">    &lt;div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Archivo'; font-weight:600; font-size:9.5pt; letter-spacing:0.24em; color:#D9B876;"&gt;CHRISTIAN ADVISOR NETWORK&amp;trade;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="height:0.26in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;h1 class="display" style="font-size:20pt; color:#FBF8F1;"&gt;Faithful Advisors. Flourishing Practices.&lt;br/&gt;Stronger Families. Healthier Churches.&lt;br/&gt;Lasting Legacies.&lt;/h1&gt;</span>
+<span class="s1">      &lt;div style="height:0.3in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="width:30px; height:2px; background:#B98D3E; margin:0 auto;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="height:0.2in;"&gt;&lt;/div&gt;</span>
+<span class="s1">      &lt;div style="font-family:'Archivo'; font-weight:500; font-size:9pt; letter-spacing:0.08em; color:rgba(251,248,241,0.75);"&gt;LIFETOGETHER.COM &amp;nbsp;&amp;middot;&amp;nbsp; BRETT@LIFETOGETHER.COM&lt;/div&gt;</span>
+<span class="s1">    &lt;/div&gt;</span>
+<span class="s1">    &lt;div style="font-family:'Archivo'; font-weight:500; font-size:7.4pt; letter-spacing:0.1em; color:rgba(251,248,241,0.4);"&gt;A LIFETOGETHER PLATFORM&lt;/div&gt;</span>
+<span class="s1">  &lt;/div&gt;</span>
+<span class="s1">&lt;/div&gt;</span>
+<span class="s1">'''</span><span class="p">)</span>
+
+<span class="c1"># =================================================================</span>
+<span class="c1"># ASSEMBLE</span>
+<span class="c1"># =================================================================</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/build/portrait_style.css"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">base_css</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">extra_css</span> <span class="o">=</span> <span class="s1">'''</span>
+<span class="s1">.gsm-mark{ text-align:center; }</span>
+<span class="s1">.gsm-word{ font-family:'Playfair'; font-weight:700; font-size:15pt; color:#D9B876; letter-spacing:0.04em; }</span>
+<span class="s1">.gsm-sub{ font-family:'Archivo'; font-weight:500; font-size:8pt; letter-spacing:0.06em; color:rgba(251,248,241,0.65); margin-top:0.03in; }</span>
+
+<span class="s1">.col-block{ }</span>
+<span class="s1">.col-title{ font-family:'Archivo'; font-weight:700; font-size:9pt; letter-spacing:0.1em; color:var(--gold); margin-bottom:0.12in; }</span>
+<span class="s1">.dark .col-title, .page.navy .col-title{ color:var(--gold-bright); }</span>
+<span class="s1">.col-list{ list-style:none; }</span>
+<span class="s1">.col-list li{ font-family:'Inter'; font-size:9.2pt; color:var(--ink); line-height:1.5; padding:0.06in 0; border-top:1px solid var(--line); position:relative; padding-left:0.16in; }</span>
+<span class="s1">.col-list li::before{ content:'</span><span class="se">\\</span><span class="s1">2013'; position:absolute; left:0; color:var(--gold); }</span>
+<span class="s1">.page.navy .col-list li{ color:rgba(251,248,241,0.88); border-top:1px solid rgba(217,184,118,0.25); }</span>
+
+<span class="s1">.kit-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0.05in 0.2in; }</span>
+<span class="s1">.kit-item{ display:flex; align-items:baseline; gap:0.1in; font-family:'Inter'; font-size:8.6pt; color:var(--ink); padding:0.04in 0; }</span>
+<span class="s1">.kit-check{ color:var(--gold); font-weight:700; }</span>
+
+<span class="s1">.rack-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0.14in 0.2in; }</span>
+<span class="s1">.rack-cell{ background:var(--cream); border-left:3px solid var(--gold); padding:0.14in 0.16in; }</span>
+<span class="s1">.rack-title{ font-family:'Playfair'; font-weight:700; font-size:10.3pt; color:var(--navy); margin-bottom:0.04in; line-height:1.2; }</span>
+<span class="s1">.rack-desc{ font-family:'Inter'; font-size:8pt; color:var(--ink); line-height:1.4; }</span>
+
+<span class="s1">.bt-row{ display:flex; gap:0.2in; padding:0.14in 0; border-top:1px solid rgba(217,184,118,0.25); }</span>
+<span class="s1">.bt-row:first-child{ border-top:none; padding-top:0; }</span>
+<span class="s1">.bt-num{ font-family:'Playfair'; font-weight:700; font-size:18pt; color:var(--gold); width:0.4in; flex-shrink:0; }</span>
+<span class="s1">.bt-title{ font-family:'Playfair'; font-weight:700; font-size:12pt; color:#FBF8F1; margin-bottom:0.04in; line-height:1.25; }</span>
+<span class="s1">.bt-desc{ font-family:'Inter'; font-size:9pt; color:rgba(251,248,241,0.78); line-height:1.5; }</span>
+
+<span class="s1">.check-item-navy{ display:flex; align-items:baseline; gap:0.12in; padding:0.07in 0; border-top:1px solid rgba(217,184,118,0.25); font-family:'Inter'; font-size:9.6pt; color:rgba(251,248,241,0.92); }</span>
+<span class="s1">.check-item-navy:first-child{ border-top:none; }</span>
+<span class="s1">.check-item-navy .check-mark{ color:var(--gold-bright); font-weight:700; }</span>
+<span class="s1">'''</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''&lt;!DOCTYPE html&gt;</span>
+<span class="s1">&lt;html&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s1">&lt;style&gt;</span><span class="si">{</span><span class="n">base_css</span><span class="si">}{</span><span class="n">extra_css</span><span class="si">}</span><span class="s1">&lt;/style&gt;&lt;/head&gt;</span>
+<span class="s1">&lt;body&gt;</span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PAGES</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/body&gt;&lt;/html&gt;'''</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/build/advisor_network.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Pages:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">PAGES</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build/make_advisor_network.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

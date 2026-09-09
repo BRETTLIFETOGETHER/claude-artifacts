@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>extract.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Project context compilation</div>
+<h1>extract.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">4 KB</span>
+<a class="btn" href="../../artifacts/Project%20context%20compilation/extract.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Script to extract and clean all seven project source files into copy-pasteable text</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""Extract all Family Legacy by Design project sources into clean, paste-ready text."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">zipfile</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">SRC</span> <span class="o">=</span> <span class="s2">"/mnt/project"</span>
+<span class="n">OUT</span> <span class="o">=</span> <span class="s2">"/mnt/user-data/outputs/project-sources"</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># (source filename, output filename, human title, kind)</span>
+<span class="n">FILES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Workshop_Transcripts_.pdf"</span><span class="p">,</span>            <span class="s2">"01_Workshop_Transcripts.md"</span><span class="p">,</span>
+     <span class="s2">"Workshop Transcripts"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Training_Manual-bleed-4_27.pdf"</span><span class="p">,</span>       <span class="s2">"02_Training_Manual.md"</span><span class="p">,</span>
+     <span class="s2">"Training Manual"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"FLBD_Workbook_Legend.docx"</span><span class="p">,</span>            <span class="s2">"03_Workbook_Legend.md"</span><span class="p">,</span>
+     <span class="s2">"Workbook Legend"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Coaching_Book_6x9_4_27.pdf"</span><span class="p">,</span>           <span class="s2">"04_Coaching_Book.md"</span><span class="p">,</span>
+     <span class="s2">"Coaching Book — Family Legacy Coaching by Design"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Family_Book-6X9_2_5_26.pdf"</span><span class="p">,</span>           <span class="s2">"05_Family_Book.md"</span><span class="p">,</span>
+     <span class="s2">"Family Book — Family Legacy by Design"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"FLBD_Coaching_BookPaperback427.pdf"</span><span class="p">,</span>   <span class="s2">"06_Coaching_Book_Cover.md"</span><span class="p">,</span>
+     <span class="s2">"Coaching Book Cover Copy"</span><span class="p">,</span> <span class="s2">"zip"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Family_Book_Cover_6x9_2_5_26.pdf"</span><span class="p">,</span>     <span class="s2">"07_Family_Book_Cover.md"</span><span class="p">,</span>
+     <span class="s2">"Family Book Cover Copy"</span><span class="p">,</span> <span class="s2">"zip"</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Normalise line endings and collapse runaway blank lines. No content removed."""</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\r</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\u00a0</span><span class="s2">"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span>          <span class="c1"># non-breaking spaces</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[ \t]+\n"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>      <span class="c1"># trailing whitespace</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\n{4,}"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n\n\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>    <span class="c1"># cap blank runs</span>
+    <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">read_text</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">read_zip</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">"manifest.json"</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="s2">"replace"</span><span class="p">))</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">manifest</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"pages"</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="n">tp</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tp</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="s2">"replace"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+
+<span class="n">report</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">combined</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">combined</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="s2">"# FAMILY LEGACY BY DESIGN — COMPLETE SOURCE ARCHIVE</span><span class="se">\n\n</span><span class="s2">"</span>
+    <span class="s2">"All project source documents, extracted to plain text.</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"© Tom Conway &amp; Brett Eastman. Family Legacy by Design / Lifetogether.</span><span class="se">\n\n</span><span class="s2">"</span>
+    <span class="s2">"**Source hierarchy (highest authority first):** "</span>
+    <span class="s2">"Video transcripts → Training Manual &amp; Workbook Legend → "</span>
+    <span class="s2">"Coaching Book &amp; Family Book → Workshop Transcripts</span><span class="se">\n\n</span><span class="s2">"</span>
+    <span class="s2">"---</span><span class="se">\n</span><span class="s2">"</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">FILES</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SRC</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">read_zip</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"zip"</span> <span class="k">else</span> <span class="n">read_text</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">clean</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+
+    <span class="n">words</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">chars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"# </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"*Source file: `</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2">`*</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"*Approx. </span><span class="si">{</span><span class="n">words</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> words*</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"---</span><span class="se">\n\n</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="n">dst</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span> <span class="o">+</span> <span class="n">body</span><span class="p">)</span>
+
+    <span class="n">combined</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n\n\n</span><span class="si">{</span><span class="s1">'='</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">78</span><span class="si">}</span><span class="se">\n</span><span class="s2"># </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"Source file: </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="s1">'='</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">78</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">title</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">chars</span><span class="p">))</span>
+
+<span class="c1"># Combined master file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="s2">"00_ALL_SOURCES_COMBINED.md"</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">combined</span><span class="p">))</span>
+
+<span class="c1"># Report</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'DOCUMENT'</span><span class="si">:</span><span class="s2">&lt;48</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'WORDS'</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'CHARS'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="n">total_w</span> <span class="o">=</span> <span class="n">total_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">report</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">title</span><span class="p">[:</span><span class="mi">47</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;48</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">&gt;9,</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="si">:</span><span class="s2">&gt;10,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">total_w</span> <span class="o">+=</span> <span class="n">w</span>
+    <span class="n">total_c</span> <span class="o">+=</span> <span class="n">c</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'TOTAL'</span><span class="si">:</span><span class="s2">&lt;48</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">total_w</span><span class="si">:</span><span class="s2">&gt;9,</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">total_c</span><span class="si">:</span><span class="s2">&gt;10,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Files written to"</span><span class="p">,</span> <span class="n">OUT</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">OUT</span><span class="p">)):</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">fn</span><span class="si">:</span><span class="s2">&lt;42</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">size</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">&gt;8.0f</span><span class="si">}</span><span class="s2"> KB"</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/extract.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build_html.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Marketplace intelligence industry edition</div>
+<h1>build_html.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">19 KB</span>
+<a class="btn" href="../../artifacts/Marketplace%20intelligence%20industry%20edition/build_html.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Build the full master directory HTML brochure with the established navy/gold editorial design system</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">html</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">h</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">get_all_categories</span><span class="p">,</span> <span class="n">SECTIONS</span><span class="p">,</span> <span class="n">FLOURISHING_WEEKS</span><span class="p">,</span> <span class="n">FLOURISHING_WORKPLACE_SERIES</span><span class="p">,</span>
+                   <span class="n">PURPOSE_WEEKS</span><span class="p">,</span> <span class="n">PURPOSE_BASED_BUSINESS_THEMES</span><span class="p">,</span> <span class="n">NEW_CATEGORIES</span><span class="p">,</span> <span class="n">ORIGINAL_EXPAND</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">complete_originals</span><span class="w"> </span><span class="kn">import</span> <span class="n">COMPLETE_ORIGINALS</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">esc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">slugify</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isalnum</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"-"</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)</span>
+
+<span class="n">cats</span> <span class="o">=</span> <span class="n">get_all_categories</span><span class="p">()</span>
+<span class="n">new_cat_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">NEW_CATEGORIES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<span class="c1"># Split cats into: original-expanded sectioned (excluding manufacturing/marketplace), flat50 ones, and truly-new sectioned</span>
+<span class="n">original_sectioned</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sectioned"</span> <span class="ow">and</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ORIGINAL_EXPAND</span><span class="p">]</span>
+<span class="n">flat_cats</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"flat50"</span><span class="p">]</span>
+<span class="n">new_sectioned</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cats</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sectioned"</span> <span class="ow">and</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">new_cat_names</span><span class="p">]</span>
+
+<span class="n">TOTAL_CAMPAIGNS</span> <span class="o">=</span> <span class="mi">150</span>  <span class="c1"># categories 1-3</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">cats</span><span class="p">:</span>
+    <span class="n">TOTAL_CAMPAIGNS</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"sectioned"</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+
+<span class="n">TOTAL_CATEGORIES</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span>
+
+<span class="c1"># ---------------------------------------------------------------- HTML PIECES</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">render_directory_only</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">titles</span><span class="p">,</span> <span class="n">group_label</span><span class="p">):</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;li class="d-item plain"&gt;&lt;span class="d-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;span class="d-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/li&gt;'</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">titles</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="cat-block" id="</span><span class="si">{</span><span class="n">slug</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">  &lt;div class="cat-head"&gt;</span>
+<span class="s2">    &lt;span class="cat-eyebrow"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">group_label</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;h2&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="cat-meta"&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">)</span><span class="si">}</span><span class="s2"> flagship titles &amp;middot; foundational collection&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;ul class="d-grid three-col"&gt;</span>
+<span class="s2">    </span><span class="si">{</span><span class="n">items</span><span class="si">}</span>
+<span class="s2">  &lt;/ul&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">render_sectioned</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="n">group_label</span><span class="p">,</span> <span class="n">badge</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sec_name</span> <span class="ow">in</span> <span class="n">SECTIONS</span><span class="p">:</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="n">sections_dict</span><span class="p">[</span><span class="n">sec_name</span><span class="p">]</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'&lt;li class="d-item"&gt;&lt;span class="d-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+            <span class="sa">f</span><span class="s1">'&lt;span class="d-text"&gt;&lt;span class="d-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+            <span class="sa">f</span><span class="s1">'&lt;span class="d-sub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;'</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">entries</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">    &lt;div class="sub-block"&gt;</span>
+<span class="s2">      &lt;h3 class="sub-head"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">sec_name</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h3&gt;</span>
+<span class="s2">      &lt;ul class="d-grid"&gt;</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">items</span><span class="si">}</span>
+<span class="s2">      &lt;/ul&gt;</span>
+<span class="s2">    &lt;/div&gt;"""</span><span class="p">)</span>
+    <span class="n">badge_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;span class="badge"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">badge</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">if</span> <span class="n">badge</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="cat-block" id="</span><span class="si">{</span><span class="n">slug</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">  &lt;div class="cat-head"&gt;</span>
+<span class="s2">    &lt;span class="cat-eyebrow"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">group_label</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;h2&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">badge_html</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="cat-meta"&gt;50 flagship campaigns &amp;middot; 5 sections &amp;times; 10 titles&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  </span><span class="si">{</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">render_flat50</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">titles</span><span class="p">,</span> <span class="n">group_label</span><span class="p">):</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">founding</span> <span class="o">=</span> <span class="n">titles</span><span class="p">[:</span><span class="mi">25</span><span class="p">]</span>
+    <span class="n">expansion</span> <span class="o">=</span> <span class="n">titles</span><span class="p">[</span><span class="mi">25</span><span class="p">:]</span>
+    <span class="n">f_items</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;li class="d-item"&gt;&lt;span class="d-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+        <span class="sa">f</span><span class="s1">'&lt;span class="d-text"&gt;&lt;span class="d-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+        <span class="sa">f</span><span class="s1">'&lt;span class="d-sub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;'</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">founding</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">e_items</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;li class="d-item"&gt;&lt;span class="d-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">26</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+        <span class="sa">f</span><span class="s1">'&lt;span class="d-text"&gt;&lt;span class="d-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+        <span class="sa">f</span><span class="s1">'&lt;span class="d-sub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;'</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="cat-block" id="</span><span class="si">{</span><span class="n">slug</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">  &lt;div class="cat-head"&gt;</span>
+<span class="s2">    &lt;span class="cat-eyebrow"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">group_label</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;h2&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="cat-meta"&gt;50 flagship campaigns &amp;middot; founding 25 + expansion 25&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="sub-block"&gt;</span>
+<span class="s2">    &lt;h3 class="sub-head"&gt;The Founding Twenty-Five&lt;/h3&gt;</span>
+<span class="s2">    &lt;ul class="d-grid"&gt;</span><span class="si">{</span><span class="n">f_items</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="sub-block"&gt;</span>
+<span class="s2">    &lt;h3 class="sub-head"&gt;The Expansion Twenty-Five&lt;/h3&gt;</span>
+<span class="s2">    &lt;ul class="d-grid"&gt;</span><span class="si">{</span><span class="n">e_items</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ---------------------------------------------------------------- TOC</span>
+<span class="n">toc_entries</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">COMPLETE_ORIGINALS</span><span class="p">]</span>
+<span class="n">toc_entries</span> <span class="o">+=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">original_sectioned</span><span class="p">]</span>
+<span class="n">toc_entries</span> <span class="o">+=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">flat_cats</span><span class="p">]</span>
+<span class="n">toc_entries</span> <span class="o">+=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">new_sectioned</span><span class="p">]</span>
+<span class="n">toc_html</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;li&gt;&lt;a href="#</span><span class="si">{</span><span class="n">slugify</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="si">}</span><span class="s1">"&gt;&lt;span class="toc-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/span&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/a&gt;&lt;/li&gt;'</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">toc_entries</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">toc_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;li class="toc-featured"&gt;&lt;a href="#flourishing-workplace"&gt;&lt;span class="toc-num"&gt;&amp;#9733;&lt;/span&gt;Flourishing Workplace&lt;/a&gt;&lt;/li&gt;'</span>
+<span class="n">toc_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;li class="toc-featured"&gt;&lt;a href="#purpose-based-business"&gt;&lt;span class="toc-num"&gt;&amp;#9733;&lt;/span&gt;Purpose Based Business&lt;/a&gt;&lt;/li&gt;'</span>
+
+<span class="c1"># ---------------------------------------------------------------- ORIGINAL 3</span>
+<span class="n">originals_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">render_directory_only</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">titles</span><span class="p">,</span> <span class="s2">"Founding Collection"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">titles</span> <span class="ow">in</span> <span class="n">COMPLETE_ORIGINALS</span>
+<span class="p">)</span>
+
+<span class="c1"># ---------------------------------------------------------------- 16 EXPANDED ORIGINALS</span>
+<span class="n">expanded_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">render_sectioned</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="s2">"Business &amp; Workplace Intelligence</span><span class="se">\u2122</span><span class="s2"> &amp;middot; Expanded to 50"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">original_sectioned</span>
+<span class="p">)</span>
+
+<span class="c1"># ---------------------------------------------------------------- FLAT 50s (Manufacturing, Marketplace Ministry)</span>
+<span class="n">flat_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">render_flat50</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="s2">"Business &amp; Workplace Intelligence</span><span class="se">\u2122</span><span class="s2"> &amp;middot; Expanded to 50"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">flat_cats</span>
+<span class="p">)</span>
+
+<span class="c1"># ---------------------------------------------------------------- 20 NEW CATEGORIES</span>
+<span class="n">new_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">render_sectioned</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="s2">"New Vertical &amp;middot; Business &amp; Workplace Intelligence</span><span class="se">\u2122</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">new_sectioned</span>
+<span class="p">)</span>
+
+<span class="c1"># ---------------------------------------------------------------- FLOURISHING WORKPLACE</span>
+<span class="n">weeks_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;div class="week-chip"&gt;&lt;span class="week-num"&gt;WK </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;span class="week-name"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">FLOURISHING_WEEKS</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">flourishing_items</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;li class="d-item"&gt;&lt;span class="d-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;span class="d-text"&gt;&lt;span class="d-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;span class="d-sub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;'</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">FLOURISHING_WORKPLACE_SERIES</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">flourishing_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="cat-block featured" id="flourishing-workplace"&gt;</span>
+<span class="s2">  &lt;div class="cat-head"&gt;</span>
+<span class="s2">    &lt;span class="cat-eyebrow"&gt;Featured Category &amp;middot; The Flourishing Framework, Applied to Work&lt;/span&gt;</span>
+<span class="s2">    &lt;h2&gt;Flourishing Workplace &lt;span class="badge gold"&gt;6-Criteria Series&lt;/span&gt;&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="cat-meta"&gt;Every series in this category shares the same six-week backbone &amp;mdash; the proven</span>
+<span class="s2">       Flourishing framework, reapplied to the workplace.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="criteria-box"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;The Shared Six-Week Framework&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="week-row"&gt;</span><span class="si">{</span><span class="n">weeks_html</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;Rather than inventing a new structure per title, every Flourishing Workplace series walks the same six</span>
+<span class="s2">       dimensions &amp;mdash; vertical (with God), relational (together), interior (from within), vocational</span>
+<span class="s2">       (through contribution), outward (for others), and generational (across generations) &amp;mdash; spoken in</span>
+<span class="s2">       the language of work.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="sub-block"&gt;</span>
+<span class="s2">    &lt;h3 class="sub-head"&gt;The Flourishing Workplace Series&lt;/h3&gt;</span>
+<span class="s2">    &lt;ul class="d-grid"&gt;</span><span class="si">{</span><span class="n">flourishing_items</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ---------------------------------------------------------------- PURPOSE BASED BUSINESS (full brochure layout)</span>
+<span class="n">purpose_weeks_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;div class="purpose-card"&gt;&lt;span class="purpose-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;span class="purpose-name"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;span class="purpose-desc"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">PURPOSE_WEEKS</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">theme_items</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">'&lt;li class="d-item"&gt;&lt;span class="d-num"&gt;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;span class="d-text"&gt;&lt;span class="d-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+    <span class="sa">f</span><span class="s1">'&lt;span class="d-sub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;'</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">PURPOSE_BASED_BUSINESS_THEMES</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">purpose_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;section class="cat-block featured purpose-page" id="purpose-based-business"&gt;</span>
+<span class="s2">  &lt;div class="purpose-hero"&gt;</span>
+<span class="s2">    &lt;span class="cat-eyebrow"&gt;Featured Category &amp;middot; Not Yet Expanded&lt;/span&gt;</span>
+<span class="s2">    &lt;h2&gt;Purpose Based Business&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="purpose-deck"&gt;One unifying framework, reused &amp;mdash; the same five biblical purposes that</span>
+<span class="s2">       anchor the Biblical Purpose Library, now spoken in the language of ownership, leadership, and the</span>
+<span class="s2">       marketplace. Five purposes. One weekly rhythm for every business series.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="purpose-framework"&gt;</span>
+<span class="s2">    &lt;div class="label"&gt;The Weekly Framework &amp;mdash; Five Purposes, Five Weeks&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="purpose-grid"&gt;</span><span class="si">{</span><span class="n">purpose_weeks_html</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;p class="framework-note"&gt;Every Purpose Based Business series &amp;mdash; regardless of audience or</span>
+<span class="s2">       industry &amp;mdash; will be built on this same five-week backbone: Worship, Fellowship, Discipleship,</span>
+<span class="s2">       Ministry, and Mission, translated into the language of running a company.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;div class="sub-block"&gt;</span>
+<span class="s2">    &lt;h3 class="sub-head"&gt;Purpose Built &amp;mdash; Early Themes&lt;/h3&gt;</span>
+<span class="s2">    &lt;p class="theme-note"&gt;Not yet expanded into full campaigns. These are directional themes only, each</span>
+<span class="s2">       waiting to be built out on the five-purpose weekly framework above.&lt;/p&gt;</span>
+<span class="s2">    &lt;ul class="d-grid"&gt;</span><span class="si">{</span><span class="n">theme_items</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+<span class="s2">"""</span>
+
+<span class="c1"># ---------------------------------------------------------------- FULL PAGE</span>
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">:root{</span>
+<span class="s2">  --navy:#0a1424; --navy2:#0f1d33; --navy3:#13233d;</span>
+<span class="s2">  --gold:#c9a24c; --gold-light:#e6cd8a;</span>
+<span class="s2">  --cream:#f3ecdd; --muted:rgba(243,236,221,.62); --muted2:rgba(243,236,221,.4);</span>
+<span class="s2">  --rule:rgba(201,162,76,.25);</span>
+<span class="s2">}</span>
+<span class="s2">*{box-sizing:border-box;}</span>
+<span class="s2">html{scroll-behavior:smooth;}</span>
+<span class="s2">body{</span>
+<span class="s2">  margin:0; background:var(--navy); color:var(--cream);</span>
+<span class="s2">  font-family:'Lato',sans-serif; font-size:16px; line-height:1.5;</span>
+<span class="s2">}</span>
+<span class="s2">h1,h2,h3{font-family:'Playfair Display',serif; margin:0; font-weight:700;}</span>
+<span class="s2">em, .em{font-family:'Cormorant Garamond',serif; font-style:italic;}</span>
+<span class="s2">a{color:var(--gold-light); text-decoration:none;}</span>
+<span class="s2">.wrap{max-width:1100px; margin:0 auto; padding:0 28px;}</span>
+
+<span class="s2">/* HERO */</span>
+<span class="s2">.hero{padding:96px 0 64px; text-align:center; border-bottom:1px solid var(--rule);</span>
+<span class="s2">  background:radial-gradient(ellipse at 50</span><span class="si">% -10%</span><span class="s2">, rgba(201,162,76,.14), transparent 60%);}</span>
+<span class="s2">.hero .eyebrow{font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold-light);</span>
+<span class="s2">  font-size:1.15rem; letter-spacing:.04em;}</span>
+<span class="s2">.hero h1{font-size:clamp(2.4rem,5vw,4.2rem); margin:18px 0 20px; line-height:1.08;}</span>
+<span class="s2">.hero h1 em{color:var(--gold-light); font-style:italic;}</span>
+<span class="s2">.hero p.deck{max-width:680px; margin:0 auto; color:var(--muted); font-size:1.15rem;}</span>
+<span class="s2">.stat-bar{display:flex; justify-content:center; gap:56px; margin-top:48px; flex-wrap:wrap;}</span>
+<span class="s2">.stat{text-align:center;}</span>
+<span class="s2">.stat .n{font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--gold-light);}</span>
+<span class="s2">.stat .l{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted2);}</span>
+
+<span class="s2">/* FRAMEWORK EXPLAINER */</span>
+<span class="s2">.framework{padding:64px 0; border-bottom:1px solid var(--rule); background:var(--navy2);}</span>
+<span class="s2">.framework h2{font-size:1.9rem; text-align:center; margin-bottom:10px;}</span>
+<span class="s2">.framework .sub{text-align:center; color:var(--muted); max-width:640px; margin:0 auto 36px;}</span>
+<span class="s2">.framework-cols{display:grid; grid-template-columns:repeat(5,1fr); gap:18px;}</span>
+<span class="s2">.framework-cols div{border:1px solid var(--rule); border-radius:4px; padding:18px 14px; text-align:center;}</span>
+<span class="s2">.framework-cols .fn{font-family:'Playfair Display',serif; color:var(--gold-light); font-size:1.4rem;}</span>
+<span class="s2">.framework-cols .ft{font-size:.85rem; margin-top:8px; color:var(--muted);}</span>
+
+<span class="s2">/* TOC */</span>
+<span class="s2">.toc{padding:56px 0; border-bottom:1px solid var(--rule);}</span>
+<span class="s2">.toc h2{font-size:1.6rem; margin-bottom:24px; text-align:center;}</span>
+<span class="s2">.toc ul{list-style:none; margin:0; padding:0; column-count:2; column-gap:40px;}</span>
+<span class="s2">@media(min-width:760px){.toc ul{column-count:3;}}</span>
+<span class="s2">.toc li{break-inside:avoid; margin-bottom:10px; font-size:.92rem; border-bottom:1px dotted var(--rule); padding-bottom:8px;}</span>
+<span class="s2">.toc a{color:var(--cream); display:flex; gap:10px;}</span>
+<span class="s2">.toc a:hover{color:var(--gold-light);}</span>
+<span class="s2">.toc-num{color:var(--gold); font-variant-numeric:tabular-nums; min-width:22px;}</span>
+<span class="s2">.toc-featured a{color:var(--gold-light); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem;}</span>
+
+<span class="s2">/* CATEGORY BLOCKS */</span>
+<span class="s2">.cat-block{padding:56px 0; border-bottom:1px solid var(--rule);}</span>
+<span class="s2">.cat-block:nth-of-type(even){background:rgba(255,255,255,.012);}</span>
+<span class="s2">.cat-head{margin-bottom:28px;}</span>
+<span class="s2">.cat-eyebrow{font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold-light); font-size:1rem;}</span>
+<span class="s2">.cat-head h2{font-size:2rem; margin-top:8px;}</span>
+<span class="s2">.cat-meta{color:var(--muted); font-size:.88rem; margin-top:6px;}</span>
+<span class="s2">.badge{display:inline-block; font-family:'Lato',sans-serif; font-size:.62rem; letter-spacing:.1em;</span>
+<span class="s2">  text-transform:uppercase; border:1px solid var(--gold); color:var(--gold-light); padding:3px 9px;</span>
+<span class="s2">  border-radius:20px; vertical-align:middle; margin-left:10px;}</span>
+<span class="s2">.badge.gold{background:rgba(201,162,76,.14);}</span>
+
+<span class="s2">.sub-block{margin-top:30px;}</span>
+<span class="s2">.sub-head{font-size:1.05rem; color:var(--gold-light); letter-spacing:.02em; margin-bottom:14px;</span>
+<span class="s2">  padding-bottom:8px; border-bottom:1px solid var(--rule); font-family:'Playfair Display',serif;}</span>
+
+<span class="s2">.d-grid{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:0 32px;}</span>
+<span class="s2">.d-grid.three-col{grid-template-columns:1fr 1fr 1fr;}</span>
+<span class="s2">@media(max-width:720px){.d-grid, .d-grid.three-col{grid-template-columns:1fr;}}</span>
+<span class="s2">.d-item{display:flex; gap:12px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.05);}</span>
+<span class="s2">.d-item.plain{align-items:baseline;}</span>
+<span class="s2">.d-num{color:var(--gold); font-size:.78rem; font-variant-numeric:tabular-nums; padding-top:2px; min-width:20px;}</span>
+<span class="s2">.d-text{display:flex; flex-direction:column;}</span>
+<span class="s2">.d-title{font-weight:700; font-size:.96rem;}</span>
+<span class="s2">.d-sub{font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--muted); font-size:.92rem; margin-top:1px;}</span>
+
+<span class="s2">/* FLOURISHING / FEATURED */</span>
+<span class="s2">.featured{background:linear-gradient(180deg, rgba(201,162,76,.06), transparent 40%);}</span>
+<span class="s2">.criteria-box{border:1px solid var(--gold); border-radius:6px; padding:24px 26px; margin:24px 0 8px; background:rgba(201,162,76,.05);}</span>
+<span class="s2">.criteria-box .label{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-light); margin-bottom:14px;}</span>
+<span class="s2">.criteria-box p{color:var(--muted); font-size:.94rem; margin:12px 0 0;}</span>
+<span class="s2">.week-row{display:flex; flex-wrap:wrap; gap:10px;}</span>
+<span class="s2">.week-chip{border:1px solid var(--rule); border-radius:20px; padding:6px 14px; display:flex; gap:8px; align-items:baseline; font-size:.82rem;}</span>
+<span class="s2">.week-chip .week-num{color:var(--gold); font-size:.68rem; letter-spacing:.06em;}</span>
+
+<span class="s2">/* PURPOSE BASED BUSINESS PAGE */</span>
+<span class="s2">.purpose-page{background:radial-gradient(ellipse at 50</span><span class="si">% 0%</span><span class="s2">, rgba(201,162,76,.1), transparent 55%);}</span>
+<span class="s2">.purpose-hero{text-align:center; max-width:720px; margin:0 auto 40px;}</span>
+<span class="s2">.purpose-hero h2{font-size:2.4rem; margin:14px 0;}</span>
+<span class="s2">.purpose-deck{color:var(--muted); font-size:1.05rem;}</span>
+<span class="s2">.purpose-framework{border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:36px 0; margin:20px 0 40px;}</span>
+<span class="s2">.purpose-framework .label{text-align:center; font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-light); margin-bottom:26px;}</span>
+<span class="s2">.purpose-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px;}</span>
+<span class="s2">@media(max-width:900px){.purpose-grid{grid-template-columns:repeat(2,1fr);}}</span>
+<span class="s2">.purpose-card{border:1px solid var(--gold); border-radius:6px; padding:20px 14px; text-align:center; background:rgba(201,162,76,.04);}</span>
+<span class="s2">.purpose-card .purpose-num{display:block; font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--gold-light);}</span>
+<span class="s2">.purpose-card .purpose-name{display:block; font-family:'Playfair Display',serif; font-weight:700; margin:8px 0 6px; font-size:1.05rem;}</span>
+<span class="s2">.purpose-card .purpose-desc{display:block; font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--muted); font-size:.88rem;}</span>
+<span class="s2">.framework-note{text-align:center; color:var(--muted); max-width:600px; margin:22px auto 0; font-size:.92rem;}</span>
+<span class="s2">.theme-note{color:var(--muted); font-size:.9rem; margin-bottom:16px;}</span>
+
+<span class="s2">footer{padding:56px 0 80px; text-align:center; color:var(--muted2); font-size:.82rem;}</span>
+<span class="s2">"""</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="UTF-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">&lt;title&gt;LifeTogether Workplace Intelligence&amp;trade; &amp;mdash; Master Directory&lt;/title&gt;</span>
+<span class="s2">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span>
+<span class="s2">&lt;link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&amp;family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+
+<span class="s2">&lt;section class="hero"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;span class="eyebrow"&gt;LifeTogether Ministries &amp;middot; Business &amp;amp; Workplace Intelligence&amp;trade;&lt;/span&gt;</span>
+<span class="s2">    &lt;h1&gt;The Master Directory&lt;br&gt;&lt;em&gt;Every Vertical, One Framework&lt;/em&gt;&lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="deck"&gt;Forty workplace verticals. One shared five-part architecture. A single library built to</span>
+<span class="s2">       meet Christians in every profession &amp;mdash; from the exam room to the factory floor to the boardroom</span>
+<span class="s2">       &amp;mdash; with the same rigor as LifeTogether's church and family libraries.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="stat-bar"&gt;</span>
+<span class="s2">      &lt;div class="stat"&gt;&lt;div class="n"&gt;</span><span class="si">{</span><span class="n">TOTAL_CATEGORIES</span><span class="si">}</span><span class="s2">&lt;/div&gt;&lt;div class="l"&gt;Categories&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="stat"&gt;&lt;div class="n"&gt;</span><span class="si">{</span><span class="n">TOTAL_CAMPAIGNS</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">+&lt;/div&gt;&lt;div class="l"&gt;Flagship Campaigns&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="stat"&gt;&lt;div class="n"&gt;5&lt;/div&gt;&lt;div class="l"&gt;Sections per Category&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="stat"&gt;&lt;div class="n"&gt;2&lt;/div&gt;&lt;div class="l"&gt;Featured Frameworks&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="framework"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;h2&gt;One Framework, Every Vertical&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="sub"&gt;Every expanded and new category in this directory is built on the same five-section,</span>
+<span class="s2">       fifty-title architecture &amp;mdash; so the library scales without losing coherence.&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="framework-cols"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="fn"&gt;01&lt;/div&gt;&lt;div class="ft"&gt;Calling &amp;amp; Purpose&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="fn"&gt;02&lt;/div&gt;&lt;div class="ft"&gt;Leadership &amp;amp; Character&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="fn"&gt;03&lt;/div&gt;&lt;div class="ft"&gt;Stewardship &amp;amp; Excellence&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="fn"&gt;04&lt;/div&gt;&lt;div class="ft"&gt;Relationships &amp;amp; Culture&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;div class="fn"&gt;05&lt;/div&gt;&lt;div class="ft"&gt;Legacy &amp;amp; Kingdom Impact&lt;/div&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;section class="toc"&gt;</span>
+<span class="s2">  &lt;div class="wrap"&gt;</span>
+<span class="s2">    &lt;h2&gt;Directory Index&lt;/h2&gt;</span>
+<span class="s2">    &lt;ul&gt;</span><span class="si">{</span><span class="n">toc_html</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/section&gt;</span>
+
+<span class="s2">&lt;div class="wrap"&gt;</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">originals_html</span><span class="si">}</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">expanded_html</span><span class="si">}</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">flat_html</span><span class="si">}</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">new_html</span><span class="si">}</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">flourishing_html</span><span class="si">}</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">purpose_html</span><span class="si">}</span>
+<span class="s2">&lt;/div&gt;</span>
+
+<span class="s2">&lt;footer&gt;</span>
+<span class="s2">  LifeTogether Ministries &amp;middot; Business &amp;amp; Workplace Intelligence&amp;trade; Master Directory&lt;br&gt;</span>
+<span class="s2">  </span><span class="si">{</span><span class="n">TOTAL_CATEGORIES</span><span class="si">}</span><span class="s2"> categories &amp;middot; </span><span class="si">{</span><span class="n">TOTAL_CAMPAIGNS</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">+ flagship campaigns &amp;middot; internal working document</span>
+<span class="s2">&lt;/footer&gt;</span>
+
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">"""</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/mnt/user-data/outputs/lifetogether-workplace-intelligence-master-directory.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">HTML</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Wrote HTML,"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">HTML</span><span class="p">),</span> <span class="s2">"bytes"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total categories:"</span><span class="p">,</span> <span class="n">TOTAL_CATEGORIES</span><span class="p">,</span> <span class="s2">"Total campaigns:"</span><span class="p">,</span> <span class="n">TOTAL_CAMPAIGNS</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build_html.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

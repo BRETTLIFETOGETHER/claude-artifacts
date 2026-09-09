@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Family legacy brochure campaign design</div>
+<h1>build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">15 KB</span>
+<a class="btn" href="../../artifacts/Family%20legacy%20brochure%20campaign%20design/build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Generator that renders content into a styled HTML brochure matching the reference aesthetic</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">html</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">content</span><span class="w"> </span><span class="kn">import</span> <span class="n">COLLECTION</span><span class="p">,</span> <span class="n">TITLES</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"fonts_b64.json"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">esc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># ---- color helpers ----------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hex2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">'#'</span><span class="p">);</span> <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rgb2hex</span><span class="p">(</span><span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="s1">'#</span><span class="si">%02x%02x%02x</span><span class="s1">'</span><span class="o">%</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mix</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">hex2rgb</span><span class="p">(</span><span class="n">h</span><span class="p">);</span> <span class="n">b</span><span class="o">=</span><span class="n">hex2rgb</span><span class="p">(</span><span class="n">other</span><span class="p">);</span> <span class="k">return</span> <span class="n">rgb2hex</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">t</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">darken</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="n">mix</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="s1">'#000000'</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lighten</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="n">mix</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="s1">'#ffffff'</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+
+<span class="n">GOLD</span>   <span class="o">=</span> <span class="s2">"#b08a3e"</span>
+<span class="n">GOLD_L</span> <span class="o">=</span> <span class="s2">"#c9a44e"</span>
+<span class="n">INK</span>    <span class="o">=</span> <span class="s2">"#2b2622"</span>
+<span class="n">CREAM</span>  <span class="o">=</span> <span class="s2">"#f6f1e7"</span>
+<span class="n">PAPER</span>  <span class="o">=</span> <span class="s2">"#fbf8f1"</span>
+<span class="n">TAN</span>    <span class="o">=</span> <span class="s2">"#f1e6cd"</span>   <span class="c1"># subtitle-options box</span>
+
+<span class="c1"># ---- font face block --------------------------------------------------------</span>
+<span class="n">FONT_CSS</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Playfair'; font-weight:400 900; font-style:normal;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">F</span><span class="p">[</span><span class="s1">'Playfair'</span><span class="p">]</span><span class="si">}</span><span class="s2">) format('truetype'); </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Playfair'; font-weight:400 900; font-style:italic;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">F</span><span class="p">[</span><span class="s1">'PlayfairItalic'</span><span class="p">]</span><span class="si">}</span><span class="s2">) format('truetype'); </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Garamond'; font-weight:400 800; font-style:normal;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">F</span><span class="p">[</span><span class="s1">'Garamond'</span><span class="p">]</span><span class="si">}</span><span class="s2">) format('truetype'); </span><span class="se">}}</span>
+<span class="s2">@font-face </span><span class="se">{{</span><span class="s2"> font-family:'Garamond'; font-weight:400 800; font-style:italic;</span>
+<span class="s2">  src:url(data:font/ttf;base64,</span><span class="si">{</span><span class="n">F</span><span class="p">[</span><span class="s1">'GaramondItalic'</span><span class="p">]</span><span class="si">}</span><span class="s2">) format('truetype'); </span><span class="se">}}</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tags</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+    <span class="n">chips</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span class="chip"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;div class="chips" style="--c:</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="n">chips</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span>
+
+<span class="c1"># ---- session card -----------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">session_card</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+    <span class="n">accent</span> <span class="o">=</span> <span class="n">lighten</span><span class="p">(</span><span class="n">color</span><span class="p">,</span><span class="mf">0.55</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"t"</span><span class="p">])</span><span class="si">}</span><span class="s1"> &lt;i&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"a"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/i&gt;'</span>
+    <span class="n">qs</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="q"&gt;&lt;span class="qm"&gt;Q&lt;/span&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">"q"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"commit"</span><span class="p">):</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="step commit"&gt;&lt;div class="step-label"&gt;Commitment Step&lt;/div&gt;'</span>
+                <span class="sa">f</span><span class="s1">'&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"commit"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="step"&gt;&lt;div class="step-label"&gt;This Week</span><span class="se">\u2019</span><span class="s1">s Step&lt;/div&gt;'</span>
+                <span class="sa">f</span><span class="s1">'&lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"step"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">    &lt;div class="card"&gt;</span>
+<span class="s2">      &lt;div class="card-head" style="--c:</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">        &lt;div class="sess-no"&gt;Session </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="sess-title"&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="card-body"&gt;</span>
+<span class="s2">        &lt;p class="verse"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"s"</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">tags</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">],</span><span class="w"> </span><span class="n">color</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">        &lt;div class="dq-label"&gt;Discussion Questions&lt;/div&gt;</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">qs</span><span class="si">}</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">step</span><span class="si">}</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;"""</span>
+
+<span class="c1"># ---- a single title spread --------------------------------------------------</span>
+<span class="n">ROMAN</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="s2">"ONE"</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span><span class="s2">"TWO"</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="s2">"THREE"</span><span class="p">,</span><span class="mi">4</span><span class="p">:</span><span class="s2">"FOUR"</span><span class="p">,</span><span class="mi">5</span><span class="p">:</span><span class="s2">"FIVE"</span><span class="p">,</span><span class="mi">6</span><span class="p">:</span><span class="s2">"SIX"</span><span class="p">,</span><span class="mi">7</span><span class="p">:</span><span class="s2">"SEVEN"</span><span class="p">,</span><span class="mi">8</span><span class="p">:</span><span class="s2">"EIGHT"</span><span class="p">,</span><span class="mi">9</span><span class="p">:</span><span class="s2">"NINE"</span><span class="p">,</span><span class="mi">10</span><span class="p">:</span><span class="s2">"TEN"</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">title_section</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"color"</span><span class="p">];</span> <span class="n">dark</span><span class="o">=</span><span class="n">darken</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="mf">0.18</span><span class="p">);</span> <span class="n">deep</span><span class="o">=</span><span class="n">darken</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="mf">0.34</span><span class="p">)</span>
+    <span class="n">tint</span><span class="o">=</span><span class="n">lighten</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="mf">0.93</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span><span class="si">}</span><span class="s1"> &lt;i&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"accent"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/i&gt;'</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s1">'&lt;i&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"accent"</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/i&gt;'</span><span class="p">)</span>
+    <span class="n">subs</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="sub-opt"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">"subtitles"</span><span class="p">])</span>
+    <span class="n">info_rows</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;div class="ir"&gt;&lt;span class="ik"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;span class="iv"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&lt;/span&gt;&lt;/div&gt;'</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">"info"</span><span class="p">])</span>
+    <span class="n">cards</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">session_card</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"sessions"</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">  &lt;section class="title-spread" style="--c:</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">;--c-dark:</span><span class="si">{</span><span class="n">dark</span><span class="si">}</span><span class="s2">;--c-deep:</span><span class="si">{</span><span class="n">deep</span><span class="si">}</span><span class="s2">;--c-tint:</span><span class="si">{</span><span class="n">tint</span><span class="si">}</span><span class="s2">"&gt;</span>
+<span class="s2">    &lt;div class="banner"&gt;</span>
+<span class="s2">      &lt;div class="wmk"&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'num'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="banner-eyebrow"&gt;Series </span><span class="si">{</span><span class="n">ROMAN</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">'num'</span><span class="p">]]</span><span class="si">}</span><span class="s2"> &amp;nbsp;</span><span class="se">\u00b7</span><span class="s2">&amp;nbsp; </span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'category'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">      &lt;h2 class="banner-title"&gt;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">      &lt;p class="banner-sub"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'subhead'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;div class="intro"&gt;</span>
+<span class="s2">      &lt;div class="intro-main"&gt;</span>
+<span class="s2">        &lt;p class="pullquote"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'pullquote'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;p class="body"&gt;</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">'body'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;div class="scripture"&gt;</span>
+<span class="s2">          &lt;div class="sl"&gt;Core Scripture&lt;/div&gt;</span>
+<span class="s2">          &lt;p class="st"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'scripture'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">          &lt;p class="sr"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'scripture_ref'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;aside class="intro-side"&gt;</span>
+<span class="s2">        &lt;div class="info-card"&gt;</span>
+<span class="s2">          &lt;div class="info-label"&gt;Series Information&lt;/div&gt;</span>
+<span class="s2">          </span><span class="si">{</span><span class="n">info_rows</span><span class="si">}</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div class="subs-card"&gt;</span>
+<span class="s2">          &lt;div class="subs-label"&gt;Subtitle Options&lt;/div&gt;</span>
+<span class="s2">          </span><span class="si">{</span><span class="n">subs</span><span class="si">}</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/aside&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;div class="bigidea"&gt;</span>
+<span class="s2">      &lt;div class="bi-label"&gt;Big Idea&lt;/div&gt;</span>
+<span class="s2">      &lt;p class="bi-text"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'bigidea'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">      </span><span class="si">{</span><span class="n">tags</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">],</span><span class="w"> </span><span class="s1">'rgba(255,255,255,.4)'</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;div class="curr-label"&gt;Small Group Curriculum &amp;nbsp;</span><span class="se">\u2014</span><span class="s2">&amp;nbsp; Six Sessions&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cards"&gt;</span><span class="si">{</span><span class="n">cards</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;/section&gt;"""</span>
+
+<span class="c1"># ---- cover ------------------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cover</span><span class="p">():</span>
+    <span class="n">swatches</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">'&lt;li&gt;&lt;span class="sw" style="background:</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"color"</span><span class="p">]</span><span class="si">}</span><span class="s1">"&gt;&lt;/span&gt;'</span>
+        <span class="sa">f</span><span class="s1">'&lt;span class="sw-t"&gt;&lt;b&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">((</span><span class="n">d</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="n">d</span><span class="p">[</span><span class="s2">"accent"</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="si">}</span><span class="s1">&lt;/b&gt;'</span>
+        <span class="sa">f</span><span class="s1">'&lt;i&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"subtitles"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">&lt;/i&gt;&lt;/span&gt;&lt;/li&gt;'</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">TITLES</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">  &lt;section class="cover"&gt;</span>
+<span class="s2">    &lt;div class="cover-eyebrow"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'eyebrow'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;h1 class="cover-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'title'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;br&gt;&lt;span class="ct-accent"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'title_accent'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/h1&gt;</span>
+<span class="s2">    &lt;p class="cover-lede"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'lede'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;ul class="toc"&gt;</span><span class="si">{</span><span class="n">swatches</span><span class="si">}</span><span class="s2">&lt;/ul&gt;</span>
+<span class="s2">    &lt;div class="framework"&gt;</span>
+<span class="s2">      &lt;div class="fw-label"&gt;The Governing Framework Sentence&lt;/div&gt;</span>
+<span class="s2">      &lt;p&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'framework'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-foot"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'footer'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;/section&gt;"""</span>
+
+<span class="c1"># ---- closing ----------------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">closing</span><span class="p">():</span>
+    <span class="n">bars</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;span style="background:</span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s2">"color"</span><span class="p">]</span><span class="si">}</span><span class="s1">"&gt;&lt;/span&gt;'</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">TITLES</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">  &lt;section class="closing"&gt;</span>
+<span class="s2">    &lt;div class="spectrum"&gt;</span><span class="si">{</span><span class="n">bars</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="closing-kicker"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'closing_kicker'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;h2 class="closing-title"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'closing_title'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">    &lt;p class="closing-body"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'closing_body'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;div class="closing-stats"&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;10&lt;/b&gt;&lt;span&gt;40-day journeys&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;60&lt;/b&gt;&lt;span&gt;small group sessions&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">      &lt;div&gt;&lt;b&gt;2-yr&lt;/b&gt;&lt;span&gt;ministry calendar&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;div class="cover-foot"&gt;</span><span class="si">{</span><span class="n">esc</span><span class="p">(</span><span class="n">COLLECTION</span><span class="p">[</span><span class="s1">'footer'</span><span class="p">])</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;/section&gt;"""</span>
+
+<span class="c1"># ---- full document ----------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">document</span><span class="p">():</span>
+    <span class="n">sections</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">title_section</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">TITLES</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span>
+<span class="s2">&lt;title&gt;The Family Legacy Collection </span><span class="se">\u00b7</span><span class="s2"> Lifetogether&lt;/title&gt;</span>
+<span class="s2">&lt;style&gt;</span>
+<span class="si">{</span><span class="n">FONT_CSS</span><span class="si">}</span>
+<span class="s2">*</span><span class="se">{{</span><span class="s2">box-sizing:border-box;margin:0;padding:0</span><span class="se">}}</span>
+<span class="s2">:root</span><span class="se">{{</span><span class="s2">--gold:</span><span class="si">{</span><span class="n">GOLD</span><span class="si">}</span><span class="s2">;--gold-l:</span><span class="si">{</span><span class="n">GOLD_L</span><span class="si">}</span><span class="s2">;--ink:</span><span class="si">{</span><span class="n">INK</span><span class="si">}</span><span class="s2">;--cream:</span><span class="si">{</span><span class="n">CREAM</span><span class="si">}</span><span class="s2">;--paper:</span><span class="si">{</span><span class="n">PAPER</span><span class="si">}</span><span class="s2">;--tan:</span><span class="si">{</span><span class="n">TAN</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">html</span><span class="se">{{</span><span class="s2">-webkit-print-color-adjust:exact;print-color-adjust:exact</span><span class="se">}}</span>
+<span class="s2">body</span><span class="se">{{</span><span class="s2">font-family:'Garamond',Georgia,serif;color:var(--ink);background:var(--cream);</span>
+<span class="s2">  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased</span><span class="se">}}</span>
+<span class="s2">.page</span><span class="se">{{</span><span class="s2">width:850px;margin:0 auto;background:var(--paper)</span><span class="se">}}</span>
+<span class="s2">i</span><span class="se">{{</span><span class="s2">font-style:italic</span><span class="se">}}</span><span class="s2"> b</span><span class="se">{{</span><span class="s2">font-weight:700</span><span class="se">}}</span>
+
+<span class="s2">/* ---------- eyebrow / labels ---------- */</span>
+<span class="s2">.eyebrow,.banner-eyebrow,.info-label,.subs-label,.bi-label,.sl,.dq-label,.step-label,</span>
+<span class="s2">.curr-label,.cover-eyebrow,.fw-label,.closing-kicker</span><span class="se">{{</span>
+<span class="s2">  font-family:'Garamond',serif;text-transform:uppercase;letter-spacing:.28em;font-weight:600</span><span class="se">}}</span>
+
+<span class="s2">/* ================= COVER ================= */</span>
+<span class="s2">.cover</span><span class="se">{{</span><span class="s2">padding:74px 78px 56px;background:</span>
+<span class="s2">  radial-gradient(1100px 520px at 78% -8%, </span><span class="si">{</span><span class="n">lighten</span><span class="p">(</span><span class="n">GOLD</span><span class="p">,</span><span class="mf">0.62</span><span class="p">)</span><span class="si">}</span><span class="s2"> 0%, rgba(0,0,0,0) 60%),</span>
+<span class="s2">  linear-gradient(180deg,#fdfbf5 0%, var(--paper) 100%);</span>
+<span class="s2">  min-height:1100px;display:flex;flex-direction:column</span><span class="se">}}</span>
+<span class="s2">.cover-eyebrow</span><span class="se">{{</span><span class="s2">font-size:11px;letter-spacing:.32em;color:var(--gold);margin-bottom:46px</span><span class="se">}}</span>
+<span class="s2">.cover-title</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-weight:800;font-size:78px;line-height:.96;</span>
+<span class="s2">  letter-spacing:-.01em;color:var(--ink)</span><span class="se">}}</span>
+<span class="s2">.ct-accent</span><span class="se">{{</span><span class="s2">font-style:italic;font-weight:500;color:var(--gold)</span><span class="se">}}</span>
+<span class="s2">.cover-lede</span><span class="se">{{</span><span class="s2">font-size:18px;line-height:1.62;max-width:600px;margin:30px 0 8px;color:#4a423a</span><span class="se">}}</span>
+<span class="s2">.toc</span><span class="se">{{</span><span class="s2">list-style:none;margin:30px 0 6px;columns:2;column-gap:46px</span><span class="se">}}</span>
+<span class="s2">.toc li</span><span class="se">{{</span><span class="s2">display:flex;gap:13px;break-inside:avoid;margin-bottom:15px;align-items:baseline</span><span class="se">}}</span>
+<span class="s2">.sw</span><span class="se">{{</span><span class="s2">flex:0 0 11px;width:11px;height:11px;border-radius:2px;margin-top:5px;</span>
+<span class="s2">  box-shadow:0 0 0 1px rgba(0,0,0,.07)</span><span class="se">}}</span>
+<span class="s2">.sw-t</span><span class="se">{{</span><span class="s2">display:flex;flex-direction:column;line-height:1.25</span><span class="se">}}</span>
+<span class="s2">.sw-t b</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-weight:600;font-size:16.5px;color:var(--ink)</span><span class="se">}}</span>
+<span class="s2">.sw-t i</span><span class="se">{{</span><span class="s2">font-size:12.5px;color:#7c7264</span><span class="se">}}</span>
+<span class="s2">.framework</span><span class="se">{{</span><span class="s2">margin-top:34px;padding:30px 34px;border-radius:5px;</span>
+<span class="s2">  background:linear-gradient(135deg,</span><span class="si">{</span><span class="n">darken</span><span class="p">(</span><span class="n">INK</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> 0%,</span><span class="si">{</span><span class="n">lighten</span><span class="p">(</span><span class="n">INK</span><span class="p">,</span><span class="mf">0.08</span><span class="p">)</span><span class="si">}</span><span class="s2"> 100%);color:#f2ead9</span><span class="se">}}</span>
+<span class="s2">.fw-label</span><span class="se">{{</span><span class="s2">font-size:10px;letter-spacing:.3em;color:var(--gold-l);margin-bottom:14px</span><span class="se">}}</span>
+<span class="s2">.framework p</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-style:italic;font-weight:400;</span>
+<span class="s2">  font-size:18px;line-height:1.5;color:#f4eddd</span><span class="se">}}</span>
+<span class="s2">.cover-foot</span><span class="se">{{</span><span class="s2">margin-top:auto;padding-top:30px;font-size:11px;letter-spacing:.04em;</span>
+<span class="s2">  color:#9b9081;border-top:1px solid rgba(0,0,0,.1)</span><span class="se">}}</span>
+
+<span class="s2">/* ================= TITLE SPREAD ================= */</span>
+<span class="s2">.title-spread</span><span class="se">{{</span><span class="s2">break-before:page;padding:0 0 30px</span><span class="se">}}</span>
+<span class="s2">.banner</span><span class="se">{{</span><span class="s2">position:relative;overflow:hidden;color:#fbf6ea;padding:52px 78px 44px;</span>
+<span class="s2">  background:linear-gradient(140deg,var(--c-deep) 0%,var(--c) 62%,var(--c-dark) 100%)</span><span class="se">}}</span>
+<span class="s2">.wmk</span><span class="se">{{</span><span class="s2">position:absolute;right:42px;top:-30px;font-family:'Playfair',serif;font-weight:800;</span>
+<span class="s2">  font-size:230px;line-height:1;color:rgba(255,255,255,.09);user-select:none</span><span class="se">}}</span>
+<span class="s2">.banner-eyebrow</span><span class="se">{{</span><span class="s2">font-size:10.5px;letter-spacing:.26em;color:rgba(255,255,255,.78);</span>
+<span class="s2">  margin-bottom:16px;position:relative</span><span class="se">}}</span>
+<span class="s2">.banner-title</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-weight:700;font-size:54px;line-height:1.0;</span>
+<span class="s2">  letter-spacing:-.01em;position:relative</span><span class="se">}}</span>
+<span class="s2">.banner-title i</span><span class="se">{{</span><span class="s2">font-weight:500;color:</span><span class="si">{</span><span class="n">lighten</span><span class="p">(</span><span class="n">GOLD</span><span class="p">,</span><span class="mf">0.42</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">.banner-sub</span><span class="se">{{</span><span class="s2">position:relative;max-width:620px;margin-top:18px;font-size:16px;line-height:1.55;</span>
+<span class="s2">  color:rgba(255,255,255,.9);font-style:italic;font-family:'Garamond',serif</span><span class="se">}}</span>
+
+<span class="s2">.intro</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1fr 290px;gap:40px;padding:42px 78px 8px</span><span class="se">}}</span>
+<span class="s2">.pullquote</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-style:italic;font-weight:500;font-size:26px;</span>
+<span class="s2">  line-height:1.32;color:var(--c-deep);margin-bottom:22px</span><span class="se">}}</span>
+<span class="s2">.body</span><span class="se">{{</span><span class="s2">font-size:15.5px;line-height:1.66;color:#43392f</span><span class="se">}}</span>
+<span class="s2">.body b</span><span class="se">{{</span><span class="s2">color:var(--c-deep)</span><span class="se">}}</span>
+<span class="s2">.scripture</span><span class="se">{{</span><span class="s2">margin-top:26px;padding:24px 28px;border-radius:5px;color:#f7f1e4;</span>
+<span class="s2">  background:linear-gradient(135deg,var(--c-deep),var(--c))</span><span class="se">}}</span>
+<span class="s2">.sl</span><span class="se">{{</span><span class="s2">font-size:9.5px;letter-spacing:.28em;color:rgba(255,255,255,.7);margin-bottom:11px</span><span class="se">}}</span>
+<span class="s2">.st</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-style:italic;font-size:19px;line-height:1.4</span><span class="se">}}</span>
+<span class="s2">.sr</span><span class="se">{{</span><span class="s2">margin-top:9px;font-size:12.5px;letter-spacing:.04em;color:rgba(255,255,255,.78)</span><span class="se">}}</span>
+
+<span class="s2">.intro-side</span><span class="se">{{</span><span class="s2">display:flex;flex-direction:column;gap:18px</span><span class="se">}}</span>
+<span class="s2">.info-card</span><span class="se">{{</span><span class="s2">background:#fff;border:1px solid #e7ddc7;border-radius:5px;padding:20px 22px;</span>
+<span class="s2">  box-shadow:0 1px 0 rgba(0,0,0,.02)</span><span class="se">}}</span>
+<span class="s2">.info-label</span><span class="se">{{</span><span class="s2">font-size:9.5px;letter-spacing:.24em;color:var(--c);margin-bottom:14px</span><span class="se">}}</span>
+<span class="s2">.ir</span><span class="se">{{</span><span class="s2">display:flex;gap:10px;padding:7px 0;border-top:1px solid #f0e8d6;font-size:13px</span><span class="se">}}</span>
+<span class="s2">.ir:first-of-type</span><span class="se">{{</span><span class="s2">border-top:none</span><span class="se">}}</span>
+<span class="s2">.ik</span><span class="se">{{</span><span class="s2">flex:0 0 86px;font-weight:700;color:#6b6052;letter-spacing:.01em</span><span class="se">}}</span>
+<span class="s2">.iv</span><span class="se">{{</span><span class="s2">color:#544a3e</span><span class="se">}}</span>
+<span class="s2">.subs-card</span><span class="se">{{</span><span class="s2">background:var(--tan);border-radius:5px;padding:18px 22px</span><span class="se">}}</span>
+<span class="s2">.subs-label</span><span class="se">{{</span><span class="s2">font-size:9.5px;letter-spacing:.24em;color:</span><span class="si">{</span><span class="n">darken</span><span class="p">(</span><span class="n">GOLD</span><span class="p">,</span><span class="mf">0.12</span><span class="p">)</span><span class="si">}</span><span class="s2">;margin-bottom:12px</span><span class="se">}}</span>
+<span class="s2">.sub-opt</span><span class="se">{{</span><span class="s2">font-style:italic;font-size:13.5px;color:#5f5440;padding:6px 0;</span>
+<span class="s2">  border-top:1px solid rgba(0,0,0,.07)</span><span class="se">}}</span>
+<span class="s2">.sub-opt:first-of-type</span><span class="se">{{</span><span class="s2">border-top:none</span><span class="se">}}</span>
+
+<span class="s2">.bigidea</span><span class="se">{{</span><span class="s2">margin:36px 78px 6px;padding:34px 40px;border-radius:6px;color:#f6efe0;</span>
+<span class="s2">  background:linear-gradient(135deg,var(--c) 0%,var(--c-dark) 100%);position:relative</span><span class="se">}}</span>
+<span class="s2">.bi-label</span><span class="se">{{</span><span class="s2">font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.72);margin-bottom:15px</span><span class="se">}}</span>
+<span class="s2">.bi-text</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-style:italic;font-weight:400;font-size:22px;</span>
+<span class="s2">  line-height:1.46;color:#f8f2e5</span><span class="se">}}</span>
+<span class="s2">.chips</span><span class="se">{{</span><span class="s2">display:flex;flex-wrap:wrap;gap:8px;margin-top:18px</span><span class="se">}}</span>
+<span class="s2">.chip</span><span class="se">{{</span><span class="s2">font-size:11px;letter-spacing:.04em;padding:4px 11px;border-radius:20px;</span>
+<span class="s2">  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#f5eede</span><span class="se">}}</span>
+<span class="s2">/* chips inside light cards */</span>
+<span class="s2">.card .chips .chip</span><span class="se">{{</span><span class="s2">background:var(--c-tint);border:1px solid </span><span class="si">{</span><span class="n">lighten</span><span class="p">(</span><span class="n">GOLD</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">  color:var(--c-dark)</span><span class="se">}}</span>
+
+<span class="s2">.curr-label</span><span class="se">{{</span><span class="s2">font-size:11px;letter-spacing:.26em;color:var(--gold);text-align:center;</span>
+<span class="s2">  margin:40px 0 22px</span><span class="se">}}</span>
+<span class="s2">.cards</span><span class="se">{{</span><span class="s2">display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:0 78px</span><span class="se">}}</span>
+<span class="s2">.card</span><span class="se">{{</span><span class="s2">background:#fff;border:1px solid #e9e0cc;border-radius:6px;overflow:hidden;</span>
+<span class="s2">  break-inside:avoid;box-shadow:0 1px 2px rgba(0,0,0,.03)</span><span class="se">}}</span>
+<span class="s2">.card-head</span><span class="se">{{</span><span class="s2">padding:16px 22px;color:#fbf6ea;</span>
+<span class="s2">  background:linear-gradient(135deg,var(--c) 0%,var(--c-dark) 100%)</span><span class="se">}}</span>
+<span class="s2">.sess-no</span><span class="se">{{</span><span class="s2">font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;font-weight:600;</span>
+<span class="s2">  color:rgba(255,255,255,.78);margin-bottom:6px</span><span class="se">}}</span>
+<span class="s2">.sess-title</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-weight:700;font-size:21px;line-height:1.12</span><span class="se">}}</span>
+<span class="s2">.sess-title i</span><span class="se">{{</span><span class="s2">font-weight:500;color:</span><span class="si">{</span><span class="n">lighten</span><span class="p">(</span><span class="n">GOLD</span><span class="p">,</span><span class="mf">0.45</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">.card-body</span><span class="se">{{</span><span class="s2">padding:20px 22px 22px</span><span class="se">}}</span>
+<span class="s2">.verse</span><span class="se">{{</span><span class="s2">font-style:italic;font-size:13.5px;line-height:1.45;color:#6a5f50;</span>
+<span class="s2">  padding-bottom:14px;border-bottom:1px solid #efe7d5</span><span class="se">}}</span>
+<span class="s2">.dq-label</span><span class="se">{{</span><span class="s2">font-size:9px;letter-spacing:.24em;color:var(--c);margin:16px 0 10px;font-weight:600;</span>
+<span class="s2">  text-transform:uppercase</span><span class="se">}}</span>
+<span class="s2">.q</span><span class="se">{{</span><span class="s2">display:flex;gap:10px;padding:8px 0;border-top:1px dotted #e6dcc6</span><span class="se">}}</span>
+<span class="s2">.q:first-of-type</span><span class="se">{{</span><span class="s2">border-top:none;padding-top:2px</span><span class="se">}}</span>
+<span class="s2">.qm</span><span class="se">{{</span><span class="s2">flex:0 0 16px;height:16px;margin-top:2px;border-radius:50%;background:var(--c-tint);</span>
+<span class="s2">  color:var(--c-dark);font-size:9px;font-weight:700;display:flex;align-items:center;</span>
+<span class="s2">  justify-content:center;letter-spacing:0</span><span class="se">}}</span>
+<span class="s2">.q p</span><span class="se">{{</span><span class="s2">font-size:13.5px;line-height:1.45;color:#473d31</span><span class="se">}}</span>
+<span class="s2">.step</span><span class="se">{{</span><span class="s2">margin-top:16px;padding:14px 16px;border-radius:5px;background:var(--c-tint);</span>
+<span class="s2">  border-left:3px solid var(--c)</span><span class="se">}}</span>
+<span class="s2">.step.commit</span><span class="se">{{</span><span class="s2">background:</span><span class="si">{</span><span class="n">lighten</span><span class="p">(</span><span class="n">GOLD</span><span class="p">,</span><span class="mf">0.78</span><span class="p">)</span><span class="si">}</span><span class="s2">;border-left-color:var(--gold)</span><span class="se">}}</span>
+<span class="s2">.step-label</span><span class="se">{{</span><span class="s2">font-size:9px;letter-spacing:.2em;color:var(--c-dark);margin-bottom:7px;font-weight:700</span><span class="se">}}</span>
+<span class="s2">.step.commit .step-label</span><span class="se">{{</span><span class="s2">color:</span><span class="si">{</span><span class="n">darken</span><span class="p">(</span><span class="n">GOLD</span><span class="p">,</span><span class="mf">0.15</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">.step p</span><span class="se">{{</span><span class="s2">font-size:13px;line-height:1.5;color:#4a4034</span><span class="se">}}</span>
+<span class="s2">.step b</span><span class="se">{{</span><span class="s2">color:var(--c-deep)</span><span class="se">}}</span>
+
+<span class="s2">/* ================= CLOSING ================= */</span>
+<span class="s2">.closing</span><span class="se">{{</span><span class="s2">break-before:page;padding:90px 78px 56px;min-height:1100px;</span>
+<span class="s2">  display:flex;flex-direction:column;</span>
+<span class="s2">  background:linear-gradient(180deg,#fdfbf5,var(--paper))</span><span class="se">}}</span>
+<span class="s2">.spectrum</span><span class="se">{{</span><span class="s2">display:flex;height:8px;border-radius:6px;overflow:hidden;margin-bottom:54px;</span>
+<span class="s2">  box-shadow:0 1px 2px rgba(0,0,0,.06)</span><span class="se">}}</span>
+<span class="s2">.spectrum span</span><span class="se">{{</span><span class="s2">flex:1</span><span class="se">}}</span>
+<span class="s2">.closing-kicker</span><span class="se">{{</span><span class="s2">font-size:12px;letter-spacing:.3em;color:var(--gold);margin-bottom:16px</span><span class="se">}}</span>
+<span class="s2">.closing-title</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-style:italic;font-weight:500;font-size:64px;</span>
+<span class="s2">  line-height:1.0;color:var(--ink);margin-bottom:28px</span><span class="se">}}</span>
+<span class="s2">.closing-body</span><span class="se">{{</span><span class="s2">font-size:18px;line-height:1.66;max-width:640px;color:#473d31</span><span class="se">}}</span>
+<span class="s2">.closing-stats</span><span class="se">{{</span><span class="s2">display:flex;gap:54px;margin-top:46px</span><span class="se">}}</span>
+<span class="s2">.closing-stats div</span><span class="se">{{</span><span class="s2">display:flex;flex-direction:column</span><span class="se">}}</span>
+<span class="s2">.closing-stats b</span><span class="se">{{</span><span class="s2">font-family:'Playfair',serif;font-weight:700;font-size:46px;color:var(--gold)</span><span class="se">}}</span>
+<span class="s2">.closing-stats span</span><span class="se">{{</span><span class="s2">font-size:12px;letter-spacing:.16em;text-transform:uppercase;</span>
+<span class="s2">  color:#8a7f6f;margin-top:4px</span><span class="se">}}</span>
+
+<span class="s2">@media print</span><span class="se">{{</span>
+<span class="s2">  body</span><span class="se">{{</span><span class="s2">background:#fff</span><span class="se">}}</span>
+<span class="s2">  .page</span><span class="se">{{</span><span class="s2">width:auto;margin:0</span><span class="se">}}</span>
+<span class="s2">  .title-spread,.closing</span><span class="se">{{</span><span class="s2">break-before:page</span><span class="se">}}</span>
+<span class="s2">  .card,.toc li,.framework,.scripture,.bigidea,.info-card</span><span class="se">{{</span><span class="s2">break-inside:avoid</span><span class="se">}}</span>
+<span class="se">}}</span>
+<span class="s2">&lt;/style&gt;&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;&lt;div class="page"&gt;</span>
+<span class="si">{</span><span class="n">cover</span><span class="p">()</span><span class="si">}</span>
+<span class="si">{</span><span class="n">sections</span><span class="si">}</span>
+<span class="si">{</span><span class="n">closing</span><span class="p">()</span><span class="si">}</span>
+<span class="s2">&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"""</span>
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">out</span><span class="o">=</span><span class="n">document</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/Family_Legacy_Collection.html"</span><span class="p">,</span><span class="s2">"w"</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"HTML bytes:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>

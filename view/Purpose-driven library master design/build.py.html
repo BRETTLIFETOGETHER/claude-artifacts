@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>build.py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head><body>
+<header class="vhead"><div class="wrap">
+<div class="crumb"><a href="../../index.html">← All artifacts</a> &nbsp;·&nbsp; Purpose-driven library master design</div>
+<h1>build.py</h1>
+<div class="meta"><span class="ext e-py">py</span><span class="b warn" title="Also modified by shell commands the export does not record — this reconstruction may lag the true final version">shell-touched</span>
+<span class="b">16 KB</span>
+<a class="btn" href="../../artifacts/Purpose-driven%20library%20master%20design/build.py" download>Download raw</a>
+<button class="btn" id="theme" type="button">Theme</button></div>
+<p class="crumb" style="margin-top:9px">Python script to generate the HTML for the 15-page print-ready master catalog</p>
+</div></header>
+<div class="codewrap"><div class="hl"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">CAMPAIGNS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"01"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"A Life That Matters"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"40 Days to Know God, Belong, Grow, Serve, Live Sent, and Multiply Your Life"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"The flagship introduction to the Biblical Purpose Library. Perfect for churchwide campaigns."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"Created to Know God"</span><span class="p">,</span>
+            <span class="s2">"Designed to Belong"</span><span class="p">,</span>
+            <span class="s2">"Formed to Become Like Jesus"</span><span class="p">,</span>
+            <span class="s2">"Gifted to Serve"</span><span class="p">,</span>
+            <span class="s2">"Sent to Make a Difference"</span><span class="p">,</span>
+            <span class="s2">"Called to Multiply"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"02"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Made for More"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Discover the Life God Designed You to Live"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Helping people move beyond success toward significance."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"More Than Existing"</span><span class="p">,</span>
+            <span class="s2">"Made for His Presence"</span><span class="p">,</span>
+            <span class="s2">"Made for His Family"</span><span class="p">,</span>
+            <span class="s2">"Made to Become"</span><span class="p">,</span>
+            <span class="s2">"Made to Contribute"</span><span class="p">,</span>
+            <span class="s2">"Made to Multiply"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"03"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Your Life on Purpose"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Align Every Part of Your Life with What Matters Most"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Ideal for adults, young professionals, workplace groups, and life planning."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"Your Center"</span><span class="p">,</span>
+            <span class="s2">"Your People"</span><span class="p">,</span>
+            <span class="s2">"Your Formation"</span><span class="p">,</span>
+            <span class="s2">"Your Contribution"</span><span class="p">,</span>
+            <span class="s2">"Your Mission"</span><span class="p">,</span>
+            <span class="s2">"Your Legacy"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"04"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Designed to Flourish"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Growing Spiritually, Relationally, Personally, and Purposefully"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Helping believers flourish in every area of life."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"Flourishing with God"</span><span class="p">,</span>
+            <span class="s2">"Flourishing Together"</span><span class="p">,</span>
+            <span class="s2">"Flourishing from Within"</span><span class="p">,</span>
+            <span class="s2">"Flourishing through Contribution"</span><span class="p">,</span>
+            <span class="s2">"Flourishing for Others"</span><span class="p">,</span>
+            <span class="s2">"Flourishing Across Generations"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"05"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"The Whole-Life Disciple"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Following Jesus in Every Role, Relationship, and Responsibility"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Helping believers integrate faith into every part of life."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"A Life of Worship"</span><span class="p">,</span>
+            <span class="s2">"A Life Together"</span><span class="p">,</span>
+            <span class="s2">"A Life Being Formed"</span><span class="p">,</span>
+            <span class="s2">"A Life of Service"</span><span class="p">,</span>
+            <span class="s2">"A Life on Mission"</span><span class="p">,</span>
+            <span class="s2">"A Life That Reproduces"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"06"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Your Next Faithful Chapter"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Clarify Your Calling. Refocus Your Priorities. Multiply Your Impact."</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Especially designed for second-half adults, retirees, pastors, and legacy-minded leaders."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"Remember Your Story"</span><span class="p">,</span>
+            <span class="s2">"Recognize Your Design"</span><span class="p">,</span>
+            <span class="s2">"Renew Your Relationship with God"</span><span class="p">,</span>
+            <span class="s2">"Refocus Your Season"</span><span class="p">,</span>
+            <span class="s2">"Respond to Your Assignment"</span><span class="p">,</span>
+            <span class="s2">"Reproduce Your Wisdom"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"07"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Living What Matters Most"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Six Biblical Priorities That Shape an Extraordinary Life"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Best for churchwide discipleship, membership, new believers, and annual vision emphasis."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"Love God First"</span><span class="p">,</span>
+            <span class="s2">"Love People Well"</span><span class="p">,</span>
+            <span class="s2">"Grow Every Day"</span><span class="p">,</span>
+            <span class="s2">"Serve with Joy"</span><span class="p">,</span>
+            <span class="s2">"Live Sent"</span><span class="p">,</span>
+            <span class="s2">"Leave a Legacy"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"08"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Rooted"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Building a Faith That Lasts for Every Season of Life"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Best for spiritual formation, discipleship, new believers, and churches wanting stronger biblical foundations."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"Rooted in Christ"</span><span class="p">,</span>
+            <span class="s2">"Rooted in Scripture"</span><span class="p">,</span>
+            <span class="s2">"Rooted in Community"</span><span class="p">,</span>
+            <span class="s2">"Rooted in Character"</span><span class="p">,</span>
+            <span class="s2">"Rooted in Mission"</span><span class="p">,</span>
+            <span class="s2">"Rooted for the Future"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">"num"</span><span class="p">:</span> <span class="s2">"09"</span><span class="p">,</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Living Fully Alive"</span><span class="p">,</span>
+        <span class="s2">"subtitle"</span><span class="p">:</span> <span class="s2">"Discovering the Life Jesus Came to Give"</span><span class="p">,</span>
+        <span class="s2">"tag"</span><span class="p">:</span> <span class="s2">"Best for evangelism, churchwide renewal, Easter follow-up, community outreach, and spiritual growth."</span><span class="p">,</span>
+        <span class="s2">"weeks"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"Alive in Christ"</span><span class="p">,</span>
+            <span class="s2">"Alive Together"</span><span class="p">,</span>
+            <span class="s2">"Alive in Truth"</span><span class="p">,</span>
+            <span class="s2">"Alive through Service"</span><span class="p">,</span>
+            <span class="s2">"Alive for Others"</span><span class="p">,</span>
+            <span class="s2">"Alive with Eternal Purpose"</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">OUTPUT_STACK</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Weekend Experience"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"Six-sermon series"</span><span class="p">,</span> <span class="s2">"Pastor preparation guide"</span><span class="p">,</span> <span class="s2">"Presentation slides"</span><span class="p">,</span> <span class="s2">"Graphics"</span><span class="p">,</span> <span class="s2">"Promotion"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"Daily Journey"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"30- or 40-day devotional"</span><span class="p">,</span> <span class="s2">"Journal edition"</span><span class="p">,</span> <span class="s2">"Family edition"</span><span class="p">,</span> <span class="s2">"Student edition"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"Groups"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"Six-session curriculum"</span><span class="p">,</span> <span class="s2">"Leader guide"</span><span class="p">,</span> <span class="s2">"Discussion questions"</span><span class="p">,</span> <span class="s2">"Video option"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"Adult Bible Fellowship"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"Expanded teacher guide"</span><span class="p">,</span> <span class="s2">"Historical notes"</span><span class="p">,</span> <span class="s2">"Maps &amp; charts"</span><span class="p">,</span> <span class="s2">"Master teaching manuscript"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"Churchwide Resources"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"Prayer guide"</span><span class="p">,</span> <span class="s2">"Worship recommendations"</span><span class="p">,</span> <span class="s2">"Campaign calendar"</span><span class="p">,</span> <span class="s2">"Volunteer resources"</span><span class="p">,</span> <span class="s2">"Celebration weekend"</span><span class="p">,</span> <span class="s2">"Follow-up pathway"</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">FUTURE_EDITIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Men's Purpose Journey"</span><span class="p">,</span> <span class="s2">"Women's Purpose Journey"</span><span class="p">,</span> <span class="s2">"Student Purpose Journey"</span><span class="p">,</span>
+    <span class="s2">"Young Adult Purpose Journey"</span><span class="p">,</span> <span class="s2">"Parenting with Purpose"</span><span class="p">,</span> <span class="s2">"Marriage on Purpose"</span><span class="p">,</span>
+    <span class="s2">"Financial Purpose"</span><span class="p">,</span> <span class="s2">"Workplace Purpose"</span><span class="p">,</span> <span class="s2">"Retirement with Purpose"</span><span class="p">,</span>
+    <span class="s2">"Legacy Purpose"</span><span class="p">,</span> <span class="s2">"Church Leadership Purpose"</span><span class="p">,</span> <span class="s2">"Pastor Purpose"</span><span class="p">,</span>
+    <span class="s2">"Mission on Purpose"</span><span class="p">,</span> <span class="s2">"Community Impact Purpose"</span><span class="p">,</span> <span class="s2">"Family Legacy Purpose"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">CSS</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">@page { size: 8.5in 11in; margin: 0; }</span>
+<span class="s2">* { box-sizing: border-box; }</span>
+<span class="s2">html, body { margin: 0; padding: 0; }</span>
+<span class="s2">body {</span>
+<span class="s2">  font-family: 'Poppins', sans-serif;</span>
+<span class="s2">  color: #2B2620;</span>
+<span class="s2">  background: #FAF6EF;</span>
+<span class="s2">}</span>
+<span class="s2">.page {</span>
+<span class="s2">  width: 8.5in;</span>
+<span class="s2">  height: 11in;</span>
+<span class="s2">  position: relative;</span>
+<span class="s2">  page-break-after: always;</span>
+<span class="s2">  overflow: hidden;</span>
+<span class="s2">  padding: 0.85in 0.9in;</span>
+<span class="s2">  background: #FAF6EF;</span>
+<span class="s2">}</span>
+<span class="s2">.page:last-child { page-break-after: auto; }</span>
+
+<span class="s2">h1, h2, h3 { font-family: 'Lora', serif; margin: 0; }</span>
+
+<span class="s2">.rule {</span>
+<span class="s2">  height: 3px;</span>
+<span class="s2">  width: 64px;</span>
+<span class="s2">  background: #7A2E2E;</span>
+<span class="s2">  margin: 18px 0 22px 0;</span>
+<span class="s2">}</span>
+<span class="s2">.rule.center { margin-left: auto; margin-right: auto; }</span>
+<span class="s2">.gold { color: #B8892B; }</span>
+<span class="s2">.maroon { color: #7A2E2E; }</span>
+<span class="s2">.small-caps {</span>
+<span class="s2">  text-transform: uppercase;</span>
+<span class="s2">  letter-spacing: 2.5px;</span>
+<span class="s2">  font-size: 11px;</span>
+<span class="s2">  color: #B8892B;</span>
+<span class="s2">  font-weight: 600;</span>
+<span class="s2">}</span>
+
+<span class="s2">/* COVER */</span>
+<span class="s2">.cover { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; }</span>
+<span class="s2">.cover .eyebrow { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #B8892B; font-weight: 600; margin-bottom: 26px; }</span>
+<span class="s2">.cover h1 { font-size: 44px; color: #2B2620; line-height: 1.18; max-width: 5.6in; }</span>
+<span class="s2">.cover .accent-word { color: #7A2E2E; }</span>
+<span class="s2">.cover h2 { font-size: 17px; font-weight: 400; font-style: italic; color: #4A443B; margin-top: 22px; max-width: 5in; line-height: 1.5; }</span>
+<span class="s2">.cover .bar { width: 90px; height: 3px; background: #7A2E2E; margin: 30px 0; }</span>
+<span class="s2">.cover .taglines { font-family: 'Lora', serif; font-size: 15px; color: #5A5145; line-height: 2.1; }</span>
+<span class="s2">.cover .footer-label { position: absolute; bottom: 0.85in; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #9C8F79; }</span>
+
+<span class="s2">/* SECTION PAGES (legacy, founder, why) */</span>
+<span class="s2">.section-page .eyebrow { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #B8892B; font-weight: 600; }</span>
+<span class="s2">.section-page h1 { font-size: 30px; margin-top: 10px; color: #2B2620; line-height: 1.25; }</span>
+<span class="s2">.section-page .lead {</span>
+<span class="s2">  font-family: 'Lora', serif;</span>
+<span class="s2">  font-style: italic;</span>
+<span class="s2">  font-size: 19px;</span>
+<span class="s2">  color: #4A443B;</span>
+<span class="s2">  line-height: 1.6;</span>
+<span class="s2">  margin: 26px 0 30px 0;</span>
+<span class="s2">  border-left: 3px solid #7A2E2E;</span>
+<span class="s2">  padding-left: 22px;</span>
+<span class="s2">}</span>
+<span class="s2">.section-page p { font-size: 13.5px; line-height: 1.85; color: #3C362E; margin: 0 0 14px 0; }</span>
+<span class="s2">.section-page ul { margin: 0; padding-left: 20px; }</span>
+<span class="s2">.section-page li { font-size: 13.5px; line-height: 1.9; color: #3C362E; }</span>
+
+<span class="s2">.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; margin-top: 10px; }</span>
+<span class="s2">.grid-item { font-size: 13px; padding: 10px 0; border-bottom: 1px solid #E6DCC8; color: #3C362E; }</span>
+
+<span class="s2">/* CAMPAIGN PAGES */</span>
+<span class="s2">.campaign-page { height: 100%; position: relative; }</span>
+<span class="s2">.campaign-page .bignum {</span>
+<span class="s2">  position: absolute;</span>
+<span class="s2">  top: -0.25in;</span>
+<span class="s2">  right: -0.1in;</span>
+<span class="s2">  font-family: 'Lora', serif;</span>
+<span class="s2">  font-size: 220px;</span>
+<span class="s2">  color: #EFE5D2;</span>
+<span class="s2">  font-weight: 700;</span>
+<span class="s2">  z-index: 0;</span>
+<span class="s2">  line-height: 1;</span>
+<span class="s2">}</span>
+<span class="s2">.campaign-page .content { position: relative; z-index: 1; }</span>
+<span class="s2">.campaign-page .badge {</span>
+<span class="s2">  display: inline-block;</span>
+<span class="s2">  font-size: 11px;</span>
+<span class="s2">  letter-spacing: 2px;</span>
+<span class="s2">  text-transform: uppercase;</span>
+<span class="s2">  color: #FAF6EF;</span>
+<span class="s2">  background: #7A2E2E;</span>
+<span class="s2">  padding: 6px 14px;</span>
+<span class="s2">  border-radius: 2px;</span>
+<span class="s2">  font-weight: 600;</span>
+<span class="s2">}</span>
+<span class="s2">.campaign-page h1 { font-size: 34px; margin-top: 16px; color: #2B2620; line-height: 1.2; max-width: 5.6in; }</span>
+<span class="s2">.campaign-page .subtitle { font-family: 'Lora', serif; font-style: italic; font-size: 16px; color: #6B4A2E; margin-top: 10px; max-width: 5.6in; }</span>
+<span class="s2">.campaign-page .tag { font-size: 12.5px; color: #6B6153; margin-top: 14px; max-width: 5.4in; line-height: 1.6; }</span>
+<span class="s2">.campaign-page .weeks { margin-top: 34px; }</span>
+<span class="s2">.week-row {</span>
+<span class="s2">  display: flex;</span>
+<span class="s2">  align-items: center;</span>
+<span class="s2">  padding: 13px 0;</span>
+<span class="s2">  border-bottom: 1px solid #E6DCC8;</span>
+<span class="s2">}</span>
+<span class="s2">.week-row .wk-num {</span>
+<span class="s2">  font-family: 'Lora', serif;</span>
+<span class="s2">  font-weight: 700;</span>
+<span class="s2">  font-size: 15px;</span>
+<span class="s2">  color: #7A2E2E;</span>
+<span class="s2">  width: 78px;</span>
+<span class="s2">  flex-shrink: 0;</span>
+<span class="s2">  letter-spacing: 1px;</span>
+<span class="s2">}</span>
+<span class="s2">.week-row .wk-title { font-size: 14.5px; color: #2B2620; font-weight: 500; }</span>
+
+<span class="s2">/* OUTPUT STACK PAGE */</span>
+<span class="s2">.stack-page h1 { font-size: 30px; }</span>
+<span class="s2">.stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 34px; margin-top: 28px; }</span>
+<span class="s2">.stack-card { border: 1px solid #E6DCC8; background: #FFFDF9; padding: 18px 20px; border-radius: 3px; }</span>
+<span class="s2">.stack-card h3 { font-size: 15px; color: #7A2E2E; margin-bottom: 10px; }</span>
+<span class="s2">.stack-card ul { margin: 0; padding-left: 16px; }</span>
+<span class="s2">.stack-card li { font-size: 12px; line-height: 1.8; color: #3C362E; }</span>
+
+<span class="s2">/* FUTURE PAGE */</span>
+<span class="s2">.future-page h1 { font-size: 30px; }</span>
+<span class="s2">.future-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 22px; margin-top: 22px; }</span>
+<span class="s2">.future-item { font-size: 12.5px; padding: 9px 0; border-bottom: 1px solid #E6DCC8; color: #3C362E; }</span>
+<span class="s2">.vision-box {</span>
+<span class="s2">  margin-top: 32px;</span>
+<span class="s2">  background: #7A2E2E;</span>
+<span class="s2">  color: #FAF6EF;</span>
+<span class="s2">  padding: 26px 28px;</span>
+<span class="s2">  border-radius: 3px;</span>
+<span class="s2">}</span>
+<span class="s2">.vision-box .small-caps { color: #E3C98A; }</span>
+<span class="s2">.vision-box p { font-family: 'Lora', serif; font-style: italic; font-size: 15px; line-height: 1.7; margin: 10px 0 0 0; color: #FAF6EF; }</span>
+
+<span class="s2">.pagenum { position: absolute; bottom: 0.5in; right: 0.9in; font-size: 10px; color: #A79A82; letter-spacing: 1px; }</span>
+<span class="s2">.pagefoot { position: absolute; bottom: 0.5in; left: 0.9in; font-size: 10px; color: #A79A82; letter-spacing: 1px; text-transform: uppercase; }</span>
+<span class="s2">"""</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">week_rows</span><span class="p">(</span><span class="n">weeks</span><span class="p">):</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">weeks</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">rows</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;div class="week-row"&gt;&lt;div class="wk-num"&gt;Week </span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;div class="wk-title"&gt;</span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s1">&lt;/div&gt;&lt;/div&gt;</span><span class="se">\n</span><span class="s1">'</span>
+    <span class="k">return</span> <span class="n">rows</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">campaign_page</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">page_no</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">&lt;div class="page campaign-page"&gt;</span>
+<span class="s2">  &lt;div class="bignum"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'num'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="content"&gt;</span>
+<span class="s2">    &lt;span class="badge"&gt;Campaign </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'num'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">    &lt;h1&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">    &lt;div class="subtitle"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'subtitle'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="tag"&gt;</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'tag'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="weeks"&gt;</span>
+<span class="s2">      </span><span class="si">{</span><span class="n">week_rows</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'weeks'</span><span class="p">])</span><span class="si">}</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagefoot"&gt;LifeTogether Biblical Purpose Library&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagenum"&gt;</span><span class="si">{</span><span class="n">page_no</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">"""</span>
+
+<span class="n">stack_cards</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">OUTPUT_STACK</span><span class="p">:</span>
+    <span class="n">lis</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;li&gt;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&lt;/li&gt;"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span>
+    <span class="n">stack_cards</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'&lt;div class="stack-card"&gt;&lt;h3&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">&lt;/h3&gt;&lt;ul&gt;</span><span class="si">{</span><span class="n">lis</span><span class="si">}</span><span class="s1">&lt;/ul&gt;&lt;/div&gt;</span><span class="se">\n</span><span class="s1">'</span>
+
+<span class="n">future_items</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;div class="future-item"&gt;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&lt;/div&gt;'</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">FUTURE_EDITIONS</span><span class="p">)</span>
+
+<span class="n">campaign_pages_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">campaign_page</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">CAMPAIGNS</span><span class="p">))</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">&lt;meta charset="utf-8"&gt;</span>
+<span class="s2">&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+
+<span class="s2">&lt;!-- PAGE 1: COVER --&gt;</span>
+<span class="s2">&lt;div class="page cover"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Master Library Catalog&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;LifeTogether &lt;span class="accent-word"&gt;Biblical Purpose&lt;/span&gt; Library&lt;/h1&gt;</span>
+<span class="s2">  &lt;div class="bar"&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;h2&gt;Six&amp;nbsp;&amp;mdash;&amp;nbsp;now nine&amp;nbsp;&amp;mdash;&amp;nbsp; churchwide campaigns built on the timeless foundations of the five biblical purposes.&lt;/h2&gt;</span>
+<span class="s2">  &lt;div class="taglines"&gt;</span>
+<span class="s2">    Helping Churches Go Deeper.&lt;br&gt;</span>
+<span class="s2">    Helping Disciples Grow Stronger.&lt;br&gt;</span>
+<span class="s2">    Helping Every Person Discover a Life That Matters.</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="footer-label"&gt;LifeTogether &amp;middot; Discipleship Resources&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+
+<span class="s2">&lt;!-- PAGE 2: LEGACY --&gt;</span>
+<span class="s2">&lt;div class="page section-page"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Our Foundation&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;Building on a Legacy of Faithfulness&lt;/h1&gt;</span>
+<span class="s2">  &lt;div class="lead"&gt;</span>
+<span class="s2">    For over 30 years, the five biblical purposes have helped shape thousands of churches and inspired more than 50 million readers around the world.</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p&gt;LifeTogether builds on those timeless biblical foundations with a new generation of churchwide campaigns, devotionals, curriculum, classes, and discipleship experiences &amp;mdash; designed to help churches go deeper, wider, and further in every purpose.&lt;/p&gt;</span>
+<span class="s2">  &lt;p&gt;Every campaign in this library carries that same DNA forward: biblically rooted, practically applied, and built for the whole church to walk through together.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="pagefoot"&gt;LifeTogether Biblical Purpose Library&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagenum"&gt;02&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+
+<span class="s2">&lt;!-- PAGE 3: FOUNDER --&gt;</span>
+<span class="s2">&lt;div class="page section-page"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Our Founder&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;A Story Rooted in Ministry&lt;/h1&gt;</span>
+<span class="s2">  &lt;div class="lead"&gt;</span>
+<span class="s2">    LifeTogether founder Brett Eastman served on the original Purpose Driven ministry team and authored and co-developed many of the original Purpose Driven small-group resources published by Zondervan.</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;p&gt;Today, LifeTogether is helping churches apply those same biblical foundations through a new generation of customizable campaigns, curriculum, and discipleship tools &amp;mdash; for every age and stage of life.&lt;/p&gt;</span>
+<span class="s2">  &lt;p&gt;This library carries that history forward without standing still: it is a distinctly LifeTogether vision, broader in scope and built for the next generation of churches.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="pagefoot"&gt;LifeTogether Biblical Purpose Library&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagenum"&gt;03&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+
+<span class="s2">&lt;!-- PAGE 4: WHY THIS LIBRARY --&gt;</span>
+<span class="s2">&lt;div class="page section-page"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;Why This Library&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;One Foundation, Every Format Your Church Needs&lt;/h1&gt;</span>
+<span class="s2">  &lt;p&gt;For more than three decades, the biblical purposes of worship, fellowship, discipleship, ministry, and mission have transformed churches around the world. LifeTogether expands those same biblical themes into a comprehensive discipleship library for today's church.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="small-caps" style="margin-top:22px;"&gt;Every Series Includes&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="grid-2"&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Weekend sermon outlines&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Six-session small-group curriculum&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Daily devotionals&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Adult Bible Fellowship edition&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Teaching notes&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Discussion guides&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Family applications&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Digital resources&lt;/div&gt;</span>
+<span class="s2">    &lt;div class="grid-item"&gt;Campaign planning tools&lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagefoot"&gt;LifeTogether Biblical Purpose Library&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagenum"&gt;04&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+
+<span class="si">{</span><span class="n">campaign_pages_html</span><span class="si">}</span>
+
+<span class="s2">&lt;!-- PAGE 14: EVERY CAMPAIGN INCLUDES --&gt;</span>
+<span class="s2">&lt;div class="page stack-page"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;The Full Stack&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;Every Campaign Includes&lt;/h1&gt;</span>
+<span class="s2">  &lt;p style="margin-top:10px;"&gt;A complete, ready-to-run output stack &amp;mdash; so every campaign launches with everything your church needs, from the pulpit to the living room.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="stack-grid"&gt;</span>
+<span class="s2">    </span><span class="si">{</span><span class="n">stack_cards</span><span class="si">}</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagefoot"&gt;LifeTogether Biblical Purpose Library&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagenum"&gt;14&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+
+<span class="s2">&lt;!-- PAGE 15: FUTURE LIBRARY --&gt;</span>
+<span class="s2">&lt;div class="page future-page"&gt;</span>
+<span class="s2">  &lt;div class="eyebrow"&gt;What's Next&lt;/div&gt;</span>
+<span class="s2">  &lt;h1&gt;The Future Biblical Purpose Library&lt;/h1&gt;</span>
+<span class="s2">  &lt;p style="margin-top:10px;"&gt;These nine campaigns become the foundation for dozens of specialized editions, each applying the same biblical framework to a specific audience or season of life.&lt;/p&gt;</span>
+<span class="s2">  &lt;div class="future-grid"&gt;</span>
+<span class="s2">    </span><span class="si">{</span><span class="n">future_items</span><span class="si">}</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="vision-box"&gt;</span>
+<span class="s2">    &lt;div class="small-caps"&gt;Strategic Vision&lt;/div&gt;</span>
+<span class="s2">    &lt;p&gt;A 30-volume Biblical Purpose Library &amp;mdash; six core campaigns and specialized editions beneath each &amp;mdash; sharing one theological backbone while serving every ministry context, for every age and stage of life.&lt;/p&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagefoot"&gt;LifeTogether Biblical Purpose Library&lt;/div&gt;</span>
+<span class="s2">  &lt;div class="pagenum"&gt;15&lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">"""</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/home/claude/masterlib/catalog.html"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">HTML</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"HTML written."</span><span class="p">)</span>
+</pre></div>
+</div>
+<footer><div class="wrap">Reconstructed from <code>/home/claude/masterlib/build.py</code></div></footer>
+<script src="../../assets/site.js" defer></script>
+</body></html>
