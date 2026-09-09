@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Launch Planner — 40 Day Campaigns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Newsreader:ital,opsz,wght@1,6..72,300..500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#171410;--ink2:#4A4436;--ink3:#847B67;--faint:#948C7E;--gold:#C9A961;--gold-hi:#E9D5A3;--bronze:#B5842D;--line:#E7DEC8;--paper:#FFFDF8;--cream:#FBF7EE;--bg0:#0E0C09;
+--c1a:#16A88F;--c1b:#0C5A4E;--c2a:#C8484C;--c2b:#7E2326;--c3a:#4F86E0;--c3b:#26417F;--c4a:#E0703F;--c4b:#8A3A1E;--c5a:#E8A52E;--c5b:#9A6810;--c6a:#36A85E;--c6b:#176233;--c7a:#7B5FE0;--c7b:#3F2E86;--c8a:#E2542F;--c8b:#8A2A14;--c9a:#5A6B8C;--c9b:#2E3A52;--c10a:#C99A3C;--c10b:#7E601C;--c11a:#3E8FB0;--c11b:#1D4B60;--c12a:#B0578D;--c12b:#5F2A4C}
+*{box-sizing:border-box;margin:0}
+body{background:var(--cream);color:var(--ink);font-family:'Instrument Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--gold);color:var(--ink)}
+:focus-visible{outline:2px solid var(--bronze);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,3.5vw,32px)}
+/* masthead */
+.mast{background:var(--bg0);color:#EFE7D5;padding:58px 0 46px}
+.mast .kk{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
+.mast h1{font-family:'Fraunces',serif;font-weight:470;font-size:clamp(30px,5.4vw,54px);letter-spacing:-.015em;margin:12px 0 8px;text-wrap:balance}
+.mast p{color:#B3A992;font-size:14.5px;max-width:62ch}
+/* controls */
+.controls{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;margin:-30px 0 34px;position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr auto auto;gap:20px;align-items:center;box-shadow:0 24px 50px -28px rgba(23,20,16,.35)}
+@media(max-width:900px){.controls{grid-template-columns:1fr}}
+.cvmini{width:64px;min-width:64px;aspect-ratio:3/4;border-radius:8px;background:linear-gradient(165deg,color-mix(in srgb,var(--ca) 42%,#17130C),#100D09 80%);position:relative;display:flex;align-items:flex-end;padding:7px;color:#EFE7D5;font-family:'Fraunces',serif;font-size:8.5px;line-height:1.15;font-weight:600}
+.cvmini::before{content:"";position:absolute;inset:5px;border:1px solid rgba(233,213,163,.4);border-radius:5px}
+.csel .lb{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:5px}
+.csel .nm{font-family:'Fraunces',serif;font-size:19px;font-weight:520}
+.csel .sub{font-size:12px;color:var(--ink3);margin-top:2px}
+.csel a{color:var(--bronze);font-weight:700;font-size:12px}
+.dt label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:6px}
+.dt input{border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14.5px;font-family:inherit;background:#fff}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:12px 20px;font-weight:700;font-size:13.5px;cursor:pointer;border:1px solid transparent;transition:.25s;font-family:inherit}
+.btn.gold{background:var(--gold);color:var(--ink)}
+.btn.gold:hover{background:var(--gold-hi)}
+.btn.ghost{border-color:var(--line);background:#fff;color:var(--ink2)}
+.btn.ghost:hover{border-color:var(--bronze);color:var(--bronze)}
+.snap{grid-column:1/-1;font-size:12px;color:var(--bronze);display:none}
+/* plan */
+.plangrid{display:grid;grid-template-columns:.62fr 1.38fr;gap:clamp(20px,3vw,40px);align-items:start;padding-bottom:90px}
+@media(max-width:940px){.plangrid{grid-template-columns:1fr}}
+.rail{position:sticky;top:20px;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px}
+@media(max-width:940px){.rail{position:static}}
+.rail .big{font-family:'Fraunces',serif;font-weight:470;font-size:26px;letter-spacing:-.01em;margin:4px 0 2px}
+.rail .kv{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);padding:9px 0;border-bottom:1px solid #F1EADA}
+.rail .kv b{color:var(--ink)}
+.rail .kv:last-of-type{border-bottom:0}
+.milestone{margin-top:14px;background:#FBF4E4;border:1px solid #EBDDBB;border-radius:12px;padding:12px 14px;font-size:12.5px;color:var(--ink2)}
+.milestone b{color:var(--bronze)}
+/* timeline */
+.phase{margin:0 0 10px}
+.phase .ph{display:flex;align-items:center;gap:14px;font-size:11px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--bronze);margin:26px 0 12px}
+.phase .ph::after{content:"";flex:1;height:1px;background:var(--line)}
+.wk{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:14px;padding:18px 20px;margin:10px 0;display:grid;grid-template-columns:112px 1fr;gap:18px;transition:transform .3s,box-shadow .3s}
+.wk:hover{transform:translateX(4px);box-shadow:0 16px 34px -22px rgba(23,20,16,.35)}
+@media(max-width:640px){.wk{grid-template-columns:1fr}}
+.wk .when{font-size:11px;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase;line-height:1.7}
+.wk .when b{display:block;font-family:'Fraunces',serif;font-size:16px;letter-spacing:0;color:var(--ink);text-transform:none;font-weight:520}
+.wk h3{font-size:16.5px;font-weight:600;font-family:'Fraunces',serif;letter-spacing:-.01em}
+.wk .tsk{margin:8px 0 0;padding:0;list-style:none}
+.wk .tsk li{font-size:13px;color:var(--ink2);padding:3px 0 3px 20px;position:relative;line-height:1.55}
+.wk .tsk li::before{content:"—";position:absolute;left:0;color:var(--bronze)}
+.wk .lnk{font-size:12px;font-weight:700;color:var(--bronze);margin-top:8px;display:inline-block}
+.wk.celebrate{border-left-color:var(--bronze);background:linear-gradient(150deg,#FFF9EA,var(--paper) 70%)}
+.foot{background:var(--bg0);color:#7E7663;font-size:12.5px}
+.foot .in{max-width:1180px;margin:0 auto;padding:22px 28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media print{.mast,.controls,.foot,.rail .btn{display:none!important}.plangrid{grid-template-columns:1fr}.rail{position:static;border:0;padding:0 0 14px}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="mast"><div class="wrap">
+  <p class="kk">The Launch Planner</p>
+  <h1>Pick a Sunday. We'll plan the rest.</h1>
+  <p>Choose your kickoff Sunday and the planner builds your church's complete runway — six weeks of preparation, six aligned campaign weeks, and Celebration Sunday — dated, printable, and ready for your calendar.</p>
+</div></div>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="cvmini" id="cv" style="--ca:#16A88F"><span id="cvT">—</span></div>
+    <div class="csel">
+      <div class="lb">Campaign</div>
+      <div class="nm" id="cName">—</div>
+      <div class="sub" id="cSub">— · <a href="browse.html">choose a different campaign</a></div>
+    </div>
+    <div class="dt">
+      <label for="kick">Kickoff Sunday</label>
+      <input type="date" id="kick">
+    </div>
+    <div class="acts">
+      <button class="btn gold" id="ics">⤓ Add to calendar (.ics)</button>
+      <button class="btn ghost" onclick="window.print()">🖨 Print plan</button>
+      <button class="btn ghost" id="save">Save to my account</button>
+    </div>
+    <div class="snap" id="snap"></div>
+  </div>
+
+  <div class="plangrid">
+    <aside class="rail" aria-label="Launch summary">
+      <div class="csel"><div class="lb">Your launch at a glance</div></div>
+      <div class="big" id="rName">—</div>
+      <div class="kv"><span>Kickoff Sunday</span><b id="rKick">—</b></div>
+      <div class="kv"><span>Celebration Sunday</span><b id="rCel">—</b></div>
+      <div class="kv"><span>Prep window</span><b>6 weeks</b></div>
+      <div class="kv"><span>Campaign length</span><b id="rLen">6 weeks</b></div>
+      <div class="kv"><span>Sermons · Sessions</span><b>6 · 6</b></div>
+      <div class="milestone" id="rNext">—</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px">
+        <a class="btn gold" id="rRead" href="#" style="justify-content:center">Open Day One in the Reading Room</a>
+        <a class="btn ghost" id="rKit" href="#" style="justify-content:center">Open the Leader &amp; Launch Kit</a>
+      </div>
+    </aside>
+
+    <div id="plan"></div>
+  </div>
+</div>
+
+<div class="foot"><div class="in">
+  <span>© 2026 40daycampaigns.com · The Launch Planner</span>
+  <span>Dates snap to Sundays · calendar file works with Google, Apple &amp; Outlook</span>
+</div></div>
+
+<script src="data.js"></script><script src="engine.js"></script>
+<script>
+(function(){
+'use strict';
+var HUE={1:['#16A88F','#0C5A4E'],2:['#C8484C','#7E2326'],3:['#4F86E0','#26417F'],4:['#E0703F','#8A3A1E'],5:['#E8A52E','#9A6810'],6:['#36A85E','#176233'],7:['#7B5FE0','#3F2E86'],8:['#E2542F','#8A2A14'],9:['#5A6B8C','#2E3A52'],10:['#C99A3C','#7E601C'],11:['#3E8FB0','#1D4B60'],12:['#B0578D','#5F2A4C']};
+var P=new URLSearchParams(location.search);
+var C=Engine.get(P.get('id'))||window.CAMPAIGNS.find(function(r){return r[9]==='C04001'});
+var dev=Engine.devotional(C), serm=Engine.sermons(C), study=Engine.groupStudy(C);
+
+/* ---- date helpers ---- */
+function nextSunday(d){var x=new Date(d);x.setDate(x.getDate()+((7-x.getDay())%7));return x;}
+function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x;}
+function fmtLong(d){return d.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'});}
+function fmtShort(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function iso(d){return d.toISOString().slice(0,10);}
+function icsDate(d){return iso(d).replace(/-/g,'');}
+
+/* default kickoff: the Sunday ~6 weeks out */
+var kickInput=document.getElementById('kick');
+var saved=null; try{saved=JSON.parse(localStorage.getItem('ltLaunch')||'null')}catch(e){}
+var defKick = (saved && saved.id===C[9]) ? new Date(saved.kickoff+'T12:00:00') : nextSunday(addDays(new Date(),42));
+kickInput.value=iso(defKick);
+kickInput.min=iso(addDays(new Date(),7));
+
+/* ---- schedule builder ---- */
+var PREP=[
+ {t:'Vision & team',       tasks:['Cast the vision to staff and elders','Name a campaign champion','Set the budget and order/print plan']},
+ {t:'Open host recruiting',tasks:['Announce from the pulpit: “open your home for six weeks”','Launch the host sign-up list','Personally invite 20% more hosts than you need']},
+ {t:'Host orientation',    tasks:['One-hour host orientation (the kit runs it)','Hand every host the Leader & Launch Kit','Order participant devotionals for print or digital']},
+ {t:'Church-wide sign-up Sunday', tasks:['Preach the “nobody does this alone” invitation','Open group sign-ups in the lobby and online','Youth & children directors brief their teams']},
+ {t:'Form the groups',     tasks:['Place every sign-up in a group and confirm rosters','Hosts make first contact with their groups','Distribute devotionals to every household']},
+ {t:'Final prep',          tasks:['Walk hosts through Session 1 (30 minutes)','Load Sermon 1 into the plan of service','Send the church-wide “we begin Sunday” message']}
+];
+function schedule(kick){
+  var rows=[], cel=addDays(kick,42);
+  for(var i=0;i<6;i++){
+    var wkStart=addDays(kick,-7*(6-i));
+    rows.push({phase:'PREPARE — SIX WEEKS OUT',when:'Week −'+(6-i),date:wkStart,title:PREP[i].t,tasks:PREP[i].tasks,kind:'prep'});
+  }
+  for(var w=0;w<6;w++){
+    var sun=addDays(kick,7*w);
+    var part=dev.parts[w]||{title:'',days:''};
+    rows.push({phase:'RUN — THE CAMPAIGN',when:'Week '+(w+1),date:sun,
+      title:'Sermon '+(w+1)+': '+serm[w].t,
+      tasks:['Groups meet: “'+study.sessions[w].title+'”','Daily readings: '+part.days+' — '+part.title,'Memory verse: '+ (dev.days[Math.min(w*7,dev.days.length-1)].mem.v)],
+      kind:'run', link:{href:'campaign.html?id='+C[9],label:'Open this week\u2019s materials →'}});
+  }
+  rows.push({phase:'CELEBRATE',when:'Week 7',date:cel,title:'Celebration Sunday',
+    tasks:['Stories from the journey — two or three voices','Commission the groups that want to continue','Point to the next season: finder.html has three matches ready'],kind:'cel'});
+  return {rows:rows,cel:cel};
+}
+
+/* ---- render ---- */
+var plan=document.getElementById('plan');
+function paint(){
+  var chosen=new Date(kickInput.value+'T12:00:00');
+  var snapped=nextSunday(chosen);
+  var snapEl=document.getElementById('snap');
+  if(iso(snapped)!==iso(chosen)){ snapEl.style.display='block'; snapEl.textContent='Kickoffs land on Sundays — snapped to '+fmtLong(snapped)+'.'; }
+  else snapEl.style.display='none';
+  var S=schedule(snapped);
+  var html='', lastPhase='';
+  S.rows.forEach(function(r){
+    if(r.phase!==lastPhase){ html+='<div class="phase"><div class="ph">'+r.phase+'</div></div>'; lastPhase=r.phase; }
+    html+='<div class="wk'+(r.kind==='cel'?' celebrate':'')+'"><div class="when"><b>'+fmtShort(r.date)+'</b>'+r.when+'</div>'+
+      '<div><h3>'+r.title+'</h3><ul class="tsk">'+r.tasks.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+
+      (r.link?'<a class="lnk" href="'+r.link.href+'">'+r.link.label+'</a>':'')+'</div></div>';
+  });
+  plan.innerHTML=html;
+  /* rail */
+  document.getElementById('rName').textContent=C[0];
+  document.getElementById('rKick').textContent=fmtLong(snapped);
+  document.getElementById('rCel').textContent=fmtLong(S.cel);
+  document.getElementById('rLen').textContent=dev.label.replace('Devotional','').trim()||'6 weeks';
+  var today=new Date(); var next=S.rows.find(function(r){return r.date>=today;});
+  document.getElementById('rNext').innerHTML= next ? '<b>Next up:</b> '+next.title+' · '+fmtLong(next.date) : '<b>Journey complete.</b> Time to choose the next one.';
+  document.getElementById('rRead').href='reader.html?id='+C[9]+'&day=1';
+  document.getElementById('rKit').href='curriculum.html?id='+C[9]+'&fmt=Leader Kit';
+  window.__SCHED=S; window.__KICK=snapped;
+}
+kickInput.addEventListener('change',paint);
+
+/* ---- campaign chip ---- */
+var hue=HUE[C[2]];
+document.getElementById('cv').style.setProperty('--ca',hue[0]);
+document.getElementById('cvT').textContent=C[0];
+document.getElementById('cName').textContent=C[0];
+document.getElementById('cSub').innerHTML=(C[1]||window.CATS[C[2]])+' · '+C[3]+' · <a href="browse.html">choose a different campaign</a>';
+
+/* ---- .ics download ---- */
+document.getElementById('ics').addEventListener('click',function(){
+  var S=window.__SCHED, lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//40 Day Campaigns//Launch Planner//EN','CALSCALE:GREGORIAN'];
+  S.rows.forEach(function(r,i){
+    lines.push('BEGIN:VEVENT','UID:lt-'+C[9]+'-'+i+'@40daycampaigns.com',
+      'DTSTAMP:'+icsDate(new Date())+'T090000Z',
+      'DTSTART;VALUE=DATE:'+icsDate(r.date),
+      'SUMMARY:'+(r.when+' · '+r.title).replace(/,/g,'\\,'),
+      'DESCRIPTION:'+r.tasks.join(' \\n ').replace(/,/g,'\\,'),
+      'END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  var blob=new Blob([lines.join('\r\n')],{type:'text/calendar'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=C[0].replace(/[^a-z0-9]+/gi,'-')+'-launch-plan.ics'; a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+});
+
+/* ---- save ---- */
+document.getElementById('save').addEventListener('click',function(){
+  try{localStorage.setItem('ltLaunch',JSON.stringify({id:C[9],kickoff:iso(window.__KICK),created:iso(new Date())}));}catch(e){}
+  this.textContent='✓ Saved to My Launch'; var b=this; setTimeout(function(){b.textContent='Save to my account'},2200);
+});
+
+paint();
+})();
+</script>
+<script src="cart.js"></script>
+</body>
+</html>

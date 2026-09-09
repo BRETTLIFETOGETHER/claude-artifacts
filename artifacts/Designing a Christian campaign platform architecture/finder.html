@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 Day Campaigns — Campaign Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16161D;--ink-2:#3A3A45;--dim:#5E5E6B;--faint:#8A8A98;
+  --orange:#F26C1E;--orange-d:#DE5E12;--gold:#E4AC43;--gold-d:#C68E2A;
+  --line:#ECE9F2;--card:#F5F3F9;--white:#FFFFFF;
+  --c1a:#16A88F;--c1b:#0C5A4E;--c2a:#C8484C;--c2b:#7E2326;--c3a:#4F86E0;--c3b:#26417F;
+  --c4a:#E0703F;--c4b:#8A3A1E;--c5a:#E8A52E;--c5b:#9A6810;--c6a:#36A85E;--c6b:#176233;
+  --c7a:#7B5FE0;--c7b:#3F2E86;--c8a:#E2542F;--c8b:#8A2A14;--c9a:#5A6B8C;--c9b:#2E3A52;--c10a:#C99A3C;--c10b:#7E601C;
+}
+*{box-sizing:border-box;}
+body{margin:0;color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
+  background:
+   radial-gradient(46% 42% at 90% 0%, rgba(225,216,250,.75), transparent 60%),
+   radial-gradient(42% 38% at 99% 22%, rgba(252,222,214,.6), transparent 60%),
+   radial-gradient(44% 44% at 2% 82%, rgba(247,222,236,.5), transparent 62%),
+   #fff;background-attachment:fixed;}
+a{text-decoration:none;color:inherit;}
+h1,h2,h3,h4{font-family:'Hanken Grotesk';margin:0;letter-spacing:-.02em;}
+.hk{font-family:'Hanken Grotesk';}
+
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Hanken Grotesk';font-weight:700;font-size:14.5px;
+  padding:12px 20px;border-radius:999px;border:none;cursor:pointer;transition:.16s;white-space:nowrap;}
+.btn-dark{background:var(--ink);color:#fff;}.btn-dark:hover{background:#000;}
+.btn-orange{background:var(--orange);color:#fff;}.btn-orange:hover{background:var(--orange-d);}
+.btn-white{background:#fff;color:var(--ink);border:1px solid var(--line);}.btn-white:hover{box-shadow:0 8px 20px -12px rgba(0,0,0,.25);}
+
+/* nav */
+.navwrap{position:sticky;top:0;z-index:60;padding:16px 16px 0;}
+.nav{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:20px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(16px);border:1px solid rgba(22,22,29,.07);
+  border-radius:999px;padding:9px 12px 9px 18px;box-shadow:0 12px 32px -18px rgba(40,30,80,.32);}
+.brand{display:flex;align-items:center;gap:10px;}
+.mark{width:36px;height:36px;border-radius:10px;position:relative;background:linear-gradient(135deg,var(--gold),var(--gold-d));
+  display:flex;align-items:center;justify-content:center;box-shadow:0 5px 13px -5px rgba(228,172,67,.7);}
+.mark b{font-family:'Hanken Grotesk';font-weight:900;font-size:14px;color:#26190A;}
+.mark i{position:absolute;right:-4px;bottom:-4px;width:15px;height:15px;border-radius:5px;background:var(--orange);
+  border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;}
+.mark i::after{content:"";border-left:5px solid #fff;border-top:3px solid transparent;border-bottom:3px solid transparent;margin-left:1px;}
+.brand .a{font-family:'Hanken Grotesk';font-weight:800;font-size:15.5px;}.brand .a span{color:var(--gold-d);}
+.nright{margin-left:auto;display:flex;gap:9px;}
+.exit{font-family:'Hanken Grotesk';font-weight:700;font-size:13px;color:var(--dim);display:inline-flex;align-items:center;gap:6px;}
+.exit:hover{color:var(--ink);}
+
+/* stage */
+.stage{max-width:760px;margin:0 auto;padding:40px 24px 70px;}
+
+/* progress */
+.prog{margin-bottom:30px;}
+.prog .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.prog .step{font-family:'Hanken Grotesk';font-weight:800;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);}
+.prog .back{font-family:'Hanken Grotesk';font-weight:700;font-size:13px;color:var(--dim);cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+.prog .back:hover{color:var(--ink);}
+.prog .bar{height:7px;background:var(--card);border-radius:999px;overflow:hidden;}
+.prog .fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--orange));border-radius:999px;transition:width .35s cubic-bezier(.4,0,.2,1);}
+
+/* question */
+.q h2{font-weight:900;font-size:clamp(26px,3.6vw,38px);line-height:1.08;margin-bottom:8px;}
+.q .qsub{font-size:15.5px;color:var(--dim);margin-bottom:26px;}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.opts.one{grid-template-columns:1fr;}
+.opt{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:15px;
+  padding:16px 18px;cursor:pointer;transition:.14s;text-align:left;}
+.opt:hover{border-color:var(--orange);transform:translateY(-2px);box-shadow:0 14px 30px -20px rgba(217,84,42,.45);}
+.opt.sel{border-color:var(--orange);background:#fff7f1;box-shadow:0 14px 30px -20px rgba(217,84,42,.5);}
+.opt .oi{width:44px;height:44px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;}
+.opt .ot{display:block;font-family:'Hanken Grotesk';font-weight:800;font-size:15.5px;color:var(--ink);line-height:1.2;}
+.opt .od{display:block;font-size:12.5px;color:var(--dim);margin-top:2px;}
+.opt .chk{margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;transition:.14s;}
+.opt.sel .chk{background:var(--orange);border-color:var(--orange);}
+.opt .chk svg{opacity:0;color:#fff;transition:.14s;}.opt.sel .chk svg{opacity:1;}
+
+/* intro / results shared */
+.intro{text-align:center;padding-top:14px;}
+.intro .badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;
+  padding:8px 16px;font-family:'Hanken Grotesk';font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);}
+.intro h1{font-weight:900;font-size:clamp(30px,4.4vw,48px);line-height:1.05;margin:18px 0 14px;}
+.intro p{font-size:17px;color:var(--ink-2);max-width:46ch;margin:0 auto 28px;}
+.intro .mini{margin-top:22px;font-size:13px;color:var(--faint);}
+
+/* results */
+.res h1{font-weight:900;font-size:clamp(28px,4vw,42px);line-height:1.05;text-align:center;margin-bottom:6px;}
+.res .rsub{text-align:center;color:var(--ink-2);font-size:16px;margin-bottom:30px;}
+.topmatch{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;display:grid;grid-template-columns:190px 1fr;gap:22px;
+  box-shadow:0 26px 54px -30px rgba(40,30,80,.4);margin-bottom:18px;position:relative;}
+.rank{position:absolute;top:-12px;left:20px;background:var(--gold);color:#26190A;font-family:'Hanken Grotesk';font-weight:900;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:999px;box-shadow:0 6px 14px -6px rgba(228,172,67,.7);}
+.tm-info{padding:8px 4px;}
+.tm-info .fit{display:inline-flex;align-items:center;gap:7px;font-family:'Hanken Grotesk';font-weight:800;font-size:12.5px;color:var(--orange);margin-bottom:8px;}
+.tm-info h3{font-weight:900;font-size:24px;line-height:1.05;}
+.tm-info .ch{font-size:13px;color:var(--dim);margin:3px 0 12px;}
+.tm-info .why{font-size:14px;color:var(--ink-2);line-height:1.55;margin-bottom:16px;}
+.tm-info .acts{display:flex;gap:10px;flex-wrap:wrap;}
+.runners{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:26px;}
+.runner{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;gap:14px;}
+.runner .rinfo .fit{font-family:'Hanken Grotesk';font-weight:800;font-size:11.5px;color:var(--orange);}
+.runner .rinfo h4{font-weight:800;font-size:16px;margin:2px 0 2px;}
+.runner .rinfo .ch{font-size:12px;color:var(--dim);margin-bottom:8px;}
+.runner .rinfo .why{font-size:12.5px;color:var(--ink-2);line-height:1.45;margin-bottom:10px;}
+.res .foot{text-align:center;}
+.res .foot a{margin:0 10px;}
+
+/* cover */
+.cov{border-radius:13px;overflow:hidden;position:relative;flex:none;}
+.cov.big{width:190px;} .cov.sm{width:96px;}
+.cov .canvas{position:relative;aspect-ratio:3/3.5;display:flex;align-items:center;justify-content:center;padding:14px;
+  background:linear-gradient(160deg,var(--ca),var(--cb));}
+.cov .canvas::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 80% 12%,rgba(255,255,255,.16),transparent 55%),linear-gradient(180deg,transparent 55%,rgba(0,0,0,.3));}
+.cov .tab{position:absolute;top:0;left:0;right:0;height:24px;background:var(--orange);z-index:3;display:flex;align-items:center;justify-content:center;}
+.cov .tab::after{content:"";position:absolute;bottom:-11px;left:0;right:0;height:22px;background:var(--orange);border-radius:0 0 50% 50%/0 0 100% 100%;}
+.cov .tab b{position:relative;z-index:2;font-family:'Hanken Grotesk';font-weight:800;font-size:8px;color:#fff;letter-spacing:.12em;}
+.cov .nm{position:relative;z-index:2;font-family:'Hanken Grotesk';font-weight:800;color:#fff;text-align:center;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.35);}
+.cov.big .nm{font-size:17px;} .cov.sm .nm{font-size:12px;}
+.cov .fmt{position:absolute;bottom:8px;right:8px;z-index:3;font-family:'Hanken Grotesk';font-weight:800;font-size:8px;background:rgba(0,0,0,.42);color:#fff;padding:3px 6px;border-radius:5px;}
+
+@media(max-width:620px){
+  .opts{grid-template-columns:1fr;}
+  .topmatch{grid-template-columns:1fr;}.cov.big{width:130px;margin:0 auto;}
+  .runners{grid-template-columns:1fr;}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;}}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px;}
+</style>
+</head>
+<body>
+
+<div class="navwrap"><nav class="nav">
+  <a class="brand" href="index.html"><span class="mark"><b>40</b><i></i></span><span class="a">40 Day <span>Campaigns</span></span></a>
+  <div class="nright"><a class="exit" href="index.html">Exit <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></a></div>
+</nav></div>
+
+<div class="stage" id="stage"></div>
+
+<script>
+const HUE={1:['var(--c1a)','var(--c1b)'],2:['var(--c2a)','var(--c2b)'],3:['var(--c3a)','var(--c3b)'],4:['var(--c4a)','var(--c4b)'],
+5:['var(--c5a)','var(--c5b)'],6:['var(--c6a)','var(--c6b)'],7:['var(--c7a)','var(--c7b)'],8:['var(--c8a)','var(--c8b)'],9:['var(--c9a)','var(--c9b)'],10:['var(--c10a)','var(--c10b)']};
+const CHNAME={1:'Spiritual Formation',2:'The Bible',3:'Emotional & Mental Health',4:'Relationships & Family',5:'Community & Belonging',6:'Money & Generosity',7:'Purpose & Work',8:'Mission & Outreach',9:'Church Health & Leadership',10:'Legacy & Generations'};
+const SEAS={new:'New Year',lent:'Lent & Easter',fall:'Fall kickoff',advent:'Advent & Christmas',yearend:'year-end giving',any:'any season'};
+const OUT={groups:'launch and strengthen groups',generosity:'grow generosity',emotional:'bring emotional & spiritual health',discipleship:'deepen discipleship',outreach:'mobilize outreach'};
+
+// [title, ch, format, seasons[], outcomes[], pop, flagship]
+const DATA=[
+ ['God Owns It All',6,'40-Day',['new','yearend'],['generosity','discipleship'],99,1],
+ ['40 Days of Purpose',1,'40-Day',['fall'],['discipleship'],98,1],
+ ['40 Days of Peace',3,'40-Day',['new'],['emotional'],95,1],
+ ['40 Days of Life Together',5,'40-Day',['fall'],['groups'],94,1],
+ ['The Generous Life',6,'21-Day',['yearend'],['generosity'],92,0],
+ ['Rooted',1,'6-Week',['fall'],['discipleship'],88,0],
+ ['Whole Life Health',3,'40-Day',['new'],['emotional'],86,0],
+ ['Better Together',5,'6-Week',['fall'],['groups'],84,0],
+ ['Crazy Generosity',6,'21-Day',['yearend'],['generosity'],83,0],
+ ['Quiet the Noise',3,'21-Day',['new'],['emotional'],82,0],
+ ['30 Days to Easter',2,'30-Day',['lent'],['discipleship'],90,0],
+ ['Hope Is Alive',2,'7-Day',['lent'],['outreach'],79,0],
+ ['One Another',5,'6-Week',['any'],['groups'],78,0],
+ ['Belonging',5,'21-Day',['any'],['groups'],77,0],
+ ['Anchored',3,'21-Day',['any'],['emotional'],76,0],
+ ['Convergence',10,'6-Week',['any'],['discipleship'],75,0],
+ ['Kingdom',10,'40-Day',['yearend'],['generosity'],74,0],
+ ['Driven',7,'21-Day',['new'],['discipleship'],73,0],
+ ['Wisdom',1,'30-Day',['any'],['discipleship'],72,0],
+ ['Life on Mission',8,'40-Day',['fall'],['outreach'],71,0],
+ ['Open Hands',6,'7-Day',['yearend'],['generosity'],70,0],
+ ['New Life',8,'21-Day',['lent'],['outreach'],69,0],
+ ['Made for More',7,'30-Day',['fall'],['discipleship'],68,0],
+ ['Rest for Your Soul',3,'30-Day',['any'],['emotional'],67,0],
+ ['Family Matters',4,'6-Week',['any'],['discipleship'],66,0],
+ ['Generous God',6,'21-Day',['yearend'],['generosity'],65,0],
+ ['This Is Us',9,'6-Week',['fall'],['discipleship'],63,0],
+ ['Advent of Hope',2,'21-Day',['advent'],['discipleship'],62,0],
+ ['Neighbors',8,'7-Day',['any'],['outreach'],61,0],
+ ['Grown Up Faith',10,'40-Day',['any'],['discipleship'],60,0],
+];
+
+/* ---- questions ---- */
+const Q=[
+ {key:'outcome',h:'What do you most want to happen?',sub:'Pick the change you\u2019re hoping for in your church.',opts:[
+   ['groups','Launch or strengthen groups','Get people into real community','var(--c5a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.9'],
+   ['generosity','Grow generosity','Open hands, kingdom giving','var(--c6a)','M12 17v5M9 10.8V5a3 3 0 0 1 6 0v5.8a4 4 0 1 1-6 0z'],
+   ['emotional','Bring peace & healing','Care for anxious, weary hearts','var(--c3a)','M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.6a5.5 5.5 0 0 0 0-7.8z'],
+   ['discipleship','Deepen discipleship','A closer walk with Christ','var(--c1a)','M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2z'],
+   ['outreach','Mobilize outreach','Reach the community','var(--c8a)','M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20'],
+ ]},
+ {key:'audience',h:'Who is this campaign mainly for?',sub:'We\u2019ll surface the right editions too.',opts:[
+   ['church','The whole church','One movement, everyone together','var(--c9a)','M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5'],
+   ['families','Families & the home','Parents, kids, next-gen faith','var(--c4a)','M9 21v-6h6v6M3 10l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
+   ['leaders','Leaders & staff','Develop your team','var(--c7a)','M3 3v18h18M7 14l4-4 3 3 5-6'],
+   ['groups','A small-group season','Curriculum for groups','var(--c5a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'],
+ ]},
+ {key:'season',h:'When are you planning to launch?',sub:'Campaigns can auto-surface for the season.',opts:[
+   ['new','New Year','January reset & prayer','var(--c3a)','M12 2v4M12 18v4M2 12h4M18 12h4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z'],
+   ['lent','Lent & Easter','The road to resurrection','var(--c2a)','M12 2v20M6 8h12'],
+   ['fall','Fall kickoff','Launch the ministry year','var(--c5a)','M12 2C8 6 6 9 6 13a6 6 0 0 0 12 0c0-4-2-7-6-11z'],
+   ['yearend','Year-end giving','Generosity season','var(--c6a)','M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7S9 2 6.5 3.5 8 7 12 7zM12 7s3-5 5.5-3.5S16 7 12 7z'],
+   ['advent','Advent & Christmas','Waiting on the King','var(--c7a)','M12 2l2.4 5 5.6.8-4 3.9 1 5.5L12 15.8 6 18.2l1-5.5-4-3.9 5.6-.8z'],
+   ['any','No particular season','Evergreen, launch anytime','var(--c1a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],
+ ]},
+ {key:'format',h:'How long can your church commit?',sub:'Every campaign comes in multiple lengths.',opts:[
+   ['7-Day','7 days','A short, high-energy week','var(--c8a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],
+   ['21-Day','21 days','Enough to form a habit','var(--c5a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],
+   ['40-Day','40 days','A full churchwide movement','var(--c6a)','M12 6v6l4 2M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],
+   ['6-Week','A 6-week group series','Leader-led small groups','var(--c7a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'],
+   ['any','Not sure yet','Show me the best fit','var(--c9a)','M9.1 9a3 3 0 1 1 5.8 1c0 2-3 3-3 3M12 17h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z'],
+ ]},
+ {key:'feel',h:'Where is your church right now?',sub:'This helps us match the tone.',opts:[
+   ['vision','Ready for fresh vision','Energy, momentum, a next step','var(--c9a)','M12 2l2.4 5 5.6.8-4 3.9 1 5.5L12 15.8 6 18.2l1-5.5-4-3.9 5.6-.8z'],
+   ['hard','Walking through something hard','Grief, anxiety, weariness','var(--c3a)','M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.6a5.5 5.5 0 0 0 0-7.8z'],
+   ['deeper','Hungry to go deeper','Ready to grow in the Word','var(--c1a)','M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2z'],
+   ['reach','Wanting to reach out','Turn outward to the community','var(--c8a)','M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20'],
+   ['belong','Craving connection','Build belonging & community','var(--c5a)','M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8'],
+ ]},
+];
+const FEEL2CH={vision:[9,1],hard:[3],deeper:[1,2],reach:[8],belong:[5]};
+const FEEL2OUT={vision:'discipleship',hard:'emotional',deeper:'discipleship',reach:'outreach',belong:'groups'};
+const AUD2CH={church:[],families:[4,10],leaders:[9,7],groups:[5]};
+
+/* ---- state ---- */
+const stage=document.getElementById('stage');
+let step=-1; const ans={};
+
+function render(){
+  if(step===-1)return intro();
+  if(step>=Q.length)return results();
+  const q=Q[step];
+  const oneCol=q.opts.length%2===1 && q.opts.length<=5 ? '' : '';
+  stage.innerHTML=`
+   <div class="prog">
+     <div class="meta">
+       <span class="step">Question ${step+1} of ${Q.length}</span>
+       ${step>0?'<span class="back" id="back"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 18l-6-6 6-6"/></svg> Back</span>':'<span class="back" id="back"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 18l-6-6 6-6"/></svg> Start over</span>'}
+     </div>
+     <div class="bar"><div class="fill" style="width:${(step/Q.length)*100}%"></div></div>
+   </div>
+   <div class="q">
+     <h2>${q.h}</h2>
+     <div class="qsub">${q.sub}</div>
+     <div class="opts">
+       ${q.opts.map(o=>`<button class="opt ${ans[q.key]===o[0]?'sel':''}" data-v="${o[0]}">
+          <span class="oi" style="background:${o[3]}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="${o[4]}"/></svg></span>
+          <span><span class="ot">${o[1]}</span><span class="od">${o[2]}</span></span>
+          <span class="chk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span>
+        </button>`).join('')}
+     </div>
+   </div>`;
+  stage.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+    ans[q.key]=b.dataset.v;
+    stage.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
+    setTimeout(()=>{step++;render();window.scrollTo({top:0,behavior:'smooth'});},240);
+  }));
+  const back=document.getElementById('back');
+  if(back)back.addEventListener('click',()=>{ if(step===0){step=-1;} else {step--;} render();window.scrollTo({top:0}); });
+}
+
+function intro(){
+  stage.innerHTML=`<div class="intro">
+    <span class="badge">Campaign Finder</span>
+    <h1>Find your church\u2019s next campaign</h1>
+    <p>Answer five quick questions and we\u2019ll recommend your three best-fit campaigns — with the right format and season built in.</p>
+    <button class="btn btn-orange" id="start" style="font-size:16px;padding:15px 28px;">Start the finder <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <div class="mini">Takes about 30 seconds · No sign-in required</div>
+  </div>`;
+  document.getElementById('start').addEventListener('click',()=>{step=0;render();});
+}
+
+/* ---- scoring ---- */
+function score(row){
+  const [t,ch,fmt,seas,outs,pop]=row; let s=0; const hits=[];
+  if(ans.outcome && outs.includes(ans.outcome)){s+=6;hits.push('outcome');}
+  if(ans.season && ans.season!=='any'){ if(seas.includes(ans.season)){s+=4;hits.push('season');} else if(seas.includes('any')){s+=1;} }
+  else if(ans.season==='any'){ if(seas.includes('any'))s+=1.5; }
+  if(ans.format && ans.format!=='any'){ if(fmt===ans.format){s+=4;hits.push('format');} }
+  if(ans.audience){ const set=AUD2CH[ans.audience]||[]; if(set.includes(ch)){s+=3;hits.push('aud');} if(ans.audience==='church')s+=1; }
+  if(ans.feel){ if((FEEL2CH[ans.feel]||[]).includes(ch)){s+=4;hits.push('feel');}
+    if(FEEL2OUT[ans.feel] && outs.includes(FEEL2OUT[ans.feel])){s+=2;if(!hits.includes('outcome'))hits.push('outcome');} }
+  s+=pop/100; // tiebreaker
+  return {s,hits};
+}
+function fitPct(s){ return Math.min(98, Math.round(72 + s*2.4)); }
+function whyText(row,hits){
+  const [t,ch,fmt,seas,outs]=row; const parts=[];
+  if(hits.includes('outcome')&&ans.outcome)parts.push(`helps you ${OUT[ans.outcome]}`);
+  if(hits.includes('season')&&ans.season&&ans.season!=='any')parts.push(`fits ${SEAS[ans.season]}`);
+  if(hits.includes('format')&&ans.format&&ans.format!=='any')parts.push(`runs as a ${fmt} campaign`);
+  if(hits.includes('feel')&&!hits.includes('outcome'))parts.push(`lands in ${CHNAME[ch]}`);
+  if(!parts.length)parts.push(`a strong, proven fit in ${CHNAME[ch]}`);
+  let str=parts.join(', ').replace(/,([^,]*)$/,', and$1');
+  return str.charAt(0).toUpperCase()+str.slice(1)+'.';
+}
+
+function results(){
+  const ranked=DATA.map(r=>({r,...score(r)})).sort((a,b)=>b.s-a.s);
+  const top=ranked[0], r2=ranked[1], r3=ranked[2];
+  const covBig=(row)=>{const [t,ch,,,,]=row;const[a,b]=HUE[ch];
+    return `<div class="cov big"><div class="canvas" style="--ca:${a};--cb:${b}"><div class="tab"><b>40 DAY</b></div><div class="nm">${t}</div><span class="fmt">${row[2]}</span></div></div>`;};
+  const covSm=(row)=>{const [t,ch,,,,]=row;const[a,b]=HUE[ch];
+    return `<div class="cov sm"><div class="canvas" style="--ca:${a};--cb:${b}"><div class="tab"><b>40 DAY</b></div><div class="nm">${t}</div></div></div>`;};
+  const runner=(o,rank)=>`<div class="runner">${covSm(o.r)}
+     <div class="rinfo"><div class="fit">${fitPct(o.s)}% match</div><h4>${o.r[0]}</h4>
+       <div class="ch">${CHNAME[o.r[1]]} · ${o.r[2]}</div>
+       <div class="why">${whyText(o.r,o.hits)}</div>
+       <a class="btn btn-white" href="#" style="font-size:13px;padding:9px 15px;">Preview</a></div></div>`;
+  stage.innerHTML=`<div class="res">
+    <h1>Your top matches</h1>
+    <div class="rsub">Based on your answers, here are the campaigns built for this moment.</div>
+    <div class="topmatch">
+      <span class="rank">★ Best match</span>
+      ${covBig(top.r)}
+      <div class="tm-info">
+        <span class="fit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2l2.4 5 5.6.8-4 3.9 1 5.5L12 15.8 6 18.2l1-5.5-4-3.9 5.6-.8z"/></svg> ${fitPct(top.s)}% match</span>
+        <h3>${top.r[0]}</h3>
+        <div class="ch">${CHNAME[top.r[1]]} · ${top.r[2]} campaign</div>
+        <div class="why">${whyText(top.r,top.hits)}</div>
+        <div class="acts">
+          <a class="btn btn-dark" href="#">Preview campaign <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          <a class="btn btn-white" href="#">Customize it</a>
+        </div>
+      </div>
+    </div>
+    <div class="runners">${runner(r2)}${runner(r3)}</div>
+    <div class="foot">
+      <a class="btn btn-white" id="restart" href="#">Start over</a>
+      <a class="btn btn-orange" href="browse.html">Browse the full library <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>`;
+  document.getElementById('restart').addEventListener('click',e=>{e.preventDefault();Object.keys(ans).forEach(k=>delete ans[k]);step=-1;render();window.scrollTo({top:0});});
+}
+
+render();
+</script>
+</body>
+</html>

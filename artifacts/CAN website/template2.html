@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAN Family Workspace&trade;</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0C1D33; --panel:#11253F; --panel2:#152C4B;
+  --line:rgba(201,169,78,.24); --hair:rgba(201,169,78,.14);
+  --gold:#C9A94E; --gold-lt:#E6CE8C;
+  --paper:#EFE9DC; --body:#D6DEE9; --muted:#90A4BD; --red:#D98A6A; --green:#8FBF9F;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--navy);
+ background-image:radial-gradient(120% 50% at 50% 0%, #142A48 0%, #0C1D33 50%, #07121F 100%);
+ background-attachment:fixed;color:var(--body);
+ font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;line-height:1.6}
+.wrap{max-width:800px;margin:0 auto;padding:0 18px}
+h1,h2,h3,h4,h5{font-family:"Playfair Display",Georgia,serif;font-weight:500;color:var(--paper);margin:0}
+p{margin:0 0 .9em}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* chrome */
+.top{position:sticky;top:0;z-index:20;background:rgba(9,22,38,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topin{max-width:800px;margin:0 auto;padding:.55rem 18px;display:flex;align-items:center;gap:.6rem}
+.brand{font-family:"Playfair Display",serif;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.crumb{flex:1;min-width:0;font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seg{display:flex;border:1px solid var(--hair)}
+.seg button{background:none;border:0;color:var(--muted);font-size:.53rem;letter-spacing:.11em;text-transform:uppercase;padding:.28rem .42rem}
+.seg button.on{background:var(--gold);color:#0C1D33;font-weight:600}
+.tabs{max-width:800px;margin:0 auto;padding:0 18px;display:flex;gap:0;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+ font-family:"Playfair Display",serif;font-size:.86rem;padding:.5rem .7rem;white-space:nowrap}
+.tabs button.on{color:var(--gold-lt);border-bottom-color:var(--gold)}
+
+/* blocks */
+.sec{padding:24px 0;border-top:1px solid var(--line)}
+.sec:first-child{border-top:0}
+.sechead{margin:0 0 1rem}
+.sechead h2{font-size:clamp(1.3rem,5.4vw,1.85rem);line-height:1.12}
+.sechead .sub{color:var(--muted);font-style:italic;font-size:.97rem;margin:.35rem 0 0}
+.back{background:none;border:0;color:var(--gold);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;padding:.2rem 0;margin-bottom:.8rem}
+.subhead{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:.98rem;margin:1.4rem 0 .35rem;border-bottom:1px solid var(--hair);padding-bottom:.25rem}
+
+.band{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 1.1rem}
+.band div{flex:1 1 33%;background:var(--navy);padding:.7rem .3rem;text-align:center}
+.band b{display:block;font-family:"Playfair Display",serif;font-size:1.3rem;color:var(--gold-lt);font-weight:500;line-height:1}
+.band span{display:block;font-size:.53rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.32rem}
+.pill{display:inline-block;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;padding:.2rem .5rem;border:1px solid currentColor}
+.r-HIGH{color:var(--red)} .r-ELEVATED{color:var(--gold)} .r-MODERATE{color:var(--gold-lt)} .r-LOW{color:var(--green)}
+
+/* rows */
+.row{display:flex;gap:.8rem;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--hair);padding:.8rem 0;color:inherit}
+.row:hover .rt{color:var(--gold-lt)}
+.rn{font-family:"Playfair Display",serif;color:var(--gold);font-size:.92rem;min-width:2.1em;line-height:1.5}
+.rmain{flex:1;min-width:0}
+.rt{display:block;font-family:"Playfair Display",serif;font-size:1.02rem;color:var(--paper);line-height:1.25}
+.rs{display:block;font-size:.92rem;color:var(--muted);font-style:italic;margin-top:.15rem;line-height:1.4}
+.rmeta{display:block;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:.28rem}
+.arw{color:var(--gold);padding-top:.15rem}
+.tag{display:inline-block;font-size:.49rem;letter-spacing:.13em;text-transform:uppercase;border:1px solid var(--hair);color:var(--muted);padding:.08rem .28rem;margin-left:.32rem;vertical-align:middle}
+
+/* relationship map */
+.rel{border-top:1px solid var(--hair);margin:0 0 1.1rem}
+.relrow{display:flex;align-items:center;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--hair)}
+.relname{flex:1;min-width:0;font-size:.98rem;color:var(--paper);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.relname i{color:var(--muted);font-style:normal;font-size:.82rem}
+.pips{display:flex;gap:3px}
+.pip{width:11px;height:11px;border:1px solid var(--hair)}
+.pip.on{background:var(--gold);border-color:var(--gold)}
+.relstage{font-size:.55rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);min-width:5.6em;text-align:right}
+
+/* panels + output */
+.panel{border:1px solid var(--line);background:var(--panel);padding:1rem 1.05rem;margin:0 0 1rem}
+.panel h4{font-size:1.05rem;color:var(--gold-lt);margin:0 0 .45rem}
+.panel ul{margin:0;padding-left:1.05rem}
+.panel li{margin:0 0 .25rem;font-size:.98rem}
+.gate{border:1px solid var(--line);background:var(--panel);padding:.55rem .75rem;margin:0 0 .9rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.gate .gl{font-size:.54rem;letter-spacing:.19em;text-transform:uppercase;color:var(--gold);flex:1}
+.out{border:1px solid var(--hair);background:rgba(255,255,255,.02);padding:1rem 1.05rem;margin:0 0 1rem}
+.out h4{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:1.02rem;margin:1.1rem 0 .4rem}
+.out h4:first-child{margin-top:0}
+.out h5{font-size:.87rem;color:var(--paper);margin:.8rem 0 .25rem;letter-spacing:.05em;text-transform:uppercase}
+.out ul{margin:0 0 .8rem;padding-left:1.1rem}
+.out li{margin:0 0 .26rem}
+.out strong{color:var(--paper)}
+.out blockquote{margin:0 0 .8rem;padding-left:.85rem;border-left:2px solid var(--gold);font-style:italic;color:var(--paper)}
+.acts{display:flex;gap:.45rem;flex-wrap:wrap;margin:0 0 .9rem}
+.act{background:none;border:1px solid var(--line);color:var(--gold);font-size:.57rem;letter-spacing:.15em;text-transform:uppercase;padding:.42rem .7rem}
+.act.primary{background:var(--gold);color:#0C1D33;border-color:var(--gold);font-weight:600}
+.spin{color:var(--muted);font-style:italic;padding:1.2rem 0;text-align:center}
+.dot{display:inline-block;animation:bl 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
+.err{border:1px solid var(--red);color:var(--red);padding:.7rem .8rem;margin:0 0 .9rem;font-size:.94rem}
+
+/* forms */
+.fld{margin:0 0 .8rem}
+.fld label{display:block;font-size:.58rem;letter-spacing:.17em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem}
+.fld input,.fld select,.fld textarea{width:100%;background:var(--panel);border:1px solid var(--hair);color:var(--paper);font-family:inherit;font-size:1rem;padding:.52rem .6rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.grid3{display:grid;grid-template-columns:1.4fr .6fr 1fr;gap:.45rem;align-items:end}
+.chips{display:flex;flex-wrap:wrap;gap:.32rem;margin:0 0 .9rem}
+.chip{border:1px solid var(--hair);color:var(--muted);font-size:.8rem;padding:.26rem .5rem;background:none}
+.chip.on{border-color:var(--gold);color:var(--gold-lt);background:rgba(201,169,78,.09)}
+.kid{border-bottom:1px solid var(--hair);padding:.65rem 0}
+.rm{background:none;border:0;color:var(--red);font-size:.57rem;letter-spacing:.13em;text-transform:uppercase}
+.foot{text-align:center;padding:30px 0 54px;border-top:1px solid var(--line);margin-top:20px}
+.foot p{font-size:.58rem;letter-spacing:.17em;text-transform:uppercase;color:var(--muted);margin:0}
+@media (min-width:660px){ body{font-size:19px} .band div{flex:1 1 16%} }
+@media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="topin">
+    <span class="brand">CAN</span>
+    <span class="crumb" id="crumb">Dashboard</span>
+    <span class="seg" id="langSeg">
+      <button type="button" data-lang="faith-forward">Forward</button>
+      <button type="button" data-lang="faith-friendly">Friendly</button>
+      <button type="button" data-lang="values-based">Values</button>
+    </span>
+  </div>
+  <div class="tabs" id="tabs">
+    <button type="button" data-tab="dash">Dashboard</button>
+    <button type="button" data-tab="journeys">Journeys</button>
+    <button type="button" data-tab="interviews">Interviews</button>
+    <button type="button" data-tab="toolbox">Toolbox</button>
+    <button type="button" data-tab="family">Family</button>
+  </div>
+</div>
+
+<div id="app"></div>
+<footer class="foot"><div class="wrap"><p>CAN Family Workspace &middot; AI recommends. The advisor approves.</p></div></footer>
+
+<script>
+var ENTRIES = /*__ENTRIES__*/;
+var CATS = /*__CATS__*/;
+var TEMPLATES = /*__TEMPLATES__*/;
+var INSTRUMENTS = /*__INSTRUMENTS__*/;
+var STATS = /*__STATS__*/;
+
+var STAGES = ["Unknown","Identified","Introduced","Connected","Engaged","Trusted"];
+var SESSIONS = [
+  {n:1,name:"Understand",q:"What is the issue, and why does it matter?",from:1,to:8},
+  {n:2,name:"Reflect",q:"What do I personally believe, and what has shaped me?",from:9,to:15},
+  {n:3,name:"Discuss",q:"What does my family believe, and where do we differ?",from:16,to:23},
+  {n:4,name:"Decide",q:"What will we do, and what conversation comes next?",from:24,to:30}
+];
+var CONCERNS = ["Entitlement","Communication","Inheritance readiness","Succession","Family conflict","Generosity","Business transition","Aging","Surviving spouse","Lack of purpose"];
+var ASPIRATIONS = ["Unity","Impact","Generosity","Business continuity","Next-generation preparation","Faith transfer","Story preservation","Legacy"];
+var TEAM = ["CPA","Estate attorney","Insurance advisor","Trustee","Family office","Pastor","Coach","Counselor","Philanthropy advisor","Business advisor"];
+
+var PROFILE = {
+  familyName:"Anderson",
+  g1a:"John", g1aAge:67, g1aStage:5,
+  g1b:"Susan", g1bAge:65, g1bStage:4,
+  netWorth:"$22M estimated family net worth",
+  business:"Family manufacturing business; eldest son expected to enter leadership",
+  daf:true,
+  faithNote:"Strong Christian faith orientation; long-time church members",
+  faithLanguage:"faith-forward", tone:"reflective",
+  children:[
+    {name:"Michael", age:38, stage:3, note:"Expected business successor"},
+    {name:"Lauren", age:35, stage:1, note:"Disconnected from family financial discussions"},
+    {name:"David", age:31, stage:2, note:"Spouse cautious about inherited wealth"}
+  ],
+  grandkids:4, g3Stage:0,
+  concerns:["Entitlement","Inheritance readiness","Succession","Communication"],
+  aspirations:["Unity","Next-generation preparation","Faith transfer","Generosity"],
+  team:["CPA","Estate attorney","Pastor"],
+  journeys:0, assessments:1, meetings:0, lastMeetingYears:3, stories:0,
+  advisor:"Dana Whitfield", advisorAge:63, firm:"Smith Wealth Partners",
+  secondaryAdvisor:false, successionComplete:false
+};
+
+var CACHE = {}, DAYLIST = {};
+var VIEW = {tab:"dash", v:"main"};
+var TB = {tid:"x1", who:"", length:"standard"};
+var IV = {iid:null, who:""};
+var NOTES = {};
+
+function byId(id){ for (var i=0;i<ENTRIES.length;i++){ if (ENTRIES[i].id === id){ return ENTRIES[i]; } } return null; }
+function catByK(k){ for (var i=0;i<CATS.length;i++){ if (CATS[i].k === k){ return CATS[i]; } } return null; }
+function tplById(id){ for (var i=0;i<TEMPLATES.length;i++){ if (TEMPLATES[i].id === id){ return TEMPLATES[i]; } } return null; }
+function ivById(id){ for (var i=0;i<INSTRUMENTS.length;i++){ if (INSTRUMENTS[i].id === id){ return INSTRUMENTS[i]; } } return null; }
+function ivSubjects(ins){
+  var p = PROFILE, out = [], i;
+  if (ins.aud === "couple"){ out.push(p.g1a + " and " + p.g1b); }
+  else if (ins.aud === "g1both"){ out.push(p.g1a); out.push(p.g1b); }
+  else if (ins.aud === "children"){ for (i=0;i<p.children.length;i++){ out.push(p.children[i].name); } }
+  else if (ins.aud === "childrenGroup"){
+    var names = []; for (i=0;i<p.children.length;i++){ names.push(p.children[i].name); }
+    out.push(names.join(", ") + " together");
+  }
+  else if (ins.aud === "g3"){ out.push("The " + p.grandkids + " grandchildren"); }
+  else if (ins.aud === "inlaws"){ for (i=0;i<p.children.length;i++){ out.push("Spouse of " + p.children[i].name); } }
+  else { out.push("The whole " + p.familyName + " family"); }
+  if (!out.length){ out.push("The " + p.familyName + " family"); }
+  return out;
+}
+
+/* ---------- metrics ---------- */
+function computeMetrics(){
+  var g2 = PROFILE.children.map(function(c){ return Number(c.stage); });
+  var stages = [Number(PROFILE.g1aStage), Number(PROFILE.g1bStage)].concat(g2);
+  if (Number(PROFILE.grandkids) > 0){ stages.push(Number(PROFILE.g3Stage)); }
+  var sum = 0; for (var i=0;i<stages.length;i++){ sum += stages[i]; }
+  var depth = stages.length ? Math.round((sum/(stages.length*5))*100) : 0;
+  var known = g2.filter(function(s){ return s >= 3; }).length;
+  var g2cov = g2.length ? Math.round((known/g2.length)*100) : 0;
+  var g3cov = Number(PROFILE.grandkids) > 0 ? (Number(PROFILE.g3Stage) >= 3 ? 100 : 0) : 0;
+  var drivers = [], pts = 0;
+  if (Number(PROFILE.g1aAge) >= 65){ pts++; drivers.push("Primary client is " + PROFILE.g1aAge); }
+  if (Number(PROFILE.advisorAge) >= 60){ pts++; drivers.push("Lead advisor is " + PROFILE.advisorAge + " with no stated succession"); }
+  if (!PROFILE.secondaryAdvisor){ pts++; drivers.push("No secondary advisor relationship in the household"); }
+  if (g2cov < 50){ pts += 2; drivers.push("Only " + known + " of " + g2.length + " adult children at connected or better"); }
+  if (Number(PROFILE.g1bStage) < 3){ pts++; drivers.push("Spouse relationship is below connected"); }
+  if (Number(PROFILE.lastMeetingYears) >= 2){ pts++; drivers.push("No family meeting in " + PROFILE.lastMeetingYears + " years"); }
+  if (!PROFILE.successionComplete){ pts++; drivers.push("Succession discussion incomplete"); }
+  if (Number(PROFILE.grandkids) > 0 && Number(PROFILE.g3Stage) < 2){ pts++; drivers.push("No G3 engagement"); }
+  var risk = pts >= 6 ? "HIGH" : (pts >= 4 ? "ELEVATED" : (pts >= 2 ? "MODERATE" : "LOW"));
+  return {depth:depth, g2cov:g2cov, g3cov:g3cov, known:known, total:g2.length, risk:risk, drivers:drivers};
+}
+
+/* ---------- prompts ---------- */
+function langRule(){
+  if (PROFILE.faithLanguage === "faith-forward"){ return "FAITH LANGUAGE: Faith-forward. Explicit Christian framing is welcome, including stewardship of what God has entrusted, and at most one short NIV verse where it genuinely fits."; }
+  if (PROFILE.faithLanguage === "faith-friendly"){ return "FAITH LANGUAGE: Faith-friendly. Acknowledge that faith and values shape decisions, but quote no Scripture and use no churchy phrasing."; }
+  return "FAITH LANGUAGE: Values-based. Use no religious language of any kind. Speak in values, purpose, character, and responsibility.";
+}
+function profileText(){
+  var p = PROFILE, s = "FAMILY PROFILE\nFamily: The " + p.familyName + " family\n";
+  s += "Generation 1: " + p.g1a + " (" + p.g1aAge + ", " + STAGES[p.g1aStage] + ") and " + p.g1b + " (" + p.g1bAge + ", " + STAGES[p.g1bStage] + ")\nAdult children:\n";
+  for (var i=0;i<p.children.length;i++){
+    var c = p.children[i];
+    s += "  - " + c.name + ", " + c.age + ", " + STAGES[c.stage] + (c.note ? ". " + c.note : "") + "\n";
+  }
+  s += "Grandchildren: " + p.grandkids + (Number(p.grandkids)>0 ? " (" + STAGES[p.g3Stage] + ")" : "") + "\n";
+  s += "Wealth: " + p.netWorth + "\nBusiness: " + (p.business || "None stated") + "\n";
+  s += "Charitable vehicle: " + (p.daf ? "Donor-advised fund in place" : "None stated") + "\nFaith: " + (p.faithNote || "Not stated") + "\n";
+  s += "Stated concerns: " + p.concerns.join(", ") + "\nStated aspirations: " + p.aspirations.join(", ") + "\n";
+  s += "Professional team: " + p.team.join(", ") + "\n";
+  s += "History: " + p.journeys + " journeys, " + p.assessments + " assessments, last family meeting " + p.lastMeetingYears + " years ago, " + p.stories + " stories captured\n";
+  s += "Advisor: " + p.advisor + " (" + p.advisorAge + "), " + p.firm + ". Secondary advisor: " + (p.secondaryAdvisor ? "yes" : "none") + ". Succession discussion: " + (p.successionComplete ? "complete" : "incomplete") + "\n";
+  return s;
+}
+function metricsText(){
+  var m = computeMetrics();
+  return "\nCOMPUTED METRICS (system-calculated, use these exact figures)\nRelationship Depth Score: " + m.depth +
+    " of 100\nNext-Generation Coverage: " + m.g2cov + "% (" + m.known + " of " + m.total + ")\nG3 coverage: " + m.g3cov +
+    "%\nRisk classification: " + m.risk + "\nRisk drivers: " + m.drivers.join("; ") + "\n";
+}
+var RULES = "\nRULES\n- Use only the facts in the profile; where something is unknown, say what to ask rather than inventing it.\n- Name real family members. Generic content is a failure.\n- Never give tax, legal, or investment advice; name the specialist instead.\n- Do not discuss specific inheritance amounts with the next generation.\n- Finished text only: no preamble, no closing offer to help.\n- Markdown with ## headings and - bullets. Under 450 words.\n";
+function head(){
+  return "You are an engine inside CAN, a family stewardship operating system used by advisors at registered investment advisory firms.\n\n" +
+    profileText() + "\n" + langRule() + "\nTONE: " + PROFILE.tone + ".\n";
+}
+function promptPriority(){
+  return head() + metricsText() + "\nTASK: Produce the Family Priority Map for the advisor. Headings: ## High Urgency, ## Moderate Risk, ## Opportunity, ## Gap, ## Advisor Relationship Risk. One short paragraph under each, naming the specific family members involved." + RULES;
+}
+function promptNBA(){
+  return head() + metricsText() + "\nTASK: Name the single highest-value action the advisor should take within seven days. Headings: ## The Action, ## Why This One First, ## Exactly How, ## What Success Looks Like in 30 Days. Be decisive; do not list alternatives." + RULES;
+}
+function libraryList(){
+  var s = "";
+  for (var i=0;i<CATS.length;i++){
+    var c = CATS[i];
+    s += c.name + ": ";
+    var names = [];
+    for (var j=0;j<c.ids.length;j++){ names.push(byId(c.ids[j]).t); }
+    s += names.join("; ") + "\n";
+  }
+  return s;
+}
+function promptPrescribe(){
+  var s = head() + metricsText();
+  s += "\nTHE 225-JOURNEY LIBRARY (choose only from these exact titles)\n" + libraryList();
+  s += "\nTASK: Recommend the top three journeys for this family, in priority order. Output exactly three lines and nothing else, pipe-delimited:\n";
+  s += "1 | exact journey title from the library | one sentence on why this family, now\n2 | ... \n3 | ...\n";
+  s += "The title must match the library exactly." + RULES;
+  return s;
+}
+function promptTemplate(tpl){
+  var s = head() + "\nTASK: Produce " + tpl.name + ". " + tpl.ins + "\n";
+  if (TB.who){ s += "CUSTOMIZE FOR: " + TB.who + ".\n"; }
+  s += "LENGTH: " + (TB.length === "brief" ? "brief, one screen" : (TB.length === "full" ? "full, as long as the word limit allows" : "standard")) + ".\n";
+  return s + RULES;
+}
+function promptInterview(ins){
+  var s = head();
+  s += "\nINSTRUMENT: " + ins.name + "\nSUBJECT: " + IV.who + "\nPURPOSE: " + ins.purpose + "\n";
+  s += "\nTASK: Write this ten-question legacy interview for the named subject.\n";
+  s += "Headings, in order: ## Before You Begin (consent, recording, and the promise that nothing said here becomes sales intelligence, in three lines), ## The Ten Questions (numbered 1 to 10, each a single open question, ordered so the conversation deepens rather than starts at the hardest place), ## What to Listen For (stories, convictions, family language, defining moments, wounds and turning points, lessons, hopes and fears, blessings, unfinished conversations), ## The Closing (" + ins.closing + ").\n";
+  s += "Questions must be built from this family's real situation, business, concerns, and relationships. Ask nothing that a general questionnaire could ask.\n";
+  if (ins.name.indexOf("Patriarch") > -1 || ins.name.indexOf("Matriarch") > -1){
+    s += "Write this without reinforcing stereotypes about men, women, or who leads a family. The role is about elder memory, not authority.\n";
+  }
+  if (ins.aud === "children" || ins.aud === "g3"){
+    s += "Never raise amounts, allocations, or what the subject may receive.\n";
+  }
+  return s + RULES;
+}
+function promptIvSummary(ins, notes){
+  var s = head();
+  s += "\nINSTRUMENT: " + ins.name + "\nSUBJECT: " + IV.who + "\n";
+  s += "\nINTERVIEW NOTES CAPTURED BY THE ADVISOR\n" + notes + "\n";
+  s += "\nTASK: Turn these notes into the private Family Legacy Intelligence Summary. Headings: ## Stories Worth Preserving, ## Convictions and Family Language, ## Defining Moments, ## Hopes and Fears, ## Unfinished Conversations, ## What This Changes (which journey, which conversation, which specialist, and what the advisor should not raise yet).\n";
+  s += "Use only what the notes and profile contain. Where the notes are thin, say what to ask in the follow-up rather than filling the gap. This summary is private to the advisor and is never sent to the family." + RULES;
+  return s;
+}
+function promptSessions(e){
+  var s = head() + "\nJOURNEY: " + e.t + "\nSUBTITLE: " + e.s + "\n";
+  s += "\nTASK: Write the four-session map. CAN uses one fixed architecture: 1 Understand, 2 Reflect, 3 Discuss, 4 Decide.\nOutput exactly four pipe-delimited lines and nothing else:\n1 | session title | two sentences on what it covers and produces\n2 | ...\n3 | ...\n4 | ...\nSession titles must be specific to this journey and this family." + RULES;
+  return s;
+}
+function promptDays(e, ses){
+  return head() + "\nJOURNEY: " + e.t + "\nSUBTITLE: " + e.s + "\n\nTASK: Write day titles for Session " + ses.n + " (" + ses.name +
+    ", Days " + ses.from + " to " + ses.to + "). That session asks: " + ses.q +
+    "\nOutput one pipe-delimited line per day and nothing else:\nDay " + ses.from + " | day title | one sentence on the reading\nContinue through Day " + ses.to + ". No two days may repeat an idea." + RULES;
+}
+function promptDay(e, ses, n, title){
+  return head() + "\nJOURNEY: " + e.t + "\n\nTASK: Write Day " + n + " in full, titled \"" + title + "\", from Session " + ses.n + " (" + ses.name +
+    ").\nHeadings: ## Today's Reading (about 150 words), ## The Principle, ## Reflection Question, ## Personal Action, ## Conversation Prompt, ## Journal (one sentence-stem)." + RULES;
+}
+
+/* ---------- api + md ---------- */
+async function callClaude(prompt){
+  var res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({model:"claude-sonnet-4-6", max_tokens:1000, messages:[{role:"user", content:prompt}]})
+  });
+  if (!res.ok){ throw new Error("Request failed (" + res.status + ")"); }
+  var d = await res.json(), out = "";
+  for (var i=0;i<d.content.length;i++){ if (d.content[i].type === "text"){ out += d.content[i].text; } }
+  return out.trim();
+}
+function parsePipes(t){
+  var rows = [], lines = t.split("\n");
+  for (var i=0;i<lines.length;i++){
+    var p = lines[i].split("|");
+    if (p.length >= 3){ rows.push({k:p[0].replace(/[^0-9]/g,""), t:p[1].trim(), d:p.slice(2).join("|").trim()}); }
+  }
+  return rows;
+}
+function esc(t){ return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function inline(t){
+  t = t.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+  return t.replace(/(^|[^*])\*([^*]+)\*/g,"$1<em>$2</em>");
+}
+function mdToHtml(src){
+  var lines = esc(src).split("\n"), html = "", inL = false;
+  for (var i=0;i<lines.length;i++){
+    var t = lines[i].replace(/^\s+|\s+$/g,"");
+    if (t === ""){ if (inL){ html += "</ul>"; inL = false; } continue; }
+    if (t.indexOf("### ") === 0){ if (inL){ html += "</ul>"; inL=false; } html += "<h5>" + inline(t.slice(4)) + "</h5>"; continue; }
+    if (t.indexOf("## ") === 0){ if (inL){ html += "</ul>"; inL=false; } html += "<h4>" + inline(t.slice(3)) + "</h4>"; continue; }
+    if (t.indexOf("# ") === 0){ if (inL){ html += "</ul>"; inL=false; } html += "<h4>" + inline(t.slice(2)) + "</h4>"; continue; }
+    if (t.indexOf("&gt; ") === 0){ if (inL){ html += "</ul>"; inL=false; } html += "<blockquote>" + inline(t.slice(5)) + "</blockquote>"; continue; }
+    if (t.indexOf("- ") === 0 || t.indexOf("* ") === 0){ if (!inL){ html += "<ul>"; inL=true; } html += "<li>" + inline(t.slice(2)) + "</li>"; continue; }
+    var n = t.match(/^(\d+)\.\s+(.*)$/);
+    if (n){ if (!inL){ html += "<ul>"; inL=true; } html += "<li><strong>" + n[1] + ".</strong> " + inline(n[2]) + "</li>"; continue; }
+    if (inL){ html += "</ul>"; inL = false; }
+    html += "<p>" + inline(t) + "</p>";
+  }
+  if (inL){ html += "</ul>"; }
+  return html;
+}
+function norm(s){ return String(s).toLowerCase().replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").replace(/^\s+|\s+$/g,""); }
+function findEntry(title){
+  var t = norm(title);
+  for (var i=0;i<ENTRIES.length;i++){ if (norm(ENTRIES[i].t) === t){ return ENTRIES[i]; } }
+  for (var j=0;j<ENTRIES.length;j++){ if (t.indexOf(norm(ENTRIES[j].t)) > -1 || norm(ENTRIES[j].t).indexOf(t) > -1){ return ENTRIES[j]; } }
+  return null;
+}
+
+/* ---------- storage ---------- */
+async function saveProfile(){
+  try { if (typeof window.storage !== "undefined" && window.storage){ await window.storage.set("can:profile", JSON.stringify(PROFILE)); } } catch (e){}
+}
+async function loadProfile(){
+  try {
+    if (typeof window.storage !== "undefined" && window.storage){
+      var r = await window.storage.get("can:profile");
+      if (r && r.value){ var s = JSON.parse(r.value); for (var k in s){ if (Object.prototype.hasOwnProperty.call(s,k)){ PROFILE[k] = s[k]; } } }
+    }
+  } catch (e){}
+}
+
+/* ---------- shared bits ---------- */
+function bandHtml(){
+  var m = computeMetrics();
+  return '<div class="band">' +
+    '<div><b>' + m.depth + '</b><span>Depth score</span></div>' +
+    '<div><b>' + m.g2cov + '%</b><span>G2 coverage</span></div>' +
+    '<div><b>' + m.g3cov + '%</b><span>G3 coverage</span></div>' +
+    '<div><b>' + PROFILE.journeys + '</b><span>Journeys done</span></div>' +
+    '<div><b>' + PROFILE.lastMeetingYears + '</b><span>Yrs since meeting</span></div>' +
+    '<div><b><span class="pill r-' + m.risk + '">' + m.risk + '</span></b><span>Retention risk</span></div></div>';
+}
+function pips(stage){
+  var h = '<span class="pips">';
+  for (var i=1;i<=5;i++){ h += '<span class="pip' + (Number(stage) >= i ? ' on' : '') + '"></span>'; }
+  return h + '</span>';
+}
+function relRow(name, role, stage){
+  return '<div class="relrow"><span class="relname">' + name + ' <i>' + role + '</i></span>' +
+    pips(stage) + '<span class="relstage">' + STAGES[stage] + '</span></div>';
+}
+function genBlock(key, btnLabel, action){
+  if (CACHE[key]){
+    return '<div class="acts"><button class="act" data-gen="' + action + '" type="button">Regenerate</button>' +
+      '<button class="act" data-copy="' + key + '" type="button">Copy</button></div>' +
+      '<div class="out">' + mdToHtml(CACHE[key]) + '</div>';
+  }
+  return '<div class="acts"><button class="act primary" data-gen="' + action + '" type="button">' + btnLabel + '</button></div>';
+}
+
+/* ---------- dashboard ---------- */
+function renderDash(){
+  var m = computeMetrics(), p = PROFILE;
+  var h = '<div class="wrap"><div class="sec">' +
+    '<div class="sechead"><h2>The ' + p.familyName + ' family</h2>' +
+    '<p class="sub">' + p.advisor + ' &middot; ' + p.firm + '</p></div>';
+  h += bandHtml();
+
+  h += '<div class="subhead">Relationship map</div><div class="rel">';
+  h += relRow(p.g1a, "G1", p.g1aStage) + relRow(p.g1b, "G1 spouse", p.g1bStage);
+  for (var i=0;i<p.children.length;i++){ h += relRow(p.children[i].name, "G2, age " + p.children[i].age, p.children[i].stage); }
+  if (Number(p.grandkids) > 0){ h += relRow(p.grandkids + " grandchildren", "G3", p.g3Stage); }
+  h += '</div>';
+
+  h += '<div class="panel"><h4>Retention risk: ' + m.risk + '</h4><ul>';
+  for (var d=0;d<m.drivers.length;d++){ h += '<li>' + m.drivers[d] + '</li>'; }
+  if (!m.drivers.length){ h += '<li>No risk drivers firing on the current profile.</li>'; }
+  h += '</ul></div>';
+
+  h += '<div class="gate"><span class="gl">AI recommends &middot; advisor approves</span><span class="label">' + p.faithLanguage + '</span></div>';
+
+  h += '<div class="subhead">Prescribed journeys</div>';
+  if (CACHE.presc){
+    var rows = CACHE.presc;
+    for (var r=0;r<rows.length;r++){
+      var e = findEntry(rows[r].t);
+      h += '<button class="row" type="button"' + (e ? ' data-entry="' + e.id + '"' : '') + '>' +
+        '<span class="rn">' + (r+1) + '</span><span class="rmain"><span class="rt">' + rows[r].t + '</span>' +
+        '<span class="rs">' + rows[r].d + '</span>' +
+        (e ? '<span class="rmeta">' + e.grpName + ' &middot; open the 4 sessions</span>' : '<span class="rmeta">Not matched to the library</span>') +
+        '</span><span class="arw">&rsaquo;</span></button>';
+    }
+    h += '<div class="acts" style="margin-top:.8rem"><button class="act" data-gen="presc" type="button">Re-prescribe</button></div>';
+  } else {
+    h += '<p style="color:var(--muted)">CAN reads the profile and the metrics, then chooses from all 225 journeys.</p>' +
+         '<div class="acts"><button class="act primary" data-gen="presc" type="button">Prescribe the next journey</button></div>';
+  }
+
+  h += '<div class="subhead">Priority map</div>' + genBlock("prio", "Build the priority map", "prio");
+  h += '<div class="subhead">Next best action</div>' + genBlock("nba", "Name the next action", "nba");
+
+  h += '<div class="subhead">Professional team</div><div class="panel"><ul>';
+  for (var t=0;t<p.team.length;t++){ h += '<li>' + p.team[t] + '</li>'; }
+  var missing = [];
+  for (var q=0;q<TEAM.length;q++){ if (p.team.indexOf(TEAM[q]) === -1){ missing.push(TEAM[q]); } }
+  h += '</ul><p style="margin:.6rem 0 0;color:var(--muted);font-size:.92rem">Not yet involved: ' + missing.join(", ") + '</p></div>';
+
+  return h + '</div></div>';
+}
+
+/* ---------- journeys ---------- */
+function renderJourneys(){
+  var h = '<div class="wrap"><div class="sec"><div class="sechead"><h2>The Journey Library</h2>' +
+    '<p class="sub">' + STATS.journeys + ' journeys across ' + STATS.cats + ' categories. Each opens to four sessions and thirty days.</p></div>';
+  h += '<div class="acts"><button class="act primary" data-gen="presc" type="button">Prescribe for the ' + PROFILE.familyName + ' family</button></div>';
+  for (var i=0;i<CATS.length;i++){
+    var c = CATS[i];
+    h += '<button class="row" type="button" data-cat="' + c.k + '">' +
+      '<span class="rn">' + (c.n < 10 ? "0" : "") + c.n + '</span>' +
+      '<span class="rmain"><span class="rt">' + c.name + '</span><span class="rs">' + c.q + '</span>' +
+      '<span class="rmeta">15 journeys</span></span><span class="arw">&rsaquo;</span></button>';
+  }
+  return h + '</div></div>';
+}
+function renderCat(k){
+  var c = catByK(k);
+  var h = '<div class="wrap"><div class="sec"><button class="back" type="button" data-go="journeys">&lsaquo; Library</button>' +
+    '<div class="sechead"><h2>' + c.name + '</h2><p class="sub">' + c.q + '</p></div>';
+  for (var i=0;i<c.ids.length;i++){
+    var e = byId(c.ids[i]);
+    h += '<button class="row" type="button" data-entry="' + e.id + '">' +
+      '<span class="rn">' + (i+1 < 10 ? "0" : "") + (i+1) + '</span>' +
+      '<span class="rmain"><span class="rt">' + e.t + (e.src === 0 ? '<span class="tag">draft</span>' : '') + '</span>' +
+      '<span class="rs">' + e.s + '</span></span><span class="arw">&rsaquo;</span></button>';
+  }
+  return h + '</div></div>';
+}
+function renderEntry(id){
+  var e = byId(id);
+  var h = '<div class="wrap"><div class="sec"><button class="back" type="button" data-go="cat:' + e.grp + '">&lsaquo; ' + e.grpName + '</button>' +
+    '<div class="sechead"><h2>' + e.t + '</h2><p class="sub">' + e.s + '</p></div>' +
+    '<div class="gate"><span class="gl">Four sessions &middot; thirty days</span><span class="label">' + PROFILE.faithLanguage + '</span></div>';
+  var rows = CACHE["S:" + id];
+  if (rows){
+    for (var i=0;i<rows.length;i++){
+      var s = SESSIONS[i];
+      h += '<button class="row" type="button" data-ses="' + id + ':' + s.n + '">' +
+        '<span class="rn">' + s.n + '</span><span class="rmain"><span class="rt">' + rows[i].t + '</span>' +
+        '<span class="rs">' + rows[i].d + '</span><span class="rmeta">Session ' + s.n + ' &middot; ' + s.name + ' &middot; Days ' + s.from + '&ndash;' + s.to + '</span></span>' +
+        '<span class="arw">&rsaquo;</span></button>';
+    }
+    h += '<div class="acts" style="margin-top:1rem"><button class="act" data-gen="sess:' + id + '" type="button">Regenerate sessions</button></div>';
+  } else {
+    for (var j=0;j<SESSIONS.length;j++){
+      var s2 = SESSIONS[j];
+      h += '<div class="row" style="cursor:default"><span class="rn">' + s2.n + '</span><span class="rmain">' +
+        '<span class="rt" style="color:var(--muted)">Session ' + s2.n + ' &mdash; ' + s2.name + '</span>' +
+        '<span class="rs">' + s2.q + '</span><span class="rmeta">Days ' + s2.from + '&ndash;' + s2.to + '</span></span></div>';
+    }
+    h += '<div class="acts" style="margin-top:1rem"><button class="act primary" data-gen="sess:' + id + '" type="button">Open the four sessions</button></div>';
+  }
+  return h + '<div id="zone"></div></div></div>';
+}
+function renderSession(id, sn){
+  var e = byId(id), ses = SESSIONS[sn-1], rows = CACHE["S:" + id] || [];
+  var title = rows[sn-1] ? rows[sn-1].t : ("Session " + sn + " \u2014 " + ses.name);
+  var h = '<div class="wrap"><div class="sec"><button class="back" type="button" data-go="entry:' + id + '">&lsaquo; ' + e.t + '</button>' +
+    '<div class="sechead"><h2>' + title + '</h2><p class="sub">Session ' + sn + ' &middot; ' + ses.name + ' &middot; Days ' + ses.from + '&ndash;' + ses.to + '</p></div><div id="zone">';
+  var days = DAYLIST["D:" + id + ":" + sn];
+  if (days){
+    for (var i=0;i<days.length;i++){
+      h += '<button class="row" type="button" data-day="' + id + ':' + sn + ':' + days[i].k + '">' +
+        '<span class="rn">' + days[i].k + '</span><span class="rmain"><span class="rt">' + days[i].t + '</span>' +
+        '<span class="rs">' + days[i].d + '</span></span><span class="arw">&rsaquo;</span></button>';
+    }
+    h += '<div class="acts" style="margin-top:1rem"><button class="act" data-gen="days:' + id + ':' + sn + '" type="button">Regenerate days</button></div>';
+  } else {
+    h += '<div class="acts"><button class="act primary" data-gen="days:' + id + ':' + sn + '" type="button">Open days ' + ses.from + ' to ' + ses.to + '</button></div>';
+  }
+  return h + '</div></div></div>';
+}
+function renderDay(id, sn, dn){
+  var e = byId(id), days = DAYLIST["D:" + id + ":" + sn] || [], title = "Day " + dn;
+  for (var i=0;i<days.length;i++){ if (days[i].k === String(dn)){ title = days[i].t; } }
+  var k = "Y:" + id + ":" + dn;
+  var h = '<div class="wrap"><div class="sec"><button class="back" type="button" data-go="ses:' + id + ':' + sn + '">&lsaquo; Session ' + sn + '</button>' +
+    '<div class="sechead"><h2>Day ' + dn + ' &mdash; ' + title + '</h2><p class="sub">' + e.t + '</p></div><div id="zone">';
+  h += genBlock(k, "Write this day", "day:" + id + ":" + sn + ":" + dn);
+  return h + '</div></div></div>';
+}
+
+/* ---------- toolbox ---------- */
+function renderToolbox(){
+  var tpl = tplById(TB.tid);
+  var h = '<div class="wrap"><div class="sec"><div class="sechead"><h2>Family Toolbox</h2>' +
+    '<p class="sub">Twenty-five templates, each customized to the ' + PROFILE.familyName + ' family before it is generated.</p></div>';
+  h += '<div class="fld"><label>Template</label><select id="tplSel">';
+  for (var i=0;i<TEMPLATES.length;i++){
+    var t = TEMPLATES[i];
+    h += '<option value="' + t.id + '"' + (t.id === TB.tid ? ' selected' : '') + '>' + t.n + '. ' + t.name + '</option>';
+  }
+  h += '</select></div>';
+  h += '<p style="color:var(--muted);font-style:italic">' + tpl.purpose + '</p>';
+
+  h += '<div class="grid2"><div class="fld"><label>Customize for</label><select id="whoSel">';
+  var opts = [];
+  for (var w=0;w<tpl.who.length;w++){
+    if (tpl.who[w] === "Each adult child"){
+      for (var c=0;c<PROFILE.children.length;c++){ opts.push(PROFILE.children[c].name + " (adult child)"); }
+    } else if (tpl.who[w] === "Couple"){
+      opts.push(PROFILE.g1a + " and " + PROFILE.g1b + " (couple)");
+    } else { opts.push(tpl.who[w]); }
+  }
+  if (opts.indexOf(TB.who) === -1){ TB.who = opts[0]; }
+  for (var o=0;o<opts.length;o++){ h += '<option value="' + opts[o] + '"' + (opts[o] === TB.who ? ' selected' : '') + '>' + opts[o] + '</option>'; }
+  h += '</select></div><div class="fld"><label>Length</label><select id="lenSel">' +
+    '<option value="brief"' + (TB.length==="brief"?" selected":"") + '>Brief</option>' +
+    '<option value="standard"' + (TB.length==="standard"?" selected":"") + '>Standard</option>' +
+    '<option value="full"' + (TB.length==="full"?" selected":"") + '>Full</option></select></div></div>';
+
+  h += '<div class="gate"><span class="gl">AI recommends &middot; advisor approves</span><span class="label">' + PROFILE.faithLanguage + ' &middot; ' + PROFILE.tone + '</span></div>';
+  h += '<div id="zone">' + genBlock("X:" + TB.tid + ":" + TB.who + ":" + TB.length, "Build it for this family", "tpl") + '</div>';
+  return h + '</div></div>';
+}
+
+/* ---------- interviews ---------- */
+function renderInterviews(){
+  var h = '<div class="wrap"><div class="sec"><div class="sechead"><h2>The Top 10 Interviews</h2>' +
+    '<p class="sub">Ten instruments, ten questions each, written for the person in front of you rather than for a generic family.</p></div>';
+  h += '<div class="panel"><h4>The rule that governs all of them</h4>' +
+    '<p style="margin:0">What a family member says in one of these conversations is never treated as sales intelligence. ' +
+    'Notes stay in this session only; nothing is written to storage.</p></div>';
+  for (var i=0;i<INSTRUMENTS.length;i++){
+    var ins = INSTRUMENTS[i];
+    h += '<button class="row" type="button" data-iv="' + ins.id + '">' +
+      '<span class="rn">' + (ins.n < 10 ? "0" : "") + ins.n + '</span>' +
+      '<span class="rmain"><span class="rt">' + ins.name + (ins.src === 0 ? '<span class="tag">added</span>' : '') + '</span>' +
+      '<span class="rs">' + ins.purpose + '</span>' +
+      '<span class="rmeta">10 questions &middot; ' + (ins.src === 1 ? 'your instrument set' : 'proposed') + '</span></span>' +
+      '<span class="arw">&rsaquo;</span></button>';
+  }
+  return h + '</div></div>';
+}
+function renderInterview(iid){
+  var ins = ivById(iid), subs = ivSubjects(ins);
+  if (subs.indexOf(IV.who) === -1){ IV.who = subs[0]; }
+  var qk = "Q:" + iid + ":" + IV.who, mk = "M:" + iid + ":" + IV.who, nk = iid + ":" + IV.who;
+  var h = '<div class="wrap"><div class="sec"><button class="back" type="button" data-go="interviews">&lsaquo; All interviews</button>' +
+    '<div class="sechead"><h2>' + ins.name + '</h2><p class="sub">' + ins.purpose + '</p></div>';
+  h += '<div class="fld"><label>Subject</label><select id="ivWho">';
+  for (var i=0;i<subs.length;i++){ h += '<option value="' + subs[i] + '"' + (subs[i] === IV.who ? ' selected' : '') + '>' + subs[i] + '</option>'; }
+  h += '</select></div>';
+  h += '<div class="gate"><span class="gl">Private &middot; not sales intelligence</span><span class="label">' + PROFILE.faithLanguage + ' &middot; ' + PROFILE.tone + '</span></div>';
+  h += '<div id="zone">' + genBlock(qk, "Write the ten questions", "iq") + '</div>';
+  if (CACHE[qk]){
+    h += '<div class="subhead">After the conversation</div>' +
+      '<div class="fld"><label>What they said &mdash; notes or transcript</label>' +
+      '<textarea data-notes="' + nk + '" rows="5" placeholder="Paste the transcript or type what stood out.">' + esc(NOTES[nk] || "") + '</textarea></div>';
+    if (CACHE[mk]){
+      h += '<div class="acts"><button class="act" data-gen="isum" type="button">Rebuild summary</button>' +
+        '<button class="act" data-copy="' + mk + '" type="button">Copy</button></div><div class="out">' + mdToHtml(CACHE[mk]) + '</div>';
+    } else {
+      h += '<div class="acts"><button class="act primary" data-gen="isum" type="button">Build the private summary</button></div>';
+    }
+  }
+  return h + '</div></div>';
+}
+
+/* ---------- family profile ---------- */
+function chipRow(list, sel, grp){
+  var h = '<div class="chips">';
+  for (var i=0;i<list.length;i++){
+    h += '<button class="chip' + (sel.indexOf(list[i]) > -1 ? ' on' : '') + '" type="button" data-chip="' + grp + '" data-val="' + list[i] + '">' + list[i] + '</button>';
+  }
+  return h + '</div>';
+}
+function stageSel(v, attrs){
+  var h = '<select ' + attrs + '>';
+  for (var i=0;i<STAGES.length;i++){ h += '<option value="' + i + '"' + (Number(v) === i ? ' selected' : '') + '>' + i + ' ' + STAGES[i] + '</option>'; }
+  return h + '</select>';
+}
+function renderFamily(){
+  var p = PROFILE;
+  var h = '<div class="wrap"><div class="sec"><div class="sechead"><h2>Family profile</h2>' +
+    '<p class="sub">The master context layer. Every tab reads from this.</p></div>';
+  h += '<div class="fld"><label>Family name</label><input data-f="familyName" value="' + p.familyName + '"></div>';
+  h += '<div class="subhead">Generation one</div>';
+  h += '<div class="grid3"><div class="fld" style="margin:0"><label>Name</label><input data-f="g1a" value="' + p.g1a + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Age</label><input data-f="g1aAge" value="' + p.g1aAge + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Stage</label>' + stageSel(p.g1aStage,'data-f="g1aStage"') + '</div></div>';
+  h += '<div class="grid3" style="margin-top:.5rem"><div class="fld" style="margin:0"><label>Name</label><input data-f="g1b" value="' + p.g1b + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Age</label><input data-f="g1bAge" value="' + p.g1bAge + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Stage</label>' + stageSel(p.g1bStage,'data-f="g1bStage"') + '</div></div>';
+  h += '<div class="subhead">Adult children</div>';
+  for (var i=0;i<p.children.length;i++){
+    var c = p.children[i];
+    h += '<div class="kid"><div class="grid3">' +
+      '<div class="fld" style="margin:0"><label>Name</label><input data-kid="' + i + '" data-k="name" value="' + c.name + '"></div>' +
+      '<div class="fld" style="margin:0"><label>Age</label><input data-kid="' + i + '" data-k="age" value="' + c.age + '"></div>' +
+      '<div class="fld" style="margin:0"><label>Stage</label>' + stageSel(c.stage,'data-kid="' + i + '" data-k="stage"') + '</div></div>' +
+      '<div class="fld" style="margin:.45rem 0 .3rem"><label>Note</label><input data-kid="' + i + '" data-k="note" value="' + c.note + '"></div>' +
+      '<button class="rm" type="button" data-rmkid="' + i + '">Remove</button></div>';
+  }
+  h += '<button class="act" type="button" data-addkid="1" style="margin-top:.6rem">Add a child</button>';
+  h += '<div class="subhead">Generation three</div><div class="grid2">' +
+    '<div class="fld"><label>Grandchildren</label><input data-f="grandkids" value="' + p.grandkids + '"></div>' +
+    '<div class="fld"><label>G3 stage</label>' + stageSel(p.g3Stage,'data-f="g3Stage"') + '</div></div>';
+  h += '<div class="subhead">Situation</div>';
+  h += '<div class="fld"><label>Wealth</label><input data-f="netWorth" value="' + p.netWorth + '"></div>';
+  h += '<div class="fld"><label>Business</label><input data-f="business" value="' + p.business + '"></div>';
+  h += '<div class="fld"><label>Faith orientation</label><input data-f="faithNote" value="' + p.faithNote + '"></div>';
+  h += '<div class="fld"><label>Tone</label><select data-f="tone">' +
+    ["reflective","practical","executive","conversational","faith-centered"].map(function(t){
+      return '<option value="' + t + '"' + (p.tone === t ? ' selected' : '') + '>' + t + '</option>'; }).join("") + '</select></div>';
+  h += '<div class="subhead">Stated concerns</div>' + chipRow(CONCERNS, p.concerns, "concerns");
+  h += '<div class="subhead">Stated aspirations</div>' + chipRow(ASPIRATIONS, p.aspirations, "aspirations");
+  h += '<div class="subhead">Professional team</div>' + chipRow(TEAM, p.team, "team");
+  h += '<div class="subhead">Stewardship history</div><div class="grid2">' +
+    '<div class="fld"><label>Journeys completed</label><input data-f="journeys" value="' + p.journeys + '"></div>' +
+    '<div class="fld"><label>Assessments</label><input data-f="assessments" value="' + p.assessments + '"></div></div><div class="grid2">' +
+    '<div class="fld"><label>Years since family meeting</label><input data-f="lastMeetingYears" value="' + p.lastMeetingYears + '"></div>' +
+    '<div class="fld"><label>Stories captured</label><input data-f="stories" value="' + p.stories + '"></div></div>';
+  h += '<div class="subhead">Advisor and firm</div><div class="grid2">' +
+    '<div class="fld"><label>Lead advisor</label><input data-f="advisor" value="' + p.advisor + '"></div>' +
+    '<div class="fld"><label>Advisor age</label><input data-f="advisorAge" value="' + p.advisorAge + '"></div></div>';
+  h += '<div class="fld"><label>Firm</label><input data-f="firm" value="' + p.firm + '"></div><div class="grid2">' +
+    '<div class="fld"><label>Secondary advisor</label><select data-f="secondaryAdvisor"><option value="yes"' + (p.secondaryAdvisor?' selected':'') + '>Yes</option><option value="no"' + (!p.secondaryAdvisor?' selected':'') + '>No</option></select></div>' +
+    '<div class="fld"><label>Succession discussion</label><select data-f="successionComplete"><option value="yes"' + (p.successionComplete?' selected':'') + '>Complete</option><option value="no"' + (!p.successionComplete?' selected':'') + '>Incomplete</option></select></div></div>';
+  h += '<div class="subhead">Live metrics</div>' + bandHtml();
+  h += '<div class="acts"><button class="act primary" type="button" data-go="dash">Save and open the dashboard</button></div>';
+  return h + '</div></div>';
+}
+
+/* ---------- render ---------- */
+function crumbText(){
+  if (VIEW.tab === "dash"){ return "Dashboard \u2014 the " + PROFILE.familyName + " family"; }
+  if (VIEW.tab === "toolbox"){ return "Toolbox"; }
+  if (VIEW.tab === "family"){ return "Family profile"; }
+  if (VIEW.v === "cat"){ return catByK(VIEW.cat).name; }
+  if (VIEW.v === "entry"){ return byId(VIEW.id).t; }
+  if (VIEW.v === "session"){ return byId(VIEW.id).t + " / Session " + VIEW.ses; }
+  if (VIEW.v === "day"){ return byId(VIEW.id).t + " / Day " + VIEW.day; }
+  return "Journey Library";
+}
+function render(){
+  var h = "";
+  if (VIEW.tab === "dash"){ h = renderDash(); }
+  else if (VIEW.tab === "toolbox"){ h = renderToolbox(); }
+  else if (VIEW.tab === "family"){ h = renderFamily(); }
+  else {
+    if (VIEW.v === "cat"){ h = renderCat(VIEW.cat); }
+    else if (VIEW.v === "entry"){ h = renderEntry(VIEW.id); }
+    else if (VIEW.v === "session"){ h = renderSession(VIEW.id, VIEW.ses); }
+    else if (VIEW.v === "day"){ h = renderDay(VIEW.id, VIEW.ses, VIEW.day); }
+    else { h = renderJourneys(); }
+  }
+  document.getElementById("app").innerHTML = h;
+  document.getElementById("crumb").innerHTML = crumbText();
+  var tb = document.getElementById("tabs").getElementsByTagName("button");
+  for (var i=0;i<tb.length;i++){ tb[i].className = (tb[i].getAttribute("data-tab") === VIEW.tab) ? "on" : ""; }
+  var sg = document.getElementById("langSeg").getElementsByTagName("button");
+  for (var j=0;j<sg.length;j++){ sg[j].className = (sg[j].getAttribute("data-lang") === PROFILE.faithLanguage) ? "on" : ""; }
+  window.scrollTo(0,0);
+}
+
+/* ---------- generation ---------- */
+function busy(msg){
+  var z = document.getElementById("zone");
+  if (!z){ z = document.getElementById("app"); }
+  if (z){ z.innerHTML = '<div class="wrap"><div class="spin">' + msg + '<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div></div>'; }
+}
+function fail(err){
+  var z = document.getElementById("zone") || document.getElementById("app");
+  if (z){ z.innerHTML = '<div class="wrap"><div class="err">Could not reach the generation service. ' + esc(String(err.message || err)) +
+    '<br><br>This workspace writes live, so it needs to run inside the Claude app.</div></div>'; }
+}
+async function run(action){
+  var a = action.split(":");
+  try {
+    if (a[0] === "presc"){
+      busy("Reading the profile against all 225 journeys");
+      var rows = parsePipes(await callClaude(promptPrescribe()));
+      if (rows.length < 1){ throw new Error("Unexpected format; try again."); }
+      CACHE.presc = rows.slice(0,3);
+    } else if (a[0] === "prio"){
+      busy("Building the priority map"); CACHE.prio = await callClaude(promptPriority());
+    } else if (a[0] === "nba"){
+      busy("Naming the next action"); CACHE.nba = await callClaude(promptNBA());
+    } else if (a[0] === "tpl"){
+      var tpl = tplById(TB.tid);
+      busy("Building " + tpl.name + " for " + TB.who);
+      CACHE["X:" + TB.tid + ":" + TB.who + ":" + TB.length] = await callClaude(promptTemplate(tpl));
+    } else if (a[0] === "sess"){
+      var e = byId(a[1]); busy("Opening the four sessions of " + e.t);
+      var sr = parsePipes(await callClaude(promptSessions(e)));
+      if (sr.length < 4){ throw new Error("Unexpected format; try again."); }
+      CACHE["S:" + a[1]] = sr.slice(0,4);
+      VIEW = {tab:"journeys", v:"entry", id:a[1]};
+    } else if (a[0] === "days"){
+      var e2 = byId(a[1]), ses = SESSIONS[Number(a[2])-1];
+      busy("Writing days " + ses.from + " to " + ses.to);
+      var dr = parsePipes(await callClaude(promptDays(e2, ses)));
+      if (!dr.length){ throw new Error("Unexpected format; try again."); }
+      DAYLIST["D:" + a[1] + ":" + a[2]] = dr;
+      VIEW = {tab:"journeys", v:"session", id:a[1], ses:Number(a[2])};
+    } else if (a[0] === "day"){
+      var e3 = byId(a[1]), ses3 = SESSIONS[Number(a[2])-1], dn = Number(a[3]);
+      var days = DAYLIST["D:" + a[1] + ":" + a[2]] || [], title = "Day " + dn;
+      for (var i=0;i<days.length;i++){ if (days[i].k === String(dn)){ title = days[i].t; } }
+      busy("Writing day " + dn);
+      CACHE["Y:" + a[1] + ":" + dn] = await callClaude(promptDay(e3, ses3, dn, title));
+      VIEW = {tab:"journeys", v:"day", id:a[1], ses:Number(a[2]), day:dn};
+    }
+    render();
+  } catch (err){ fail(err); }
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", function(ev){
+  var el = ev.target.closest ? ev.target.closest("[data-tab],[data-lang],[data-go],[data-cat],[data-entry],[data-ses],[data-day],[data-gen],[data-copy],[data-chip],[data-addkid],[data-rmkid]") : null;
+  if (!el){ return; }
+  if (el.hasAttribute("data-tab")){ VIEW = {tab:el.getAttribute("data-tab"), v:"main"}; saveProfile(); render(); return; }
+  if (el.hasAttribute("data-lang")){ PROFILE.faithLanguage = el.getAttribute("data-lang"); saveProfile(); render(); return; }
+  if (el.hasAttribute("data-cat")){ VIEW = {tab:"journeys", v:"cat", cat:el.getAttribute("data-cat")}; render(); return; }
+  if (el.hasAttribute("data-entry")){ VIEW = {tab:"journeys", v:"entry", id:el.getAttribute("data-entry")}; render(); return; }
+  if (el.hasAttribute("data-ses")){ var a = el.getAttribute("data-ses").split(":"); VIEW = {tab:"journeys", v:"session", id:a[0], ses:Number(a[1])}; render(); return; }
+  if (el.hasAttribute("data-day")){ var b = el.getAttribute("data-day").split(":"); VIEW = {tab:"journeys", v:"day", id:b[0], ses:Number(b[1]), day:Number(b[2])}; render(); return; }
+  if (el.hasAttribute("data-go")){
+    var g = el.getAttribute("data-go");
+    if (g === "dash"){ VIEW = {tab:"dash", v:"main"}; saveProfile(); }
+    else if (g === "journeys"){ VIEW = {tab:"journeys", v:"main"}; }
+    else if (g.indexOf("cat:") === 0){ VIEW = {tab:"journeys", v:"cat", cat:g.slice(4)}; }
+    else if (g.indexOf("entry:") === 0){ VIEW = {tab:"journeys", v:"entry", id:g.slice(6)}; }
+    else if (g.indexOf("ses:") === 0){ var p = g.slice(4).split(":"); VIEW = {tab:"journeys", v:"session", id:p[0], ses:Number(p[1])}; }
+    render(); return;
+  }
+  if (el.hasAttribute("data-gen")){ run(el.getAttribute("data-gen")); return; }
+  if (el.hasAttribute("data-copy")){
+    var txt = CACHE[el.getAttribute("data-copy")] || "";
+    if (navigator.clipboard){ navigator.clipboard.writeText(txt); }
+    el.innerHTML = "Copied"; setTimeout(function(){ el.innerHTML = "Copy"; }, 1400); return;
+  }
+  if (el.hasAttribute("data-chip")){
+    var grp = el.getAttribute("data-chip"), val = el.getAttribute("data-val"), arr = PROFILE[grp];
+    var ix = arr.indexOf(val);
+    if (ix > -1){ arr.splice(ix,1); } else { arr.push(val); }
+    saveProfile(); render(); return;
+  }
+  if (el.hasAttribute("data-addkid")){ PROFILE.children.push({name:"New child", age:30, stage:0, note:""}); saveProfile(); render(); return; }
+  if (el.hasAttribute("data-rmkid")){ PROFILE.children.splice(Number(el.getAttribute("data-rmkid")),1); saveProfile(); render(); return; }
+});
+function applyField(el){
+  if (el.hasAttribute("data-f")){
+    var f = el.getAttribute("data-f"), v = el.value;
+    if (f === "daf" || f === "secondaryAdvisor" || f === "successionComplete"){ PROFILE[f] = (v === "yes"); }
+    else { PROFILE[f] = v; }
+    saveProfile(); return true;
+  }
+  if (el.hasAttribute("data-kid")){
+    PROFILE.children[Number(el.getAttribute("data-kid"))][el.getAttribute("data-k")] = el.value;
+    saveProfile(); return true;
+  }
+  return false;
+}
+document.addEventListener("change", function(ev){
+  var el = ev.target;
+  if (el.id === "tplSel"){ TB.tid = el.value; TB.who = ""; render(); return; }
+  if (el.id === "whoSel"){ TB.who = el.value; render(); return; }
+  if (el.id === "lenSel"){ TB.length = el.value; render(); return; }
+  if (applyField(el) && el.tagName === "SELECT" && VIEW.tab === "family"){ render(); }
+});
+document.addEventListener("input", function(ev){ applyField(ev.target); });
+
+(async function(){ await loadProfile(); render(); })();
+</script>
+</body>
+</html>

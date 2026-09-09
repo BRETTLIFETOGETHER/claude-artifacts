@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Catalytic Sermon Engine &middot; LifeTogether</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400;1,600&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#c9a84c;--glt:#e2c97e;--gdk:#8a6e30;--cr:#f9f6ef;--ink:#12131a;--ok:#5a9a6a;
+--c1:#c9a84c;--c2:#a0553a;--c3:#4a6a9a;--c4:#5a8a5a;--c5:#8a5a8a;--c6:#3a7a7a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lato',sans-serif;background:#0e0c14;color:#f0ece0;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(5,3,11,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:stretch;padding:0 13px;overflow-x:auto;}
+.nbr{display:flex;flex-direction:column;justify-content:center;padding:9px 11px 9px 0;margin-right:5px;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.nbr-t{font-family:'Playfair Display',serif;font-size:14.5px;font-style:italic;color:var(--g);line-height:1;}
+.nbr-s{font-size:5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;margin-top:2px;}
+.nt{padding:0 10px;font-size:7px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.25);display:flex;align-items:center;gap:5px;white-space:nowrap;background:none;font-family:'Lato',sans-serif;transition:all .12s;flex-shrink:0;}
+.nt:hover{color:rgba(255,255,255,.6);}
+.nt.on{color:var(--g);border-bottom-color:var(--g);}
+.dotr{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.14);flex-shrink:0;}
+.dotr.done{background:var(--ok);}
+.pr{margin-left:auto;font-size:7px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:var(--gdk);border:1px solid rgba(201,168,76,.25);padding:4px 9px;align-self:center;cursor:pointer;background:none;font-family:'Lato',sans-serif;flex-shrink:0;}
+.pr:hover{background:rgba(201,168,76,.1);color:var(--g);}
+
+.pnl{display:none;}.pnl.on{display:block;}
+.wrap{max-width:970px;margin:0 auto;padding:32px 22px 70px;}
+.kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.55);display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.kk::before{content:'';width:14px;height:1px;background:rgba(201,168,76,.4);}
+.h{font-family:'Playfair Display',serif;font-size:clamp(25px,4.3vw,42px);font-weight:400;color:#fff;line-height:.94;margin-bottom:10px;}
+.h em{font-style:italic;color:var(--g);}
+.sub{font-size:12px;color:rgba(255,255,255,.36);line-height:1.72;margin-bottom:20px;max-width:710px;}
+.step{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--gdk);margin:22px 0 8px;display:flex;align-items:center;gap:9px;}
+.step::before{content:'';width:12px;height:1px;background:rgba(138,110,48,.7);}
+.hint{font-size:10.5px;color:rgba(255,255,255,.3);line-height:1.65;margin-bottom:8px;font-style:italic;}
+.ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#f0ece0;padding:13px 15px;font-size:12.5px;font-family:'Lato',sans-serif;outline:none;resize:vertical;line-height:1.7;}
+.ta::placeholder{color:rgba(255,255,255,.17);}
+.ta:focus{border-color:rgba(201,168,76,.45);}
+.inrow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
+.inrow .ta{flex:1;min-width:140px;resize:none;}
+.btn{background:var(--g);color:#000;border:none;padding:12px 24px;font-size:9.5px;font-weight:900;letter-spacing:2.2px;text-transform:uppercase;cursor:pointer;font-family:'Lato',sans-serif;}
+.btn:hover{background:var(--glt);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btn.ghost{background:none;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.45);}
+.btn.ghost:hover{border-color:rgba(201,168,76,.4);color:var(--g);}
+.btn.sm{padding:8px 14px;font-size:8.5px;}
+.think{display:none;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin:14px 0;}
+.think.on{display:flex;}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pl 1.2s infinite;}
+@keyframes pl{0%,100%{opacity:1;}50%{opacity:.12;}}
+.err{display:none;font-size:11px;color:#e08080;padding:12px;background:rgba(180,50,50,.1);border:1px solid rgba(180,50,50,.2);margin-top:12px;}
+.err.on{display:block;}
+.note{padding:13px 15px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);margin-top:14px;font-size:11.5px;color:rgba(255,255,255,.6);line-height:1.7;}
+.note b{color:var(--g);}
+
+.chain{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin:20px 0;}
+.ch{padding:14px 11px;border:1px solid rgba(255,255,255,.08);border-top:3px solid var(--cc);cursor:pointer;transition:background .12s;background:rgba(255,255,255,.02);}
+.ch:hover{background:rgba(255,255,255,.05);}
+.ch.done{border-color:rgba(90,154,106,.35);}
+.ch-n{font-size:6.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.22);display:block;margin-bottom:5px;}
+.ch-t{font-family:'Playfair Display',serif;font-size:13.5px;font-style:italic;color:var(--cc);margin-bottom:4px;line-height:1.2;}
+.ch-q{font-size:9px;color:rgba(255,255,255,.35);line-height:1.45;}
+.ch-s{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-top:6px;display:block;color:rgba(255,255,255,.2);}
+.ch.done .ch-s{color:var(--ok);}
+
+.sheet{background:var(--cr);color:var(--ink);padding:40px 46px;margin-bottom:8px;}
+.sh-kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:#a08a4a;margin-bottom:9px;}
+.sh-t{font-family:'Playfair Display',serif;font-size:clamp(22px,3.2vw,32px);font-weight:400;line-height:1.05;margin-bottom:7px;}
+.sh-s{font-size:13px;color:#6d6d78;font-family:Georgia,serif;font-style:italic;line-height:1.65;margin-bottom:16px;}
+.meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px;}
+.pill{font-size:7px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;color:#8a7540;border:1px solid rgba(160,138,74,.35);padding:4px 10px;}
+.pill.tag{color:#6a7a8a;border-color:rgba(106,122,138,.35);}
+.blk{margin-bottom:24px;}
+.blbl{font-size:7px;letter-spacing:3.5px;text-transform:uppercase;font-weight:700;color:#a09888;display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.blbl::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.09);}
+.bidea{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;line-height:1.45;padding:14px 16px;background:rgba(201,168,76,.1);border-left:3px solid var(--g);}
+.para{font-family:Georgia,serif;font-size:13px;line-height:1.9;color:#4a4a55;margin-bottom:12px;}
+.mv{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid rgba(0,0,0,.07);}
+.mv:last-child{border-bottom:none;}
+.mv-n{font-family:'Playfair Display',serif;font-size:20px;color:var(--g);opacity:.55;line-height:1.2;}
+.mv-t{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;margin-bottom:4px;line-height:1.25;}
+.mv-d{font-size:11.5px;color:#5a5a66;line-height:1.7;}
+.mv-v{font-size:9.5px;color:#a08a4a;font-style:italic;margin-top:4px;}
+.ill{border:1px solid rgba(0,0,0,.09);border-left:4px solid var(--ic);padding:17px 19px;margin-bottom:6px;background:rgba(255,255,255,.5);}
+.ill-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;flex-wrap:wrap;}
+.ill-k{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--ic);}
+.ill-len{font-size:8.5px;color:#a8a098;margin-left:auto;}
+.ill-t{font-family:'Playfair Display',serif;font-size:17px;font-style:italic;margin-bottom:8px;line-height:1.3;}
+.ill-b{font-family:Georgia,serif;font-size:12.5px;line-height:1.85;color:#4a4a55;margin-bottom:10px;}
+.ill-p{font-size:11px;color:#5a5a66;line-height:1.7;padding:9px 11px;background:rgba(201,168,76,.08);border-left:2px solid rgba(201,168,76,.4);font-style:italic;}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:9px;}
+.lad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.lg{padding:14px 15px;border:1px solid rgba(0,0,0,.09);border-top:3px solid var(--lc);}
+.lg-l{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--lc);display:block;margin-bottom:6px;}
+.lg-t{font-size:12.5px;color:#25252f;line-height:1.65;}
+.cat{margin-bottom:16px;}
+.cat-h{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:#3a3a48;margin-bottom:8px;}
+.fw{display:grid;grid-template-columns:26px 1fr;gap:11px;padding:11px 0;border-bottom:1px solid rgba(0,0,0,.06);}
+.fw:last-child{border-bottom:none;}
+.fw-n{font-family:'Playfair Display',serif;font-size:17px;color:var(--g);opacity:.55;}
+.fw-t{font-size:12.5px;font-weight:700;color:#25252f;margin-bottom:3px;}
+.fw-d{font-size:11.5px;color:#5a5a66;line-height:1.7;font-style:italic;}
+.script{font-family:Georgia,serif;font-size:14px;line-height:2;color:#33333f;padding:18px 20px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.28);font-style:italic;}
+.small-box{padding:12px 14px;border:1px solid rgba(0,0,0,.09);margin-bottom:5px;}
+.sb-l{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:#a08a4a;margin-bottom:5px;}
+.sb-t{font-size:12px;color:#3a3a48;line-height:1.75;}
+.qi{padding:9px 12px;border-left:2px solid rgba(201,168,76,.32);background:rgba(0,0,0,.02);font-size:12.5px;color:#33333f;line-height:1.6;margin-bottom:4px;}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+
+@media print{
+  @page{margin:14mm;}
+  body{background:#fff;}
+  .nav,.pnl:not(.on),.noprint{display:none!important;}
+  .wrap{padding:0;max-width:100%;}
+  .sheet{padding:0;margin:0 0 20px;background:#fff;}
+  .blk,.ill{page-break-inside:avoid;}
+}
+@media(max-width:900px){.chain{grid-template-columns:repeat(3,1fr);}.lad,.g3{grid-template-columns:1fr;}.g2{grid-template-columns:1fr;}}
+@media(max-width:640px){.chain{grid-template-columns:1fr 1fr;}.sheet{padding:24px 20px;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nbr"><div class="nbr-t">Catalytic Sermon</div><div class="nbr-s">Engine &middot; LifeTogether</div></div>
+  <button class="nt on" onclick="tab(0)">Build</button>
+  <button class="nt" onclick="tab(1)"><span class="dotr" id="d1"></span>Message</button>
+  <button class="nt" onclick="tab(2)"><span class="dotr" id="d2"></span>Illustration</button>
+  <button class="nt" onclick="tab(3)"><span class="dotr" id="d3"></span>Gospel</button>
+  <button class="nt" onclick="tab(4)"><span class="dotr" id="d4"></span>Next Step</button>
+  <button class="nt" onclick="tab(5)"><span class="dotr" id="d5"></span>Call to Action</button>
+  <button class="nt" onclick="tab(6)"><span class="dotr" id="d6"></span>Pathway</button>
+  <button class="nt" onclick="tab(7)">My Story</button>
+  <button class="pr" onclick="window.print()">&#128424; Print / PDF</button>
+</nav>
+
+<!-- BUILD -->
+<div id="p0" class="pnl on"><div class="wrap">
+  <p class="kk">Every Sermon Leads Somewhere</p>
+  <h1 class="h">Sermon Idea to<br><em>Spiritual Response.</em></h1>
+  <p class="sub">Six libraries, one sermon. The message tells them what to understand. The illustration makes them see it. The gospel keeps Jesus at the center. The next step tells them what to do. The call to action invites them to do it today. The pathway helps the church carry them tomorrow.</p>
+
+  <div class="chain" id="chain"></div>
+
+  <div class="step">Step One &middot; The Sermon</div>
+  <div class="hint">Transcript, manuscript, outline, or just the idea. Even two sentences works &mdash; the engine will develop it.</div>
+  <textarea class="ta" id="serm" rows="6" placeholder="Preaching on anxiety from Philippians 4. Central truth: the peace of God guards the heart that has handed over the worry. My congregation is exhausted, over-scheduled, and quietly afraid."></textarea>
+  <div class="inrow" style="margin-top:6px">
+    <input class="ta" id="church" placeholder="Church name (optional)">
+    <input class="ta" id="series" placeholder="Series title (optional)">
+    <input class="ta" id="sunday" placeholder="Sunday date (optional)">
+  </div>
+
+  <div class="step">Step Two &middot; Build</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" id="allb" onclick="buildAll()">Build the Complete Package &rarr;</button>
+    <button class="btn ghost" onclick="one(1)">Message Only</button>
+    <button class="btn ghost" onclick="reset()">Reset</button>
+  </div>
+  <div class="think" id="think"><div class="pulse"></div><span style="font-size:12px;color:rgba(255,255,255,.38)" id="tmsg">Building&hellip;</span></div>
+  <div class="err" id="err"></div>
+  <div class="note">The complete package runs six passes in sequence and takes about ninety seconds. You can also build any single library on its own from the chain above.</div>
+</div></div>
+
+<div id="p1" class="pnl"><div class="wrap"><div id="o1"></div></div></div>
+<div id="p2" class="pnl"><div class="wrap"><div id="o2"></div></div></div>
+<div id="p3" class="pnl"><div class="wrap"><div id="o3"></div></div></div>
+<div id="p4" class="pnl"><div class="wrap"><div id="o4"></div></div></div>
+<div id="p5" class="pnl"><div class="wrap"><div id="o5"></div></div></div>
+<div id="p6" class="pnl"><div class="wrap"><div id="o6"></div></div></div>
+
+<!-- ILLUSTRATION BUILDER -->
+<div id="p7" class="pnl"><div class="wrap">
+  <p class="kk">The Illustration Builder</p>
+  <h1 class="h">Turn Your Own Story<br>Into a <em>Sermon-Ready</em> Illustration.</h1>
+  <p class="sub">The goal is not generic stories to repeat. It is to help you find, shape, and use your own authentic stories. Answer what you can &mdash; blanks are fine &mdash; and the engine shapes it into something you can preach, including what to protect or anonymize.</p>
+
+  <div class="step">What Happened</div>
+  <textarea class="ta" id="q1" rows="4" placeholder="Tell it however it comes out. Messy is fine."></textarea>
+  <div class="step">Who Was Involved</div>
+  <input class="ta" id="q2" style="resize:none" placeholder="Names or roles \u2014 the engine will suggest what to anonymize">
+  <div class="step">What Was at Stake</div>
+  <input class="ta" id="q3" style="resize:none" placeholder="What could have been lost or gained">
+  <div class="step">Where Was the Tension</div>
+  <input class="ta" id="q4" style="resize:none" placeholder="The moment it could have gone either way">
+  <div class="step">What Changed</div>
+  <input class="ta" id="q5" style="resize:none" placeholder="What was different afterward">
+  <div class="step">What Did You Learn</div>
+  <input class="ta" id="q6" style="resize:none" placeholder="The lesson, in your own words">
+  <div class="step">What Biblical Truth Does It Reveal</div>
+  <input class="ta" id="q7" style="resize:none" placeholder="The text or truth it illuminates">
+  <div class="step">What Should Be Protected</div>
+  <input class="ta" id="q8" style="resize:none" placeholder="Anyone who has not given permission to be named">
+  <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" id="ibb" onclick="buildIll()">Shape My Story &rarr;</button>
+  </div>
+  <div class="think" id="ithink"><div class="pulse"></div><span style="font-size:12px;color:rgba(255,255,255,.38)">Shaping your story&hellip;</span></div>
+  <div id="o7" style="margin-top:16px"></div>
+</div></div>
+
+<script>
+var CH=[
+{n:"01",t:"Message",q:"What should people understand?",c:"var(--c1)",i:1},
+{n:"02",t:"Illustration",q:"What helps them see and remember it?",c:"var(--c2)",i:2},
+{n:"03",t:"Gospel",q:"How does it connect to Jesus?",c:"var(--c3)",i:3},
+{n:"04",t:"Next Step",q:"What should they do?",c:"var(--c4)",i:4},
+{n:"05",t:"Call to Action",q:"How are they invited to respond today?",c:"var(--c5)",i:5},
+{n:"06",t:"Pathway",q:"How does the church carry them tomorrow?",c:"var(--c6)",i:6}];
+var ICOL=["#a0553a","#4a6a9a","#8a5a8a","#5a8a5a","#3a7a7a","#a08a3a"];
+var LCOL=["#5a8a5a","#c9a84c","#a0553a"];
+
+var D={};
+try{var s0=localStorage.getItem("cse");if(s0)D=JSON.parse(s0);}catch(e){}
+function save(){try{localStorage.setItem("cse",JSON.stringify(D));}catch(e){}}
+function esc(s){return (s||"").replace(/</g,"&lt;");}
+function arr(x){return Array.isArray(x)?x:[];}
+
+function tab(i){
+  for(var k=0;k<8;k++)document.getElementById("p"+k).classList.remove("on");
+  document.getElementById("p"+i).classList.add("on");
+  var t=document.getElementsByClassName("nt");
+  for(var k=0;k<t.length;k++)t[k].classList.remove("on");
+  t[i].classList.add("on");window.scrollTo(0,0);
+}
+function chain(){
+  var h="";
+  for(var i=0;i<CH.length;i++){var c=CH[i],done=!!D["r"+c.i];
+    h+="<div class='ch"+(done?" done":"")+"' style='--cc:"+c.c+"' onclick='"+(done?"tab("+c.i+")":"one("+c.i+")")+"'>";
+    h+="<span class='ch-n'>"+c.n+"</span><div class='ch-t'>"+c.t+"</div><div class='ch-q'>"+c.q+"</div>";
+    h+="<span class='ch-s'>"+(done?"\u2713 Built \u2014 open":"Build this")+"</span></div>";}
+  document.getElementById("chain").innerHTML=h;
+  for(var i=1;i<=6;i++){
+    var d=document.getElementById("d"+i);
+    if(d)d.className="dotr"+(D["r"+i]?" done":"");
+  }
+}
+function reset(){
+  if(!confirm("Clear everything and start over?"))return;
+  D={};save();
+  for(var i=1;i<=7;i++){var el=document.getElementById("o"+i);if(el)el.innerHTML="";}
+  chain();tab(0);
+}
+
+var PROMPTS={
+1:{name:"Message",tok:2600,j:'{"title":"","subtitle":"","scripture":"","felt_need":"","big_idea":"","outline":[{"n":"I","t":"","d":"","v":""},{"n":"II","t":"","d":"","v":""},{"n":"III","t":"","d":"","v":""},{"n":"IV","t":"","d":"","v":""}],"movements":["","",""],"theological_notes":["",""],"applications":["","",""],"conclusion":""}',
+ ask:"Develop the sermon. The big idea must be one memorable sentence, not a topic. The outline is four teaching movements with a title, two to three sentences of substance, and the supporting text. Theological notes are the two things a pastor must get right to preach this responsibly. Applications are specific and doable, never categories."},
+2:{name:"Illustration",tok:3000,j:'{"illustrations":[{"kind":"Opening","title":"","body":"","use":"","length":"","tags":{"topic":"","scripture":"","felt_need":"","tone":"","audience":"","placement":"","outcome":"","theme":"","ministry":""}},{"kind":"Teaching","title":"","body":"","use":"","length":"","tags":{"topic":"","scripture":"","felt_need":"","tone":"","audience":"","placement":"","outcome":"","theme":"","ministry":""}},{"kind":"Emotional","title":"","body":"","use":"","length":"","tags":{"topic":"","scripture":"","felt_need":"","tone":"","audience":"","placement":"","outcome":"","theme":"","ministry":""}},{"kind":"Application","title":"","body":"","use":"","length":"","tags":{"topic":"","scripture":"","felt_need":"","tone":"","audience":"","placement":"","outcome":"","theme":"","ministry":""}},{"kind":"Testimony","title":"","body":"","use":"","length":"","tags":{"topic":"","scripture":"","felt_need":"","tone":"","audience":"","placement":"","outcome":"","theme":"","ministry":""}},{"kind":"Closing","title":"","body":"","use":"","length":"","tags":{"topic":"","scripture":"","felt_need":"","tone":"","audience":"","placement":"","outcome":"","theme":"","ministry":""}}],"personal_prompt":"","object_lesson":""}',
+ ask:"Write six illustrations, one per category: Opening (creates curiosity and surfaces the felt need), Teaching (clarifies the principle), Emotional (helps them feel the weight), Application (shows it in everyday life), Testimony (demonstrates real transformation), Closing (moves toward decision). Each body is 90 to 150 words, told as a story with concrete detail, not a summary of a story. The 'use' field says exactly where and how to deploy it. Vary the sources across biblical, historical, cultural, family, work, and object lesson. Also give one personal story prompt that helps the pastor mine his own life, and one object lesson he could physically hold up."},
+3:{name:"Gospel",tok:2600,j:'{"connection":"","recommended_format":"","why_format":"","sixty_second":"","three_minute":"","bridge_line":"","invitations":[{"kind":"","script":""},{"kind":"","script":""},{"kind":"","script":""},{"kind":"","script":""}],"guardrail":""}',
+ ask:"Show how THIS sermon connects to the good news. The connection paragraph names the specific bridge from this topic to Christ. Recommend one gospel format from these and say why it fits: 60-Second, Three-Minute, Story of Scripture, Cross and Resurrection, Grace Versus Performance, Relationship With God, Kingdom Gospel, Prodigal Gospel, Freedom Gospel, Hope Gospel. Write the 60-second and three-minute versions as spoken scripts. The bridge_line is the single transitional sentence that moves from sermon to gospel without a gear grind. Give four invitation options with the actual words. The guardrail names the specific way this sermon could drift moralistic and how to prevent it."},
+4:{name:"Next Step",tok:3000,j:'{"headline_step":"","why_now":"","ladder":{"begin":"","grow":"","lead":""},"categories":[{"cat":"Spiritual","begin":"","grow":"","lead":""},{"cat":"Relational","begin":"","grow":"","lead":""},{"cat":"Church","begin":"","grow":"","lead":""},{"cat":"Mission","begin":"","grow":"","lead":""},{"cat":"Leadership","begin":"","grow":"","lead":""},{"cat":"Generosity","begin":"","grow":"","lead":""}],"seven_day":["","","","","","",""],"support":""}',
+ ask:"The headline step is the ONE step this sermon is actually calling for. Every step must be clear, specific, achievable, immediate, measurable, tied to this sermon, and supported past Sunday. The ladder gives Begin (anyone can do it), Grow (deeper practice), Lead (multiplying step). Then do the same across all six categories. The seven_day array is one concrete action per day, Sunday through Saturday. The support field names what the church does so the step does not die on Tuesday."},
+5:{name:"Call to Action",tok:2800,j:'{"recommended_type":"","why_type":"","framework":[{"n":"1","t":"Restate the Truth","d":""},{"n":"2","t":"Name the Tension","d":""},{"n":"3","t":"Clarify the Decision","d":""},{"n":"4","t":"Create Urgency","d":""},{"n":"5","t":"Make Response Simple","d":""},{"n":"6","t":"Explain What Happens Next","d":""},{"n":"7","t":"Pray for Courage","d":""}],"closing_script":"","response_card":"","qr_language":"","stage_directions":"","host_transition":"","followup":"","prayer":""}',
+ ask:"Recommend one response type from these and say why: Reflective, Physical, Prayer, Digital, Written, Registration, Commitment, Relational, Serving, Mission. Fill each of the seven framework steps with what the pastor actually does at that step in THIS sermon. The closing_script is 150 to 220 words of the pastor's actual spoken words, ready to read from the platform, with urgency that never manipulates. Response card language is what is printed on the card. Stage directions are the physical logistics. Host transition is what the person on stage says after the pastor sits down. Follow-up is the message sent within 24 hours."},
+6:{name:"Pathway",tok:3200,j:'{"small_group":["","","","",""],"family_guide":"","dinner_question":"","student":"","children":"","staff":"","testimony_questions":["","",""],"social":["","",""],"email":"","celebration":"","measure":""}',
+ ask:"Build the churchwide carry-through. Five small group questions that are formation questions, not comprehension. The family guide is a short paragraph a parent can actually use. One dinner table question. Student and children versions are the same truth at their altitude, one paragraph each. Staff is how the team applies this to their own work. Three testimony-capture questions that produce usable stories. Three social posts written to stop a scroll, not to announce. One follow-up email of 80 to 120 words. The celebration plan says how wins get named publicly. The measure field names the one number that tells the pastor whether this Sunday actually worked."}};
+
+function ctx(){
+  var c=document.getElementById("church").value.trim();
+  var s=document.getElementById("series").value.trim();
+  var d=document.getElementById("sunday").value.trim();
+  var o="";
+  if(c)o+="CHURCH: "+c+"\n";if(s)o+="SERIES: "+s+"\n";if(d)o+="SUNDAY: "+d+"\n";
+  if(D.r1){o+="\nALREADY ESTABLISHED FOR THIS SERMON \u2014 stay consistent with it:\nTITLE: "+D.r1.title+
+   "\nBIG IDEA: "+D.r1.big_idea+"\nFELT NEED: "+D.r1.felt_need+"\nTEXT: "+D.r1.scripture+"\n";}
+  return o;
+}
+function run(i,then){
+  var sm=document.getElementById("serm").value.trim();
+  var er=document.getElementById("err");
+  if(!sm){er.textContent="Paste or describe the sermon first.";er.classList.add("on");return;}
+  var P=PROMPTS[i],th=document.getElementById("think");
+  th.classList.add("on");er.classList.remove("on");
+  document.getElementById("tmsg").textContent="Building the "+P.name+" library\u2026";
+  var q="You are the master sermon architect for Lifetogether Ministries, building the Catalytic Sunday package that moves a congregation from sermon idea to spiritual response.\n\n"+
+   "SERMON:\n"+sm.slice(0,12000).replace(/"/g,"'")+"\n\n"+ctx()+
+   "\nTASK \u2014 "+P.name.toUpperCase()+" LIBRARY:\n"+P.ask+"\n\n"+
+   "Everything must be specific to THIS sermon. Never generic. Never filler. Write the way a seasoned pastor writes for another pastor.\n\n"+
+   "Respond ONLY with valid JSON, no markdown fences:\n"+P.j;
+  fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:P.tok,messages:[{role:"user",content:q}]})})
+  .then(function(r){return r.json();}).then(function(dd){
+    var tx="",cc=dd.content||[];
+    for(var k=0;k<cc.length;k++){if(cc[k].type==="text")tx=cc[k].text;}
+    D["r"+i]=JSON.parse(tx.replace(/```json/g,"").replace(/```/g,"").trim());
+    save();render(i);chain();
+    if(then)then();else{th.classList.remove("on");tab(i);}
+  }).catch(function(){
+    er.textContent="The "+P.name+" pass failed. Try building it on its own from the chain.";
+    er.classList.add("on");th.classList.remove("on");
+    document.getElementById("allb").disabled=false;
+    document.getElementById("allb").textContent="Build the Complete Package \u2192";
+  });
+}
+function one(i){run(i,null);}
+function buildAll(){
+  var b=document.getElementById("allb");
+  b.disabled=true;b.textContent="Building...";
+  var seq=[1,2,3,4,5,6],idx=0;
+  function next(){
+    if(idx>=seq.length){
+      document.getElementById("think").classList.remove("on");
+      b.disabled=false;b.textContent="Build the Complete Package \u2192";tab(1);return;}
+    var i=seq[idx++];run(i,next);
+  }
+  next();
+}
+
+function render(i){
+  var R=D["r"+i];if(!R)return;
+  var el=document.getElementById("o"+i);
+  var ck=document.getElementById("church").value.trim();
+  var sk=document.getElementById("series").value.trim();
+  var head=(ck?esc(ck)+" &middot; ":"")+(sk?esc(sk)+" &middot; ":"")+CH[i-1].t+" Library";
+
+  if(i===1){
+    var ol="";for(var j=0;j<arr(R.outline).length;j++){var m=R.outline[j];
+      ol+="<div class='mv'><div class='mv-n'>"+esc(m.n)+"</div><div><div class='mv-t'>"+esc(m.t)+"</div>"+
+       "<div class='mv-d'>"+esc(m.d)+"</div>"+(m.v?"<div class='mv-v'>"+esc(m.v)+"</div>":"")+"</div></div>";}
+    var mvs="";for(var j=0;j<arr(R.movements).length;j++)mvs+="<div class='qi'>"+esc(R.movements[j])+"</div>";
+    var tn="";for(var j=0;j<arr(R.theological_notes).length;j++)tn+="<div class='qi'>"+esc(R.theological_notes[j])+"</div>";
+    var ap="";for(var j=0;j<arr(R.applications).length;j++)ap+="<div class='qi'>"+esc(R.applications[j])+"</div>";
+    el.innerHTML="<div class='sheet'><div class='sh-kk'>"+head+"</div>"+
+     "<h2 class='sh-t'>"+esc(R.title)+"</h2><p class='sh-s'>"+esc(R.subtitle)+"</p>"+
+     "<div class='meta'><span class='pill'>"+esc(R.scripture)+"</span><span class='pill tag'>Felt Need: "+esc(R.felt_need)+"</span></div>"+
+     "<div class='blk'><div class='blbl'>The Big Idea</div><div class='bidea'>"+esc(R.big_idea)+"</div></div>"+
+     "<div class='blk'><div class='blbl'>Sermon Outline</div>"+ol+"</div>"+
+     "<div class='blk'><div class='blbl'>Teaching Movements</div>"+mvs+"</div>"+
+     "<div class='blk'><div class='blbl'>Theological Notes</div>"+tn+"</div>"+
+     "<div class='blk'><div class='blbl'>Applications</div>"+ap+"</div>"+
+     "<div class='blk'><div class='blbl'>Conclusion</div><p class='para'>"+esc(R.conclusion)+"</p></div></div>";
+  }
+  else if(i===2){
+    var il="";
+    for(var j=0;j<arr(R.illustrations).length;j++){var x=R.illustrations[j],t=x.tags||{};
+      var tg="";
+      var keys=["topic","scripture","felt_need","tone","audience","placement","outcome","theme","ministry"];
+      for(var k=0;k<keys.length;k++){if(t[keys[k]])tg+="<span class='pill tag'>"+esc(t[keys[k]])+"</span>";}
+      il+="<div class='ill' style='--ic:"+ICOL[j%6]+"'><div class='ill-h'><span class='ill-k'>"+esc(x.kind)+
+       "</span><span class='ill-len'>"+esc(x.length)+"</span></div>"+
+       "<div class='ill-t'>"+esc(x.title)+"</div><div class='ill-b'>"+esc(x.body)+"</div>"+
+       (x.use?"<div class='ill-p'>How to use it: "+esc(x.use)+"</div>":"")+
+       "<div class='tags'>"+tg+"</div></div>";}
+    el.innerHTML="<div class='sheet'><div class='sh-kk'>"+head+"</div>"+
+     "<h2 class='sh-t'>Six Illustrations</h2><p class='sh-s'>One for every placement in the sermon &mdash; each tagged by topic, text, felt need, tone, audience, placement, outcome, theme, and ministry application.</p>"+
+     "<div class='blk'>"+il+"</div>"+
+     (R.personal_prompt?"<div class='blk'><div class='blbl'>Mine Your Own Story</div><div class='ill-p'>"+esc(R.personal_prompt)+"</div></div>":"")+
+     (R.object_lesson?"<div class='blk'><div class='blbl'>Object Lesson</div><div class='ill-p'>"+esc(R.object_lesson)+"</div></div>":"")+
+     "</div>";
+  }
+  else if(i===3){
+    var iv="";for(var j=0;j<arr(R.invitations).length;j++){var x=R.invitations[j];
+      iv+="<div class='small-box'><div class='sb-l'>"+esc(x.kind)+"</div><div class='sb-t' style='font-style:italic'>&ldquo;"+esc(x.script)+"&rdquo;</div></div>";}
+    el.innerHTML="<div class='sheet'><div class='sh-kk'>"+head+"</div>"+
+     "<h2 class='sh-t'>Keeping Jesus at the Center</h2>"+
+     "<div class='meta'><span class='pill'>"+esc(R.recommended_format)+"</span></div>"+
+     "<div class='blk'><div class='blbl'>The Connection</div><p class='para'>"+esc(R.connection)+"</p></div>"+
+     "<div class='blk'><div class='blbl'>Why This Format</div><p class='para'>"+esc(R.why_format)+"</p></div>"+
+     "<div class='blk'><div class='blbl'>The Bridge Line</div><div class='bidea'>&ldquo;"+esc(R.bridge_line)+"&rdquo;</div></div>"+
+     "<div class='blk'><div class='blbl'>The 60-Second Gospel</div><div class='script'>"+esc(R.sixty_second)+"</div></div>"+
+     "<div class='blk'><div class='blbl'>The Three-Minute Gospel</div><div class='script'>"+esc(R.three_minute)+"</div></div>"+
+     "<div class='blk'><div class='blbl'>Invitation Options</div>"+iv+"</div>"+
+     "<div class='blk'><div class='blbl'>The Guardrail</div><div class='ill-p'>"+esc(R.guardrail)+"</div></div></div>";
+  }
+  else if(i===4){
+    var lad="<div class='lad'>"+
+     "<div class='lg' style='--lc:"+LCOL[0]+"'><span class='lg-l'>Begin</span><div class='lg-t'>"+esc(R.ladder&&R.ladder.begin)+"</div></div>"+
+     "<div class='lg' style='--lc:"+LCOL[1]+"'><span class='lg-l'>Grow</span><div class='lg-t'>"+esc(R.ladder&&R.ladder.grow)+"</div></div>"+
+     "<div class='lg' style='--lc:"+LCOL[2]+"'><span class='lg-l'>Lead</span><div class='lg-t'>"+esc(R.ladder&&R.ladder.lead)+"</div></div></div>";
+    var cats="";
+    for(var j=0;j<arr(R.categories).length;j++){var c=R.categories[j];
+      cats+="<div class='cat'><div class='cat-h'>"+esc(c.cat)+"</div><div class='lad'>"+
+       "<div class='lg' style='--lc:"+LCOL[0]+"'><span class='lg-l'>Begin</span><div class='lg-t'>"+esc(c.begin)+"</div></div>"+
+       "<div class='lg' style='--lc:"+LCOL[1]+"'><span class='lg-l'>Grow</span><div class='lg-t'>"+esc(c.grow)+"</div></div>"+
+       "<div class='lg' style='--lc:"+LCOL[2]+"'><span class='lg-l'>Lead</span><div class='lg-t'>"+esc(c.lead)+"</div></div></div></div>";}
+    var sd="";var dn=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    for(var j=0;j<arr(R.seven_day).length;j++)sd+="<div class='mv'><div class='mv-n' style='font-size:12px;letter-spacing:1px'>"+dn[j]+"</div><div class='mv-d'>"+esc(R.seven_day[j])+"</div></div>";
+    el.innerHTML="<div class='sheet'><div class='sh-kk'>"+head+"</div>"+
+     "<h2 class='sh-t'>What Should I Do Because of What I Heard</h2>"+
+     "<div class='blk'><div class='blbl'>The Headline Step</div><div class='bidea'>"+esc(R.headline_step)+"</div>"+
+      (R.why_now?"<p class='para' style='margin-top:11px'>"+esc(R.why_now)+"</p>":"")+"</div>"+
+     "<div class='blk'><div class='blbl'>The Ladder</div>"+lad+"</div>"+
+     "<div class='blk'><div class='blbl'>All Six Categories</div>"+cats+"</div>"+
+     "<div class='blk'><div class='blbl'>Seven-Day Practice</div>"+sd+"</div>"+
+     "<div class='blk'><div class='blbl'>How the Church Supports It</div><div class='ill-p'>"+esc(R.support)+"</div></div></div>";
+  }
+  else if(i===5){
+    var fw="";for(var j=0;j<arr(R.framework).length;j++){var f=R.framework[j];
+      fw+="<div class='fw'><div class='fw-n'>"+esc(f.n)+"</div><div><div class='fw-t'>"+esc(f.t)+"</div><div class='fw-d'>"+esc(f.d)+"</div></div></div>";}
+    el.innerHTML="<div class='sheet'><div class='sh-kk'>"+head+"</div>"+
+     "<h2 class='sh-t'>From Intention to Decision</h2>"+
+     "<div class='meta'><span class='pill'>"+esc(R.recommended_type)+" Response</span></div>"+
+     "<div class='blk'><div class='blbl'>Why This Response Type</div><p class='para'>"+esc(R.why_type)+"</p></div>"+
+     "<div class='blk'><div class='blbl'>The Seven-Step Framework</div>"+fw+"</div>"+
+     "<div class='blk'><div class='blbl'>The Closing Script</div><div class='script'>"+esc(R.closing_script)+"</div></div>"+
+     "<div class='blk'><div class='blbl'>The Prayer</div><div class='script' style='background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.11)'>"+esc(R.prayer)+"</div></div>"+
+     "<div class='g2'>"+
+      "<div class='small-box'><div class='sb-l'>Response Card</div><div class='sb-t'>"+esc(R.response_card)+"</div></div>"+
+      "<div class='small-box'><div class='sb-l'>QR Code Language</div><div class='sb-t'>"+esc(R.qr_language)+"</div></div>"+
+      "<div class='small-box'><div class='sb-l'>Stage Directions</div><div class='sb-t'>"+esc(R.stage_directions)+"</div></div>"+
+      "<div class='small-box'><div class='sb-l'>Host Transition</div><div class='sb-t'>"+esc(R.host_transition)+"</div></div>"+
+     "</div>"+
+     "<div class='blk' style='margin-top:16px'><div class='blbl'>24-Hour Follow-Up</div><div class='ill-p'>"+esc(R.followup)+"</div></div></div>";
+  }
+  else if(i===6){
+    var sg="";for(var j=0;j<arr(R.small_group).length;j++)sg+="<div class='qi'>"+(j+1)+". "+esc(R.small_group[j])+"</div>";
+    var tq="";for(var j=0;j<arr(R.testimony_questions).length;j++)tq+="<div class='qi'>"+esc(R.testimony_questions[j])+"</div>";
+    var so="";for(var j=0;j<arr(R.social).length;j++)so+="<div class='small-box'><div class='sb-l'>Post "+(j+1)+"</div><div class='sb-t'>"+esc(R.social[j])+"</div></div>";
+    el.innerHTML="<div class='sheet'><div class='sh-kk'>"+head+"</div>"+
+     "<h2 class='sh-t'>How the Church Carries It Tomorrow</h2>"+
+     "<div class='blk'><div class='blbl'>Five Small Group Questions</div>"+sg+"</div>"+
+     "<div class='blk'><div class='blbl'>Family Guide</div><p class='para'>"+esc(R.family_guide)+"</p>"+
+      "<div class='bidea' style='font-size:16px'>Dinner table: &ldquo;"+esc(R.dinner_question)+"&rdquo;</div></div>"+
+     "<div class='g2'>"+
+      "<div class='small-box'><div class='sb-l'>Student Adaptation</div><div class='sb-t'>"+esc(R.student)+"</div></div>"+
+      "<div class='small-box'><div class='sb-l'>Children's Connection</div><div class='sb-t'>"+esc(R.children)+"</div></div>"+
+     "</div>"+
+     "<div class='blk' style='margin-top:16px'><div class='blbl'>Staff Conversation</div><div class='ill-p'>"+esc(R.staff)+"</div></div>"+
+     "<div class='blk'><div class='blbl'>Testimony Capture</div>"+tq+"</div>"+
+     "<div class='blk'><div class='blbl'>Social Copy</div>"+so+"</div>"+
+     "<div class='blk'><div class='blbl'>Follow-Up Email</div><div class='script'>"+esc(R.email)+"</div></div>"+
+     "<div class='g2'>"+
+      "<div class='small-box'><div class='sb-l'>Celebration Plan</div><div class='sb-t'>"+esc(R.celebration)+"</div></div>"+
+      "<div class='small-box'><div class='sb-l'>The One Number to Watch</div><div class='sb-t'>"+esc(R.measure)+"</div></div>"+
+     "</div></div>";
+  }
+}
+
+function buildIll(){
+  var v=[];
+  for(var i=1;i<=8;i++)v.push(document.getElementById("q"+i).value.trim());
+  if(!v[0]){alert("Start with what happened \u2014 the rest can stay blank.");return;}
+  var b=document.getElementById("ibb"),th=document.getElementById("ithink");
+  b.disabled=true;b.textContent="Shaping...";th.classList.add("on");
+  var L=["What happened","Who was involved","What was at stake","Where was the tension","What changed","What was learned","Biblical truth it reveals","What to protect"];
+  var body="";for(var i=0;i<8;i++){if(v[i])body+=L[i]+": "+v[i].replace(/"/g,"'")+"\n";}
+  var q="You are helping a pastor shape his own experience into a sermon-ready illustration. Do not invent events he did not describe. Shape what he gave you into something preachable \u2014 concrete detail, real tension, honest ending. Tell it, do not summarize it.\n\n"+
+   "HIS STORY:\n"+body+"\n"+
+   "Write the illustration in FIRST PERSON as he would tell it from the platform, 120 to 200 words. Then advise on placement, anonymizing, and the one line that must land.\n\n"+
+   "Respond ONLY with valid JSON, no fences:\n"+
+   '{"title":"","illustration":"","the_line":"","placement":"","why_it_works":"","anonymize":"","caution":"","tags":{"topic":"","felt_need":"","tone":"","outcome":""}}';
+  fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:2000,messages:[{role:"user",content:q}]})})
+  .then(function(r){return r.json();}).then(function(dd){
+    var tx="",cc=dd.content||[];
+    for(var k=0;k<cc.length;k++){if(cc[k].type==="text")tx=cc[k].text;}
+    var R=JSON.parse(tx.replace(/```json/g,"").replace(/```/g,"").trim());
+    var t=R.tags||{},tg="";
+    var kk=["topic","felt_need","tone","outcome"];
+    for(var k=0;k<kk.length;k++){if(t[kk[k]])tg+="<span class='pill tag'>"+esc(t[kk[k]])+"</span>";}
+    document.getElementById("o7").innerHTML="<div class='sheet'>"+
+     "<div class='sh-kk'>Your Story &middot; Shaped for the Platform</div>"+
+     "<h2 class='sh-t'>"+esc(R.title)+"</h2>"+
+     "<div class='blk'><div class='blbl'>The Illustration</div><div class='ill-b' style='font-size:13.5px'>"+esc(R.illustration)+"</div></div>"+
+     "<div class='blk'><div class='blbl'>The Line That Must Land</div><div class='bidea'>&ldquo;"+esc(R.the_line)+"&rdquo;</div></div>"+
+     "<div class='g2'>"+
+      "<div class='small-box'><div class='sb-l'>Where It Goes</div><div class='sb-t'>"+esc(R.placement)+"</div></div>"+
+      "<div class='small-box'><div class='sb-l'>Why It Works</div><div class='sb-t'>"+esc(R.why_it_works)+"</div></div>"+
+     "</div>"+
+     "<div class='blk' style='margin-top:16px'><div class='blbl'>Protect and Anonymize</div><div class='ill-p'>"+esc(R.anonymize)+"</div></div>"+
+     (R.caution?"<div class='blk'><div class='blbl'>One Caution</div><div class='ill-p' style='background:rgba(176,80,80,.08);border-left-color:rgba(176,80,80,.45)'>"+esc(R.caution)+"</div></div>":"")+
+     "<div class='tags'>"+tg+"</div></div>";
+    b.disabled=false;b.textContent="Shape My Story \u2192";th.classList.remove("on");
+  }).catch(function(){
+    b.disabled=false;b.textContent="Shape My Story \u2192";th.classList.remove("on");
+    alert("Shaping failed. Try again with a bit more detail in what happened.");
+  });
+}
+
+chain();
+for(var i=1;i<=6;i++){if(D["r"+i])render(i);}
+</script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+const {
+  Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType,
+  BorderStyle, PageBreak
+} = require('docx');
+const fs = require('fs');
+
+function spacer(size = 120) {
+  return new Paragraph({ children: [new TextRun("")], spacing: { before: size, after: 0 } });
+}
+
+function heading1(text) {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_1,
+    children: [new TextRun({ text, bold: true, size: 32, font: "Georgia" })],
+    spacing: { before: 360, after: 160 }
+  });
+}
+
+function heading2(text) {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_2,
+    children: [new TextRun({ text, bold: true, size: 26, font: "Georgia", color: "2E5596" })],
+    spacing: { before: 300, after: 120 }
+  });
+}
+
+function heading3(text) {
+  return new Paragraph({
+    children: [new TextRun({ text, bold: true, size: 24, font: "Georgia", color: "4A4A4A" })],
+    spacing: { before: 240, after: 80 }
+  });
+}
+
+function body(text, opts = {}) {
+  return new Paragraph({
+    children: [new TextRun({ text, font: "Georgia", size: 24, ...(opts.run || {}) })],
+    spacing: { before: opts.before || 80, after: opts.after || 80, line: 360 },
+    alignment: opts.align || AlignmentType.LEFT
+  });
+}
+
+function italic(text, opts = {}) {
+  return new Paragraph({
+    children: [new TextRun({ text, font: "Georgia", size: 24, italics: true, ...(opts.run || {}) })],
+    spacing: { before: opts.before || 80, after: opts.after || 80, line: 360 },
+    alignment: opts.align || AlignmentType.LEFT
+  });
+}
+
+function bold(text, opts = {}) {
+  return body(text, { ...opts, run: { bold: true } });
+}
+
+function scripture(reference, text) {
+  return [
+    new Paragraph({
+      children: [new TextRun({ text: reference, bold: true, font: "Georgia", size: 22, color: "2E5596" })],
+      spacing: { before: 160, after: 40 },
+      indent: { left: 720 }
+    }),
+    new Paragraph({
+      children: [new TextRun({ text, italics: true, font: "Georgia", size: 22, color: "333333" })],
+      spacing: { before: 0, after: 160 },
+      indent: { left: 720 },
+      border: { left: { style: BorderStyle.SINGLE, size: 6, color: "2E5596", space: 12 } }
+    })
+  ];
+}
+
+function note(text) {
+  return new Paragraph({
+    children: [new TextRun({ text: `[${text}]`, italics: true, font: "Georgia", size: 20, color: "888888" })],
+    spacing: { before: 80, after: 80 }
+  });
+}
+
+function divider() {
+  return new Paragraph({
+    children: [new TextRun({ text: "─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─", color: "AAAAAA", font: "Georgia", size: 20 })],
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 240, after: 240 }
+  });
+}
+
+function pagebreak() {
+  return new Paragraph({ children: [new PageBreak()] });
+}
+
+// ============================================================
+// SERMON 1: 20-MINUTE VERSION
+// ============================================================
+const sermon20 = [
+  heading1("SERMON 1: 20-MINUTE VERSION"),
+  italic("\"God Owns It All\" — Kick-Off Sunday Sermon", { before: 0, after: 60 }),
+  body("Preached by Ron Blue  |  Estimated Delivery: 18–22 minutes", { before: 0, after: 40 }),
+  body("Series Launch: 30–40 Day Devotional & God Owns It All", { before: 0, after: 200 }),
+
+  divider(),
+
+  heading2("PREACHING NOTES"),
+  body("Tone: Warm, honest, personal — storyteller not lecturer. Pauses are your friend. Let the stories land."),
+  body("Structure: Story → Problem → Biblical Foundation → Shift → Challenge → Commission"),
+  body("Transitions marked with [PAUSE] or [SLOW DOWN] — honor them."),
+
+  divider(),
+
+  heading2("OPENING — THE PLANE STORY (2 min)"),
+  note("Tell this slowly. Let people picture her face."),
+  body("I want to start this morning with a story about a young woman I'll never forget — even though I never learned her name."),
+  body("I was on a flight some years ago, sitting next to a young woman who couldn't have been more than twenty years old. She was well-dressed, put together, and she was working her way through one of those in-flight shopping catalogs — the kind that sells designer luggage and things nobody actually needs at thirty-five thousand feet."),
+  body("What I remember isn't the catalog. It's her face."),
+  body("She looked miserable. Not bored. Genuinely, deeply unhappy — the way a person looks when they've been reaching for something for a long time and keep coming up just short."),
+  body("I thought about her for days after that flight. And here's what I eventually concluded: whatever she was looking for in that catalog, she already had the answer. She just didn't know that it wasn't in there."),
+  note("[PAUSE — let that land]"),
+
+  heading2("THE UNIVERSAL QUESTION (2 min)"),
+  body("Here's what I want to suggest to you this morning: most of us, at some point, have been that person. Reaching. Calculating. Wondering if the next raise, the next paid-off credit card, the next financial milestone will finally produce the feeling we're after."),
+  body("We don't usually say it out loud. But the question is always running somewhere in the background:"),
+  body("Will I be okay? Will I ever have enough? And if I do have enough — will it stay that way?"),
+  body("Those are real questions. And they deserve a real answer."),
+  body("I spent twenty-five years as a financial advisor. I sat with thousands of families — struggling ones, comfortable ones, wealthy ones — and underneath every financial conversation, no matter the income level, I found the same three questions:"),
+  bold("Will I ever have enough? Will it continue to be enough? And how much is enough, anyway?"),
+  body("Now — here's what I want you to notice. Those aren't wrong things to wonder. But I came to believe they are the wrong questions to lead with. Because the moment you ask \"Will I have enough?\" — you've assumed that you are the one responsible for making sure the answer is yes."),
+  body("And that assumption is where the weight comes from."),
+
+  heading2("THE KENYA STORY — MATERIALISM IS A HEART PROBLEM (3 min)"),
+  note("This story needs to breathe. Tell it like you're still standing on that hill."),
+  body("Back in the mid-1970s, I was traveling in Africa with Cru Ministries. I'd spent three years on Wall Street and seven years on Main Street building a CPA practice. I thought I understood materialism. I thought it was an American problem — something born of abundance and advertising and keeping up with the neighbors."),
+  body("Then I found myself standing with a pastor outside Nairobi. We were on a hill looking down at his one-room mud hut with a thatch roof. He had five children. They all lived in that hut."),
+  body("I asked him a question I'd been wrestling with: what did he believe was the greatest barrier to the spread of the gospel in that part of the world?"),
+  body("I thought he'd say transportation. Money. Tribalism. Something like that."),
+  body("He didn't hesitate. He said: Materialism."),
+  note("[PAUSE]"),
+  body("I said, \"What do you mean?\""),
+  body("He said, \"Well, if a man has a mud hut, he wants a stone hut. If he has a thatch roof, he wants a metal roof. If he's got one cow, he wants two cows.\""),
+  body("That pastor taught me something right there that I have never forgotten. Materialism isn't unique to America. It isn't unique to wealth. It's unique to the human heart. And the word that lives at the center of it is very small. It's the word mine."),
+
+  heading2("THE OWNERSHIP QUESTION — BIBLICAL FOUNDATION (4 min)"),
+  note("This is the hinge of the sermon. Take your time."),
+  body("Friends, here's the question that changes everything downstream. Not \"Will I have enough?\" — but a question that comes before it:"),
+  bold("Who owns it?"),
+  body("Psalm 24:1 doesn't negotiate with us:"),
+  ...scripture("Psalm 24:1 (NIV)", "\"The earth is the Lord's, and everything in it, the world, and all who live in it.\""),
+  body("Romans 11:36 takes it even further:"),
+  ...scripture("Romans 11:36 (NIV)", "\"For from him and through him and for him are all things. To him be the glory forever! Amen.\""),
+  body("That's not just a theology sentence. That's a description of reality. It means your income, your savings, your home, your plans, your family — none of it is self-originated or self-sustained. It was entrusted to you. You didn't create it. You're managing it for Someone who was here before it existed."),
+  body("Now I want to say something carefully, because this is important. I've watched thousands of people carry enormous financial anxiety into my office. And almost without exception, it wasn't because they didn't know how to budget. It wasn't a knowledge problem. It was a belief problem."),
+  body("Because the way you handle money always follows what you believe about money. Behavior follows belief. Not as a motivational phrase — that's how formation actually works."),
+  body("If you believe your money is yours — earned by your effort, secured by your planning — then every financial pressure feels like a personal verdict. Every unexpected bill feels like a threat. Every decision carries the weight of your entire future."),
+  body("But if you believe your money is God's — entrusted to you, accountable to him, managed on his behalf — the weight redistributes. You still work hard. You still plan. You still take your responsibilities seriously. But you stop acting like everything is riding on you."),
+  bold("Because it isn't. The Owner is steady. And a steady Owner means you can be faithful without being frantic."),
+
+  heading2("THE CONGRESSIONAL STORY — WISDOM THAT WORKS (2 min)"),
+  note("Quick story, delivers the payoff on the five principles without a long list."),
+  body("Early in my career I had the strange experience of testifying before a congressional subcommittee. I sat before a bank of microphones, and a senator asked me what I would tell the American family about their finances."),
+  body("I gave him five principles. He picked up his pencil, wrote them down, and said, \"It seems to me those would work at any income level.\""),
+  body("I said, \"You're right, Senator — including the United States government.\""),
+  body("We had quite a conversation after that."),
+  body("Those five principles are built on the foundation of this ownership question. Spend less than you earn. Give generously. Avoid debt. Build margin. Set long-term goals. They work at every income level because they're rooted in timeless truth. But they only work if you start from the right place. And the right place is always: Who owns this?"),
+
+  heading2("THE INVITATION — 30-40 DAYS TOGETHER (2 min)"),
+  note("This is where you cast vision for the devotional journey. Be warm, direct, inviting."),
+  body("Starting this week, we're going on a journey together — thirty to forty days — through a daily devotional and the book God Owns It All."),
+  body("I want to tell you honestly what this journey is not. It's not a budgeting course. It's not a guilt trip about money. It's not a fundraising campaign."),
+  body("What it is — is a forty-day invitation to settle the most important financial question you'll ever answer. Not \"Will I have enough?\" but \"Who is the Owner?\""),
+  body("Because when that question gets answered — really answered, not just as a theology statement but as a daily lived reality — it changes your contentment. It changes your confidence. It changes your marriage conversations about money. It changes your generosity. It changes how you go to sleep at night."),
+  body("I've watched it happen hundreds of times. The families who found the most peace weren't the ones with the most money. They were the ones who had settled the ownership question. And I want that for every person in this room."),
+
+  heading2("CLOSING CHALLENGE — THE TWO CHAIRS (2 min)"),
+  note("Picture this clearly. Give them a moment to sit with it."),
+  body("Picture yourself at your boss's dinner table. The meal is ready. Your boss steps out of the kitchen toward the head of the table. Before he can sit down, you walk past him and take the seat yourself."),
+  body("Nobody does that. Not because of a rule — because the arrangement is obvious. In his home, that chair is his."),
+  body("That picture is what I mean by the ownership question. In every life there is a first chair — the seat of ultimate authority. And the question isn't whether a first chair exists. It's who's sitting in it."),
+  body("This series is an invitation to take the second chair. Not because you're less important. Not because your financial decisions don't matter. But because a steward who knows who the Owner is — is free in a way that an owner who is trying to own it all never can be."),
+  bold("You are not the source. You are the steward. And that is a gift."),
+  note("[PAUSE — let it settle]"),
+  body("This week, pick up the devotional. Start Day 1. And ask God this one question before you go any further:"),
+  italic("\"God, what would change in my daily life if I genuinely believed that you own everything I have?\""),
+  body("Let's pray."),
+
+  heading2("CLOSING PRAYER"),
+  italic("Father, you are the source of every good gift, and you do not change. Forgive us for the ways we've lived like everything depends on us — not out of rebellion, but out of fear. Today we return to the foundation. Everything is from you, through you, and for you. Teach us to live with open hands — not passive, but trusting. You are the Owner, and we are yours. Amen."),
+
+  divider(),
+  bold("END OF 20-MINUTE VERSION"),
+
+  pagebreak(),
+
+  // ============================================================
+  // SERMON 2: 30-MINUTE VERSION
+  // ============================================================
+  heading1("SERMON 2: 30-MINUTE VERSION"),
+  italic("\"God Owns It All\" — Kick-Off Sunday Sermon (Extended)", { before: 0, after: 60 }),
+  body("Preached by Ron Blue  |  Estimated Delivery: 28–33 minutes", { before: 0, after: 40 }),
+  body("Series Launch: 30–40 Day Devotional & God Owns It All", { before: 0, after: 200 }),
+
+  divider(),
+
+  heading2("PREACHING NOTES"),
+  body("This version adds: (1) the \"three right questions\" teaching, (2) the Deuteronomy 8 ownership-drift section, (3) the physician/CEO client vignette, and (4) a fuller invitation to the congregation with a specific call to action for couples."),
+  body("Tone: Still warm, personal, unhurried. The extra time is for story and depth — not more information."),
+
+  divider(),
+
+  heading2("OPENING — THE PLANE STORY (2 min)"),
+  note("Same opening as 20-min version. This story earns the sermon's first question."),
+  body("I want to start this morning with a story about a young woman I'll never forget — even though I never learned her name."),
+  body("I was on a flight some years ago, sitting next to a young woman — well-dressed, probably twenty years old — working her way through one of those in-flight shopping catalogs. The kind that sells designer luggage and things nobody actually needs at thirty-five thousand feet."),
+  body("What I remember isn't the catalog. It's her face. She looked miserable. Not bored. Genuinely, deeply unhappy — the way a person looks when they've been reaching for something for a long time and keep coming up just short."),
+  body("I thought about her for days. And here's what I concluded: whatever she was looking for in that catalog, she already had the answer. She just didn't know that it wasn't in there."),
+  note("[PAUSE]"),
+
+  heading2("THREE WRONG QUESTIONS / THREE RIGHT QUESTIONS (4 min)"),
+  body("I spent twenty-five years as a financial advisor. Sat with thousands of families across every income level. And underneath every financial conversation — no matter how much or how little they had — I always found the same three questions running in the background:"),
+  italic("Will I ever have enough? Will it continue to be enough? How much is enough, anyway?"),
+  body("Now — those aren't wrong questions to wrestle with. But I came to believe they are the wrong questions to lead with. Because the moment you ask \"Will I have enough?\" — you've assumed that you are the one responsible for making sure the answer is yes. And that assumption is where the weight comes from."),
+  body("Underneath those three questions, I almost always found one of three deeper ones hiding underneath: What will it take for me to feel successful? What will it take to feel significant? What will it take to feel secure? And the culture's answer is always the same: more. More income, more options, more cushion, more status."),
+  body("Here's what forty years taught me: more doesn't answer those questions. It moves them."),
+  note("[PAUSE — look up from notes here]"),
+  body("But here's the good news. Scripture offers three different questions — ones that actually lead somewhere:"),
+  bold("Who owns it? How much is enough? Is the next steward chosen and prepared?"),
+  body("That first question — who owns it? — changes everything downstream. Once you answer it honestly, the weight shifts. Not because your circumstances change. But because your role changes. You stop being the owner responsible for guaranteeing outcomes, and you become a steward responsible for faithfulness. Those are very different jobs. And one of them was designed to fit you. The other wasn't."),
+
+  heading2("THE KENYA STORY — MATERIALISM IS A HEART PROBLEM (3 min)"),
+  note("Tell this like you're still standing on that hill."),
+  body("Back in the mid-1970s, I was traveling in Africa with Cru Ministries. I'd spent three years on Wall Street and seven years building a CPA practice on Main Street. I thought I understood materialism. I thought it was an American problem."),
+  body("Then I found myself outside Nairobi with a pastor. We were standing on a hill looking down at his one-room mud hut with a thatch roof. He had five children. They all lived in that hut. And I asked him what he believed was the greatest barrier to the spread of the gospel in that part of the world."),
+  body("He didn't hesitate. He said: Materialism."),
+  note("[PAUSE]"),
+  body("I said, \"What do you mean?\" — because we were watching a little girl play with a battery on a pile of rocks. How could materialism be the issue here?"),
+  body("He said, \"Well, if a man has a mud hut, he wants a stone hut. If he has a thatch roof, he wants a metal roof. If he's got one cow, he wants two cows.\""),
+  body("That taught me something I've never unlearned. Materialism isn't unique to America. It isn't unique to wealth. It's unique to the human heart. And the word at the center of it is very small. It's the word mine."),
+
+  heading2("OWNERSHIP DRIFT — DEUTERONOMY 8 (3 min)"),
+  note("The Deuteronomy section is important — it names the invisible shift. Read the verses slowly."),
+  body("Deuteronomy 8 identifies a slow, almost invisible shift that happens when things start going well. Moses is speaking to Israel before they enter the Promised Land, and he says something sobering. He says: after you've eaten and are satisfied, after your herds and flocks grow, after your silver and gold has increased —"),
+  ...scripture("Deuteronomy 8:17–18 (NIV)", "\"You may say to yourself, 'My power and the strength of my hands have produced this wealth for me.' But remember the Lord your God, for it is he who gives you the ability to produce wealth.\""),
+  body("Notice what Moses is warning them about. Not outright rebellion. Not abandoning God dramatically. He's warning them about a quiet drift — a gradual, almost invisible shift where \"mine\" stops being a description and starts being a claim. The place we go to feel safe. The thing we defend when it's threatened."),
+  body("Deuteronomy calls this forgetting. And it's worth noting that the Bible treats forgetting as a spiritual danger on the same level as outright rebellion — because forgetting doesn't look like sin. It looks like success. It looks like confidence. It looks like \"I've got this.\""),
+  body("I've sat with some extraordinarily successful people — physicians, CEOs, business owners. And I've noticed that the ones who carry the most peace aren't the ones who have the most. They're the ones who've made a decision — a real decision, not a conceptual one — that they are managers, not owners. That God entrusted this to them, and at some point he may take back whatever he chooses."),
+  body("That's not a threat. That's the nature of stewardship. Owners have rights. Stewards have responsibilities. And responsibilities — when you know who the Owner is — are a lighter load than rights you were never designed to carry."),
+
+  heading2("BIBLICAL FOUNDATION — THE OWNERSHIP QUESTION (3 min)"),
+  body("Here's the question that changes everything downstream:"),
+  bold("Who owns it?"),
+  ...scripture("Psalm 24:1 (NIV)", "\"The earth is the Lord's, and everything in it, the world, and all who live in it.\""),
+  ...scripture("Romans 11:36 (NIV)", "\"For from him and through him and for him are all things. To him be the glory forever! Amen.\""),
+  body("That's not just a theology sentence. It's a description of reality. Your income, your savings, your home, your plans — none of it is self-originated or self-sustained. It was entrusted to you. You're managing it for Someone who was here before it existed."),
+  body("And here's what changes when you actually believe that. You still work hard. You still plan. You still take your responsibilities seriously. But you stop acting like everything is riding on you."),
+  bold("The Owner is steady. And a steady Owner means you can be faithful without being frantic."),
+  body("Behavior follows belief. Not as a motivational phrase — that's how formation actually works. The way you handle money always follows what you believe about money. Which means the most important financial work you'll ever do isn't in a spreadsheet. It's in the ownership question."),
+
+  heading2("THE CONGRESSIONAL STORY & FIVE PRINCIPLES (2 min)"),
+  body("Early in my career I testified before a congressional subcommittee. A senator asked what I would tell the American family about their finances. I gave him five principles. He picked up his pencil, wrote them down, and said, \"It seems to me those would work at any income level.\""),
+  body("I said, \"You're right, Senator — including the United States government.\""),
+  body("Spend less than you earn. Give generously. Avoid debt. Build margin. Set long-term goals. Those five principles work because they're rooted in timeless truth. But they only work if they're built on the right foundation. And the foundation isn't discipline. It's not willpower. It's a settled answer to the ownership question."),
+
+  heading2("THE CLIENT STORIES — TWO KINDS OF WEALTHY (3 min)"),
+  note("These are drawn from the Bloomington transcript. Tell them as paired portraits."),
+  body("Let me tell you about two clients I had years apart — different people, similar circumstances, very different lives."),
+  body("The first was a physician. Successful practice, good income, everything on paper looking solid. But he was exhausted. Every financial conversation felt like an emergency. Every market dip was a crisis. Every unexpected expense was a verdict on whether he'd been responsible enough. He worked constantly — not because he enjoyed it, but because stopping felt dangerous. He was trying to hold his entire future together with his own two hands."),
+  body("The second was a CEO. Similar income, comparable net worth. But when I walked into his office, there was a different atmosphere. He was decisive without being anxious. He gave generously without calculation. He talked about his finances the way a manager talks about a project he's been given — thoughtfully, responsibly, but without the quiet terror underneath."),
+  body("I asked him once what made the difference. He said something simple. He said, \"Ron, a few years ago I decided to stop being the owner and start being the manager. And that decision changed everything.\""),
+  body("Same income level. Completely different experience of life. Because one of them had settled the ownership question, and one of them hadn't."),
+  body("That's what's available to every person in this room — regardless of where you are financially. The peace isn't in the number. It's in the foundation."),
+
+  heading2("THE INVITATION — 30–40 DAYS TOGETHER (3 min)"),
+  note("Cast vision here. This is the handoff to the devotional. Be clear and specific."),
+  body("Starting this week, we're going on a journey together. Thirty to forty days. A daily devotional and the book God Owns It All."),
+  body("I want to tell you honestly what this journey is not. It's not a budgeting course. It's not a guilt trip about money. It's not a fundraising campaign."),
+  body("What it is — is a forty-day invitation to settle the most important financial question you'll ever face. Not \"Will I have enough?\" — but \"Who is the Owner?\""),
+  body("Here's what I've watched happen when people take this seriously. Their contentment changes. Their confidence changes. Their marriage conversations about money change — and that alone can transform a household. Their generosity opens up in ways they never expected. And the anxiety that used to follow them everywhere starts to quiet down. Not because their circumstances changed. Because they changed."),
+  body("I'd like you to do something specific this week. If you're married, talk with your spouse tonight. Not about your budget. Not about your debt. Just this one question: If we genuinely believed God owns everything we have, what would we do differently?"),
+  body("And if you're single, find one person — a friend, a family member, someone you trust — and invite them to go through this with you. Because this journey is better together."),
+  body("Pick up the devotional on the way out. Day 1 is waiting for you. And I promise you — if you'll bring your honest questions and stay with it — these forty days will be worth it."),
+
+  heading2("CLOSING — THE TWO CHAIRS (3 min)"),
+  note("Take your time here. This is the emotional and theological landing."),
+  body("Picture yourself at your boss's dinner table. The meal is ready. Your boss steps out of the kitchen toward the head of the table — and before he can sit down, you walk past him and take the seat yourself."),
+  body("Nobody does that. Not because of a rule. Because the arrangement is obvious. In his home, at his table, the head chair is his."),
+  body("That picture is what I mean by the ownership question. In every life there is a first chair — the seat of ultimate authority. And the question isn't whether a first chair exists. It's who's sitting in it."),
+  body("If God is in the first chair, you can live with steadiness. If you're in the first chair, you may look capable on the outside while your soul quietly exhausts itself trying to hold everything together."),
+  body("I spent forty years watching both versions play out. I have seen what it looks like when someone finally, really, settles the ownership question. It looks like freedom. It looks like generosity. It looks like peace that doesn't depend on the market or the balance sheet or the next raise."),
+  bold("You are not the source. You are the steward. And that is not a demotion. That is a gift."),
+  note("[PAUSE — slow down here]"),
+  ...scripture("Proverbs 3:5–6 (NIV)", "\"Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.\""),
+  body("Not easy — straight. You won't navigate it alone. The Owner walks with you."),
+  body("This week, start the devotional. And before you open Day 1, ask God this one question:"),
+  italic("\"God, what would change in my daily life — in my finances, my marriage, my sleep, my generosity — if I genuinely believed you own everything I have?\""),
+  body("Let that question do its work. Then turn the page. And let's go on this journey together."),
+  body("Let's pray."),
+
+  heading2("CLOSING PRAYER"),
+  italic("Father, you are the source of every good gift, and you do not change like shifting shadows. Forgive us for the ways we've lived like everything depends on us — not out of rebellion, but out of a fear that if we stop holding everything together, nothing will hold. Today we return to the foundation. Everything is from you, through you, and for you. Teach us to live with open hands — not passive, but trusting. You are the Owner, and we are yours. Guide us through these next forty days. Do something in us, not just around us. Amen."),
+
+  divider(),
+  bold("END OF 30-MINUTE VERSION"),
+
+  spacer(200),
+  divider(),
+  body("SUPPLEMENTAL NOTES FOR BOTH VERSIONS", { run: { bold: true, size: 26 } }),
+  divider(),
+
+  heading3("Call to Action Checklist for the Sunday Launch"),
+  body("Make sure to have ready for Sunday: devotional books at exits, a clear on-ramp for couples wanting to go through the book together, and a brief verbal mention of the Treasure Target / Live-Give-Owe-Grow framework so the congregation knows what's coming in the weeks ahead."),
+
+  heading3("Key Scripture References (Both Sermons)"),
+  body("Psalm 24:1 — Foundational ownership declaration"),
+  body("Romans 11:36 — Everything from, through, and for God"),
+  body("Deuteronomy 8:17–18 — Warning against ownership drift (30-min only)"),
+  body("Proverbs 3:5–6 — Trust and the straight path (closing, both)"),
+  body("Matthew 6:24 — Cannot serve God and money (background; optional addition)"),
+  body("Luke 16:10–13 — Faithful in small things (optional week-opener reference)"),
+
+  heading3("Ron's Voice Reminders"),
+  body("Use: \"Here's what I've watched...\", \"I want to be honest about...\", \"Let me tell you about a client...\", \"Here's what forty years taught me...\""),
+  body("Avoid: abstract lists without a story attached, academic tone, motivational-speaker cadence"),
+  body("Ron preaches from experience, not theory. Every principle should be grounded in something he watched happen in a real person's life."),
+
+  heading3("Timing Guide — 20-Minute Version"),
+  body("Opening story (plane): 2 min | Three wrong questions / universal problem: 2 min | Kenya story: 3 min | Biblical foundation: 4 min | Congressional story: 2 min | Invitation to 40-day journey: 2 min | Two chairs / closing: 2 min | Prayer: 1 min"),
+
+  heading3("Timing Guide — 30-Minute Version"),
+  body("Opening story (plane): 2 min | Three wrong/right questions: 4 min | Kenya story: 3 min | Deuteronomy 8 / ownership drift: 3 min | Biblical foundation: 3 min | Congressional story & principles: 2 min | Two client stories: 3 min | Invitation / call to action: 3 min | Two chairs / closing: 3 min | Prayer: 1 min"),
+];
+
+const doc = new Document({
+  styles: {
+    default: {
+      document: { run: { font: "Georgia", size: 24 } }
+    },
+    paragraphStyles: [
+      {
+        id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
+        run: { size: 36, bold: true, font: "Georgia", color: "1A3A6B" },
+        paragraph: { spacing: { before: 480, after: 200 }, outlineLevel: 0 }
+      },
+      {
+        id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
+        run: { size: 26, bold: true, font: "Georgia", color: "2E5596" },
+        paragraph: { spacing: { before: 360, after: 120 }, outlineLevel: 1 }
+      }
+    ]
+  },
+  sections: [{
+    properties: {
+      page: {
+        size: { width: 12240, height: 15840 },
+        margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+      }
+    },
+    children: sermon20
+  }]
+});
+
+Packer.toBuffer(doc).then(buffer => {
+  fs.writeFileSync('/mnt/user-data/outputs/GOIA_Kickoff_Sermons.docx', buffer);
+  console.log('Done!');
+}).catch(console.error);

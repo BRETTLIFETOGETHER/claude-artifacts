@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeTogether — Platform Architecture Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF7F1;
+    --paper-2:#F3EEE4;
+    --ink:#16243B;
+    --ink-soft:#41506A;
+    --ink-faint:#7E8AA0;
+    --bronze:#B0823C;
+    --bronze-deep:#8C6526;
+    --line:#E2DACB;
+    --line-soft:#ECE5D8;
+    --card:#FFFDF9;
+
+    /* 10 channel hues */
+    --c1:#2C6E63;  /* Spiritual Formation - teal */
+    --c2:#8A3B3B;  /* The Bible - oxblood */
+    --c3:#4B6789;  /* Emotional & Mental Health - slate */
+    --c4:#B5654A;  /* Relationships & Family - clay */
+    --c5:#C28A2C;  /* Community & Belonging - honey */
+    --c6:#3F6B45;  /* Money & Generosity - forest */
+    --c7:#574B8C;  /* Purpose & Work - indigo */
+    --c8:#B0492F;  /* Mission & Outreach - red-orange */
+    --c9:#46566B;  /* Church Health & Leadership - steel */
+    --c10:#9A7430; /* Legacy & Generations - bronze-gold */
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Inter',sans-serif;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+
+  .mono{font-family:'Space Mono',monospace;}
+  .eyebrow{
+    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--bronze-deep);
+  }
+
+  /* ---------- Masthead ---------- */
+  header.masthead{
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--paper) 0%, var(--paper-2) 100%);
+    padding:54px 0 40px;
+  }
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:26px;}
+  .kicker .rule{height:1px;flex:1;background:var(--line);}
+  h1.title{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:clamp(34px,5.4vw,60px);line-height:1.02;letter-spacing:-.01em;
+    margin:0 0 18px;max-width:14ch;
+  }
+  h1.title em{font-style:italic;color:var(--bronze-deep);}
+  .lede{
+    font-size:clamp(16px,1.9vw,19px);color:var(--ink-soft);max-width:60ch;margin:0;
+  }
+  .lede b{color:var(--ink);font-weight:600;}
+  .scope{
+    display:flex;flex-wrap:wrap;gap:0;margin-top:34px;
+    border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--card);
+  }
+  .scope div{
+    flex:1 1 0;min-width:120px;padding:16px 18px;border-right:1px solid var(--line-soft);
+  }
+  .scope div:last-child{border-right:none;}
+  .scope .n{font-family:'Fraunces',serif;font-size:26px;font-weight:600;color:var(--ink);}
+  .scope .l{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-faint);margin-top:3px;}
+
+  /* ---------- Section frame ---------- */
+  section{padding:56px 0;border-bottom:1px solid var(--line-soft);}
+  .sec-head{margin-bottom:30px;}
+  .sec-head h2{
+    font-family:'Fraunces',serif;font-weight:500;font-size:clamp(24px,3.2vw,34px);
+    margin:8px 0 8px;letter-spacing:-.01em;
+  }
+  .sec-head p{margin:0;color:var(--ink-soft);max-width:64ch;font-size:15.5px;}
+
+  /* ---------- The Stack (signature) ---------- */
+  .stack{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  .layer{
+    display:grid;grid-template-columns:48px 1fr;align-items:stretch;
+    background:var(--card);border-bottom:1px solid var(--line-soft);
+  }
+  .layer:last-child{border-bottom:none;}
+  .layer .idx{
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;font-size:13px;color:#fff;font-weight:700;
+  }
+  .layer .body{padding:16px 20px;}
+  .layer .body .name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .layer .body .name span{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);}
+  .layer .body .desc{font-size:14px;color:var(--ink-soft);margin-top:4px;max-width:74ch;}
+  .layer.l-aff{background:repeating-linear-gradient(135deg,#FCF8F0,#FCF8F0 9px,#F6EFE0 9px,#F6EFE0 18px);}
+  .layer.l-aff .idx{background:var(--bronze-deep);}
+  .aff-note{font-size:13px;color:var(--bronze-deep);margin-top:6px;font-style:italic;}
+
+  /* ---------- Affinity band ---------- */
+  .aff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+  .aff{
+    border:1px solid var(--line);border-radius:5px;background:var(--card);padding:18px 18px 16px;
+    position:relative;
+  }
+  .aff .tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--bronze-deep);}
+  .aff h4{font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin:6px 0 6px;}
+  .aff p{margin:0 0 10px;font-size:13.5px;color:var(--ink-soft);}
+  .aff .surf{font-size:12.5px;color:var(--ink-faint);border-top:1px dashed var(--line);padding-top:9px;}
+  .aff .surf b{color:var(--ink-soft);font-weight:600;}
+  .aff.default{outline:2px solid var(--bronze);outline-offset:-2px;}
+
+  /* ---------- Channels ---------- */
+  .controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px;}
+  .controls input{
+    flex:1;min-width:220px;font-family:'Inter',sans-serif;font-size:14px;
+    padding:11px 14px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--ink);
+  }
+  .controls input:focus{outline:2px solid var(--bronze);outline-offset:0;border-color:var(--bronze);}
+  .btn{
+    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    padding:11px 16px;border:1px solid var(--ink);border-radius:5px;background:transparent;color:var(--ink);
+    cursor:pointer;transition:.15s;
+  }
+  .btn:hover{background:var(--ink);color:var(--paper);}
+
+  .channel{
+    border:1px solid var(--line);border-radius:6px;background:var(--card);
+    margin-bottom:12px;overflow:hidden;border-left:5px solid var(--ch);
+  }
+  .ch-head{
+    display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:16px;
+    padding:18px 20px;cursor:pointer;user-select:none;
+  }
+  .ch-head:hover{background:#FFFCF6;}
+  .ch-num{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--ch);}
+  .ch-title{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.01em;}
+  .ch-sub{font-size:13px;color:var(--ink-soft);margin-top:2px;}
+  .ch-sub .lane{color:var(--ch);font-weight:600;}
+  .ch-meta{display:flex;align-items:center;gap:18px;}
+  .ch-stat{text-align:right;}
+  .ch-stat .v{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+  .ch-stat .k{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+  .chev{width:18px;height:18px;border-right:2px solid var(--ink-faint);border-bottom:2px solid var(--ink-faint);
+    transform:rotate(45deg);transition:transform .22s;margin-top:-4px;}
+  .channel.open .chev{transform:rotate(-135deg);margin-top:4px;}
+
+  .ch-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .channel.open .ch-body{max-height:2400px;}
+  .ch-inner{padding:4px 20px 22px;}
+  .ch-aud{font-size:12.5px;color:var(--ink-faint);margin:0 0 14px;border-top:1px solid var(--line-soft);padding-top:14px;}
+  .ch-aud b{color:var(--ink-soft);font-weight:600;}
+  .cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:9px;}
+  .cat{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:11px 13px;border:1px solid var(--line-soft);border-radius:4px;background:var(--paper);
+  }
+  .cat .cname{font-size:13.5px;font-weight:500;color:var(--ink);}
+  .cat .ccount{font-family:'Space Mono',monospace;font-size:11px;color:var(--ch);white-space:nowrap;}
+  .cat . flag{}
+  .cat.flag{background:#FFFDF8;border-color:var(--ch);}
+  .badge-flag{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:#fff;background:var(--ch);padding:2px 5px;border-radius:3px;margin-left:6px;vertical-align:1px;}
+
+  /* ---------- Collections ---------- */
+  .col-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+  .col-card{border:1px solid var(--line);border-radius:6px;background:var(--card);padding:20px;}
+  .col-card .ct{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze-deep);}
+  .col-card h4{font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin:6px 0 4px;}
+  .col-card .def{font-size:13px;color:var(--ink-soft);margin:0 0 12px;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{font-size:11.5px;padding:4px 9px;border:1px solid var(--line);border-radius:20px;color:var(--ink-soft);background:var(--paper);}
+
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:24px;}
+  .vs > div{padding:20px 22px;}
+  .vs .a{background:var(--card);border-right:1px solid var(--line);}
+  .vs .b{background:var(--paper-2);}
+  .vs h5{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px;color:var(--bronze-deep);}
+  .vs p{margin:0;font-size:13.5px;color:var(--ink-soft);}
+  .vs p b{color:var(--ink);font-weight:600;}
+
+  /* ---------- Browse paths ---------- */
+  .paths{display:flex;flex-direction:column;gap:12px;}
+  .path{border:1px solid var(--line);border-radius:6px;background:var(--card);padding:18px 20px;}
+  .path .rank{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;}
+  .path.best .rank{color:#3F6B45;}
+  .path .rank.also{color:var(--bronze-deep);}
+  .path .rank.pow{color:var(--c7);}
+  .path .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:9px 0 6px;}
+  .path .node{font-family:'Fraunces',serif;font-size:16px;font-weight:600;padding:5px 12px;border:1px solid var(--line);border-radius:4px;background:var(--paper);}
+  .path .arr{color:var(--ink-faint);font-family:'Space Mono',monospace;}
+  .path .why{font-size:13px;color:var(--ink-soft);margin:0;}
+
+  /* ---------- Asset / format ladder ---------- */
+  .ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  .rung{padding:16px 16px;border-right:1px solid var(--line-soft);background:var(--card);}
+  .rung:last-child{border-right:none;}
+  .rung .f{font-family:'Fraunces',serif;font-weight:600;font-size:17px;}
+  .rung .d{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+  .asset-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;}
+  .asset{font-size:12px;padding:6px 11px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink-soft);}
+  .asset b{color:var(--ink);font-weight:600;}
+
+  /* ---------- Two surfaces ---------- */
+  .surfaces{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .surface{border:1px solid var(--line);border-radius:6px;padding:22px;background:var(--card);}
+  .surface.platform{border-color:var(--bronze);background:#FFFDF7;}
+  .surface .tag{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze-deep);}
+  .surface h4{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:7px 0 8px;}
+  .surface p{font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;}
+  .surface ul{margin:0;padding-left:18px;font-size:13px;color:var(--ink-soft);}
+  .surface li{margin-bottom:5px;}
+
+  footer{padding:40px 0 60px;}
+  footer p{font-size:12.5px;color:var(--ink-faint);margin:0;font-family:'Space Mono',monospace;letter-spacing:.04em;}
+
+  @media(max-width:720px){
+    .vs,.surfaces{grid-template-columns:1fr;}
+    .vs .a{border-right:none;border-bottom:1px solid var(--line);}
+    .ch-head{grid-template-columns:34px 1fr auto;gap:10px;}
+    .ch-meta .ch-stat:first-child{display:none;}
+    .scope div{flex:1 1 40%;}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="kicker">
+      <span class="eyebrow">LifeTogether · Platform Operating System</span>
+      <span class="rule"></span>
+      <span class="eyebrow">v1 Architecture Map</span>
+    </div>
+    <h1 class="title">The architecture for the world's largest <em>Christian campaign platform</em>.</h1>
+    <p class="lede">Not a website — a platform, organized the way RightNow Media, MasterClass, and Audible organize tens of thousands of resources. <b>Topic is the channel. Audience is the affinity.</b> That one decision is what keeps the library intuitive at 10,000 campaigns. Tap any channel to open its categories.</p>
+    <div class="scope">
+      <div><div class="n">10</div><div class="l">Channels</div></div>
+      <div><div class="n">85+</div><div class="l">Categories</div></div>
+      <div><div class="n">7</div><div class="l">Affinities</div></div>
+      <div><div class="n">4</div><div class="l">Collection types</div></div>
+      <div><div class="n">10k+</div><div class="l">Campaigns at scale</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== THE STACK ===== -->
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The six layers</span>
+      <h2>One record, six layers of meaning</h2>
+      <p>Every campaign is a single database record that surfaces through six stacked layers. A campaign lives in exactly one <b>category</b> (its permanent home) but can appear in many <b>collections</b> and ship as many <b>affinity editions</b> — without ever being duplicated. This is the spine that prevents the spreadsheet problem.</p>
+    </div>
+    <div class="stack">
+      <div class="layer"><div class="idx" style="background:var(--c1)">01</div><div class="body">
+        <div class="name">Channels <span>10 domains · the stores within the store</span></div>
+        <div class="desc">Top-level, evergreen lanes a pastor browses by topic. Each holds 8–12 categories.</div></div></div>
+      <div class="layer"><div class="idx" style="background:var(--c5)">02</div><div class="body">
+        <div class="name">Categories <span>85+ · permanent taxonomic homes</span></div>
+        <div class="desc">A campaign belongs to exactly one category inside one channel. Min 50 / target 100 campaigns each.</div></div></div>
+      <div class="layer"><div class="idx" style="background:var(--c6)">03</div><div class="body">
+        <div class="name">Collections <span>curated cross-channel shelves</span></div>
+        <div class="desc">Seasonal, Outcome, Affinity, and Editorial shelves that pull across many channels. Temporary or merchandised, not taxonomic.</div></div></div>
+      <div class="layer l-aff"><div class="idx">04</div><div class="body">
+        <div class="name">Affinities <span>7 audiences · the lens, not the location</span></div>
+        <div class="desc">Re-curate the entire front door for a persona, and define which editions a campaign ships.</div>
+        <div class="aff-note">Cuts across all layers above and below — this is the layer your old "audience = channel" model wrongly flattened.</div></div></div>
+      <div class="layer"><div class="idx" style="background:var(--c2)">05</div><div class="body">
+        <div class="name">Campaigns <span>10,000+ · ranked, flagship-first</span></div>
+        <div class="desc">Top 10 flagship row per category, then the next 90 behind "view all." Rank sets order and flagship selection.</div></div></div>
+      <div class="layer"><div class="idx" style="background:var(--ink)">06</div><div class="body">
+        <div class="name">Assets <span>the deliverables inside each campaign</span></div>
+        <div class="desc">Devotional, small-group guide, sermon series, leader guide, graphics, editions, launch plan — across six formats.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHANNELS ===== -->
+<section id="channels">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Layers 01 + 02</span>
+      <h2>The 10 channels &amp; their categories</h2>
+      <p>The optimal top-level structure — domains, not audiences and not seasons. Search filters categories live; counts are target depth at maturity (min 50 each). Flagship categories are marked.</p>
+    </div>
+    <div class="controls">
+      <input id="search" type="text" placeholder="Search channels or categories — try 'generosity', 'anxiety', 'legacy'…" aria-label="Search categories">
+      <button class="btn" id="expandAll">Expand all</button>
+      <button class="btn" id="collapseAll">Collapse all</button>
+    </div>
+    <div id="channelList"></div>
+  </div>
+</section>
+
+<!-- ===== AFFINITIES ===== -->
+<section id="affinities">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Layer 04 · the lens</span>
+      <h2>The affinity architecture</h2>
+      <p>An affinity answers <b>"who is this person?"</b> — and re-skins the whole platform for them. Advisor, Business Owner, Christian School, and Church-Planting Network were never categories; they're audiences. Each affinity surfaces certain channels first and demands certain editions.</p>
+    </div>
+    <div class="aff-grid" id="affGrid"></div>
+    <div class="vs">
+      <div class="a">
+        <h5>A category is a location</h5>
+        <p><b>Prayer</b> lives in Spiritual Formation. Always. It's where the campaign is permanently filed — one home, fixed in the taxonomy.</p>
+      </div>
+      <div class="b">
+        <h5>An affinity is a lens</h5>
+        <p>The <b>Business Owner</b> affinity re-orders the home page (Purpose &amp; Work, Money &amp; Generosity, Leadership first) and triggers a Business Owner <b>edition</b> of campaigns. Same library, re-curated.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COLLECTIONS ===== -->
+<section id="collections">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Layer 03 · curated shelves</span>
+      <h2>Collections, not more categories</h2>
+      <p>The same campaign appears in many collections but only one category. Seasons belong here — never as channels — so nothing gets double-filed.</p>
+    </div>
+    <div class="col-types" id="colTypes"></div>
+  </div>
+</section>
+
+<!-- ===== BROWSE PATHS ===== -->
+<section id="paths">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Layer 05 · finding a campaign</span>
+      <h2>How a pastor reaches a campaign</h2>
+      <p>Multiple valid entry points, ranked. Format (7 / 21 / 30 / 40-day) is a filter and a badge — never a top-level path, because pastors start with need, not duration.</p>
+    </div>
+    <div class="paths">
+      <div class="path best">
+        <span class="rank">Recommended default</span>
+        <div class="flow">
+          <span class="node">Affinity</span><span class="arr">→</span>
+          <span class="node">Channel</span><span class="arr">→</span>
+          <span class="node">Collection</span><span class="arr">→</span>
+          <span class="node">Campaign</span>
+        </div>
+        <p class="why">Persona first, then domain, then a curated shelf. Three confident taps from "I'm a family pastor" to the right campaign.</p>
+      </div>
+      <div class="path">
+        <span class="rank also">Also strong — topic-led</span>
+        <div class="flow">
+          <span class="node">Channel</span><span class="arr">→</span>
+          <span class="node">Category</span><span class="arr">→</span>
+          <span class="node">Campaign</span>
+        </div>
+        <p class="why">For the pastor who already knows the subject. Lands on the ranked flagship row inside the category.</p>
+      </div>
+      <div class="path">
+        <span class="rank pow">Power path — the decision engine</span>
+        <div class="flow">
+          <span class="node">Search + Filter</span><span class="arr">→</span>
+          <span class="node">Scoped results</span><span class="arr">→</span>
+          <span class="node">Compare</span><span class="arr">→</span>
+          <span class="node">Campaign</span>
+        </div>
+        <p class="why">Your existing Campaign Finder spec, kept almost entirely. Scope search within affinity + channel so it stays fast at 10k.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ASSETS + FORMATS ===== -->
+<section id="assets">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Layer 06 · inside a campaign</span>
+      <h2>The asset &amp; format ladder</h2>
+      <p>Every campaign carries a format (the commitment ladder below) and a kit of assets. Format is a badge on every card so pastors read the commitment instantly.</p>
+    </div>
+    <div class="ladder">
+      <div class="rung"><div class="f">7-Day</div><div class="d">Lowest barrier · series runway, prayer or generosity week</div></div>
+      <div class="rung"><div class="f">21-Day</div><div class="d">Habit formation · New Year, prayer, reset</div></div>
+      <div class="rung"><div class="f">30-Day</div><div class="d">Deep enough to transform, short enough to finish</div></div>
+      <div class="rung"><div class="f">40-Day</div><div class="d">Full churchwide movement · sermon alignment + Celebration Sunday</div></div>
+      <div class="rung"><div class="f">6-Week Group</div><div class="d">Small-group curriculum &amp; leader-led discussion</div></div>
+      <div class="rung"><div class="f">One-Year</div><div class="d">Annual theme · discipleship pathway</div></div>
+    </div>
+    <div class="asset-list">
+      <span class="asset"><b>Daily Devotional</b></span>
+      <span class="asset"><b>Small Group Guide</b></span>
+      <span class="asset"><b>Sermon Series</b></span>
+      <span class="asset"><b>Leader Guide</b></span>
+      <span class="asset"><b>Graphics Kit</b></span>
+      <span class="asset"><b>Launch Plan</b></span>
+      <span class="asset"><b>Celebration Sunday</b></span>
+      <span class="asset">Family Edition</span>
+      <span class="asset">Youth Edition</span>
+      <span class="asset">Children's Edition</span>
+      <span class="asset">Advisor Edition</span>
+      <span class="asset">Business Owner Edition</span>
+      <span class="asset">Video &amp; Scripts</span>
+      <span class="asset">Print-ready PDF</span>
+      <span class="asset">Email + Social Kit</span>
+      <span class="asset">Host Training</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TWO SURFACES ===== -->
+<section id="surfaces">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The structural correction</span>
+      <h2>Two surfaces, not one website</h2>
+      <p>The attached document is an excellent marketing website. But a marketing site can't organize 10,000 resources. You need both surfaces, sharing one campaign database underneath.</p>
+    </div>
+    <div class="surfaces">
+      <div class="surface">
+        <span class="tag">Surface 1 · keep the document</span>
+        <h4>The Marketing Site</h4>
+        <p>The front door that converts. Your nav, How-It-Works, Pricing, and About narratives stay almost as written.</p>
+        <ul>
+          <li>Home · Campaigns · How It Works · Pricing · Custom · Resources · Schedule a Call</li>
+          <li>Goal-first browsing &amp; the Campaign Finder (the two-track survey)</li>
+          <li>Job: turn a visitor into a church that's <em>in</em>.</li>
+        </ul>
+      </div>
+      <div class="surface platform">
+        <span class="tag">Surface 2 · this architecture</span>
+        <h4>The Content Platform</h4>
+        <p>The RightNow-style library churches live inside after they're in. Channels, affinities, collections, ranked rows.</p>
+        <ul>
+          <li>Audience switcher + omnipresent search at the top</li>
+          <li>Seasonal spotlight · Resume · featured rows · channel grid · collections</li>
+          <li>Job: make 10,000 campaigns feel like a confident next pick.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>LifeTogether Platform Architecture · Channels → Categories → Collections → Affinities → Campaigns → Assets · NIV throughout · built in the Purpose Driven tradition</p>
+  </div>
+</footer>
+
+<script>
+const CHANNELS = [
+  {n:1,hue:'--c1',name:'Spiritual Formation',lane:'Grow closer to God',
+   aud:'Every church, every season — the evergreen core.',
+   cats:[['Prayer',120,1],['Spiritual Growth',100,1],['Discipleship',110,1],['Scripture &amp; the Word',100,0],['Spiritual Disciplines &amp; Habits',90,0],['Worship',70,0],['The Holy Spirit',60,0],['Renewal &amp; Revival',70,0],['Following Jesus / Surrender',90,0],['Faith',80,0]]},
+  {n:2,hue:'--c2',name:'The Bible',lane:'Teach the Word',
+   aud:'Teaching pastors &amp; group leaders — content-anchored, where RightNow\u2019s Bible Studies lives.',
+   cats:[['Books of the Bible',150,1],['Bible Stories',90,1],['Bible Characters',90,0],['Parables',60,1],['Life of Christ',70,1],['Old Testament',80,0],['New Testament',80,0],['Apologetics',60,0],['Famous Hymns',50,0]]},
+  {n:3,hue:'--c3',name:'Emotional &amp; Mental Health',lane:'Your biggest differentiator',
+   aud:'Care pastors &amp; hurting people — RightNow has nothing this deep. Note-of-Care framing throughout.',
+   cats:[['Peace &amp; Anxiety',110,1],['Mental Health',90,1],['Hope',80,1],['Whole Life Health / Flourishing',90,1],['Grief &amp; Loss',70,0],['Burnout &amp; Rest',70,0],['Resilience',70,0],['Healing',80,0],['Recovery',70,0],['Freedom',70,0]]},
+  {n:4,hue:'--c4',name:'Relationships &amp; Family',lane:'The home',
+   aud:'Family pastors, couples, parents.',
+   cats:[['Marriage',110,1],['Parenting',100,1],['Family Discipleship',90,1],['Dating &amp; Singleness',70,0],['Friendship',60,0],['Communication &amp; Conflict',70,0],['Men',70,0],['Women',70,0]]},
+  {n:5,hue:'--c5',name:'Community &amp; Belonging',lane:'Your namesake lane',
+   aud:'Small-group pastors &amp; connection teams.',
+   cats:[['Small Group Launch',110,1],['Life Together / Belonging',100,1],['One Another',80,1],['Church Unity',70,0],['Hospitality',60,0],['Reconnecting / Re-engagement',60,0],['New Believer',70,0]]},
+  {n:6,hue:'--c6',name:'Money &amp; Generosity',lane:'Stewardship',
+   aud:'Generosity &amp; executive pastors. Note-of-Care framing (conviction, not condemnation).',
+   cats:[['Generosity',110,1],['Financial / Biblical Wisdom',110,1],['Stewardship',100,1],['Giving',90,0],['Kingdom Giving',70,0],['Debt &amp; Budgeting',70,0],['Contentment',60,0],['Capital Campaigns',60,0]]},
+  {n:7,hue:'--c7',name:'Purpose &amp; Work',lane:'Calling &amp; the marketplace',
+   aud:'Marketplace leaders, working adults — home base for the Business Owner affinity.',
+   cats:[['Purpose',110,1],['Calling &amp; Identity',90,1],['Leadership',100,1],['Marketplace / Faith at Work',90,0],['Business',70,0],['Company Culture',70,0],['Vocation &amp; Meaning',60,0]]},
+  {n:8,hue:'--c8',name:'Mission &amp; Outreach',lane:'Go and reach',
+   aud:'Outreach pastors &amp; mission teams.',
+   cats:[['Evangelism',100,1],['Outreach',100,1],['Great Commission',70,1],['Neighboring',60,0],['Missions / Global',70,0],['Compassion',70,0],['City Impact',60,0]]},
+  {n:9,hue:'--c9',name:'Church Health &amp; Leadership',lane:'Build the church',
+   aud:'Senior &amp; executive pastors.',
+   cats:[['Leadership Development',100,1],['Church Mission / Vision / Values',80,1],['Serving &amp; Volunteers',90,1],['Signature Sermons',70,0],['Ministry / Service',70,0],['Membership',60,0],['Staff / Teams',60,0],['Elders &amp; Governance',50,0],['One-Year Initiatives',60,0]]},
+  {n:10,hue:'--c10',name:'Legacy &amp; Generations',lane:'The long game',
+   aud:'Advisors, high-capacity families, senior saints — where Advisor &amp; Family affinities concentrate.',
+   cats:[['Legacy',90,1],['Family Legacy by Design',50,1],['Second Half',60,0],['Grandparenting',60,0],['Family Wealth',60,0],['Family Mission / Vision / Values',60,0],['Senior Adults',60,0],['Multiplication',60,0]]}
+];
+
+const AFFINITIES = [
+  {tag:'Default',name:'Church',def:'The whole-church baseline. Every channel surfaces; the standard Churchwide edition.',surf:'Surfaces: <b>all 10 channels</b>',d:true},
+  {tag:'Persona',name:'Family',def:'Re-orders the home around the household and next-gen faith.',surf:'Surfaces first: <b>Relationships, Legacy, Community</b>'},
+  {tag:'Persona',name:'Next-Gen (Youth + Kids)',def:'Age-graded editions and student/children pathways across the library.',surf:'Triggers: <b>Youth &amp; Children\u2019s editions</b>'},
+  {tag:'Persona',name:'Advisor',def:'For financial professionals serving Christian clients — legacy, generosity, stewardship.',surf:'Surfaces first: <b>Legacy, Money &amp; Generosity</b>'},
+  {tag:'Persona',name:'Business Owner',def:'Marketplace leaders running campaigns in companies, not only churches.',surf:'Surfaces first: <b>Purpose &amp; Work, Money, Leadership</b>'},
+  {tag:'Persona',name:'Senior Pastor',def:'Sermon-to-campaign, signature series, churchwide alignment, leadership.',surf:'Surfaces first: <b>Church Health, Spiritual Formation</b>'},
+  {tag:'Persona',name:'Donor / High-Capacity',def:'Kingdom giving, legacy, capital vision for high-capacity households.',surf:'Surfaces first: <b>Legacy, Generosity, Mission</b>'}
+];
+
+const COLLECTIONS = [
+  {ct:'Time-driven',name:'Seasonal',def:'Auto-surface by date. Seasons live here, never as channels.',
+   chips:['New Year','Lent','Holy Week','Easter','Mother\u2019s Day','Father\u2019s Day','Summer','Back-to-School','Fall Kickoff','Thanksgiving','Advent','Christmas','Year-End Giving']},
+  {ct:'Goal-driven',name:'Outcome',def:'How pastors actually think — by result, not topic.',
+   chips:['Small Group Launch','Generosity Culture','Easter Follow-Up','Capital Campaign Prep','Emotional Health','Churchwide Unity','New Believer Pathway']},
+  {ct:'Persona-driven',name:'Affinity',def:'Curated bundles for a specific audience lens.',
+   chips:['Family Legacy Collection','Advisor Collection','Marketplace Collection','Next-Gen Collection']},
+  {ct:'Merchandising',name:'Editorial',def:'The featured rows on the platform home.',
+   chips:['Flagship','Most Popular','New This Month','Fastest to Launch','Staff Picks']}
+];
+
+// Render channels
+const list = document.getElementById('channelList');
+CHANNELS.forEach(ch=>{
+  const totalCats = ch.cats.length;
+  const totalCamps = ch.cats.reduce((a,c)=>a+c[1],0);
+  const el = document.createElement('div');
+  el.className='channel';
+  el.style.setProperty('--ch',`var(${ch.hue})`);
+  el.innerHTML = `
+    <div class="ch-head" role="button" tabindex="0" aria-expanded="false">
+      <div class="ch-num">${String(ch.n).padStart(2,'0')}</div>
+      <div>
+        <div class="ch-title">${ch.name}</div>
+        <div class="ch-sub"><span class="lane">${ch.lane}</span></div>
+      </div>
+      <div class="ch-meta">
+        <div class="ch-stat"><div class="v">${totalCats}</div><div class="k">Categories</div></div>
+        <div class="ch-stat"><div class="v">${totalCamps.toLocaleString()}</div><div class="k">Campaigns</div></div>
+        <div class="chev"></div>
+      </div>
+    </div>
+    <div class="ch-body"><div class="ch-inner">
+      <p class="ch-aud"><b>Primary audience.</b> ${ch.aud}</p>
+      <div class="cats">
+        ${ch.cats.map(c=>`<div class="cat ${c[2]?'flag':''}" data-name="${c[0].replace(/&amp;/g,'and').toLowerCase()}">
+            <span class="cname">${c[0]}${c[2]?'<span class="badge-flag">Flagship</span>':''}</span>
+            <span class="ccount">~${c[1]}</span>
+          </div>`).join('')}
+      </div>
+    </div></div>`;
+  list.appendChild(el);
+
+  const head = el.querySelector('.ch-head');
+  const toggle = ()=>{ el.classList.toggle('open'); head.setAttribute('aria-expanded', el.classList.contains('open')); };
+  head.addEventListener('click', toggle);
+  head.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
+});
+
+// Affinities
+const ag = document.getElementById('affGrid');
+AFFINITIES.forEach(a=>{
+  const d = document.createElement('div');
+  d.className = 'aff'+(a.d?' default':'');
+  d.innerHTML = `<div class="tag">${a.tag}</div><h4>${a.name}</h4><p>${a.def}</p><div class="surf">${a.surf}</div>`;
+  ag.appendChild(d);
+});
+
+// Collections
+const ct = document.getElementById('colTypes');
+COLLECTIONS.forEach(c=>{
+  const d = document.createElement('div');
+  d.className='col-card';
+  d.innerHTML = `<div class="ct">${c.ct}</div><h4>${c.name}</h4><p class="def">${c.def}</p>
+    <div class="chips">${c.chips.map(x=>`<span class="chip">${x}</span>`).join('')}</div>`;
+  ct.appendChild(d);
+});
+
+// Controls
+document.getElementById('expandAll').addEventListener('click', ()=>{
+  document.querySelectorAll('.channel').forEach(c=>{c.classList.add('open');c.querySelector('.ch-head').setAttribute('aria-expanded','true');});
+});
+document.getElementById('collapseAll').addEventListener('click', ()=>{
+  document.querySelectorAll('.channel').forEach(c=>{c.classList.remove('open');c.querySelector('.ch-head').setAttribute('aria-expanded','false');});
+});
+
+// Search
+const search = document.getElementById('search');
+search.addEventListener('input', ()=>{
+  const q = search.value.trim().toLowerCase();
+  document.querySelectorAll('.channel').forEach(ch=>{
+    const title = ch.querySelector('.ch-title').textContent.toLowerCase();
+    const cats = [...ch.querySelectorAll('.cat')];
+    let any = false;
+    cats.forEach(cat=>{
+      const match = !q || cat.dataset.name.includes(q) || title.includes(q);
+      cat.style.display = match ? '' : 'none';
+      if(match) any = true;
+    });
+    if(!q){ ch.style.display=''; ch.classList.remove('open'); }
+    else if(any || title.includes(q)){ ch.style.display=''; ch.classList.add('open'); }
+    else { ch.style.display='none'; }
+  });
+});
+</script>
+</body>
+</html>

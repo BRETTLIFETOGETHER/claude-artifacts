@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Reading Room — The Family Legacy Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.roomhead{padding:clamp(40px,5vw,64px) 0 clamp(28px,3.6vw,44px)}
+.roomhead h1{font-size:clamp(28px,3.8vw,46px);margin-top:14px;color:#fff}
+.room{display:grid;grid-template-columns:296px 1fr;gap:clamp(28px,4vw,56px);align-items:start;
+  padding:clamp(32px,4.5vw,56px) 0 10px}
+@media(max-width:940px){.room{grid-template-columns:1fr}}
+.rail{position:sticky;top:86px;background:#fff;border:1px solid var(--line);border-radius:20px;
+  box-shadow:var(--sh-2);overflow:hidden}
+@media(max-width:940px){.rail{position:static}}
+.rail .rhead{background:linear-gradient(130deg,#123A2C,#2E6B45);color:#fff;padding:20px 22px}
+.rail .rhead .jt{font-family:var(--ff-h);font-weight:600;font-size:19px;line-height:1.2}
+.rail .rhead .js{font-size:10px;color:#CFE3A9;font-weight:600;letter-spacing:.16em;text-transform:uppercase;margin-top:6px}
+.rail .rbody{padding:20px 18px}
+.progress{margin:0 auto 4px;display:grid;place-items:center;position:relative;width:fit-content}
+.progress .pc{position:absolute;text-align:center}
+.progress .pc b{font-family:var(--ff-h);font-size:26px;font-weight:700;color:var(--ink);display:block;line-height:1}
+.progress .pc span{font-size:9px;font-weight:600;letter-spacing:.16em;color:#57833B;text-transform:uppercase}
+.rail .cap{text-align:center;margin-top:6px;font-weight:600;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.daylist{margin-top:16px;display:grid;max-height:37vh;overflow:auto;border-top:1px solid var(--line)}
+.daylist::-webkit-scrollbar{width:6px}
+.daylist::-webkit-scrollbar-thumb{border:0;background:#D6DEC9;border-radius:9px}
+.daylist a{display:flex;gap:10px;align-items:baseline;font-size:12.5px;padding:9px 10px;color:var(--body);border-bottom:1px solid #F0F2E7;border-radius:8px}
+.daylist a:hover{background:var(--page2)}
+.daylist a.now{background:var(--gradbtn);color:#fff}
+.daylist a.now .dn{color:#EAF6C9}
+.daylist a.lock{opacity:.45;cursor:default}
+.daylist .dn{font-weight:600;font-size:9px;letter-spacing:.12em;color:#57833B;flex:none;width:44px;text-transform:uppercase}
+.daylist .tick{margin-left:auto;color:#5E9A2E;font-weight:700}
+.daylist a.now .tick{color:#EAF6C9}
+/* page */
+.pagebook{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh-2);
+  padding:clamp(30px,5vw,64px);position:relative;max-width:820px}
+.pagebook .dl{font-weight:600;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#57833B}
+.pagebook h1{font-size:clamp(30px,4.2vw,50px);margin-top:12px}
+.pagebook .verse{margin:26px 0;border-left:3px solid var(--lime);padding:8px 0 8px 20px;
+  font-style:italic;font-size:clamp(16.5px,2vw,19px);line-height:1.72;color:#4A5A4C}
+.pagebook .verse .vl{display:block;font-style:normal;font-weight:600;font-size:10px;
+  letter-spacing:.18em;color:#57833B;margin-top:10px;text-transform:uppercase}
+.pagebook .prose p{font-size:clamp(15.5px,1.7vw,17px);line-height:1.9;color:#39463E;margin:0 0 20px}
+.pray2{margin:28px 0 0;background:var(--lemon2);border-radius:14px;padding:20px 24px}
+.pray2 b{display:block;font-weight:600;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A8A2E;margin-bottom:8px}
+.pray2 p{font-style:italic;font-size:14.5px;line-height:1.8;color:#57614F}
+.tqg{margin:28px 0 0;padding:clamp(24px,3vw,34px)}
+.tqg .k{font-weight:600;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#E7F0C9;display:block;margin-bottom:10px}
+.tqg p{font-size:clamp(16px,1.9vw,18px);line-height:1.72;color:#F1F6E8}
+.stepline{margin-top:24px;display:flex;gap:16px;align-items:flex-start;font-size:14px;color:var(--body)}
+.stepline .ic{flex:none;width:38px;height:38px;border-radius:99px;background:var(--gradbtn);display:grid;place-items:center;color:#fff}
+.done-row{margin-top:32px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.donebadge{display:none;align-items:center;gap:9px;color:#3E7C3B;font-weight:600;font-size:13.5px}
+.locknote{background:#fff;border:1.5px dashed #C9D8B0;border-radius:22px;
+  padding:clamp(38px,5.6vw,64px);max-width:820px;text-align:center;box-shadow:var(--sh-1)}
+.locknote h1{font-size:clamp(28px,3.8vw,42px)}
+.locknote p{color:var(--body);max-width:48ch;margin:16px auto 0;font-size:15.5px;line-height:1.78}
+.pager{max-width:820px;display:flex;justify-content:space-between;margin-top:22px;gap:12px}
+</style>
+</head>
+<body>
+
+<div class="dark roomhead">
+  <div class="wrap">
+    <span class="pill dark"><i></i>The Reading Room</span>
+    <h1 id="rh">One page. One prayer. One question for tonight.</h1>
+  </div>
+</div>
+
+<div class="wrap room">
+  <aside class="rail">
+    <div class="rhead"><div class="jt" id="jt">—</div><div class="js" id="js">A Journey In The Collection</div></div>
+    <div class="rbody">
+      <div class="progress" id="prog"></div>
+      <div class="cap">A ring for every day kept</div>
+      <div class="daylist" id="daylist"></div>
+      <div style="margin-top:16px;text-align:center"><a class="btn linegreen sm" id="backlink" href="#">← About This Journey</a></div>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var c=FLget(qs('id'))||FLget('family-legacy');
+  var day=Math.max(1,parseInt(qs('day')||'1',10)||1);
+  var reads=(FLC.readings&&FLC.readings[c.id])||{};
+  var OPEN=3, total=40;
+
+  document.title=c.title+' · Day '+day+' — The Reading Room';
+  document.getElementById('jt').textContent=c.title;
+  document.getElementById('backlink').href='campaign.html?id='+c.id;
+
+  var flat=[];
+  if(c.weeks){ c.weeks.forEach(function(w){ w.days.forEach(function(d){ flat.push({t:d[0],r:d[1]}); }); }); }
+  total=flat.length||40;
+
+  function ringProgress(done){
+    var pct=done/total, R=[16,26,36,45,52], per=1/R.length;
+    var svg='<svg viewBox="0 0 114 114" width="160" height="160" fill="none">';
+    R.forEach(function(r,i){
+      var f=Math.max(0,Math.min(1,(pct-i*per)/per)), circ=2*Math.PI*r;
+      svg+='<circle cx="57" cy="57" r="'+r+'" stroke="#EAEFDF" stroke-width="'+(4.6-i*0.65)+'"/>';
+      if(f>0) svg+='<circle cx="57" cy="57" r="'+r+'" stroke="'+(i%2?'#2E8B6A':'#8FBE3F')+'" stroke-width="'+(4.6-i*0.65)+'" stroke-linecap="round" stroke-dasharray="'+(circ*f)+' '+circ+'" transform="rotate(-90 57 57)"/>';
+    });
+    return svg+'</svg><div class="pc"><b>'+done+'</b><span>of '+total+'</span></div>';
+  }
+  function paintProg(){ document.getElementById('prog').innerHTML=ringProgress(FLprog.done(c.id).length); }
+  paintProg();
+
+  function paintList(){
+    var done=FLprog.done(c.id), el=document.getElementById('daylist'), html='';
+    for(var i=1;i<=total;i++){
+      var meta=flat[i-1]||{t:'Day '+i,r:''};
+      var locked=i>OPEN;
+      var cls=(i===day?'now':'')+(locked?' lock':'');
+      var tick=done.indexOf(i)>=0?'<span class="tick">✓</span>':'';
+      html+= locked
+        ? '<a class="'+cls+'" aria-disabled="true"><span class="dn">Day '+i+'</span><span>'+meta.t+'</span>'+tick+'</a>'
+        : '<a class="'+cls+'" href="reader.html?id='+c.id+'&day='+i+'"><span class="dn">Day '+i+'</span><span>'+meta.t+'</span>'+tick+'</a>';
+    }
+    el.innerHTML=html;
+    var now=el.querySelector('.now'); if(now&&now.scrollIntoView) now.scrollIntoView({block:'nearest'});
+  }
+  paintList();
+
+  var main=document.getElementById('main');
+  var R=reads[day];
+  if(day<=OPEN && R){
+    document.getElementById('rh').textContent=R.title;
+    main.innerHTML=
+      '<article class="pagebook rv in">'
+      +'<span class="dl">'+c.title+' · Day '+day+' of '+total+'</span>'
+      +'<h1>'+R.title+'</h1>'
+      +'<div class="verse">\u201C'+R.verse+'\u201D<span class="vl">'+R.verseLabel+'</span></div>'
+      +'<div class="prose">'+R.body.map(function(p){return '<p>'+p+'</p>';}).join('')+'</div>'
+      +'<div class="pray2"><b>Pray</b><p>'+R.pray+'</p></div>'
+      +'<div class="gcard tqg"><span class="k">Tonight, At Your Table</span><p>'+R.table+'</p></div>'
+      +'<div class="stepline"><span class="ic">'+icon('arrowr',17,2)+'</span><span><b style="display:block;font-weight:600;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#57833B;margin-bottom:4px">One Small Step</b>'+R.step+'</span></div>'
+      +'<div class="done-row">'
+      +'<button class="btn grad" id="markbtn">We Asked It — Mark Day '+day+' Kept</button>'
+      +'<span class="donebadge" id="badge">✓ Day '+day+' kept — a ring added</span>'
+      +'</div>'
+      +'</article>'
+      +'<div class="pager">'
+      +(day>1?'<a class="btn linegreen sm" href="reader.html?id='+c.id+'&day='+(day-1)+'">← Day '+(day-1)+'</a>':'<span></span>')
+      +(day<OPEN?'<a class="btn grad sm" href="reader.html?id='+c.id+'&day='+(day+1)+'">Day '+(day+1)+' <span class="ar">→</span></a>'
+        :'<a class="btn grad sm" href="campaign.html?id='+c.id+'">The Full Forty Days <span class="ar">→</span></a>')
+      +'</div>';
+    var btn=document.getElementById('markbtn'), badge=document.getElementById('badge');
+    function sync(){ if(FLprog.done(c.id).indexOf(day)>=0){btn.style.display='none';badge.style.display='inline-flex';} }
+    sync();
+    btn.addEventListener('click',function(){ FLprog.mark(c.id,day); paintProg(); paintList(); sync(); });
+  } else {
+    var meta=flat[day-1]||{t:'Day '+day,r:''};
+    var hasSample=!!reads[1];
+    document.getElementById('rh').textContent=meta.t;
+    var para=hasSample
+      ? 'The first three mornings are open to every family, no account needed. The remaining '+(total-OPEN)+' days arrive with the full journey — the same voice, one unhurried page at a time, all the way to Day '+total+'.'
+      : 'In this prototype, the fully written mornings live in the flagship journey. Every journey in the Collection carries the same daily shape — a page of Scripture and reflection, a prayer, and one question for the table — in the voice you can taste in <em>Family Legacy</em>, Day One.';
+    var cta=hasSample
+      ? '<a class="btn grad" href="campaign.html?id='+c.id+'">Explore The Full Journey</a><a class="btn linegreen" href="reader.html?id='+c.id+'&day=1">Back To Day One</a>'
+      : '<a class="btn grad" href="reader.html?id=family-legacy&day=1">Read The Flagship\u2019s Day One</a><a class="btn linegreen" href="campaign.html?id='+c.id+'">Back To This Journey</a>';
+    main.innerHTML=
+      '<div class="locknote rv in">'
+      +'<div style="display:flex;justify-content:center;margin-bottom:16px">'+treeSVG(56,'#CE9F4F')+'</div>'
+      +'<span style="font-weight:600;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#57833B">Day '+day+(meta.r?' · '+meta.r:'')+'</span>'
+      +'<h1 style="margin-top:10px">'+meta.t+'</h1>'
+      +'<p>'+para+'</p>'
+      +'<p style="font-style:italic;color:var(--mute)">A journey is better begun than browsed. If a first morning starts a conversation at your table, the rest will keep it going.</p>'
+      +'<div style="margin-top:26px;display:flex;gap:13px;justify-content:center;flex-wrap:wrap">'+cta+'</div></div>';
+  }
+})();
+</script>
+</body>
+</html>

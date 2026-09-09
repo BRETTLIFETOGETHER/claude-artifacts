@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generosity Ministry — Integrated Product Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#EEF0E7;--paper-2:#F6F7F0;--ink:#1A2A20;--ink-soft:#41544A;--ink-faint:#7C8A80;--line:#D3D8C9;--moss:#4A7C59;--moss-deep:#2F5B3E;--brass:#A8853C;--brass-soft:#C6A65E;--cream:#FBFBF6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .hero{background:var(--moss-deep);color:var(--cream);padding:clamp(3rem,8vw,6rem) clamp(1.4rem,5vw,4rem) clamp(2.6rem,6vw,4rem)}
+  .kicker{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--brass-soft);font-weight:600}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1;letter-spacing:-.015em;margin:1.1rem 0 1.2rem}
+  h1 em{font-style:italic;color:var(--brass-soft)}
+  .hero .lede{max-width:62ch;font-size:clamp(1rem,2.6vw,1.15rem);color:rgba(251,251,246,.86)}
+  .model{margin-top:2rem;padding-top:1.4rem;border-top:1px solid rgba(198,166,94,.3);max-width:70ch;font-size:.95rem;color:rgba(251,251,246,.82)}
+  .model b{color:var(--brass-soft);font-family:'Fraunces',serif;font-weight:600}
+  nav.toc{padding:clamp(1.6rem,4vw,2.2rem) clamp(1.4rem,5vw,4rem);background:var(--paper-2);border-bottom:1px solid var(--line)}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.1rem 1.6rem}
+  .toc-grid a{display:flex;gap:.7rem;align-items:baseline;text-decoration:none;color:var(--ink);padding:.32rem 0;border-bottom:1px solid transparent;transition:.2s}
+  .toc-grid a:hover{color:var(--moss-deep);border-color:var(--line)}
+  .toc-grid .ix{font-family:'Fraunces',serif;font-size:.85rem;color:var(--brass);font-weight:600;min-width:1.7em}
+  main{padding:0 clamp(1.4rem,5vw,4rem)}
+  section{padding:clamp(2.4rem,5vw,3.4rem) 0;border-bottom:1px solid var(--line);scroll-margin-top:1rem}
+  .sec-head{border-left:3px solid var(--brass);padding-left:1rem;margin-bottom:1.2rem}
+  .eyebrow{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  h2{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(1.6rem,4.5vw,2.4rem);letter-spacing:-.01em;margin-top:.2rem;line-height:1.05}
+  .sec-head p{color:var(--ink-soft);max-width:64ch;font-size:.95rem;margin-top:.5rem}
+  /* product line cards */
+  .line{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:1.5rem 1.6rem;margin-bottom:1.1rem}
+  .line h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;letter-spacing:-.01em}
+  .line .role{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);font-weight:600;margin-bottom:.3rem}
+  .line p.d{font-size:.92rem;color:var(--ink-soft);margin:.4rem 0 .9rem;max-width:70ch}
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem}
+  .grp-label{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin:.7rem 0 .35rem}
+  .chip{font-size:.8rem;font-weight:500;border:1px solid var(--brass-soft);border-radius:20px;padding:.22rem .7rem;background:#fff;color:var(--ink)}
+  .chip.core{background:var(--moss-deep);color:var(--cream);border-color:var(--moss-deep)}
+  .chip.plan{border-style:dashed;color:var(--ink-faint)}
+  /* matrix */
+  table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.86rem}
+  th,td{border:1px solid var(--line);padding:.55rem .6rem;text-align:center}
+  th{background:var(--moss-deep);color:var(--cream);font-weight:600;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+  td:first-child,th:first-child{text-align:left;font-family:'Fraunces',serif;font-weight:600}
+  .yes{color:var(--moss-deep);font-weight:700}
+  .dev{color:var(--brass);font-weight:600;font-size:.78rem}
+  /* title lists */
+  ol.titles{list-style:none;counter-reset:t;padding:.4rem 0 0}
+  @media(min-width:760px){ol.titles{column-count:2;column-gap:3rem}}
+  ol.titles li{counter-increment:t;display:grid;grid-template-columns:2.1em 1fr;gap:.05rem .7rem;padding:.5rem 0;border-bottom:1px solid rgba(211,216,201,.5);break-inside:avoid}
+  ol.titles li::before{content:counter(t,decimal-leading-zero);grid-row:1/3;font-family:'Fraunces',serif;font-size:.8rem;color:var(--brass);font-weight:600;padding-top:.15rem}
+  .t-name{font-family:'Fraunces',serif;font-weight:600;font-size:1rem;letter-spacing:-.005em;line-height:1.2}
+  .t-sub{font-size:.82rem;color:var(--ink-soft);line-height:1.34}
+  /* book chapters */
+  ol.chapters{list-style:none;counter-reset:c;padding:.4rem 0 0}
+  ol.chapters li{counter-increment:c;display:grid;grid-template-columns:2.4em 1fr;gap:.1rem .8rem;padding:.7rem 0;border-bottom:1px solid var(--line)}
+  ol.chapters li::before{content:"Ch " counter(c);grid-row:1/3;font-family:'Fraunces',serif;font-size:.72rem;color:var(--brass);font-weight:600;padding-top:.2rem;white-space:nowrap}
+  .c-name{font-family:'Fraunces',serif;font-weight:600;font-size:1.08rem;letter-spacing:-.01em}
+  .c-sub{font-size:.86rem;color:var(--ink-soft);margin-top:.1rem}
+  footer{padding:clamp(2.4rem,6vw,4rem) clamp(1.4rem,5vw,4rem);color:var(--ink-faint);font-size:.82rem}
+  footer strong{color:var(--ink-soft)}
+  @media print{body{background:#fff}.hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}a{color:inherit}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="kicker">LifeTogether · Christian Intelligence™ · Generosity Ministry</div>
+  <h1>The Generosity Ministry<br><em>Architecture</em></h1>
+  <p class="lede">One integrated ecosystem — the Generous Living flagship, the Financial Wisdom offerings, the multi-length experience system, five new campaign tracks, Family Legacy, LifeTogether Experiences, and the capital-campaign bridge — all under one roof.</p>
+  <p class="model"><b>The model.</b> A church buys into a <b>platform</b> once — the Generous Living campaign kit and ministry system (the "razor") — then keeps deploying <b>editions and experiences</b> season after season: 40-day, 30-day, 21-day, and 7-day challenges; youth, children, and preschool editions; annual refreshes (the "blades"). The result is recurring value for the church and recurring revenue for the ministry.</p>
+</header>
+
+<nav class="toc">
+  <div class="toc-grid">
+    <a href="#s1"><span class="ix">01</span>Generous Living (Flagship)</a>
+    <a href="#s2"><span class="ix">02</span>Financial Wisdom · Ron Blue</a>
+    <a href="#s3"><span class="ix">03</span>The Experience System</a>
+    <a href="#s4"><span class="ix">04</span>The Journey of Generosity</a>
+    <a href="#s5"><span class="ix">05</span>Family Legacy &amp; Giving</a>
+    <a href="#s6"><span class="ix">06</span>Generosity in the Marketplace</a>
+    <a href="#s7"><span class="ix">07</span>Radical &amp; Missional Generosity</a>
+    <a href="#s8"><span class="ix">08</span>Everyday Generosity</a>
+    <a href="#s9"><span class="ix">09</span>LifeTogether Experiences &amp; One Day</a>
+    <a href="#s10"><span class="ix">10</span>Capital Campaign Integration</a>
+    <a href="#s11"><span class="ix">11</span>The Book · 20-Chapter Launch Guide</a>
+  </div>
+</nav>
+
+<main>
+
+  <section id="s1">
+    <div class="sec-head"><div class="eyebrow">Section 01 · The Flagship</div><h2>Generous Living</h2>
+      <p>The tentpole. A complete, teachable generosity system — course plus churchwide campaign — built to move a whole congregation from ownership to open-handed living, with a full edition set for every age and a campaign kit that makes launch turnkey.</p></div>
+    <div class="line">
+      <div class="role">Flagship Course &amp; Campaign</div>
+      <h3>Generous Living</h3>
+      <p class="d">The adult course (completed and ready to teach) and the churchwide campaign it powers — the anchor product of the entire ministry.</p>
+      <div class="grp-label">Audience Editions</div>
+      <div class="chips">
+        <span class="chip core">Adult · Course + Campaign</span>
+        <span class="chip">Youth Edition</span>
+        <span class="chip">Children's Edition</span>
+        <span class="chip plan">Preschool Edition · in development</span>
+      </div>
+      <div class="grp-label">Experience Lengths</div>
+      <div class="chips">
+        <span class="chip core">40-Day Journey</span>
+        <span class="chip">30-Day Edition</span>
+        <span class="chip">21-Day Challenge</span>
+        <span class="chip">7-Day Challenge</span>
+      </div>
+      <div class="grp-label">The Campaign Kit</div>
+      <div class="chips">
+        <span class="chip">Leader Guide</span>
+        <span class="chip">Sermon Framework</span>
+        <span class="chip">Small-Group Curriculum</span>
+        <span class="chip">Devotional</span>
+        <span class="chip">Promo &amp; Launch Assets</span>
+        <span class="chip">Digital Experience</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="s2">
+    <div class="sec-head"><div class="eyebrow">Section 02 · Financial Wisdom</div><h2>Ministry Offerings · with Ron Blue</h2>
+      <p>The financial-discipleship line, built on the trusted stewardship frameworks of Ron Blue — <em>God Owns It All</em> and <em>Master Your Money</em> — extended into full edition sets, plus specialized offerings for high-capacity and family-office households. (This line is substantial enough to stand alone; integrated here for now.)</p></div>
+
+    <div class="line">
+      <div class="role">Foundational Stewardship</div>
+      <h3>God Owns It All</h3>
+      <p class="d">The cornerstone stewardship course and campaign — the biblical case that we own nothing and steward everything.</p>
+      <div class="grp-label">Editions</div>
+      <div class="chips">
+        <span class="chip core">Adult Course + Campaign</span>
+        <span class="chip">40 Days of God Owns It All</span>
+        <span class="chip">30-Day Edition</span>
+        <span class="chip">Youth Edition</span>
+        <span class="chip">Children's Edition</span>
+      </div>
+    </div>
+
+    <div class="line">
+      <div class="role">Practical Money Management</div>
+      <h3>Master Your Money</h3>
+      <p class="d">The hands-on financial-discipleship class — budgeting, debt, saving, and giving under the lordship of Christ.</p>
+      <div class="grp-label">Editions</div>
+      <div class="chips">
+        <span class="chip core">Adult Course</span>
+        <span class="chip">30-Day Edition</span>
+      </div>
+    </div>
+
+    <div class="line">
+      <div class="role">High-Capacity &amp; Family Office</div>
+      <h3>How Much Is Enough?</h3>
+      <p class="d">A private-track offering for ultra-high-net-worth and family-office households — contentment, capacity, and legacy at scale, framed around the question of "enough" and what to do with the rest.</p>
+      <div class="grp-label">Track</div>
+      <div class="chips">
+        <span class="chip core">Network Families Edition</span>
+        <span class="chip">Family Office Cohort</span>
+        <span class="chip plan">Advisor Companion · in development</span>
+      </div>
+    </div>
+
+    <div class="line">
+      <div class="role">High-Capacity Generosity</div>
+      <h3>Generous Living · Network Families Edition</h3>
+      <p class="d">The Generous Living flagship, adapted for high-net-worth network families — moving from wealth accumulation to strategic, joyful, kingdom-scale generosity.</p>
+      <div class="chips"><span class="chip core">Network Families Edition</span></div>
+    </div>
+  </section>
+
+  <section id="s3">
+    <div class="sec-head"><div class="eyebrow">Section 03 · The Blades</div><h2>The Experience System</h2>
+      <p>Every core line ships in four lengths, so a church can meet people wherever they are — from a full 40-day journey to a low-barrier 7-day challenge. This is the recurring, redeployable layer of the model.</p></div>
+    <table>
+      <tr><th>Line</th><th>40-Day</th><th>30-Day</th><th>21-Day Challenge</th><th>7-Day Challenge</th></tr>
+      <tr><td>Generous Living</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+      <tr><td>God Owns It All</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+      <tr><td>Master Your Money</td><td class="dev">soon</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+      <tr><td>The Journey of Generosity</td><td class="yes">●</td><td class="dev">soon</td><td class="yes">●</td><td class="yes">●</td></tr>
+    </table>
+    <div class="grp-label" style="margin-top:1.2rem">Challenge &amp; Experience Formats</div>
+    <div class="chips">
+      <span class="chip core">40-Day Journey</span>
+      <span class="chip">30-Day Edition</span>
+      <span class="chip">21-Day Experience</span>
+      <span class="chip">21-Day Challenge</span>
+      <span class="chip">7-Day Challenge</span>
+      <span class="chip">1-Sunday · Catalytic Sunday</span>
+    </div>
+
+    <div class="line" style="margin-top:1.3rem">
+      <div class="role">Single Message Edition</div>
+      <h3>Catalytic Sunday</h3>
+      <p class="d">The shortest format in the system — one standalone message engineered to catalyze generosity in a single Sunday. No series commitment and no campaign runway; a self-contained big idea a church can drop into any weekend to spark the journey or prime a bigger push.</p>
+      <div class="grp-label">Five Single Messages</div>
+      <ol class="titles">
+        <li><span class="t-name">The Generosity Test</span><span class="t-sub">What your wallet reveals about your heart</span></li>
+        <li><span class="t-name">You Can't Outgive God</span><span class="t-sub">The surprising math of generosity</span></li>
+        <li><span class="t-name">Open Hands</span><span class="t-sub">The freedom of holding everything loosely</span></li>
+        <li><span class="t-name">Treasure</span><span class="t-sub">Where you put it is where your heart follows</span></li>
+        <li><span class="t-name">First</span><span class="t-sub">What putting God at the front of your finances unlocks</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="s4">
+    <div class="sec-head"><div class="eyebrow">Section 04 · New Category · Highlighted</div><h2>The Journey of Generosity</h2>
+      <p>The signature discipleship pathway — every step from a first gift to a lifelong, legacy-minded giver. The connective spine of the whole ministry.</p></div>
+    <ol class="titles">
+      <li><span class="t-name">The Journey of Generosity</span><span class="t-sub">Every step from first gift to a generous life</span></li>
+      <li><span class="t-name">First Step</span><span class="t-sub">Taking your first step of giving</span></li>
+      <li><span class="t-name">The First Gift</span><span class="t-sub">Beginning the generosity journey</span></li>
+      <li><span class="t-name">From Tither to Giver</span><span class="t-sub">Growing beyond the ten percent</span></li>
+      <li><span class="t-name">The Next Step</span><span class="t-sub">Growing to the next level of generosity</span></li>
+      <li><span class="t-name">The Generosity Pathway</span><span class="t-sub">A roadmap for a giving life</span></li>
+      <li><span class="t-name">Grow in Giving</span><span class="t-sub">Moving forward in generosity</span></li>
+      <li><span class="t-name">Becoming Generous</span><span class="t-sub">The journey from getting to giving</span></li>
+      <li><span class="t-name">The Generous Progression</span><span class="t-sub">Advancing in open-handed living</span></li>
+      <li><span class="t-name">Milestones of Generosity</span><span class="t-sub">Marking the giving journey</span></li>
+      <li><span class="t-name">From Consumer to Contributor</span><span class="t-sub">The great generosity shift</span></li>
+      <li><span class="t-name">Generosity by Stages</span><span class="t-sub">Where are you on the journey?</span></li>
+      <li><span class="t-name">The Giving Ladder</span><span class="t-sub">Climbing toward extravagant generosity</span></li>
+      <li><span class="t-name">Take the Next Step</span><span class="t-sub">Growing your generosity</span></li>
+      <li><span class="t-name">The Lifelong Giver</span><span class="t-sub">Generosity for the whole journey</span></li>
+    </ol>
+  </section>
+
+  <section id="s5">
+    <div class="sec-head"><div class="eyebrow">Section 05 · New Category</div><h2>Family Legacy &amp; Generational Giving</h2>
+      <p>The Family Legacy ministry line — teaching households to give together and to pass generosity, wisdom, and blessing to the next generation.</p></div>
+    <ol class="titles">
+      <li><span class="t-name">Family Legacy</span><span class="t-sub">Passing generosity to the next generation</span></li>
+      <li><span class="t-name">Legacy</span><span class="t-sub">Building a heritage of generosity</span></li>
+      <li><span class="t-name">The Generosity Inheritance</span><span class="t-sub">Teaching your children to give</span></li>
+      <li><span class="t-name">Raising Generous Kids</span><span class="t-sub">Growing giving hearts at home</span></li>
+      <li><span class="t-name">Generational Generosity</span><span class="t-sub">A family that gives together</span></li>
+      <li><span class="t-name">The Family Giving Plan</span><span class="t-sub">Generosity as a household</span></li>
+      <li><span class="t-name">Leave a Legacy</span><span class="t-sub">Investing beyond your lifetime</span></li>
+      <li><span class="t-name">Estate &amp; Eternity</span><span class="t-sub">Stewarding your legacy for the kingdom</span></li>
+      <li><span class="t-name">The Blessing You Leave</span><span class="t-sub">Generosity that outlives you</span></li>
+      <li><span class="t-name">Wealth &amp; Wisdom for the Next Generation</span><span class="t-sub">Passing it on well</span></li>
+      <li><span class="t-name">The Legacy Gift</span><span class="t-sub">Giving that shapes generations</span></li>
+      <li><span class="t-name">Family Foundations</span><span class="t-sub">Building generosity into your family DNA</span></li>
+      <li><span class="t-name">Generous Households</span><span class="t-sub">Making giving a family value</span></li>
+      <li><span class="t-name">The Inheritance of Faith &amp; Generosity</span><span class="t-sub">What you pass on</span></li>
+      <li><span class="t-name">Generations of Giving</span><span class="t-sub">A family legacy of open hands</span></li>
+    </ol>
+  </section>
+
+  <section id="s6">
+    <div class="sec-head"><div class="eyebrow">Section 06 · New Category</div><h2>Generosity in the Marketplace</h2>
+      <p>For business owners, executives, and marketplace leaders — turning enterprise, profit, and influence into engines of kingdom generosity.</p></div>
+    <ol class="titles">
+      <li><span class="t-name">Kingdom Entrepreneurs</span><span class="t-sub">Business as a platform for generosity</span></li>
+      <li><span class="t-name">Generous by Design</span><span class="t-sub">Building generosity into your business</span></li>
+      <li><span class="t-name">The Giving Business</span><span class="t-sub">Marketplace generosity that changes lives</span></li>
+      <li><span class="t-name">Profit for Purpose</span><span class="t-sub">Business that funds the kingdom</span></li>
+      <li><span class="t-name">The Generous Leader</span><span class="t-sub">Leading with open hands</span></li>
+      <li><span class="t-name">Marketplace Generosity</span><span class="t-sub">Giving where you work and earn</span></li>
+      <li><span class="t-name">Business as Blessing</span><span class="t-sub">Using enterprise to bless others</span></li>
+      <li><span class="t-name">The Faithful Owner</span><span class="t-sub">Stewarding a business for God</span></li>
+      <li><span class="t-name">Generosity at Work</span><span class="t-sub">Bringing giving into your vocation</span></li>
+      <li><span class="t-name">Kingdom Business</span><span class="t-sub">Building companies that give</span></li>
+      <li><span class="t-name">The Great Wealth Transfer</span><span class="t-sub">Stewarding business for eternity</span></li>
+      <li><span class="t-name">Generous Enterprise</span><span class="t-sub">Business built to bless</span></li>
+      <li><span class="t-name">Give as You Earn</span><span class="t-sub">Marketplace generosity in action</span></li>
+      <li><span class="t-name">The Steward CEO</span><span class="t-sub">Leading a generous organization</span></li>
+      <li><span class="t-name">Wealth for the Kingdom</span><span class="t-sub">Marketplace resources for mission</span></li>
+    </ol>
+  </section>
+
+  <section id="s7">
+    <div class="sec-head"><div class="eyebrow">Section 07 · New Category</div><h2>Radical &amp; Missional Generosity</h2>
+      <p>Giving aimed outward — funding the mission, lifting the poor, pursuing justice, and reaching the nations with sacrificial, world-changing generosity.</p></div>
+    <ol class="titles">
+      <li><span class="t-name">Radical Generosity</span><span class="t-sub">Giving that changes the world</span></li>
+      <li><span class="t-name">Give It All</span><span class="t-sub">Extravagant, world-changing generosity</span></li>
+      <li><span class="t-name">Fund the Mission</span><span class="t-sub">Generosity that reaches the world</span></li>
+      <li><span class="t-name">For the Least of These</span><span class="t-sub">Generosity toward the poor</span></li>
+      <li><span class="t-name">Generosity &amp; Justice</span><span class="t-sub">Giving that lifts the oppressed</span></li>
+      <li><span class="t-name">The Generous Sending</span><span class="t-sub">Funding the Great Commission</span></li>
+      <li><span class="t-name">Give to Go</span><span class="t-sub">Generosity that fuels the mission</span></li>
+      <li><span class="t-name">World-Changing Generosity</span><span class="t-sub">Giving beyond yourself</span></li>
+      <li><span class="t-name">The Missional Giver</span><span class="t-sub">Generosity aimed at the harvest</span></li>
+      <li><span class="t-name">Compassion in Giving</span><span class="t-sub">Generosity that meets real need</span></li>
+      <li><span class="t-name">Reckless Generosity</span><span class="t-sub">Giving like there's no tomorrow</span></li>
+      <li><span class="t-name">Generosity Unleashed</span><span class="t-sub">Giving for maximum kingdom impact</span></li>
+      <li><span class="t-name">Give for the Gospel</span><span class="t-sub">Funding what matters most</span></li>
+      <li><span class="t-name">The Cost of Compassion</span><span class="t-sub">Sacrificial generosity for others</span></li>
+      <li><span class="t-name">Generosity Without Borders</span><span class="t-sub">Giving to reach the nations</span></li>
+    </ol>
+  </section>
+
+  <section id="s8">
+    <div class="sec-head"><div class="eyebrow">Section 08 · New Category</div><h2>Everyday Generosity</h2>
+      <p>Generosity beyond the checkbook — time, talent, hospitality, and kindness woven into ordinary life. The most accessible on-ramp to the journey.</p></div>
+    <ol class="titles">
+      <li><span class="t-name">Everyday Generosity</span><span class="t-sub">Small acts that change lives</span></li>
+      <li><span class="t-name">More Than Money</span><span class="t-sub">Giving your time, talent, and love</span></li>
+      <li><span class="t-name">The Generosity of Time</span><span class="t-sub">Giving the gift of your presence</span></li>
+      <li><span class="t-name">Open Home, Open Heart</span><span class="t-sub">Generosity through hospitality</span></li>
+      <li><span class="t-name">Generous Hands</span><span class="t-sub">Serving others with what you have</span></li>
+      <li><span class="t-name">The Kindness Habit</span><span class="t-sub">Everyday acts of generosity</span></li>
+      <li><span class="t-name">Give of Yourself</span><span class="t-sub">Generosity beyond the checkbook</span></li>
+      <li><span class="t-name">Ordinary Generosity</span><span class="t-sub">Blessing others in small ways</span></li>
+      <li><span class="t-name">The Generous Neighbor</span><span class="t-sub">Loving those around you</span></li>
+      <li><span class="t-name">Time, Talent &amp; Treasure</span><span class="t-sub">Stewarding all you have</span></li>
+      <li><span class="t-name">Generous Living, Everyday</span><span class="t-sub">Making giving a daily habit</span></li>
+      <li><span class="t-name">Small Gifts, Big Impact</span><span class="t-sub">Generosity in the little things</span></li>
+      <li><span class="t-name">The Hospitable Life</span><span class="t-sub">Opening your table and your life</span></li>
+      <li><span class="t-name">Generosity in Action</span><span class="t-sub">Everyday love made practical</span></li>
+      <li><span class="t-name">Be a Blessing</span><span class="t-sub">Simple generosity that changes days</span></li>
+    </ol>
+  </section>
+
+  <section id="s9">
+    <div class="sec-head"><div class="eyebrow">Section 09 · Experiences</div><h2>LifeTogether Experiences &amp; One Day</h2>
+      <p>The experiential layer — immersive, gathered moments that turn generosity teaching into a shared church-wide experience.</p></div>
+    <div class="line">
+      <div class="role">Immersive Experience Line</div>
+      <h3>LifeTogether Experiences</h3>
+      <p class="d">Guided, multi-session generosity experiences a church walks through together — designed to be felt, not just taught. The premium experiential wrapper around any core line.</p>
+      <div class="chips"><span class="chip core">Multi-Session Experience</span><span class="chip">Generosity Track</span><span class="chip">Facilitator-Led</span></div>
+    </div>
+    <div class="line">
+      <div class="role">Single-Day Event</div>
+      <h3>One Day</h3>
+      <p class="d">A one-day generosity experience — a focused, high-impact gathering (retreat, workshop, or serve day) to launch or cap a generosity emphasis.</p>
+      <div class="chips"><span class="chip core">One-Day Event Kit</span><span class="chip">Launch or Capstone</span><span class="chip plan">Regional Edition · in development</span></div>
+    </div>
+  </section>
+
+  <section id="s10">
+    <div class="sec-head"><div class="eyebrow">Section 10 · Integration</div><h2>Capital Campaign Bridge</h2>
+      <p>When a church moves from ongoing generosity to a God-sized build, the Capital Campaign Library plugs in — 376 series across 14 arcs, from Vision, Mission &amp; Values to Gratitude &amp; Celebration.</p></div>
+    <div class="line">
+      <div class="role">The Capital Moment</div>
+      <h3>The Capital Campaign Library</h3>
+      <p class="d">The generosity journey escalates here. The Generosity &amp; Seasonal arcs (annual giving, year-end, new year) bridge everyday generosity into the capital campaign — so a church never starts a build cold, but from a culture already formed in giving.</p>
+      <div class="grp-label">Bridging Arcs</div>
+      <div class="chips">
+        <span class="chip">Generosity (annual)</span>
+        <span class="chip">End-of-Year Giving</span>
+        <span class="chip">New Year</span>
+        <span class="chip core">→ Capital Campaign · 14 arcs</span>
+      </div>
+      <div class="grp-label">Capital Arcs (sample)</div>
+      <div class="chips">
+        <span class="chip">Vision, Mission &amp; Values</span>
+        <span class="chip">Sacrificial Generosity</span>
+        <span class="chip">Faith to Believe</span>
+        <span class="chip">Courage &amp; Obedience</span>
+        <span class="chip">Debt Freedom</span>
+        <span class="chip">Gratitude &amp; Celebration</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="s11">
+    <div class="sec-head"><div class="eyebrow">Section 11 · The Book</div><h2>How to Launch a Generosity Ministry in Your Church</h2>
+      <p>A 20-chapter playbook — the field guide that turns this architecture into a movement inside a local church. Title and subtitle per chapter.</p></div>
+    <ol class="chapters">
+      <li><span class="c-name">Why Generosity Ministry</span><span class="c-sub">The case for discipling giving, not just asking for it</span></li>
+      <li><span class="c-name">The Generosity Gap</span><span class="c-sub">Why most churches struggle to fund the mission</span></li>
+      <li><span class="c-name">From Fundraising to Discipleship</span><span class="c-sub">Reframing generosity as spiritual formation</span></li>
+      <li><span class="c-name">The Theology of Generosity</span><span class="c-sub">What the Bible actually says about giving</span></li>
+      <li><span class="c-name">Naming Your Why</span><span class="c-sub">Casting a compelling vision for a generous church</span></li>
+      <li><span class="c-name">The Generosity Pathway</span><span class="c-sub">Mapping the journey from first-time giver to legacy giver</span></li>
+      <li><span class="c-name">Building the Team</span><span class="c-sub">Recruiting and equipping generosity leaders</span></li>
+      <li><span class="c-name">The Pastor's Role</span><span class="c-sub">Leading generosity from the front</span></li>
+      <li><span class="c-name">Preaching Generosity Well</span><span class="c-sub">Teaching money without losing the room</span></li>
+      <li><span class="c-name">The Annual Generosity Calendar</span><span class="c-sub">Planning a year of giving rhythms</span></li>
+      <li><span class="c-name">Launching Your First Campaign</span><span class="c-sub">Running the 40-day generosity emphasis</span></li>
+      <li><span class="c-name">Small Groups &amp; Classes</span><span class="c-sub">Taking generosity deeper than Sunday</span></li>
+      <li><span class="c-name">Discipling the Next Generation</span><span class="c-sub">Youth, children, and family generosity</span></li>
+      <li><span class="c-name">Year-End &amp; New-Year Giving</span><span class="c-sub">Finishing strong and starting fresh</span></li>
+      <li><span class="c-name">Ministering to High-Capacity Givers</span><span class="c-sub">Shepherding wealth without exploiting it</span></li>
+      <li><span class="c-name">Digital Generosity</span><span class="c-sub">Online giving, apps, and frictionless generosity</span></li>
+      <li><span class="c-name">Measuring What Matters</span><span class="c-sub">Metrics for a generous church</span></li>
+      <li><span class="c-name">Building a Family-Legacy Culture</span><span class="c-sub">Generational and estate giving</span></li>
+      <li><span class="c-name">Avoiding the Pitfalls</span><span class="c-sub">Common mistakes that stall generosity ministry</span></li>
+      <li><span class="c-name">Sustaining the Culture</span><span class="c-sub">Making generosity your church's DNA for the long haul</span></li>
+    </ol>
+  </section>
+
+</main>
+<footer>
+  <p><strong>The Generosity Ministry Architecture</strong> — flagship, financial-wisdom offerings, experience system, five new campaign tracks (75 series), Family Legacy, LifeTogether Experiences, capital-campaign bridge, and a 20-chapter launch guide, integrated into one ecosystem. The Ron Blue / high-net-worth line and the Generous Living edition system are each substantial enough to spin out as their own standalone builds when you're ready.</p>
+  <p>LifeTogether · Christian Intelligence™ · Generosity Ministry</p>
+</footer>
+</body>
+</html>

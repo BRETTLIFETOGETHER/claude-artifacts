@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Course Catalog — LifeTogether Ministries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,700;1,500&family=Literata:opsz,wght@7..72,400;7..72,500&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1EDE1;
+    --card:#FBF8EE;
+    --ink:#22271F;
+    --ink-soft:#565C4C;
+    --line:rgba(34,39,31,0.16);
+    --plum:#5B3350;
+    --plum-soft:#EDE1E8;
+    --moss:#4B5A3A;
+    --moss-soft:#E4E9DC;
+    --gold:#C7973D;
+    --radius:10px;
+    --serif:'Bitter', serif;
+    --read:'Literata', serif;
+    --mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--read); font-size:16.5px; line-height:1.55;}
+  a{color:inherit;}
+  ::selection{background:var(--gold); color:#fff;}
+
+  nav{position:sticky; top:0; z-index:60; background:rgba(241,237,225,0.94); backdrop-filter:blur(6px); border-bottom:2px solid var(--ink);}
+  .nav-inner{max-width:1180px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .brand{font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;}
+  .navtabs{display:flex; gap:0;}
+  .navtabs a{
+    font-family:var(--mono); font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;
+    padding:8px 14px; border:1px solid var(--ink); border-left:none; text-decoration:none; color:var(--ink);
+    background:var(--card);
+  }
+  .navtabs a:first-child{border-left:1px solid var(--ink); border-radius:6px 0 0 6px;}
+  .navtabs a:last-child{border-radius:0 6px 6px 0;}
+  .navtabs a:hover, .navtabs a:focus-visible{background:var(--gold); color:#fff;}
+
+  header.hero{max-width:1180px; margin:0 auto; padding:64px 24px 40px; display:grid; grid-template-columns:auto 1fr; gap:30px; align-items:end;}
+  @media (max-width:720px){ header.hero{grid-template-columns:1fr;} }
+  .vol{font-family:var(--mono); font-size:13px; color:var(--ink-soft); border:1px solid var(--ink); border-radius:8px; padding:10px 14px; writing-mode:horizontal-tb; white-space:nowrap;}
+  h1.title{font-family:var(--serif); font-weight:700; font-size:clamp(34px,5.5vw,56px); line-height:1.05; margin:0 0 14px;}
+  .hero p.lede{font-family:var(--read); font-size:18px; color:var(--ink-soft); max-width:60ch; margin:0 0 18px;}
+  .statline{display:flex; gap:22px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; color:var(--ink-soft);}
+  .statline b{color:var(--ink);}
+
+  section{max-width:1180px; margin:0 auto; padding:52px 24px;}
+  .section-head{display:flex; align-items:center; gap:14px; margin-bottom:26px; flex-wrap:wrap;}
+  .section-head .code{font-family:var(--mono); font-size:12px; background:var(--ink); color:var(--card); padding:4px 10px; border-radius:6px;}
+  .section-head h2{font-family:var(--serif); font-weight:700; font-size:clamp(24px,3.5vw,34px); margin:0;}
+  .section-head p{width:100%; margin:6px 0 0; color:var(--ink-soft); max-width:70ch; font-size:15.5px;}
+
+  /* ---- ORDER CONTENTS TICKET ---- */
+  .ticket{
+    background:var(--card); border:1.5px dashed var(--ink); border-radius:12px; padding:26px 28px;
+    position:relative;
+  }
+  .ticket h3{font-family:var(--serif); font-size:20px; margin:0 0 4px;}
+  .ticket .sub{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin:0 0 18px;}
+  .ticket ul{margin:0; padding:0; list-style:none;}
+  .ticket li{padding:10px 0; border-top:1px solid var(--line); font-size:15.5px;}
+  .ticket li:first-of-type{border-top:none;}
+  .ticket li::before{content:"— "; color:var(--gold); font-weight:700;}
+  .ticket .note{margin-top:16px; padding-top:14px; border-top:1px dashed var(--line); font-family:var(--mono); font-size:12px; color:var(--ink-soft);}
+
+  /* ---- CATALOG GRID ---- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px;}
+  .catcard{
+    background:var(--card); border:1px solid var(--ink); border-radius:var(--radius); padding:0; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .catcard .tab{
+    font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:0.05em;
+    padding:8px 14px; color:#fff; display:flex; justify-content:space-between;
+  }
+  .catcard.abf .tab{background:var(--plum);}
+  .catcard.sem .tab{background:var(--moss);}
+  .catcard .body{padding:16px 18px 18px;}
+  .catcard h4{font-family:var(--serif); font-weight:700; font-size:18px; margin:0 0 4px;}
+  .catcard .count{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin:0 0 12px;}
+  .pill{
+    display:inline-block; font-size:13px; padding:5px 10px; border-radius:14px; margin:3px 4px 0 0;
+  }
+  .catcard.abf .pill{background:var(--plum-soft); color:var(--plum);}
+  .catcard.sem .pill{background:var(--moss-soft); color:var(--moss);}
+  .pill .st{font-style:italic; opacity:0.75;}
+
+  footer{background:var(--ink); color:#E5E0D2; padding:36px 24px; text-align:center; font-family:var(--mono); font-size:12px;}
+  footer b{color:#fff;}
+  .backtop{display:block; margin-top:10px; color:var(--gold); text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand">LifeTogether · Course Catalog</div>
+    <div class="navtabs">
+      <a href="#included">What's Included</a>
+      <a href="#abf">ABF Collection</a>
+      <a href="#seminary">Church Seminary</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="vol">VOL. 1<br>2026</div>
+  <div>
+    <h1 class="title">The Course Catalog</h1>
+    <p class="lede">Every series across the Adult Bible Fellowship library, plus a new Church Seminary collection for classes ready to go deeper into doctrine, history, and the pastoral disciplines.</p>
+    <div class="statline">
+      <span><b>24</b> series in this edition</span>
+      <span><b>150+</b> titles shown</span>
+      <span><b>11</b> new Church Seminary courses</span>
+    </div>
+  </div>
+</header>
+
+<section id="included">
+  <div class="section-head">
+    <span class="code">ORDER CONTENTS</span>
+    <h2>Here's What Arrives When a Church Orders a Course</h2>
+  </div>
+  <div class="ticket">
+    <h3>Every Course, Every Collection</h3>
+    <p class="sub">Adult Bible Fellowship &amp; Church Seminary — same standard, every time</p>
+    <ul>
+      <li>The full Teacher's Guide, with week-by-week lecture notes for the Master Teacher</li>
+      <li>A Participant Workbook, ready to print for every member of the class</li>
+      <li>A Small Group Discussion Guide, built for class leaders and table facilitators</li>
+      <li>A Daily Reading Plan that carries the 8–12 week course into a 30-Day Companion</li>
+      <li>Print-ready and digital files, licensed for church-wide use</li>
+    </ul>
+    <p class="note">Every series in this catalog — Bible book study, felt-need course, or Church Seminary class — ships with this same set of materials.</p>
+  </div>
+</section>
+
+<section id="abf">
+  <div class="section-head">
+    <span class="code">ABF COLLECTION</span>
+    <h2>Adult Bible Fellowship Series</h2>
+    <p>The full spread of Sunday morning series — Bible book studies, felt-need courses, and life-stage companions.</p>
+  </div>
+  <div class="grid">
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-101</span><span>Genesis</span></div>
+      <div class="body">
+        <h4>Genesis</h4>
+        <p class="count">4 titles</p>
+        <span class="pill">Genesis: The Beginning of Everything</span>
+        <span class="pill">In the Beginning</span>
+        <span class="pill">Origins</span>
+        <span class="pill">The Book That Explains Everything</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-102</span><span>Psalms</span></div>
+      <div class="body">
+        <h4>Psalms</h4>
+        <p class="count">20 titles developed · 8 shown</p>
+        <span class="pill">Songs for the Soul</span>
+        <span class="pill">Praying the Psalms</span>
+        <span class="pill">Worship Through Every Season</span>
+        <span class="pill">The Psalms of David</span>
+        <span class="pill">Finding Peace in the Psalms</span>
+        <span class="pill">The Songs Jesus Sang</span>
+        <span class="pill">The Worship Journey</span>
+        <span class="pill">Living the Psalms</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-103</span><span>Proverbs</span></div>
+      <div class="body">
+        <h4>Proverbs</h4>
+        <p class="count">20 titles developed · 8 shown</p>
+        <span class="pill">The Wise Life</span>
+        <span class="pill">Wisdom for Real Life</span>
+        <span class="pill">Choose Wisely</span>
+        <span class="pill">The Path of Wisdom</span>
+        <span class="pill">Think Like Solomon</span>
+        <span class="pill">Character Counts</span>
+        <span class="pill">The Wisdom Advantage</span>
+        <span class="pill">Walking Wisely</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-104</span><span>Life of David</span></div>
+      <div class="body">
+        <h4>The Life of David</h4>
+        <p class="count">20 titles developed · 8 shown</p>
+        <span class="pill">David: A Heart After God's Own Heart</span>
+        <span class="pill">From Shepherd to King</span>
+        <span class="pill">Courage</span>
+        <span class="pill">Broken Yet Beloved</span>
+        <span class="pill">The Giant Killer</span>
+        <span class="pill">Leadership Under Pressure</span>
+        <span class="pill">Kingdom Leadership</span>
+        <span class="pill">Chosen</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-105</span><span>Life of Paul</span></div>
+      <div class="body">
+        <h4>The Life of Paul</h4>
+        <p class="count">20 titles developed · 8 shown</p>
+        <span class="pill">Paul: From Persecutor to Apostle</span>
+        <span class="pill">Grace Changed Everything</span>
+        <span class="pill">Running the Race</span>
+        <span class="pill">Faith Under Fire</span>
+        <span class="pill">Strength in Weakness</span>
+        <span class="pill">The Church Builder</span>
+        <span class="pill">Finishing Well</span>
+        <span class="pill">Living Sent</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-106</span><span>Gospels &amp; Epistles</span></div>
+      <div class="body">
+        <h4>Gospels &amp; Epistles</h4>
+        <p class="count">10 titles</p>
+        <span class="pill">John — Believe and Live</span>
+        <span class="pill">Matthew — Following the King</span>
+        <span class="pill">Mark — Jesus in Action</span>
+        <span class="pill">Luke — The Compassion of Christ</span>
+        <span class="pill">James — Faith That Works</span>
+        <span class="pill">Ephesians — Who You Are in Christ</span>
+        <span class="pill">Philippians — Choosing Joy</span>
+        <span class="pill">Colossians — Christ Above Everything</span>
+        <span class="pill">Hebrews — Jesus Is Better</span>
+        <span class="pill">1 &amp; 2 Peter — Hope in Difficult Times</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-107</span><span>OT &amp; Topical-Biblical</span></div>
+      <div class="body">
+        <h4>Old Testament &amp; Topical-Biblical</h4>
+        <p class="count">10 titles</p>
+        <span class="pill">Daniel — Standing Firm in Babylon</span>
+        <span class="pill">Exodus — Delivered by Grace</span>
+        <span class="pill">Isaiah — Hope Through the Messiah</span>
+        <span class="pill">Minor Prophets — God Still Speaks</span>
+        <span class="pill">Parables of Jesus — Stories That Change Lives</span>
+        <span class="pill">Miracles of Jesus — The Power of the Kingdom</span>
+        <span class="pill">Women of the Bible — Faith That Changed History</span>
+        <span class="pill">Men of the Bible — Ordinary People, Extraordinary God</span>
+        <span class="pill">Names of God — Knowing the Character of God</span>
+        <span class="pill">Attributes of God — Discovering Who God Really Is</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-201</span><span>Decisions &amp; Calling</span></div>
+      <div class="body">
+        <h4>Decisions &amp; Calling</h4>
+        <p class="count">4 titles</p>
+        <span class="pill">Making Wise Decisions</span>
+        <span class="pill">Living with Purpose</span>
+        <span class="pill">Finding God's Will</span>
+        <span class="pill">Discover Your Calling</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-202</span><span>Emotional &amp; Mental Wellbeing</span></div>
+      <div class="body">
+        <h4>Emotional &amp; Mental Wellbeing</h4>
+        <p class="count">5 titles</p>
+        <span class="pill">Defeating Anxiety</span>
+        <span class="pill">Overcoming Fear</span>
+        <span class="pill">Rest for the Weary Soul</span>
+        <span class="pill">Hope When Life Hurts</span>
+        <span class="pill">Building Resilience</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-203</span><span>Relationships &amp; Community</span></div>
+      <div class="body">
+        <h4>Relationships &amp; Community</h4>
+        <p class="count">4 titles</p>
+        <span class="pill">The Power of Forgiveness</span>
+        <span class="pill">Healthy Relationships</span>
+        <span class="pill">Conflict Resolution</span>
+        <span class="pill">Biblical Friendships</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-204</span><span>Character &amp; Growth</span></div>
+      <div class="body">
+        <h4>Character &amp; Growth</h4>
+        <p class="count">7 titles</p>
+        <span class="pill">The Blessed Life of Generosity</span>
+        <span class="pill">The Disciplined Life</span>
+        <span class="pill">Growing Through Trials</span>
+        <span class="pill">Becoming Spiritually Mature</span>
+        <span class="pill">Following Jesus Every Day</span>
+        <span class="pill">Hearing God's Voice</span>
+        <span class="pill">Living by Faith</span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-301</span><span>Life-Stage Companions</span></div>
+      <div class="body">
+        <h4>Life-Stage 30-Day Companions</h4>
+        <p class="count">6 flagship titles</p>
+        <span class="pill">30 Days to Find Your Way <span class="st">College &amp; Emerging Adults</span></span>
+        <span class="pill">30 Days to Build Us <span class="st">Newly Married</span></span>
+        <span class="pill">30 Days to Stay Connected <span class="st">Parents of Teenagers</span></span>
+        <span class="pill">30 Days to Rediscover What Is Next <span class="st">Empty Nesters</span></span>
+        <span class="pill">30 Days to Finish Faithfully <span class="st">Second Half &amp; Retirees</span></span>
+        <span class="pill">30 Days of Strength for Today <span class="st">Widows &amp; Caregivers</span></span>
+      </div>
+    </div>
+
+    <div class="catcard abf">
+      <div class="tab"><span>ABF-302</span><span>Extended: Emerging Adults</span></div>
+      <div class="body">
+        <h4>Extended Set — College &amp; Emerging Adults</h4>
+        <p class="count">10 topics · 100 titles developed · lead title shown</p>
+        <span class="pill">The Next Chapter</span>
+        <span class="pill">Real World Faith</span>
+        <span class="pill">Your People</span>
+        <span class="pill">Worth the Wait</span>
+        <span class="pill">Unshaken</span>
+        <span class="pill">Work in Progress</span>
+        <span class="pill">Who I Am</span>
+        <span class="pill">Unplugged Faith</span>
+        <span class="pill">Quiet the Noise</span>
+        <span class="pill">More Than a Job</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="seminary">
+  <div class="section-head">
+    <span class="code">NEW COLLECTION</span>
+    <h2>Church Seminary</h2>
+    <p>Classic seminary disciplines, brought to the same 8–12 week format — for classes ready to move from application into doctrine, history, and craft.</p>
+  </div>
+  <div class="grid">
+
+    <div class="catcard sem"><div class="tab"><span>SEM-101</span><span>Doctrine</span></div>
+      <div class="body"><h4>Systematic Theology</h4><p class="count">The Whole Counsel of God</p>
+      <span class="pill">A Foundational Survey of Christian Doctrine</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-102</span><span>History</span></div>
+      <div class="body"><h4>Church History</h4><p class="count">The Long Line of Faith</p>
+      <span class="pill">How the Church Has Endured for Two Thousand Years</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-103</span><span>Interpretation</span></div>
+      <div class="body"><h4>Hermeneutics</h4><p class="count">Reading Rightly</p>
+      <span class="pill">Principles for Sound Biblical Interpretation</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-104</span><span>Defense of Faith</span></div>
+      <div class="body"><h4>Apologetics</h4><p class="count">Ready to Answer</p>
+      <span class="pill">Defending the Faith with Reason and Grace</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-105</span><span>Preaching</span></div>
+      <div class="body"><h4>Homiletics</h4><p class="count">The Craft of the Sermon</p>
+      <span class="pill">Principles of Faithful, Compelling Preaching</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-106</span><span>Care</span></div>
+      <div class="body"><h4>Pastoral Care &amp; Counseling</h4><p class="count">Shepherding Souls</p>
+      <span class="pill">Caring for People in Crisis and Change</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-107</span><span>Ethics</span></div>
+      <div class="body"><h4>Christian Ethics</h4><p class="count">Right and Wrong in a Relative World</p>
+      <span class="pill">A Biblical Framework for Moral Decisions</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-108</span><span>Worldview</span></div>
+      <div class="body"><h4>World Religions</h4><p class="count">Truth Among the Nations</p>
+      <span class="pill">Understanding World Religions from a Christian Worldview</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-109</span><span>Leadership</span></div>
+      <div class="body"><h4>Church Leadership &amp; Ecclesiology</h4><p class="count">Built to Last</p>
+      <span class="pill">Biblical Foundations for Church Structure and Leadership</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-110</span><span>Last Things</span></div>
+      <div class="body"><h4>Eschatology</h4><p class="count">The Hope That Is Coming</p>
+      <span class="pill">Understanding the End Times and the Return of Christ</span></div></div>
+
+    <div class="catcard sem"><div class="tab"><span>SEM-111</span><span>Mission</span></div>
+      <div class="body"><h4>Missiology</h4><p class="count">Sent</p>
+      <span class="pill">The Biblical Foundations of Mission and the Great Commission</span></div></div>
+
+  </div>
+</section>
+
+<footer>
+  <div><b>LifeTogether Ministries</b> — Course Catalog, Vol. 1</div>
+  <div>Adult Bible Fellowship Collection · Church Seminary Collection</div>
+  <a class="backtop" href="#included">↑ Back to top</a>
+</footer>
+
+</body>
+</html>

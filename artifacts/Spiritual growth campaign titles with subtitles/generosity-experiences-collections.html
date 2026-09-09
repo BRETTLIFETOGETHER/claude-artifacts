@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generosity Experiences &amp; Curated Collections</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#EEF0E7;--paper-2:#F6F7F0;--ink:#1A2A20;--ink-soft:#41544A;--ink-faint:#7C8A80;--line:#D3D8C9;--moss:#4A7C59;--moss-deep:#2F5B3E;--brass:#A8853C;--brass-soft:#C6A65E;--cream:#FBFBF6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .hero{padding:clamp(3rem,9vw,6rem) clamp(1.4rem,5vw,4rem) clamp(2rem,5vw,3.2rem);border-bottom:1px solid var(--line)}
+  .kicker{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--moss-deep);font-weight:600;display:flex;align-items:center;gap:.7rem}
+  .kicker::after{content:"";flex:1;height:1px;background:var(--line);max-width:160px}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1;letter-spacing:-.015em;margin:1.1rem 0 1.2rem}
+  h1 em{font-style:italic;color:var(--moss-deep)}
+  .lede{max-width:60ch;font-size:clamp(1rem,2.6vw,1.12rem);color:var(--ink-soft)}
+  .meta{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+  .meta .n{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:500;line-height:1}
+  .meta .l{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-top:.35rem}
+  nav.toc{padding:1.6rem clamp(1.4rem,5vw,4rem);background:var(--paper-2);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:1.4rem}
+  nav.toc a{text-decoration:none;color:var(--ink);font-size:.9rem;display:flex;gap:.5rem;align-items:baseline}
+  nav.toc a:hover{color:var(--moss-deep)}
+  nav.toc .ix{font-family:'Fraunces',serif;color:var(--brass);font-weight:600}
+  main{padding:0 clamp(1.4rem,5vw,4rem)}
+  section{padding:clamp(2.4rem,5vw,3.4rem) 0;border-bottom:1px solid var(--line);scroll-margin-top:1rem}
+  .sec-head{border-left:3px solid var(--brass);padding-left:1rem;margin-bottom:1rem}
+  .eyebrow{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  h2{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(1.6rem,4.5vw,2.4rem);letter-spacing:-.01em;margin-top:.2rem;line-height:1.05}
+  .sec-head p{color:var(--ink-soft);max-width:64ch;font-size:.94rem;margin-top:.5rem}
+  ol.titles{list-style:none;counter-reset:t;padding:.6rem 0 0}
+  @media(min-width:760px){ol.titles{column-count:2;column-gap:3rem}}
+  @media(min-width:1150px){ol.titles{column-count:3}}
+  ol.titles li{counter-increment:t;display:grid;grid-template-columns:2.3em 1fr;gap:.05rem .6rem;padding:.5rem 0;border-bottom:1px solid rgba(211,216,201,.5);break-inside:avoid}
+  ol.titles li::before{content:counter(t,decimal-leading-zero);grid-row:1/3;font-family:'Fraunces',serif;font-size:.78rem;color:var(--brass);font-weight:600;padding-top:.15rem}
+  .t-name{font-family:'Fraunces',serif;font-weight:600;font-size:1rem;letter-spacing:-.005em;line-height:1.2}
+  .t-sub{font-size:.82rem;color:var(--ink-soft);line-height:1.34}
+  /* CATALYTIC SUNDAY card grid — laid out differently */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:1.2rem}
+  .card{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:1.3rem 1.3rem 1.4rem;position:relative;display:flex;flex-direction:column;gap:.5rem;break-inside:avoid}
+  .card .badge{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:700}
+  .card .cnum{position:absolute;top:1.1rem;right:1.2rem;font-family:'Fraunces',serif;font-size:.8rem;color:var(--ink-faint)}
+  .card .cname{font-family:'Fraunces',serif;font-weight:600;font-size:1.28rem;line-height:1.12;letter-spacing:-.01em;color:var(--ink);margin-top:.1rem}
+  .card .csub{font-size:.85rem;color:var(--ink-soft);line-height:1.4}
+  /* CURATED collections */
+  .collection{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:1.4rem 1.5rem;margin-bottom:1.1rem}
+  .collection .ctag{display:inline-block;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#fff;background:var(--brass);border-radius:3px;padding:.2rem .55rem;margin-bottom:.6rem}
+  .collection h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.35rem;margin-bottom:.2rem}
+  .collection .csubhead{font-size:.86rem;color:var(--ink-faint);margin-bottom:.8rem}
+  .ranklist{list-style:none;counter-reset:r}
+  .ranklist li{counter-increment:r;display:grid;grid-template-columns:1.8em 1fr;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(211,216,201,.5);align-items:baseline}
+  .ranklist li::before{content:counter(r);font-family:'Fraunces',serif;color:var(--brass);font-weight:600;font-size:.9rem}
+  .ranklist .rn{font-family:'Fraunces',serif;font-weight:600;font-size:.98rem}
+  .ranklist .rs{color:var(--ink-faint);font-size:.8rem;margin-left:.4rem;font-family:'Inter',sans-serif;font-weight:400}
+  @media(min-width:760px){.two{column-count:2;column-gap:2.5rem}.two li{break-inside:avoid}}
+  footer{padding:clamp(2.4rem,6vw,4rem) clamp(1.4rem,5vw,4rem);color:var(--ink-faint);font-size:.82rem}
+  footer strong{color:var(--ink-soft)}
+  @media print{body{background:#fff}.card,.collection{break-inside:avoid}a{color:inherit}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="kicker">LifeTogether · Christian Intelligence™ · Generosity Ministry</div>
+  <h1>Generosity Experiences<br>&amp; <em>Collections</em></h1>
+  <p class="lede">The full experience ladder plus the merchandising that sells it — one hundred 21-day experiences, a cherry-picked 30-day journey set, fifty single catalytic-Sunday messages, and five curated collections built to make the brochure shine.</p>
+  <div class="meta">
+    <div><div class="n">100</div><div class="l">21-Day Experiences</div></div>
+    <div><div class="n">30</div><div class="l">30-Day Journeys</div></div>
+    <div><div class="n">50</div><div class="l">Catalytic Messages</div></div>
+    <div><div class="n">5</div><div class="l">Curated Collections</div></div>
+  </div>
+</header>
+<nav class="toc">
+  <a href="#s21"><span class="ix">01</span>The 21-Day Experience Library</a>
+  <a href="#s30"><span class="ix">02</span>The 30-Day Journey</a>
+  <a href="#scat"><span class="ix">03</span>Catalytic Sunday · 50 Messages</a>
+  <a href="#scol"><span class="ix">04</span>Curated Collections</a>
+</nav>
+<main>
+
+  <section id="s21">
+    <div class="sec-head"><div class="eyebrow">Section 01 · 100 Experiences</div><h2>The 21-Day Experience Library</h2>
+      <p>The same generosity topics, reframed as three-week experiences — the flagship "journey" length that's long enough to form a habit and short enough to finish. Every one runs as a 21-day guided experience.</p></div>
+    <ol class="titles">
+      <li><span class="t-name">21 Days of Generous Living</span><span class="t-sub">Three weeks to an open-handed life</span></li>
+      <li><span class="t-name">The Generosity Experience</span><span class="t-sub">A 21-day journey into giving</span></li>
+      <li><span class="t-name">Open Hands</span><span class="t-sub">21 days of holding everything loosely</span></li>
+      <li><span class="t-name">21 Days of Gratitude &amp; Giving</span><span class="t-sub">Where thankfulness becomes generosity</span></li>
+      <li><span class="t-name">The Generous Life Challenge</span><span class="t-sub">Three weeks that reshape your heart</span></li>
+      <li><span class="t-name">Give</span><span class="t-sub">A 21-day experience in the joy of generosity</span></li>
+      <li><span class="t-name">21 Days of Stewardship</span><span class="t-sub">Living like you own nothing</span></li>
+      <li><span class="t-name">God Owns It All</span><span class="t-sub">A 21-day stewardship experience</span></li>
+      <li><span class="t-name">The Open-Handed Journey</span><span class="t-sub">21 days of loosening your grip</span></li>
+      <li><span class="t-name">21 Days of Contentment</span><span class="t-sub">Escaping the never-enough trap</span></li>
+      <li><span class="t-name">Enough</span><span class="t-sub">A three-week journey to contentment</span></li>
+      <li><span class="t-name">21 Days to Financial Freedom</span><span class="t-sub">Faith and money for three weeks</span></li>
+      <li><span class="t-name">Money &amp; the Heart</span><span class="t-sub">A 21-day experience</span></li>
+      <li><span class="t-name">First</span><span class="t-sub">21 days of putting God first with your finances</span></li>
+      <li><span class="t-name">21 Days of Trusting God with Money</span><span class="t-sub">Faith over financial fear</span></li>
+      <li><span class="t-name">The Provision Experience</span><span class="t-sub">21 days of trusting God to provide</span></li>
+      <li><span class="t-name">21 Days of Cheerful Giving</span><span class="t-sub">Rediscovering the joy of the gift</span></li>
+      <li><span class="t-name">The Tithe Journey</span><span class="t-sub">A 21-day experience in first-fruits living</span></li>
+      <li><span class="t-name">21 Days Beyond the Tithe</span><span class="t-sub">Growing into extravagant giving</span></li>
+      <li><span class="t-name">Treasure</span><span class="t-sub">A 21-day journey to what really lasts</span></li>
+      <li><span class="t-name">21 Days of Kingdom Investing</span><span class="t-sub">Storing up treasure in heaven</span></li>
+      <li><span class="t-name">Rich Toward God</span><span class="t-sub">A three-week generosity experience</span></li>
+      <li><span class="t-name">21 Days of Sacrificial Generosity</span><span class="t-sub">Giving that costs something</span></li>
+      <li><span class="t-name">The Blessed Life</span><span class="t-sub">21 days of the joy of generosity</span></li>
+      <li><span class="t-name">21 Days of Open-Handed Faith</span><span class="t-sub">Trusting God as you give</span></li>
+      <li><span class="t-name">Sow &amp; Reap</span><span class="t-sub">A 21-day journey in God's economy</span></li>
+      <li><span class="t-name">21 Days of Generous Habits</span><span class="t-sub">Building a lifestyle of giving</span></li>
+      <li><span class="t-name">The Everyday Generosity Experience</span><span class="t-sub">21 days of small acts</span></li>
+      <li><span class="t-name">21 Days of Giving More Than Money</span><span class="t-sub">Time, talent, and treasure</span></li>
+      <li><span class="t-name">Held Loosely</span><span class="t-sub">A three-week journey to freedom from stuff</span></li>
+      <li><span class="t-name">21 Days of the Generous Heart</span><span class="t-sub">Becoming a giver</span></li>
+      <li><span class="t-name">The Contentment Challenge</span><span class="t-sub">21 days of learning enough</span></li>
+      <li><span class="t-name">21 Days of Financial Wisdom</span><span class="t-sub">Managing money God's way</span></li>
+      <li><span class="t-name">Master Your Money</span><span class="t-sub">A 21-day experience</span></li>
+      <li><span class="t-name">21 Days of Debt Freedom</span><span class="t-sub">Breaking money's grip</span></li>
+      <li><span class="t-name">Free</span><span class="t-sub">A three-week journey out of financial bondage</span></li>
+      <li><span class="t-name">21 Days of Margin</span><span class="t-sub">Making room in your finances</span></li>
+      <li><span class="t-name">The Budget Journey</span><span class="t-sub">21 days to a plan that works</span></li>
+      <li><span class="t-name">21 Days of Provision</span><span class="t-sub">Watching God supply your needs</span></li>
+      <li><span class="t-name">The Trust Experience</span><span class="t-sub">21 days of surrendering your finances</span></li>
+      <li><span class="t-name">21 Days of Radical Generosity</span><span class="t-sub">Giving that changes the world</span></li>
+      <li><span class="t-name">Give It All</span><span class="t-sub">A 21-day journey of extravagant giving</span></li>
+      <li><span class="t-name">21 Days of Missional Giving</span><span class="t-sub">Funding the mission of God</span></li>
+      <li><span class="t-name">For the Least of These</span><span class="t-sub">21 days of generous compassion</span></li>
+      <li><span class="t-name">21 Days of Kingdom Generosity</span><span class="t-sub">Giving for eternal impact</span></li>
+      <li><span class="t-name">The Legacy Experience</span><span class="t-sub">21 days of generational giving</span></li>
+      <li><span class="t-name">21 Days of Family Generosity</span><span class="t-sub">Giving together as a household</span></li>
+      <li><span class="t-name">Raising Generous Kids</span><span class="t-sub">A 21-day family experience</span></li>
+      <li><span class="t-name">21 Days of Marketplace Generosity</span><span class="t-sub">Giving where you work</span></li>
+      <li><span class="t-name">The Generous Leader</span><span class="t-sub">A 21-day experience</span></li>
+      <li><span class="t-name">21 Days of Hospitality</span><span class="t-sub">Opening your home and heart</span></li>
+      <li><span class="t-name">The Kindness Journey</span><span class="t-sub">21 days of everyday generosity</span></li>
+      <li><span class="t-name">21 Days of Blessing Others</span><span class="t-sub">Becoming a blessing</span></li>
+      <li><span class="t-name">Be a Blessing</span><span class="t-sub">A three-week generosity experience</span></li>
+      <li><span class="t-name">21 Days of Joyful Giving</span><span class="t-sub">Finding the joy Jesus promised</span></li>
+      <li><span class="t-name">The Overflow Experience</span><span class="t-sub">21 days of generosity from a full heart</span></li>
+      <li><span class="t-name">21 Days of Surrendered Finances</span><span class="t-sub">All I have is His</span></li>
+      <li><span class="t-name">All In</span><span class="t-sub">A 21-day journey of wholehearted giving</span></li>
+      <li><span class="t-name">21 Days of Faith &amp; Finances</span><span class="t-sub">Trusting God with every dollar</span></li>
+      <li><span class="t-name">The Stewardship Journey</span><span class="t-sub">21 days of faithful management</span></li>
+      <li><span class="t-name">21 Days of Simple Living</span><span class="t-sub">Freedom through less</span></li>
+      <li><span class="t-name">Simplify</span><span class="t-sub">A three-week experience in generous simplicity</span></li>
+      <li><span class="t-name">21 Days of Gratitude</span><span class="t-sub">The soil where generosity grows</span></li>
+      <li><span class="t-name">Thankful</span><span class="t-sub">A 21-day journey of grateful generosity</span></li>
+      <li><span class="t-name">21 Days of Generous Prayer</span><span class="t-sub">Praying with an open hand</span></li>
+      <li><span class="t-name">The First-Fruits Experience</span><span class="t-sub">21 days of giving God your best</span></li>
+      <li><span class="t-name">21 Days of the Generous Church</span><span class="t-sub">Becoming a giving people</span></li>
+      <li><span class="t-name">Better Together in Giving</span><span class="t-sub">A 21-day community experience</span></li>
+      <li><span class="t-name">21 Days of Money &amp; Purpose</span><span class="t-sub">Aligning your finances with God's</span></li>
+      <li><span class="t-name">The Purpose of Provision</span><span class="t-sub">21 days of why God provides</span></li>
+      <li><span class="t-name">21 Days of Letting Go</span><span class="t-sub">Releasing your grip on money</span></li>
+      <li><span class="t-name">Release</span><span class="t-sub">A three-week journey to open-handed freedom</span></li>
+      <li><span class="t-name">21 Days of Investing in Eternity</span><span class="t-sub">What lasts forever</span></li>
+      <li><span class="t-name">Store Up Treasure</span><span class="t-sub">A 21-day experience</span></li>
+      <li><span class="t-name">21 Days of Generous Rhythms</span><span class="t-sub">Habits that make you a giver</span></li>
+      <li><span class="t-name">The Giving Reset</span><span class="t-sub">21 days to renew your relationship with money</span></li>
+      <li><span class="t-name">21 Days of Trusting the Provider</span><span class="t-sub">Meeting Jehovah-Jireh</span></li>
+      <li><span class="t-name">The Provider</span><span class="t-sub">A 21-day journey of trust</span></li>
+      <li><span class="t-name">21 Days of Grace &amp; Giving</span><span class="t-sub">Grace that overflows into generosity</span></li>
+      <li><span class="t-name">Grace Given</span><span class="t-sub">A three-week generosity experience</span></li>
+      <li><span class="t-name">21 Days of the Wise Steward</span><span class="t-sub">Managing well what God entrusts</span></li>
+      <li><span class="t-name">Faithful with Little</span><span class="t-sub">A 21-day stewardship experience</span></li>
+      <li><span class="t-name">21 Days of Generous Contentment</span><span class="t-sub">Enough, and then some to give</span></li>
+      <li><span class="t-name">The Enough Experience</span><span class="t-sub">21 days of contentment and giving</span></li>
+      <li><span class="t-name">21 Days of Money on Mission</span><span class="t-sub">Funding what matters</span></li>
+      <li><span class="t-name">On Mission with Your Money</span><span class="t-sub">A 21-day journey</span></li>
+      <li><span class="t-name">21 Days of Sacrificial Living</span><span class="t-sub">Holding nothing back</span></li>
+      <li><span class="t-name">The Sacrifice Experience</span><span class="t-sub">21 days of costly generosity</span></li>
+      <li><span class="t-name">21 Days of Generous Faith</span><span class="t-sub">Believing God as you give</span></li>
+      <li><span class="t-name">Faith to Give</span><span class="t-sub">A three-week generosity experience</span></li>
+      <li><span class="t-name">21 Days of the Open Table</span><span class="t-sub">Generosity through hospitality</span></li>
+      <li><span class="t-name">Come to the Table</span><span class="t-sub">A 21-day experience in generous welcome</span></li>
+      <li><span class="t-name">21 Days of Everyday Blessing</span><span class="t-sub">Small generosity, big impact</span></li>
+      <li><span class="t-name">21 Days of Financial Peace</span><span class="t-sub">Trading money stress for trust</span></li>
+      <li><span class="t-name">Peace with Money</span><span class="t-sub">A 21-day journey</span></li>
+      <li><span class="t-name">21 Days of Kingdom Economics</span><span class="t-sub">Living by heaven's values</span></li>
+      <li><span class="t-name">The Generosity Reset</span><span class="t-sub">21 days to a new financial heart</span></li>
+      <li><span class="t-name">21 Days of Whole-Life Stewardship</span><span class="t-sub">Every part belongs to God</span></li>
+      <li><span class="t-name">Whole-Life Giving</span><span class="t-sub">A three-week experience</span></li>
+      <li><span class="t-name">The 21-Day Generosity Journey</span><span class="t-sub">Three weeks that change how you give</span></li>
+    </ol>
+  </section>
+
+  <section id="s30">
+    <div class="sec-head"><div class="eyebrow">Section 02 · Cherry-Picked · 30 Journeys</div><h2>The 30-Day Journey</h2>
+      <p>The strongest topics, stepped up to a four-week edition — a full month to move generosity from a decision into a habit. The premium length between the 21-day experience and the 40-day campaign.</p></div>
+    <ol class="titles">
+      <li><span class="t-name">30 Days of Generous Living</span><span class="t-sub">A four-week journey to open-handed living</span></li>
+      <li><span class="t-name">God Owns It All</span><span class="t-sub">A 30-day stewardship journey</span></li>
+      <li><span class="t-name">30 Days of Financial Wisdom</span><span class="t-sub">Managing money God's way</span></li>
+      <li><span class="t-name">Master Your Money</span><span class="t-sub">A 30-day journey</span></li>
+      <li><span class="t-name">Enough</span><span class="t-sub">A 30-day journey to contentment</span></li>
+      <li><span class="t-name">30 Days of Trusting God with Money</span><span class="t-sub">Faith over financial fear</span></li>
+      <li><span class="t-name">The Generous Life</span><span class="t-sub">A 30-day journey</span></li>
+      <li><span class="t-name">30 Days of Gratitude &amp; Giving</span><span class="t-sub">Thankfulness that overflows</span></li>
+      <li><span class="t-name">Free</span><span class="t-sub">A 30-day journey out of debt's grip</span></li>
+      <li><span class="t-name">30 Days of Stewardship</span><span class="t-sub">Living like you own nothing</span></li>
+      <li><span class="t-name">Rich Toward God</span><span class="t-sub">A 30-day generosity journey</span></li>
+      <li><span class="t-name">30 Days Beyond the Tithe</span><span class="t-sub">Growing into extravagant giving</span></li>
+      <li><span class="t-name">Treasure</span><span class="t-sub">A 30-day journey to what lasts</span></li>
+      <li><span class="t-name">30 Days of the Generous Heart</span><span class="t-sub">Becoming a giver</span></li>
+      <li><span class="t-name">Open Hands</span><span class="t-sub">A 30-day journey to freedom</span></li>
+      <li><span class="t-name">30 Days of Radical Generosity</span><span class="t-sub">Giving that changes the world</span></li>
+      <li><span class="t-name">The Legacy Journey</span><span class="t-sub">30 days of generational giving</span></li>
+      <li><span class="t-name">30 Days of Everyday Generosity</span><span class="t-sub">Small acts, big impact</span></li>
+      <li><span class="t-name">First</span><span class="t-sub">A 30-day journey of putting God first</span></li>
+      <li><span class="t-name">30 Days of Faith &amp; Finances</span><span class="t-sub">Trusting God with every dollar</span></li>
+      <li><span class="t-name">The Contentment Journey</span><span class="t-sub">30 days of learning enough</span></li>
+      <li><span class="t-name">30 Days of Provision</span><span class="t-sub">Trusting the God who supplies</span></li>
+      <li><span class="t-name">Be a Blessing</span><span class="t-sub">A 30-day generosity journey</span></li>
+      <li><span class="t-name">30 Days of Sacrificial Giving</span><span class="t-sub">Generosity that costs something</span></li>
+      <li><span class="t-name">The Stewardship Journey</span><span class="t-sub">30 days of faithful management</span></li>
+      <li><span class="t-name">30 Days of Joyful Giving</span><span class="t-sub">The joy Jesus promised</span></li>
+      <li><span class="t-name">Peace with Money</span><span class="t-sub">A 30-day journey</span></li>
+      <li><span class="t-name">30 Days of Whole-Life Stewardship</span><span class="t-sub">Every part belongs to God</span></li>
+      <li><span class="t-name">Money &amp; the Heart</span><span class="t-sub">A 30-day journey of realignment</span></li>
+      <li><span class="t-name">The 30-Day Generosity Journey</span><span class="t-sub">Four weeks that reshape your giving</span></li>
+    </ol>
+  </section>
+
+  <section id="scat">
+    <div class="sec-head"><div class="eyebrow">Section 03 · 50 Single Messages · Laid Out Differently</div><h2>Catalytic Sunday</h2>
+      <p>Fifty standalone big ideas — each a single message engineered to spark generosity in one Sunday. No series, no runway; drop one in to introduce the big idea and light the fuse. Each card is one complete catalytic message.</p></div>
+    <div class="cards">
+      <div class="card"><span class="cnum">01</span><div class="badge">Catalytic Sunday</div><div class="cname">The Generosity Test</div><div class="csub">What your wallet reveals about your heart</div></div>
+      <div class="card"><span class="cnum">02</span><div class="badge">Catalytic Sunday</div><div class="cname">You Can't Outgive God</div><div class="csub">The surprising math of generosity</div></div>
+      <div class="card"><span class="cnum">03</span><div class="badge">Catalytic Sunday</div><div class="cname">Open Hands</div><div class="csub">The freedom of holding everything loosely</div></div>
+      <div class="card"><span class="cnum">04</span><div class="badge">Catalytic Sunday</div><div class="cname">Treasure</div><div class="csub">Where you put it is where your heart follows</div></div>
+      <div class="card"><span class="cnum">05</span><div class="badge">Catalytic Sunday</div><div class="cname">First</div><div class="csub">What putting God at the front of your finances unlocks</div></div>
+      <div class="card"><span class="cnum">06</span><div class="badge">Catalytic Sunday</div><div class="cname">The Trap of More</div><div class="csub">Why enough always feels one step away</div></div>
+      <div class="card"><span class="cnum">07</span><div class="badge">Catalytic Sunday</div><div class="cname">Who Owns It?</div><div class="csub">The one question that changes everything</div></div>
+      <div class="card"><span class="cnum">08</span><div class="badge">Catalytic Sunday</div><div class="cname">Give and Live</div><div class="csub">The life Jesus promised the generous</div></div>
+      <div class="card"><span class="cnum">09</span><div class="badge">Catalytic Sunday</div><div class="cname">Money Talks</div><div class="csub">What your spending says about your soul</div></div>
+      <div class="card"><span class="cnum">10</span><div class="badge">Catalytic Sunday</div><div class="cname">The Blessing of the Open Hand</div><div class="csub">Why givers are the free ones</div></div>
+      <div class="card"><span class="cnum">11</span><div class="badge">Catalytic Sunday</div><div class="cname">Rich Toward God</div><div class="csub">The only wealth that lasts</div></div>
+      <div class="card"><span class="cnum">12</span><div class="badge">Catalytic Sunday</div><div class="cname">The Heart Follows the Treasure</div><div class="csub">Where your money leads you</div></div>
+      <div class="card"><span class="cnum">13</span><div class="badge">Catalytic Sunday</div><div class="cname">Enough</div><div class="csub">Finding freedom in the word we forgot</div></div>
+      <div class="card"><span class="cnum">14</span><div class="badge">Catalytic Sunday</div><div class="cname">The Generous Reflex</div><div class="csub">Becoming someone who gives first</div></div>
+      <div class="card"><span class="cnum">15</span><div class="badge">Catalytic Sunday</div><div class="cname">What's in Your Hand?</div><div class="csub">God uses what you're already holding</div></div>
+      <div class="card"><span class="cnum">16</span><div class="badge">Catalytic Sunday</div><div class="cname">The Cure for Greed</div><div class="csub">One truth that loosens the grip</div></div>
+      <div class="card"><span class="cnum">17</span><div class="badge">Catalytic Sunday</div><div class="cname">Store Up</div><div class="csub">Investing where moth and rust can't reach</div></div>
+      <div class="card"><span class="cnum">18</span><div class="badge">Catalytic Sunday</div><div class="cname">The Joy You're Missing</div><div class="csub">The gladness on the other side of giving</div></div>
+      <div class="card"><span class="cnum">19</span><div class="badge">Catalytic Sunday</div><div class="cname">Return on Generosity</div><div class="csub">God's math never adds up like ours</div></div>
+      <div class="card"><span class="cnum">20</span><div class="badge">Catalytic Sunday</div><div class="cname">Owned or Owner?</div><div class="csub">Living as a steward, not a possessor</div></div>
+      <div class="card"><span class="cnum">21</span><div class="badge">Catalytic Sunday</div><div class="cname">The Widow's Coins</div><div class="csub">Why God measures gifts differently</div></div>
+      <div class="card"><span class="cnum">22</span><div class="badge">Catalytic Sunday</div><div class="cname">Cheerful</div><div class="csub">The kind of giver God loves</div></div>
+      <div class="card"><span class="cnum">23</span><div class="badge">Catalytic Sunday</div><div class="cname">Let It Go</div><div class="csub">Freedom from the grip of stuff</div></div>
+      <div class="card"><span class="cnum">24</span><div class="badge">Catalytic Sunday</div><div class="cname">The Tithe &amp; Beyond</div><div class="csub">Where generosity really begins</div></div>
+      <div class="card"><span class="cnum">25</span><div class="badge">Catalytic Sunday</div><div class="cname">Buried Treasure</div><div class="csub">The danger of storing up for yourself</div></div>
+      <div class="card"><span class="cnum">26</span><div class="badge">Catalytic Sunday</div><div class="cname">Give It Away</div><div class="csub">The paradox at the heart of the gospel</div></div>
+      <div class="card"><span class="cnum">27</span><div class="badge">Catalytic Sunday</div><div class="cname">More Blessed to Give</div><div class="csub">Taking Jesus at His word</div></div>
+      <div class="card"><span class="cnum">28</span><div class="badge">Catalytic Sunday</div><div class="cname">The Generosity Multiplier</div><div class="csub">How small gifts change everything</div></div>
+      <div class="card"><span class="cnum">29</span><div class="badge">Catalytic Sunday</div><div class="cname">Whose Is It Anyway?</div><div class="csub">The truth beneath every dollar</div></div>
+      <div class="card"><span class="cnum">30</span><div class="badge">Catalytic Sunday</div><div class="cname">Traveling Light</div><div class="csub">Why generous people carry less</div></div>
+      <div class="card"><span class="cnum">31</span><div class="badge">Catalytic Sunday</div><div class="cname">The First Ten</div><div class="csub">What happens when you give God the first</div></div>
+      <div class="card"><span class="cnum">32</span><div class="badge">Catalytic Sunday</div><div class="cname">Break the Grip</div><div class="csub">Freedom from the love of money</div></div>
+      <div class="card"><span class="cnum">33</span><div class="badge">Catalytic Sunday</div><div class="cname">The Overflow</div><div class="csub">Generosity that pours from a full heart</div></div>
+      <div class="card"><span class="cnum">34</span><div class="badge">Catalytic Sunday</div><div class="cname">Seeds &amp; Harvest</div><div class="csub">God's economy of giving</div></div>
+      <div class="card"><span class="cnum">35</span><div class="badge">Catalytic Sunday</div><div class="cname">The Generous Gospel</div><div class="csub">How grace makes us givers</div></div>
+      <div class="card"><span class="cnum">36</span><div class="badge">Catalytic Sunday</div><div class="cname">Hold It Loosely</div><div class="csub">The secret of the unanxious life</div></div>
+      <div class="card"><span class="cnum">37</span><div class="badge">Catalytic Sunday</div><div class="cname">Where Your Treasure Is</div><div class="csub">The heart always follows the money</div></div>
+      <div class="card"><span class="cnum">38</span><div class="badge">Catalytic Sunday</div><div class="cname">The Best Investment</div><div class="csub">Putting your resources where they'll last</div></div>
+      <div class="card"><span class="cnum">39</span><div class="badge">Catalytic Sunday</div><div class="cname">Give Like God Gives</div><div class="csub">Extravagant, first, and free</div></div>
+      <div class="card"><span class="cnum">40</span><div class="badge">Catalytic Sunday</div><div class="cname">The Generosity Dare</div><div class="csub">One step that changes your heart</div></div>
+      <div class="card"><span class="cnum">41</span><div class="badge">Catalytic Sunday</div><div class="cname">Money or Master?</div><div class="csub">You'll serve one of them</div></div>
+      <div class="card"><span class="cnum">42</span><div class="badge">Catalytic Sunday</div><div class="cname">The Freedom of Less</div><div class="csub">Why generous people are the content ones</div></div>
+      <div class="card"><span class="cnum">43</span><div class="badge">Catalytic Sunday</div><div class="cname">Open-Handed</div><div class="csub">Living with a loose grip on everything</div></div>
+      <div class="card"><span class="cnum">44</span><div class="badge">Catalytic Sunday</div><div class="cname">The Gift That Frees You</div><div class="csub">How giving breaks money's power</div></div>
+      <div class="card"><span class="cnum">45</span><div class="badge">Catalytic Sunday</div><div class="cname">Plant Something</div><div class="csub">The generosity that grows a harvest</div></div>
+      <div class="card"><span class="cnum">46</span><div class="badge">Catalytic Sunday</div><div class="cname">What Money Can't Buy</div><div class="csub">The joy reserved for givers</div></div>
+      <div class="card"><span class="cnum">47</span><div class="badge">Catalytic Sunday</div><div class="cname">The Reset</div><div class="csub">One Sunday to change how you see money</div></div>
+      <div class="card"><span class="cnum">48</span><div class="badge">Catalytic Sunday</div><div class="cname">All of It His</div><div class="csub">Living like you own nothing</div></div>
+      <div class="card"><span class="cnum">49</span><div class="badge">Catalytic Sunday</div><div class="cname">The Generous Turn</div><div class="csub">The moment getting becomes giving</div></div>
+      <div class="card"><span class="cnum">50</span><div class="badge">Catalytic Sunday</div><div class="cname">Start Giving</div><div class="csub">The first step into the generous life</div></div>
+    </div>
+  </section>
+
+  <section id="scol">
+    <div class="sec-head"><div class="eyebrow">Section 04 · Merchandising</div><h2>Curated Collections</h2>
+      <p>Five ready-made "shelves" for the brochure — the rankings and best-of lists that help a browsing pastor find the right series fast and make the catalog feel curated, not overwhelming.</p></div>
+
+    <div class="collection">
+      <span class="ctag">Top 10 · Most Popular</span>
+      <h3>Most Popular Generosity Series</h3>
+      <div class="csubhead">The crowd-pleasers churches reach for first</div>
+      <ol class="ranklist two">
+        <li><span class="rn">The Generous Life</span><span class="rs">open-handed living</span></li>
+        <li><span class="rn">God Owns It All</span><span class="rs">stewardship</span></li>
+        <li><span class="rn">Enough</span><span class="rs">contentment</span></li>
+        <li><span class="rn">Open Hands</span><span class="rs">freedom in giving</span></li>
+        <li><span class="rn">Rich Toward God</span><span class="rs">eternal investing</span></li>
+        <li><span class="rn">Master Your Money</span><span class="rs">financial discipleship</span></li>
+        <li><span class="rn">Beyond the Tithe</span><span class="rs">extravagant giving</span></li>
+        <li><span class="rn">The Blessed Life</span><span class="rs">the joy of giving</span></li>
+        <li><span class="rn">Financial Peace</span><span class="rs">money without stress</span></li>
+        <li><span class="rn">Cheerful Givers</span><span class="rs">the giving God loves</span></li>
+      </ol>
+    </div>
+
+    <div class="collection">
+      <span class="ctag">Best Of · Flagship</span>
+      <h3>Best of Generous Living</h3>
+      <div class="csubhead">The signature line's greatest hits</div>
+      <ol class="ranklist two">
+        <li><span class="rn">Generous Living</span><span class="rs">the flagship</span></li>
+        <li><span class="rn">40 Days of Generous Living</span><span class="rs">the campaign</span></li>
+        <li><span class="rn">The Journey of Generosity</span><span class="rs">the pathway</span></li>
+        <li><span class="rn">Overflow</span><span class="rs">giving from a full heart</span></li>
+        <li><span class="rn">Living Given</span><span class="rs">a poured-out life</span></li>
+        <li><span class="rn">The Generous Church</span><span class="rs">a giving people</span></li>
+        <li><span class="rn">Blessed to Bless</span><span class="rs">generosity as purpose</span></li>
+        <li><span class="rn">First &amp; Best</span><span class="rs">giving God your finest</span></li>
+        <li><span class="rn">Held Loosely</span><span class="rs">freedom from stuff</span></li>
+        <li><span class="rn">The Grace of Giving</span><span class="rs">generosity as worship</span></li>
+      </ol>
+    </div>
+
+    <div class="collection">
+      <span class="ctag">New · Just Released</span>
+      <h3>New &amp; Trending</h3>
+      <div class="csubhead">The latest additions to the library</div>
+      <ol class="ranklist two">
+        <li><span class="rn">Catalytic Sunday</span><span class="rs">single-message edition</span></li>
+        <li><span class="rn">The 21-Day Generosity Journey</span><span class="rs">new experience</span></li>
+        <li><span class="rn">The 30-Day Generosity Journey</span><span class="rs">new journey</span></li>
+        <li><span class="rn">Family Legacy</span><span class="rs">generational giving</span></li>
+        <li><span class="rn">Radical Generosity</span><span class="rs">missional giving</span></li>
+        <li><span class="rn">Kingdom Entrepreneurs</span><span class="rs">marketplace giving</span></li>
+        <li><span class="rn">Everyday Generosity</span><span class="rs">beyond money</span></li>
+        <li><span class="rn">The Journey of Generosity</span><span class="rs">the pathway</span></li>
+        <li><span class="rn">End-of-Year Giving</span><span class="rs">year-end push</span></li>
+        <li><span class="rn">New Year, New You</span><span class="rs">fresh-start giving</span></li>
+      </ol>
+    </div>
+
+    <div class="collection">
+      <span class="ctag">Top 20 · Right-Sized</span>
+      <h3>Top 20 for Small &amp; Growing Churches</h3>
+      <div class="csubhead">High-impact and easy to run without a big team</div>
+      <ol class="ranklist two">
+        <li><span class="rn">Give</span></li>
+        <li><span class="rn">Open Hands</span></li>
+        <li><span class="rn">Enough</span></li>
+        <li><span class="rn">First</span></li>
+        <li><span class="rn">Treasure</span></li>
+        <li><span class="rn">Blessed to Bless</span></li>
+        <li><span class="rn">Cheerful Givers</span></li>
+        <li><span class="rn">The Generous Life</span></li>
+        <li><span class="rn">Gratitude &amp; Giving</span></li>
+        <li><span class="rn">Money &amp; the Heart</span></li>
+        <li><span class="rn">Sow &amp; Reap</span></li>
+        <li><span class="rn">Contentment</span></li>
+        <li><span class="rn">More Than Money</span></li>
+        <li><span class="rn">Be a Blessing</span></li>
+        <li><span class="rn">The Generosity Challenge</span></li>
+        <li><span class="rn">God Owns It All</span></li>
+        <li><span class="rn">Simple &amp; Free</span></li>
+        <li><span class="rn">Held Loosely</span></li>
+        <li><span class="rn">Trusting God with Tomorrow</span></li>
+        <li><span class="rn">Peace with Money</span></li>
+      </ol>
+    </div>
+
+    <div class="collection">
+      <span class="ctag">Pastor's Picks · Staff Favorites</span>
+      <h3>Pastor's Picks</h3>
+      <div class="csubhead">Ten our team would launch tomorrow</div>
+      <ol class="ranklist two">
+        <li><span class="rn">The Generosity Test</span><span class="rs">catalytic Sunday</span></li>
+        <li><span class="rn">You Can't Outgive God</span><span class="rs">catalytic Sunday</span></li>
+        <li><span class="rn">40 Days of Generous Living</span><span class="rs">the campaign</span></li>
+        <li><span class="rn">God Owns It All</span><span class="rs">stewardship</span></li>
+        <li><span class="rn">Enough</span><span class="rs">contentment</span></li>
+        <li><span class="rn">The Journey of Generosity</span><span class="rs">the pathway</span></li>
+        <li><span class="rn">Rich Toward God</span><span class="rs">eternal investing</span></li>
+        <li><span class="rn">The Blessed Life</span><span class="rs">the joy of giving</span></li>
+        <li><span class="rn">Beyond the Tithe</span><span class="rs">extravagant giving</span></li>
+        <li><span class="rn">Radical Generosity</span><span class="rs">world-changing giving</span></li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+<footer>
+  <p><strong>100 21-day experiences · 30 30-day journeys · 50 catalytic-Sunday messages · 5 curated collections.</strong> Together with the architecture doc, this completes the full generosity length ladder — single message → 7-day → 21-day → 30-day → 40-day → campaign → capital — plus the merchandising shelves that make the brochure feel curated and alive.</p>
+  <p>LifeTogether · Christian Intelligence™ · Generosity Ministry</p>
+</footer>
+</body>
+</html>

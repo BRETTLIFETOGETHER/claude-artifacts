@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The LifeTogether Flourishing Catalogue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f8fafc; --hero-bg:#2563eb; --hero-text:#ffffff;
+    --card:#ffffff; --ink:#0f172a; --ink-soft:#3f4a5c;
+    --accent:#2563eb; --line:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:18px;line-height:1.6;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+  h1,h2,h3,h4{font-family:'Inter',system-ui,sans-serif;font-weight:800;margin:0;line-height:1.2;color:var(--ink);}
+  button{font-family:inherit;cursor:pointer;}
+
+  .hero{background:var(--hero-bg);color:var(--hero-text);padding:40px 0 32px;text-align:center;}
+  .hero .eyebrow{font-weight:700;font-size:13px;letter-spacing:0.03em;text-transform:uppercase;opacity:0.85;display:block;margin-bottom:12px;}
+  .hero h1{font-size:30px;color:#fff;}
+  .hero .tagline{font-size:17px;margin-top:10px;opacity:0.94;font-weight:500;}
+  .stat-row{display:flex;justify-content:center;gap:10px;margin-top:22px;flex-wrap:wrap;}
+  .stat{background:rgba(255,255,255,0.16);border-radius:10px;padding:10px 14px;min-width:66px;}
+  .stat .num{font-size:19px;font-weight:800;display:block;}
+  .stat .label{font-size:11.5px;opacity:0.88;}
+
+  #home{padding:28px 0 50px;}
+  .search-row{margin-bottom:20px;}
+  #search{width:100%;padding:13px 16px;font-size:16px;border:2px solid var(--line);border-radius:10px;font-family:inherit;}
+  #search:focus{outline:none;border-color:var(--accent);}
+
+  .cat-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);
+    display:block;width:100%;text-align:left;border-left:5px solid var(--accent);
+  }
+  .cat-card:hover{border-color:var(--accent);}
+  .cat-card h3{font-size:19px;margin-bottom:4px;}
+  .cat-card .csub{font-size:15px;color:var(--accent);font-weight:600;margin-bottom:6px;}
+  .cat-card .cdesc{font-size:15px;color:var(--ink-soft);margin-bottom:10px;}
+  .cat-card .cmeta{font-size:13px;color:var(--ink-soft);font-weight:700;}
+  .cat-card .cmeta span{background:#eff6ff;color:var(--accent);border-radius:6px;padding:3px 8px;margin-right:6px;}
+
+  #detail{display:none;padding:28px 0 50px;}
+  .back-btn{
+    background:var(--card);border:2px solid var(--line);border-radius:10px;
+    padding:10px 16px;font-size:15px;font-weight:700;color:var(--accent);margin-bottom:18px;
+  }
+  .detail-head h2{font-size:26px;}
+  .detail-head .dsub{font-size:16px;color:var(--accent);font-weight:600;margin-top:6px;}
+  .detail-head .ddesc{font-size:16px;color:var(--ink-soft);margin-top:10px;}
+  .domain-block{margin-top:28px;}
+  .domain-title{
+    display:flex;align-items:center;gap:10px;margin-bottom:12px;
+    background:var(--accent);color:#fff;border-radius:10px;padding:10px 14px;
+  }
+  .domain-title .dnum{font-weight:800;font-size:14px;}
+  .domain-title h4{color:#fff;font-size:16.5px;}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:8px;cursor:pointer;}
+  .item:hover{border-color:var(--accent);}
+  .item .n{color:var(--accent);font-weight:700;font-size:13px;}
+  .item .t{font-weight:700;font-size:16px;color:var(--ink);margin-top:2px;}
+  .item .s{font-size:14.5px;color:var(--ink-soft);margin-top:2px;}
+  .item .expand-hint{font-size:12.5px;color:var(--accent);font-weight:700;margin-top:8px;}
+  .weeks{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);}
+  .weeks.open{display:block;}
+  .week-row{display:flex;gap:10px;padding:8px 0;}
+  .week-row .wb{background:var(--accent);color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;height:fit-content;white-space:nowrap;}
+  .week-row .wt{font-weight:700;font-size:14.5px;color:var(--ink);}
+  .week-row .wd{font-size:13.5px;color:var(--ink-soft);margin-top:1px;}
+
+  footer{padding:22px 0 36px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">The LifeTogether Flourishing Catalogue</span>
+    <h1 id="hero-title">Every Area, One Place</h1>
+    <p class="tagline" id="hero-tagline">Click into any area, then click any title to see its four-week series.</p>
+    <div class="stat-row" id="hero-stats"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="home">
+    <div class="search-row"><input id="search" type="text" placeholder="Search all 2,900 titles..." oninput="doSearch(this.value)"></div>
+    <div id="cat-list"></div>
+  </div>
+
+  <div id="detail">
+    <button class="back-btn" onclick="showHome()">&larr; Back to All Areas</button>
+    <div class="detail-head">
+      <h2 id="d-name"></h2>
+      <div class="dsub" id="d-sub"></div>
+      <div class="ddesc" id="d-desc"></div>
+    </div>
+    <div id="d-domains"></div>
+  </div>
+</div>
+
+<footer>THE LIFETOGETHER FLOURISHING CATALOGUE &middot; <span id="foot-total"></span> TITLES ACROSS <span id="foot-cats"></span> AREAS</footer>
+
+<script>
+const CATALOGS = __DATA__;
+
+const WEEKS = [
+  {t:"Week 1 \u00b7 See It Clearly", d:"Discover the vision for this area and assess honestly where you actually stand today."},
+  {t:"Week 2 \u00b7 Understand the Root", d:"Address the beliefs, patterns, and motivations underneath the surface behavior."},
+  {t:"Week 3 \u00b7 Build the Practice", d:"Establish the specific habits and rhythms that support real, lasting change."},
+  {t:"Week 4 \u00b7 Live It Forward", d:"Strengthen it in community and commit to a plan for continued growth."}
+];
+
+function init(){
+  const totalTitles = CATALOGS.reduce((a,c)=>a+c.count,0);
+  document.getElementById('hero-stats').innerHTML = `
+    <div class="stat"><span class="num">${CATALOGS.length}</span><span class="label">Areas</span></div>
+    <div class="stat"><span class="num">${totalTitles.toLocaleString()}</span><span class="label">Titles</span></div>
+  `;
+  document.getElementById('foot-total').textContent = totalTitles.toLocaleString();
+  document.getElementById('foot-cats').textContent = CATALOGS.length;
+  renderList(CATALOGS);
+}
+
+function renderList(list){
+  const el = document.getElementById('cat-list');
+  el.innerHTML = list.map(c => `
+    <button class="cat-card" onclick="openCatalog('${c.id}')">
+      <h3>${c.name}</h3>
+      <div class="csub">${c.subtitle}</div>
+      <div class="cdesc">${c.description}</div>
+      <div class="cmeta"><span>${c.count} titles</span><span>${c.domains.length} domains</span></div>
+    </button>
+  `).join('');
+}
+
+function openCatalog(id){
+  const c = CATALOGS.find(x => x.id === id);
+  if(!c) return;
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('detail').style.display = 'block';
+  document.getElementById('d-name').textContent = c.name;
+  document.getElementById('d-sub').textContent = c.subtitle;
+  document.getElementById('d-desc').textContent = c.description;
+  const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"];
+  document.getElementById('d-domains').innerHTML = c.domains.map((d,i) => `
+    <div class="domain-block">
+      <div class="domain-title"><span class="dnum">${roman[i] || (i+1)}</span><h4>${d.name}</h4></div>
+      ${d.items.map((it,j) => {
+        const num = (i>0 ? c.domains.slice(0,i).reduce((a,dd)=>a+dd.items.length,0) : 0) + j + 1;
+        const wid = `w-${i}-${j}`;
+        return `
+        <div class="item" onclick="toggleWeeks('${wid}')">
+          <div class="n">${num}</div>
+          <div class="t">${it[0]}</div>
+          <div class="s">${it[1]}</div>
+          <div class="expand-hint">View four-week series &darr;</div>
+          <div class="weeks" id="${wid}">
+            ${WEEKS.map(w => `<div class="week-row"><span class="wb">${w.t.split(' \u00b7 ')[0]}</span><div><div class="wt">${w.t.split(' \u00b7 ')[1]}</div><div class="wd">${w.d}</div></div></div>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('');
+  window.scrollTo(0,0);
+}
+
+function toggleWeeks(id){
+  event.stopPropagation();
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function showHome(){
+  document.getElementById('detail').style.display = 'none';
+  document.getElementById('home').style.display = 'block';
+  document.getElementById('search').value = '';
+  renderList(CATALOGS);
+  window.scrollTo(0,0);
+}
+
+function doSearch(q){
+  q = q.trim().toLowerCase();
+  if(!q){ renderList(CATALOGS); return; }
+  const matches = CATALOGS.map(c => {
+    const hitCount = c.domains.reduce((a,d)=>a+d.items.filter(it=>it[0].toLowerCase().includes(q)||it[1].toLowerCase().includes(q)).length,0);
+    return {c, hitCount};
+  }).filter(x => x.hitCount>0 || x.c.name.toLowerCase().includes(q));
+  const el = document.getElementById('cat-list');
+  if(matches.length===0){ el.innerHTML = '<p style="color:#3f4a5c;padding:20px 0;">No matches.</p>'; return; }
+  el.innerHTML = matches.map(({c,hitCount}) => `
+    <button class="cat-card" onclick="openCatalog('${c.id}')">
+      <h3>${c.name}</h3>
+      <div class="csub">${c.subtitle}</div>
+      <div class="cmeta"><span>${hitCount>0 ? hitCount+' matching titles' : c.count+' titles'}</span></div>
+    </button>
+  `).join('');
+}
+
+init();
+</script>
+
+</body>
+</html>

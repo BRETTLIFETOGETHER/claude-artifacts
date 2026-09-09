@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palacios Art House — The Felt Need Tool Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=Karla:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#2C1A26; --vine:#1F3A31; --clay:#9E4A34; --rose:#6E3244;
+    --linen:#F0E7DB; --gold:#E3A64B; --ink:#2A1820; --warm:#F3E9DC;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#1a1016;}
+  body{font-family:'Karla',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+
+  .panel{
+    width:11in;height:8.5in;
+    padding:0.62in 0.85in 1.0in;
+    position:relative;overflow:hidden;
+    margin:0 auto 26px;display:block;
+    page-break-after:always;break-after:page;
+  }
+  .panel:last-child{page-break-after:auto;break-after:auto;}
+
+  .d{background:var(--plum);color:var(--warm);}
+  .v{background:var(--vine);color:var(--warm);}
+  .c{background:var(--clay);color:#FBF1E6;}
+  .r{background:var(--rose);color:#FBEFE6;}
+  .l{background:var(--linen);color:var(--ink);}
+  .d .ac,.v .ac,.r .ac{color:var(--gold);}
+  .c .ac{color:#FFE0AE;}
+  .l .ac{color:var(--clay);}
+
+  .num{
+    position:absolute;top:0.38in;right:0.66in;
+    font-family:'Fraunces',Georgia,serif;font-weight:300;
+    font-size:5.2rem;line-height:1;opacity:.13;letter-spacing:-.03em;
+  }
+  .eyebrow{font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;font-weight:700;opacity:.82;margin:0 0 .4rem;}
+  .rule{width:2.1in;height:2px;background:currentColor;opacity:.5;margin:0 0 .85rem;}
+  h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:2.35rem;line-height:1.06;letter-spacing:-.015em;margin:0 0 .7rem;}
+  h2{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1.02rem;line-height:1.18;margin:0 0 .12rem;}
+  h2 .need{display:block;font-family:'Karla',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;opacity:.72;margin-bottom:.3rem;}
+  p{font-size:.875rem;line-height:1.6;margin:0 0 .75rem;max-width:34em;}
+  .lead{font-size:1rem;line-height:1.55;}
+  .small{font-size:.78rem;line-height:1.5;}
+  .foot{
+    position:absolute;left:.85in;right:.85in;bottom:.46in;
+    border-top:1px solid currentColor;opacity:.42;padding-top:.26rem;
+    display:flex;justify-content:space-between;
+    font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  }
+  .cols{display:flex;gap:.6in;align-items:flex-start;}
+  .col{flex:1;min-width:0;}
+  .col-wide{flex:1.45;}
+  .col-narrow{flex:.85;}
+  .accentbar{border-left:3px solid currentColor;padding-left:.9rem;}
+  .grid2{display:flex;gap:.55in;}
+  .grid2 .col{flex:1;}
+  .grid3{display:flex;gap:.5in;}
+  .grid3 .col{flex:1;}
+  .tag{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.78;margin:0 0 .45rem;}
+  .quote{font-family:'Fraunces',Georgia,serif;font-weight:300;font-style:italic;font-size:1.22rem;line-height:1.35;max-width:27em;}
+
+  .said{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:300;font-size:.88rem;line-height:1.35;margin:0 0 .6rem;opacity:.92;}
+  .tools{margin:0;padding:0;list-style:none;}
+  .tools li{
+    display:flex;gap:.5rem;padding:.3rem 0;
+    border-bottom:1px solid rgba(255,255,255,.16);
+    font-size:.755rem;line-height:1.38;
+  }
+  .l .tools li{border-color:rgba(42,24,32,.16);}
+  .tools li:first-child{border-top:1px solid rgba(255,255,255,.16);}
+  .l .tools li:first-child{border-color:rgba(42,24,32,.16);}
+  .tools .n{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:.72rem;opacity:.58;flex:0 0 1.15rem;padding-top:.06rem;}
+  .tools strong{font-weight:700;}
+  .tools em{font-style:normal;opacity:.86;}
+
+  .stack > div{padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:.78rem;line-height:1.42;}
+  .stack > div:first-child{border-top:1px solid rgba(255,255,255,.2);}
+  .l .stack > div{border-color:rgba(42,24,32,.2);}
+  .row{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;}
+
+  .cover{display:flex;flex-direction:column;justify-content:center;}
+  .cover h1{font-size:3.8rem;line-height:.99;font-weight:400;margin-bottom:1rem;}
+  .cover .kicker{font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;margin-bottom:1.4rem;}
+  .brushline{height:3px;background:linear-gradient(90deg,var(--gold) 0%,var(--clay) 42%,var(--rose) 72%,transparent 100%);margin:1.2rem 0;width:6.4in;}
+
+  @page{size:11in 8.5in;margin:0;}
+  @media print{ body{background:#fff;} .panel{margin:0;box-shadow:none;} }
+  @media screen{ .panel{box-shadow:0 14px 44px rgba(0,0,0,.45);} }
+  @media (max-width:1140px){
+    .panel{width:auto;max-width:760px;height:auto;min-height:0;padding:2.3rem 1.4rem 3.4rem;}
+    .cols,.grid2,.grid3{flex-direction:column;gap:1.4rem;}
+    .num{font-size:3.2rem;top:.9rem;right:1.1rem;}
+    h1{font-size:1.9rem;}
+    .cover h1{font-size:2.45rem;}
+    .foot{left:1.4rem;right:1.4rem;bottom:1.3rem;font-size:.54rem;}
+    .brushline{width:100%;}
+    p{max-width:none;}
+    .tools li{font-size:.8rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 1 COVER -->
+<section class="panel d cover">
+  <div class="kicker ac">Palacios Art House · Volume Three · Concept</div>
+  <h1>The Felt Need<br>Tool Library</h1>
+  <div class="brushline"></div>
+  <p class="lead" style="max-width:30em;">Fifty tools, organized by what a person is actually carrying when she walks in the door.</p>
+  <p class="small" style="margin-top:1.4rem;opacity:.82;max-width:30em;">Ten need clusters, five tools each. Every one of them plays to the same pair of strengths: Kim's ability to put a brush in a nervous hand, and John's ability to take a color, a symbol, and a hard year and tie them to Scripture in four minutes. Nobody buys a tool. They buy relief, freedom, direction, or a way to hand something down — and these are the fifty doors into that.</p>
+  <div class="foot"><span>Palacios Art House · McMinnville, Oregon</span><span>50 Tools · 10 Felt Needs</span></div>
+</section>
+
+<!-- 2 HOW IT WORKS -->
+<section class="panel l">
+  <div class="num">02</div>
+  <p class="eyebrow ac">The Architecture</p>
+  <div class="rule"></div>
+  <h1>She names the need.<br>The tool <span class="ac">meets her there.</span></h1>
+  <div class="cols">
+    <div class="col col-wide">
+      <p>A theme is a title. A tool is a thing a person uses — an assessment, a card deck, a planner, a script, a map, a brief, a kit. The difference matters commercially: a theme has to be explained and sold, while a tool can be handed over, downloaded, taught, licensed, or built into a commission conversation. Fifty themes would be a list. Fifty tools is inventory.</p>
+      <p>Each cluster below begins with a sentence a real person actually says out loud — <em>I'm so tired I can't think, I don't know what's next, I want to leave them something that matters</em> — and the five tools are the answer to that sentence. That's why they'll sell. Nobody wakes up wanting an art experience. They wake up carrying something.</p>
+      <p>The ten clusters also do a second job: they give the Felt Need Finder its six-to-ten result bands, they give the website its navigation, and they give Lindsey a way to route an inquiry in under a minute. One architecture, three uses.</p>
+    </div>
+    <div class="col col-narrow accentbar">
+      <p class="tag ac">The ten clusters</p>
+      <div class="stack small">
+        <div><strong>01</strong> Rest &amp; Renewal</div>
+        <div><strong>02</strong> Freedom &amp; Perfectionism</div>
+        <div><strong>03</strong> Grief &amp; Loss</div>
+        <div><strong>04</strong> Direction &amp; Discernment</div>
+        <div><strong>05</strong> Identity &amp; Belovedness</div>
+        <div><strong>06</strong> Marriage &amp; Couples</div>
+        <div><strong>07</strong> Family &amp; Legacy</div>
+        <div><strong>08</strong> Church &amp; Worship</div>
+        <div><strong>09</strong> Leaders &amp; Burnout</div>
+        <div><strong>10</strong> Artists &amp; Calling</div>
+      </div>
+      <p class="small" style="margin-top:.55rem;opacity:.85;">10 clusters × 5 tools = <strong>50 tools.</strong> Eight of the twelve in Volume Two appear here in their home cluster; four are business tools rather than guest tools and stay in that document.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>How the Library Works</span></div>
+</section>
+
+<!-- 3 CLUSTERS 1-2 -->
+<section class="panel v">
+  <div class="num">03</div>
+  <p class="eyebrow ac">Clusters One &amp; Two · Tools 1–10</p>
+  <div class="rule"></div>
+  <h1>Rest, and the <span class="ac">Freedom</span><br>to Make Something Badly</h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Cluster One · Rest &amp; Renewal</span>"I'm so tired I can't think straight."</h2>
+      <ul class="tools">
+        <li><span class="n ac">01</span><span><strong>The Margin Map.</strong> <em>Where the week's energy actually goes — audited in color blocks instead of a spreadsheet, so she can see it rather than defend it.</em></span></li>
+        <li><span class="n ac">02</span><span><strong>Breathe Again 10-Day Journal.</strong> <em>Ten days of Scripture, slow looking, and low-pressure color work for a woman who has forgotten how to stop.</em></span></li>
+        <li><span class="n ac">03</span><span><strong>Still Waters Prompt Deck.</strong> <em>Thirty cards, each pairing a psalm with a five-minute painting exercise. Kim's warmups, made portable.</em></span></li>
+        <li><span class="n ac">04</span><span><strong>The Sabbath Palette.</strong> <em>One color chosen and sat with for a week — a beginner's contemplative practice that needs no talent and no time.</em></span></li>
+        <li><span class="n ac">05</span><span><strong>Permission Slip.</strong> <em>A printed blessing from John naming what she is allowed to set down this season. Free, framable, and the most shareable thing on this page.</em></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Cluster Two · Freedom &amp; Perfectionism</span>"I'm not creative. I'd ruin it."</h2>
+      <ul class="tools">
+        <li><span class="n ac">06</span><span><strong>Created Free 10-Day Journal.</strong> <em>Ten days out of comparison and self-editing into play and grace. The flagship for everyone who says they can't draw.</em></span></li>
+        <li><span class="n ac">07</span><span><strong>The Ruined Page Exercise.</strong> <em>Mark the canvas on purpose in the first sixty seconds. Kim's single most effective move, written down at last.</em></span></li>
+        <li><span class="n ac">08</span><span><strong>Inner Critic Portrait.</strong> <em>Name the voice, give it a shape and a color, then paint over it — and let John say what Scripture says about it.</em></span></li>
+        <li><span class="n ac">09</span><span><strong>The Good Enough Rubric.</strong> <em>A one-page redefinition of "finished" for people who cannot stop fixing things, at an easel or anywhere else.</em></span></li>
+        <li><span class="n ac">10</span><span><strong>Play First Warmups.</strong> <em>Twelve two-minute exercises that get hands moving before the brain has time to object. The opening of every experience you host.</em></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Rest · Freedom</span></div>
+</section>
+
+<!-- 4 CLUSTERS 3-4 -->
+<section class="panel c">
+  <div class="num">04</div>
+  <p class="eyebrow ac">Clusters Three &amp; Four · Tools 11–20</p>
+  <div class="rule"></div>
+  <h1>What She's Grieving,<br>and What's <span class="ac">Next</span></h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Cluster Three · Grief &amp; Loss</span>"I don't have words for this anymore."</h2>
+      <ul class="tools">
+        <li><span class="n ac">11</span><span><strong>Beauty from Brokenness Reflection Guide.</strong> <em>A gentle creative path through grief, transition, and the slow return of hope. Written for the second year, not the first month.</em></span></li>
+        <li><span class="n ac">12</span><span><strong>The Remembrance Piece Planner.</strong> <em>She brings a photograph, an object, a phrase. It becomes a memorial painting — and, often, a commission.</em></span></li>
+        <li><span class="n ac">13</span><span><strong>Grief in Color Wheel.</strong> <em>A vocabulary for naming what she feels when language has failed. Point at the color; John does the rest.</em></span></li>
+        <li><span class="n ac">14</span><span><strong>The Empty Chair Blessing.</strong> <em>A short family liturgy and painted marker for the first Christmas or birthday without someone.</em></span></li>
+        <li><span class="n ac">15</span><span><strong>Kintsugi Canvas Practice.</strong> <em>Gold worked into the break rather than over it — a hands-on theology of repair that people remember for years.</em></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Cluster Four · Direction &amp; Discernment</span>"I don't know what season I'm in."</h2>
+      <ul class="tools">
+        <li><span class="n ac">16</span><span><strong>My Word for This Season Tool.</strong> <em>Naming what God appears to be forming. Becomes the painting's title and the reason she returns next January.</em></span></li>
+        <li><span class="n ac">17</span><span><strong>Sacred Seasons Assessment.</strong> <em>Twelve questions locating her among six spiritual seasons, each with its own theme, prompt, and recommended experience.</em></span></li>
+        <li><span class="n ac">18</span><span><strong>The Doorway Prompt.</strong> <em>Paint the room being left and the door being faced. The most requested exercise you will ever run for women in transition.</em></span></li>
+        <li><span class="n ac">19</span><span><strong>Two Roads Discernment Guide.</strong> <em>Scripture, listening, wise counsel, and a visual weighing of a real decision — for someone genuinely stuck between options.</em></span></li>
+        <li><span class="n ac">20</span><span><strong>21 Days of Sacred Seasons.</strong> <em>The long-form journey, with daily video from Kim and John, for people who want more than an afternoon.</em></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Grief · Direction</span></div>
+</section>
+
+<!-- 5 CLUSTERS 5-6 -->
+<section class="panel l">
+  <div class="num">05</div>
+  <p class="eyebrow ac">Clusters Five &amp; Six · Tools 21–30</p>
+  <div class="rule"></div>
+  <h1>Who She Is, and<br>Who <span class="ac">They Are Together</span></h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Cluster Five · Identity &amp; Belovedness</span>"I've been everyone's everything for twenty years."</h2>
+      <ul class="tools">
+        <li><span class="n ac">21</span><span><strong>Known by Name Guide.</strong> <em>The names God gives — chosen, beloved, called, kept. She picks one and paints it into something she'll hang where she'll see it.</em></span></li>
+        <li><span class="n ac">22</span><span><strong>Beloved: A Self-Portrait Without a Face.</strong> <em>Identity in symbol and color rather than likeness, which is the only way most women will attempt this at all.</em></span></li>
+        <li><span class="n ac">23</span><span><strong>The Labels Exercise.</strong> <em>Write what she has been called. Then cover it — deliberately, with color, while John reads what is true instead.</em></span></li>
+        <li><span class="n ac">24</span><span><strong>A Crown of Beauty Retreat Kit.</strong> <em>A half-day women's ministry retreat built on Isaiah 61, runnable by a church without either of you present.</em></span></li>
+        <li><span class="n ac">25</span><span><strong>Her Story in Color Timeline.</strong> <em>A life with God mapped across one long canvas — the deepest work in the library and the best full-day retreat.</em></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Cluster Six · Marriage &amp; Couples</span>"We want something better than another dinner out."</h2>
+      <ul class="tools">
+        <li><span class="n ac">26</span><span><strong>The Art of Us Conversation Cards.</strong> <em>Thirty questions to work through at the easel — the ones couples never get to across a restaurant table.</em></span></li>
+        <li><span class="n ac">27</span><span><strong>Canvas &amp; Covenant Anniversary Guide.</strong> <em>Revisit the vows, name what has been kept, and paint one shared piece. The strongest couples offer you have.</em></span></li>
+        <li><span class="n ac">28</span><span><strong>Two Palettes, One Painting.</strong> <em>An exercise in creative compromise that surfaces exactly how a couple negotiates — usually within ten minutes, usually with laughter.</em></span></li>
+        <li><span class="n ac">29</span><span><strong>Grace in the Gaps Repair Guide.</strong> <em>For a couple working back from conflict. Handle with care and pastoral judgment; this one needs John in the room.</em></span></li>
+        <li><span class="n ac">30</span><span><strong>The Home as Sanctuary Blessing.</strong> <em>A piece for the entryway, paired with a written house blessing. Sells well as a wedding and new-home commission.</em></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Identity · Marriage</span></div>
+</section>
+
+<!-- 6 CLUSTERS 7-8 -->
+<section class="panel r">
+  <div class="num">06</div>
+  <p class="eyebrow ac">Clusters Seven &amp; Eight · Tools 31–40</p>
+  <div class="rule"></div>
+  <h1>What Gets <span class="ac">Handed Down</span>,<br>and What the Church Sees</h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Cluster Seven · Family &amp; Legacy</span>"We want to leave them more than money."</h2>
+      <ul class="tools">
+        <li><span class="n ac">31</span><span><strong>Legacy in Color Family Guide.</strong> <em>Values, Scriptures, stories, and symbols named on purpose and gathered into one piece. The front end of most large commissions.</em></span></li>
+        <li><span class="n ac">32</span><span><strong>Family Values Symbol Map.</strong> <em>Five values, five symbols, one visual language a family can actually use — at the table and on the wall.</em></span></li>
+        <li><span class="n ac">33</span><span><strong>Family Blessing Art Guide.</strong> <em>A written blessing for each child or grandchild, painted as companion pieces. Ninety minutes of work, fifty years of shelf life.</em></span></li>
+        <li><span class="n ac">34</span><span><strong>The Story Behind the Piece Interview.</strong> <em>Captured in the family's own words so the artwork carries its meaning to people who weren't in the room.</em></span></li>
+        <li><span class="n ac">35</span><span><strong>Grandparent's Verse Commission Brief.</strong> <em>One Scripture per grandchild, one small original each. The most repeatable premium commission in the catalog.</em></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Cluster Eight · Church &amp; Worship</span>"We want people to see it, not just hear it."</h2>
+      <ul class="tools">
+        <li><span class="n ac">36</span><span><strong>Live Sermon Art Planning Guide.</strong> <em>Sightlines, lighting, timing, and what happens to the original — every logistical objection answered before it's raised.</em></span></li>
+        <li><span class="n ac">37</span><span><strong>The Word Made Visible Series Kit.</strong> <em>A four-week sermon series with a live canvas each week and a finished piece unveiled on the fourth Sunday.</em></span></li>
+        <li><span class="n ac">38</span><span><strong>Advent &amp; Lent Painted Liturgy.</strong> <em>A congregational visual arc across a season — the offer to bring a church in September, not January.</em></span></li>
+        <li><span class="n ac">39</span><span><strong>Art as Worship Retreat Kit.</strong> <em>A women's ministry runs it themselves, licensed, in a state neither of you has visited. This is how the ministry scales.</em></span></li>
+        <li><span class="n ac">40</span><span><strong>Campaign Art Commission Brief.</strong> <em>One original image carrying a churchwide campaign across banners, screens, and print for six weeks.</em></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Legacy · Church</span></div>
+</section>
+
+<!-- 7 CLUSTERS 9-10 -->
+<section class="panel v">
+  <div class="num">07</div>
+  <p class="eyebrow ac">Clusters Nine &amp; Ten · Tools 41–50</p>
+  <div class="rule"></div>
+  <h1>The People Who <span class="ac">Pour Out</span>,<br>and the People Who Make</h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Cluster Nine · Leaders &amp; Burnout</span>"I don't remember the last thing I did for joy."</h2>
+      <ul class="tools">
+        <li><span class="n ac">41</span><span><strong>Creative Sabbath Day Plan.</strong> <em>A structured day for a leader who genuinely does not know how to rest without a task list. Structure is the mercy here.</em></span></li>
+        <li><span class="n ac">42</span><span><strong>The Output Detox.</strong> <em>One day making something with no audience, no purpose, and nothing to publish. Harder than it sounds and worth every dollar.</em></span></li>
+        <li><span class="n ac">43</span><span><strong>Pastor's Wife Private Retreat Guide.</strong> <em>The one room where she is not asked to lead, host, or perform. John's thirty years is what makes this credible.</em></span></li>
+        <li><span class="n ac">44</span><span><strong>Ministry Leader Soul Audit.</strong> <em>A short assessment across presence, imagination, joy, and margin, with a recommended experience for each result.</em></span></li>
+        <li><span class="n ac">45</span><span><strong>Executive Reset Half-Day.</strong> <em>Premium, private, and built for someone who lives entirely in his head. Frequently becomes the commission client.</em></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Cluster Ten · Artists &amp; Calling</span>"I think I'm supposed to make things. I don't know how to start."</h2>
+      <ul class="tools">
+        <li><span class="n ac">46</span><span><strong>Christian Artist Calling Workbook.</strong> <em>Voice, audience, calling, and the fear underneath all three. The entry point to the mentoring pathway.</em></span></li>
+        <li><span class="n ac">47</span><span><strong>Voice &amp; Vocabulary Finder.</strong> <em>Identifying an artist's actual signature — subject, palette, mark, and message — instead of chasing whatever is selling.</em></span></li>
+        <li><span class="n ac">48</span><span><strong>Pricing &amp; Commission Playbook.</strong> <em>What to charge, how to structure deposits and revisions, and how to talk about money without apologizing.</em></span></li>
+        <li><span class="n ac">49</span><span><strong>Originals to Prints Roadmap.</strong> <em>Scanning, editions, margins, and fulfillment — the practical path from one painting to recurring income.</em></span></li>
+        <li><span class="n ac">50</span><span><strong>The Honest AI Guide for Working Artists.</strong> <em>Where these tools help, where they cross a line, and how to say so publicly. Almost nobody credible is writing this yet.</em></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Leaders · Artists</span></div>
+</section>
+
+<!-- 8 BUILD ORDER -->
+<section class="panel l">
+  <div class="num">08</div>
+  <p class="eyebrow ac">What To Build Out Of Fifty</p>
+  <div class="rule"></div>
+  <h1>Six tools carry<br><span class="ac">the first year.</span></h1>
+  <div class="cols">
+    <div class="col col-wide">
+      <p>Fifty tools is a library, not a to-do list. Built at a realistic pace — one small tool a month alongside actual painting, hosting, and living — this is four years of production, and that's fine. Libraries are supposed to fill slowly. What matters is that the first six are the right six.</p>
+      <p>These are the ones that either bring people in, prove the method, or open the highest-value conversation. Everything else can wait for a guest to ask for it, which is a far better brief than any planning session.</p>
+      <p>One discipline worth holding: never build a tool you haven't already run live at least twice. The good ones are already happening in your studio — the question Kim asks when someone freezes, the thing John says before the first brushstroke. Write down what works. Don't invent what might.</p>
+    </div>
+    <div class="col col-narrow accentbar">
+      <p class="tag ac">Build these six first</p>
+      <div class="stack small">
+        <div class="row"><span><strong>17</strong> Sacred Seasons Assessment</span><span class="ac">Attract</span></div>
+        <div class="row"><span><strong>05</strong> Permission Slip</span><span class="ac">Attract</span></div>
+        <div class="row"><span><strong>10</strong> Play First Warmups</span><span class="ac">Deliver</span></div>
+        <div class="row"><span><strong>18</strong> The Doorway Prompt</span><span class="ac">Deliver</span></div>
+        <div class="row"><span><strong>31</strong> Legacy in Color Guide</span><span class="ac">Extend</span></div>
+        <div class="row"><span><strong>36</strong> Live Sermon Art Guide</span><span class="ac">Sell</span></div>
+      </div>
+      <p class="small" style="margin-top:.55rem;opacity:.85;">Two that gather names, two that make the afternoon work, one that opens a commission, one that books a church.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Build Order</span></div>
+</section>
+
+<!-- 9 CLOSE -->
+<section class="panel d cover">
+  <p class="eyebrow ac">The Point Of All Fifty</p>
+  <div class="rule"></div>
+  <h1 style="font-size:2.9rem;font-weight:500;">Meet the need.<br>The <span class="ac">art follows.</span></h1>
+  <div class="brushline"></div>
+  <p class="lead" style="max-width:31em;">Every tool here starts with something a person is already carrying and ends with something she can hold. That order is the whole business. Reverse it — lead with the painting, the technique, the class — and you are competing with every art studio in Oregon on price.</p>
+  <p class="small" style="max-width:31em;opacity:.85;margin-top:1.2rem;">Ten clusters, fifty tools, one method: Kim gets the brush into a nervous hand, John ties the color to something true, and the guest goes home with a piece she can point at for the rest of her life. The library is just that method, written down fifty different ways for fifty different people.</p>
+  <div class="foot"><span>Palacios Art House · McMinnville, Oregon</span><span>10 Clusters · 5 Tools Each · 50 Total</span></div>
+</section>
+
+</body>
+</html>

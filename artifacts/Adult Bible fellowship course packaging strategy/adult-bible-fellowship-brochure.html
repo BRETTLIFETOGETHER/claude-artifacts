@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Adult Bible Fellowship Library — LifeTogether Ministries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEE7D6;
+    --paper-deep:#E6DEC9;
+    --card:#F6F1E3;
+    --ink:#211F1B;
+    --ink-soft:#4A463D;
+    --line: rgba(33,31,27,0.14);
+    --cover:#1B2430;
+    --cover-soft:#2B3646;
+    --felt:#8C3B3B;
+    --felt-soft:#F1E0DC;
+    --formation:#2F5D50;
+    --formation-soft:#DFE9E1;
+    --brass:#A8823D;
+    --brass-deep:#8A6A2E;
+    --radius:2px;
+    --serif-display:'Fraunces', serif;
+    --serif-body:'Source Serif 4', serif;
+    --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--serif-body); font-size:17px; line-height:1.6;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--brass); color:var(--card);}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(238,231,214,0.92); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1080px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .brand{font-family:var(--sans); font-weight:700; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;}
+  .brand span{color:var(--brass-deep);}
+  .navlinks{display:flex; gap:22px; flex-wrap:wrap; font-family:var(--sans); font-size:13px; font-weight:500;}
+  .navlinks a{text-decoration:none; color:var(--ink-soft); border-bottom:1px solid transparent; padding-bottom:2px;}
+  .navlinks a:hover, .navlinks a:focus-visible{color:var(--ink); border-color:var(--brass);}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    background:var(--cover); color:#EFE7D3; padding:88px 24px 72px;
+    border-bottom:6px solid var(--brass);
+  }
+  .hero-inner{max-width:1080px; margin:0 auto;}
+  .eyebrow{
+    font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--brass); margin:0 0 18px;
+  }
+  header.hero .eyebrow{color:#D8B876;}
+  h1.title{
+    font-family:var(--serif-display); font-weight:600; font-size:clamp(38px,6vw,64px);
+    line-height:1.04; margin:0 0 22px; max-width:14ch;
+  }
+  .hero p.lede{
+    font-family:var(--serif-body); font-size:19px; max-width:58ch; color:#DED4B9; margin:0 0 28px;
+  }
+  .hero-meta{display:flex; gap:28px; flex-wrap:wrap; font-family:var(--sans); font-size:13px; color:#B9AE8E;}
+  .hero-meta b{color:#EFE7D3; font-weight:600;}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{max-width:1080px; margin:0 auto; padding:76px 24px;}
+  section + section{border-top:1px solid var(--line);}
+  .chapter{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:8px;
+  }
+  .chapter-num{
+    font-family:var(--serif-display); font-style:italic; font-size:15px; color:var(--brass-deep);
+  }
+  h2.head{
+    font-family:var(--serif-display); font-weight:600; font-size:clamp(28px,4vw,40px);
+    margin:0 0 18px;
+  }
+  p.intro{max-width:66ch; color:var(--ink-soft); font-size:17px; margin:0 0 40px;}
+
+  /* ---------- FRAMEWORK CARDS ---------- */
+  .track-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:720px){ .track-grid{grid-template-columns:1fr;} }
+  .track-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px 26px; border-top:4px solid var(--felt);
+  }
+  .track-card.formation{border-top-color:var(--formation);}
+  .track-card h3{font-family:var(--serif-display); font-size:22px; margin:0 0 6px; font-weight:600;}
+  .track-card .tagline{font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--felt); margin:0 0 14px;}
+  .track-card.formation .tagline{color:var(--formation);}
+  .track-card p{margin:0; color:var(--ink-soft); font-size:15.5px;}
+  .spec-line{
+    margin-top:26px; padding-top:20px; border-top:1px dashed var(--line);
+    font-family:var(--sans); font-size:13.5px; color:var(--ink-soft);
+  }
+  .spec-line b{color:var(--ink);}
+
+  /* ---------- TAGS ---------- */
+  .tag{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--sans); font-size:13px; font-weight:500;
+    padding:6px 12px; border-radius:20px; margin:4px 6px 4px 0;
+    background:var(--felt-soft); color:var(--felt); text-decoration:none; border:1px solid transparent;
+  }
+  .tag:hover, .tag:focus-visible{border-color:var(--felt);}
+  .tag.formation{background:var(--formation-soft); color:var(--formation);}
+  .tag.formation:hover{border-color:var(--formation);}
+  .tag-row{margin:6px 0 0;}
+
+  /* ---------- AFFINITY CARDS ---------- */
+  .affinity-card{
+    background:var(--card); border:1px solid var(--line); margin-bottom:26px; border-radius:var(--radius);
+    padding:30px 30px 26px; position:relative;
+  }
+  .affinity-head{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:flex-start; margin-bottom:6px;}
+  .affinity-stage{font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:0.09em; text-transform:uppercase; color:var(--brass-deep);}
+  .affinity-flagship{font-family:var(--serif-display); font-size:24px; font-weight:600; margin:6px 0 2px;}
+  .affinity-sub{font-family:var(--serif-body); font-style:italic; color:var(--ink-soft); font-size:15.5px; margin:0 0 20px;}
+  .ledger{
+    display:grid; grid-template-columns:1fr 22px 1fr; gap:0; align-items:start;
+  }
+  @media (max-width:720px){ .ledger{grid-template-columns:1fr;} .stitch{display:none;} }
+  .ledger-col h4{
+    font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    margin:0 0 10px; color:var(--felt);
+  }
+  .ledger-col.formation h4{color:var(--formation);}
+  .stitch{
+    height:100%; min-height:60px; width:22px; display:flex; justify-content:center;
+  }
+  .stitch::before{
+    content:""; width:0; border-left:2px dashed var(--brass); opacity:0.7;
+  }
+
+  /* ---------- FORMATION / FELT NEED CLUSTERS ---------- */
+  .cluster{margin-bottom:34px;}
+  .cluster-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:4px;}
+  .cluster-head h3{font-family:var(--serif-display); font-size:20px; font-weight:600; margin:0;}
+  .cluster-count{font-family:var(--sans); font-size:12px; color:var(--ink-soft);}
+  .cluster p.note{font-family:var(--sans); font-size:13.5px; color:var(--ink-soft); margin:2px 0 12px;}
+
+  /* ---------- EXTENDED TOPIC TABLE ---------- */
+  .topic-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 24px;}
+  @media (max-width:720px){ .topic-grid{grid-template-columns:1fr;} }
+  .topic-row{padding:14px 0; border-bottom:1px solid var(--line);}
+  .topic-row .lead{font-family:var(--serif-display); font-weight:600; font-size:16.5px;}
+  .topic-row .sub{font-family:var(--serif-body); font-style:italic; font-size:14px; color:var(--ink-soft);}
+  .topic-row .of10{font-family:var(--sans); font-size:11.5px; color:var(--brass-deep); margin-top:4px;}
+
+  /* ---------- FORMAT SECTION ---------- */
+  .format-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media (max-width:820px){ .format-grid{grid-template-columns:1fr;} }
+  .format-card{background:var(--card); border:1px solid var(--line); padding:24px 22px; border-radius:var(--radius);}
+  .format-card .step{font-family:var(--serif-display); font-style:italic; color:var(--brass-deep); font-size:14px;}
+  .format-card h4{font-family:var(--serif-display); font-size:19px; margin:6px 0 8px; font-weight:600;}
+  .format-card p{color:var(--ink-soft); font-size:14.5px; margin:0;}
+  .name-strip{
+    margin-top:36px; padding:22px 26px; background:var(--cover); color:#EFE7D3; border-radius:var(--radius);
+    display:flex; gap:26px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  }
+  .name-strip .names{font-family:var(--sans); font-size:13px; color:#C9BE9F;}
+  .name-strip .names b{color:#EFE7D3;}
+  .closing-line{font-family:var(--serif-display); font-style:italic; font-size:17px;}
+
+  footer{
+    background:var(--cover-soft); color:#CDC3A4; padding:40px 24px; text-align:center;
+    font-family:var(--sans); font-size:13px;
+  }
+  footer b{color:#EFE7D3;}
+  .backtop{display:block; margin-top:10px; color:#D8B876; text-decoration:none; font-size:12px;}
+
+  .pair-link{font-family:var(--sans); font-size:12.5px; color:var(--brass-deep); text-decoration:none; border-bottom:1px dotted var(--brass-deep);}
+  .pair-link:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand">LifeTogether <span>· Adult Bible Fellowship</span></div>
+    <div class="navlinks">
+      <a href="#framework">Framework</a>
+      <a href="#affinities">Affinity Groups</a>
+      <a href="#formation">Formation Track</a>
+      <a href="#feltneed">Felt-Need Track</a>
+      <a href="#format">Format</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">The Adult Bible Fellowship Library</p>
+    <h1 class="title">Where Sunday Morning Becomes a Daily Journey</h1>
+    <p class="lede">Churches organize adult community around life stage almost as much as they organize it around Bible books. This library serves both — a Felt Need Track that draws people in, and a Biblical Formation Track that builds mature disciples — stitched into one class experience.</p>
+    <div class="hero-meta">
+      <span><b>124+</b> formation titles across 7 book studies</span>
+      <span><b>44+</b> felt-need topics, general &amp; age-specific</span>
+      <span><b>6</b> life-stage affinity groups</span>
+    </div>
+  </div>
+</header>
+
+<section id="framework">
+  <div class="chapter"><span class="chapter-num">I.</span></div>
+  <h2 class="head">Two Tracks, One Class</h2>
+  <p class="intro">Every course in the library runs 8–12 weeks and is built the same way: a Master Teacher, teacher lecture notes, a participant workbook, a discussion guide, a daily reading plan, and a 30-day companion. What changes is which door the class walks through first.</p>
+  <div class="track-grid">
+    <div class="track-card">
+      <p class="tagline">Draws Them In</p>
+      <h3>Felt Need Track</h3>
+      <p>Practical, life-stage topics tied to something a person is already carrying — a decision, a relationship, a season of anxiety or transition. This is what gets people to sign up.</p>
+    </div>
+    <div class="track-card formation">
+      <p class="tagline">Takes Them Deeper</p>
+      <h3>Biblical Formation Track</h3>
+      <p>Rooted in Scripture — a book of the Bible, a biblical character, or a core doctrine, studied verse by verse. This is what actually produces transformation.</p>
+    </div>
+  </div>
+  <p class="spec-line"><b>Every course, every group:</b> 8–12 weeks · Master Teacher · Lecture Notes · Participant Workbook · Discussion Guide · Daily Reading Plan · 30-Day Companion</p>
+</section>
+
+<section id="affinities">
+  <div class="chapter"><span class="chapter-num">II.</span></div>
+  <h2 class="head">Six Seasons of Adult Life</h2>
+  <p class="intro">Six affinity groups anchor the Sunday morning schedule. Each pairs a flagship 30-day daily companion with felt-need topics (left) and a matched formation-track study (right), stitched together into one class experience.</p>
+
+  <div class="affinity-card" id="affinity-college">
+    <div class="affinity-head">
+      <div>
+        <p class="affinity-stage">College &amp; Emerging Adults · 18–25</p>
+        <p class="affinity-flagship">30 Days to Find Your Way</p>
+        <p class="affinity-sub">Faith, Identity, Relationships, and Calling for the Life Ahead</p>
+      </div>
+    </div>
+    <div class="ledger">
+      <div class="ledger-col felt">
+        <h4>Felt Need</h4>
+        <div class="tag-row">
+          <a class="tag" href="#ext-whatsnext">What's Next</a>
+          <a class="tag" href="#ext-adulting">Adulting with Purpose</a>
+          <a class="tag" href="#ext-people">Finding Your People</a>
+          <a class="tag" href="#ext-relationships">Relationships That Last</a>
+          <a class="tag" href="#ext-skeptical">Faith in a Skeptical World</a>
+          <a class="tag" href="#ext-money">Money, Work &amp; Calling</a>
+          <a class="tag" href="#ext-identity">Identity</a>
+          <a class="tag" href="#ext-digital">Digital Wisdom</a>
+          <a class="tag" href="#ext-anxiety">Anxiety, Peace &amp; Hope</a>
+          <a class="tag" href="#ext-calling">Discover Your Calling</a>
+        </div>
+      </div>
+      <div class="stitch"></div>
+      <div class="ledger-col formation">
+        <h4>Formation Pairing</h4>
+        <div class="tag-row">
+          <a class="tag formation" href="#book-paul">The Life of Paul — Faith Under Fire</a>
+          <a class="tag formation" href="#book-epistles">Ephesians — Who You Are in Christ</a>
+        </div>
+      </div>
+    </div>
+    <p style="margin:16px 0 0;"><a class="pair-link" href="#ext-college">↓ See the full 10-topic, 100-title companion set developed for this group</a></p>
+  </div>
+
+  <div class="affinity-card">
+    <div class="affinity-head">
+      <div>
+        <p class="affinity-stage">Newly Married</p>
+        <p class="affinity-flagship">30 Days to Build Us</p>
+        <p class="affinity-sub">Daily Conversations for Faith, Friendship, and a Stronger Marriage — designed for couples to complete together</p>
+      </div>
+    </div>
+    <div class="ledger">
+      <div class="ledger-col felt">
+        <h4>Felt Need</h4>
+        <div class="tag-row">
+          <a class="tag" href="#felt-relationships">Healthy Relationships</a>
+          <a class="tag" href="#felt-conflict">Conflict Resolution</a>
+          <a class="tag" href="#felt-friendships">Biblical Friendships</a>
+        </div>
+      </div>
+      <div class="stitch"></div>
+      <div class="ledger-col formation">
+        <h4>Formation Pairing</h4>
+        <div class="tag-row">
+          <a class="tag formation" href="#book-proverbs">Proverbs — Wisdom for Real Life</a>
+          <a class="tag formation" href="#book-epistles">Ephesians — Who You Are in Christ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="affinity-card">
+    <div class="affinity-head">
+      <div>
+        <p class="affinity-stage">Parents of Teenagers</p>
+        <p class="affinity-flagship">30 Days to Stay Connected</p>
+        <p class="affinity-sub">Faith, Communication, and Hope for the Teenage Years — includes parent-teen conversation prompts</p>
+      </div>
+    </div>
+    <div class="ledger">
+      <div class="ledger-col felt">
+        <h4>Felt Need</h4>
+        <div class="tag-row">
+          <a class="tag" href="#felt-conflict">Conflict Resolution</a>
+          <a class="tag" href="#felt-resilience">Building Resilience</a>
+          <a class="tag" href="#felt-hopehurts">Hope When Life Hurts</a>
+        </div>
+      </div>
+      <div class="stitch"></div>
+      <div class="ledger-col formation">
+        <h4>Formation Pairing</h4>
+        <div class="tag-row">
+          <a class="tag formation" href="#book-psalms">Psalms — Songs for the Soul</a>
+          <a class="tag formation" href="#book-david">The Life of David — Leadership Under Pressure</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="affinity-card">
+    <div class="affinity-head">
+      <div>
+        <p class="affinity-stage">Empty Nesters</p>
+        <p class="affinity-flagship">30 Days to Rediscover What Is Next</p>
+        <p class="affinity-sub">Purpose, Marriage, Faith, and Legacy in a New Season — deeper reflection and next-chapter planning</p>
+      </div>
+    </div>
+    <div class="ledger">
+      <div class="ledger-col felt">
+        <h4>Felt Need</h4>
+        <div class="tag-row">
+          <a class="tag" href="#felt-purpose">Living with Purpose</a>
+          <a class="tag" href="#felt-calling">Discover Your Calling</a>
+        </div>
+      </div>
+      <div class="stitch"></div>
+      <div class="ledger-col formation">
+        <h4>Formation Pairing</h4>
+        <div class="tag-row">
+          <a class="tag formation" href="#book-proverbs">Proverbs — The Wisdom Advantage</a>
+          <a class="tag formation" href="#book-paul">The Life of Paul — Finishing Well</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="affinity-card">
+    <div class="affinity-head">
+      <div>
+        <p class="affinity-stage">Second Half &amp; Retirees</p>
+        <p class="affinity-flagship">30 Days to Finish Faithfully</p>
+        <p class="affinity-sub">Living with Purpose, Wisdom, and Eternal Impact — more theological depth, mentoring, service, generosity, legacy</p>
+      </div>
+    </div>
+    <div class="ledger">
+      <div class="ledger-col felt">
+        <h4>Felt Need</h4>
+        <div class="tag-row">
+          <a class="tag" href="#felt-generosity">The Blessed Life of Generosity</a>
+          <a class="tag" href="#felt-maturity">Becoming Spiritually Mature</a>
+        </div>
+      </div>
+      <div class="stitch"></div>
+      <div class="ledger-col formation">
+        <h4>Formation Pairing</h4>
+        <div class="tag-row">
+          <a class="tag formation" href="#book-paul">The Life of Paul — Finishing Well</a>
+          <a class="tag formation" href="#book-otTopical">Hebrews — Jesus Is Better</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="affinity-card">
+    <div class="affinity-head">
+      <div>
+        <p class="affinity-stage">Widows &amp; Caregivers</p>
+        <p class="affinity-flagship">30 Days of Strength for Today</p>
+        <p class="affinity-sub">Grace, Hope, and God's Presence in a Demanding Season — pastorally sensitive, connected to care resources</p>
+      </div>
+    </div>
+    <div class="ledger">
+      <div class="ledger-col felt">
+        <h4>Felt Need</h4>
+        <div class="tag-row">
+          <a class="tag" href="#felt-hopehurts">Hope When Life Hurts</a>
+          <a class="tag" href="#felt-rest">Rest for the Weary Soul</a>
+        </div>
+      </div>
+      <div class="stitch"></div>
+      <div class="ledger-col formation">
+        <h4>Formation Pairing</h4>
+        <div class="tag-row">
+          <a class="tag formation" href="#book-psalms">Psalms — Finding Peace in the Psalms</a>
+          <a class="tag formation" href="#book-otTopical">1 &amp; 2 Peter — Hope in Difficult Times</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="formation">
+  <div class="chapter"><span class="chapter-num">III.</span></div>
+  <h2 class="head">The Formation Track: Bible Book Studies</h2>
+  <p class="intro">The backbone of the library — verse-by-verse studies moving beyond Romans into the full counsel of Scripture. A curated cross-section is shown here; the complete set lives in the master title directory.</p>
+
+  <div class="cluster" id="book-genesis">
+    <div class="cluster-head"><h3>Genesis</h3><span class="cluster-count">4 titles</span></div>
+    <div class="tag-row">
+      <span class="tag formation">Genesis: The Beginning of Everything</span>
+      <span class="tag formation">In the Beginning</span>
+      <span class="tag formation">Origins</span>
+      <span class="tag formation">The Book That Explains Everything</span>
+    </div>
+  </div>
+
+  <div class="cluster" id="book-psalms">
+    <div class="cluster-head"><h3>Psalms</h3><span class="cluster-count">20 titles developed · 5 shown</span></div>
+    <div class="tag-row">
+      <span class="tag formation">Songs for the Soul</span>
+      <span class="tag formation">Praying the Psalms</span>
+      <span class="tag formation">The Psalms of David</span>
+      <span class="tag formation">Finding Peace in the Psalms</span>
+      <span class="tag formation">The Worship Journey</span>
+    </div>
+  </div>
+
+  <div class="cluster" id="book-proverbs">
+    <div class="cluster-head"><h3>Proverbs</h3><span class="cluster-count">20 titles developed · 5 shown</span></div>
+    <div class="tag-row">
+      <span class="tag formation">The Wise Life</span>
+      <span class="tag formation">Wisdom for Real Life</span>
+      <span class="tag formation">The Path of Wisdom</span>
+      <span class="tag formation">Think Like Solomon</span>
+      <span class="tag formation">Walking Wisely</span>
+    </div>
+  </div>
+
+  <div class="cluster" id="book-david">
+    <div class="cluster-head"><h3>The Life of David</h3><span class="cluster-count">20 titles developed · 5 shown</span></div>
+    <div class="tag-row">
+      <span class="tag formation">David: A Heart After God's Own Heart</span>
+      <span class="tag formation">From Shepherd to King</span>
+      <span class="tag formation">Courage</span>
+      <span class="tag formation">The Giant Killer</span>
+      <span class="tag formation">Kingdom Leadership</span>
+    </div>
+  </div>
+
+  <div class="cluster" id="book-paul">
+    <div class="cluster-head"><h3>The Life of Paul</h3><span class="cluster-count">20 titles developed · 5 shown</span></div>
+    <div class="tag-row">
+      <span class="tag formation">Paul: From Persecutor to Apostle</span>
+      <span class="tag formation">Grace Changed Everything</span>
+      <span class="tag formation">Running the Race</span>
+      <span class="tag formation">Strength in Weakness</span>
+      <span class="tag formation">Finishing Well</span>
+    </div>
+  </div>
+
+  <div class="cluster" id="book-epistles">
+    <div class="cluster-head"><h3>Gospels &amp; Epistles</h3><span class="cluster-count">10 titles</span></div>
+    <div class="tag-row">
+      <span class="tag formation">Gospel of John — Believe and Live</span>
+      <span class="tag formation">Gospel of Matthew — Following the King</span>
+      <span class="tag formation">Gospel of Mark — Jesus in Action</span>
+      <span class="tag formation">Gospel of Luke — The Compassion of Christ</span>
+      <span class="tag formation">James — Faith That Works</span>
+      <span class="tag formation">Ephesians — Who You Are in Christ</span>
+      <span class="tag formation">Philippians — Choosing Joy</span>
+      <span class="tag formation">Colossians — Christ Above Everything</span>
+      <span class="tag formation">Hebrews — Jesus Is Better</span>
+      <span class="tag formation">1 &amp; 2 Peter — Hope in Difficult Times</span>
+    </div>
+  </div>
+
+  <div class="cluster" id="book-otTopical">
+    <div class="cluster-head"><h3>Old Testament &amp; Topical-Biblical</h3><span class="cluster-count">10 titles</span></div>
+    <div class="tag-row">
+      <span class="tag formation">Daniel — Standing Firm in Babylon</span>
+      <span class="tag formation">Exodus — Delivered by Grace</span>
+      <span class="tag formation">Isaiah — Hope Through the Messiah</span>
+      <span class="tag formation">The Minor Prophets — God Still Speaks</span>
+      <span class="tag formation">The Parables of Jesus — Stories That Change Lives</span>
+      <span class="tag formation">The Miracles of Jesus — The Power of the Kingdom</span>
+      <span class="tag formation">Women of the Bible — Faith That Changed History</span>
+      <span class="tag formation">Men of the Bible — Ordinary People, Extraordinary God</span>
+      <span class="tag formation">The Names of God — Knowing the Character of God</span>
+      <span class="tag formation">The Attributes of God — Discovering Who God Really Is</span>
+    </div>
+  </div>
+</section>
+
+<section id="feltneed">
+  <div class="chapter"><span class="chapter-num">IV.</span></div>
+  <h2 class="head">The Felt Need Track</h2>
+  <p class="intro">The doors people walk through — practical, life-application topics that meet someone exactly where they are. Every topic below is designed to pair with a formation-track study above.</p>
+
+  <div class="cluster">
+    <div class="cluster-head"><h3>Decisions &amp; Calling</h3></div>
+    <div class="tag-row">
+      <span class="tag" id="felt-decisions">Making Wise Decisions</span>
+      <span class="tag" id="felt-purpose">Living with Purpose</span>
+      <span class="tag" id="felt-will">Finding God's Will</span>
+      <span class="tag" id="felt-calling">Discover Your Calling</span>
+    </div>
+  </div>
+
+  <div class="cluster">
+    <div class="cluster-head"><h3>Emotional &amp; Mental Wellbeing</h3></div>
+    <div class="tag-row">
+      <span class="tag" id="felt-anxiety">Defeating Anxiety</span>
+      <span class="tag" id="felt-fear">Overcoming Fear</span>
+      <span class="tag" id="felt-rest">Rest for the Weary Soul</span>
+      <span class="tag" id="felt-hopehurts">Hope When Life Hurts</span>
+      <span class="tag" id="felt-resilience">Building Resilience</span>
+    </div>
+  </div>
+
+  <div class="cluster">
+    <div class="cluster-head"><h3>Relationships &amp; Community</h3></div>
+    <div class="tag-row">
+      <span class="tag" id="felt-forgiveness">The Power of Forgiveness</span>
+      <span class="tag" id="felt-relationships">Healthy Relationships</span>
+      <span class="tag" id="felt-conflict">Conflict Resolution</span>
+      <span class="tag" id="felt-friendships">Biblical Friendships</span>
+    </div>
+  </div>
+
+  <div class="cluster">
+    <div class="cluster-head"><h3>Character &amp; Growth</h3></div>
+    <div class="tag-row">
+      <span class="tag" id="felt-generosity">The Blessed Life of Generosity</span>
+      <span class="tag" id="felt-discipline">The Disciplined Life</span>
+      <span class="tag" id="felt-trials">Growing Through Trials</span>
+      <span class="tag" id="felt-maturity">Becoming Spiritually Mature</span>
+      <span class="tag">Following Jesus Every Day</span>
+      <span class="tag">Hearing God's Voice</span>
+      <span class="tag">Living by Faith</span>
+    </div>
+  </div>
+
+  <div class="cluster" id="ext-college">
+    <div class="cluster-head"><h3>Extended Set — College &amp; Emerging Adults</h3><span class="cluster-count">10 topics · 100 titles developed · lead title shown per topic</span></div>
+    <p class="note">Each topic below has a fully developed 10-title/subtitle companion series. Lead title shown; full sets on file.</p>
+    <div class="topic-grid">
+      <div class="topic-row" id="ext-whatsnext"><div class="lead">The Next Chapter</div><div class="sub">Finding God's Direction for What's Ahead</div><div class="of10">What's Next · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-adulting"><div class="lead">Real World Faith</div><div class="sub">Navigating Adulthood with Biblical Wisdom</div><div class="of10">Adulting with Purpose · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-people"><div class="lead">Your People</div><div class="sub">Building Friendships That Actually Last</div><div class="of10">Finding Your People · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-relationships"><div class="lead">Worth the Wait</div><div class="sub">Dating with Purpose and Patience</div><div class="of10">Relationships That Last · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-skeptical"><div class="lead">Unshaken</div><div class="sub">Standing Firm on Campus and Beyond</div><div class="of10">Faith in a Skeptical World · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-money"><div class="lead">Work in Progress</div><div class="sub">Faith, Money, and Calling Early On</div><div class="of10">Money, Work &amp; Calling · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-identity"><div class="lead">Who I Am</div><div class="sub">Discovering Identity in Christ</div><div class="of10">Identity · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-digital"><div class="lead">Unplugged Faith</div><div class="sub">Following Jesus in a Digital World</div><div class="of10">Digital Wisdom · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-anxiety"><div class="lead">Quiet the Noise</div><div class="sub">Finding Peace in an Anxious Age</div><div class="of10">Anxiety, Peace &amp; Hope · 10 titles developed</div></div>
+      <div class="topic-row" id="ext-calling2"><div class="lead">More Than a Job</div><div class="sub">Discovering Purpose Beyond a Career</div><div class="of10">Discover Your Calling · 10 titles developed</div></div>
+    </div>
+    <p style="margin-top:14px;"><a class="pair-link" href="#affinity-college">↑ Back to College &amp; Emerging Adults</a></p>
+  </div>
+</section>
+
+<section id="format">
+  <div class="chapter"><span class="chapter-num">V.</span></div>
+  <h2 class="head">From Sunday to Every Day</h2>
+  <p class="intro">Every 8–12 week course can ship at one of three levels. The recommendation: make the middle tier the default across the whole library.</p>
+  <div class="format-grid">
+    <div class="format-card">
+      <p class="step">Level One</p>
+      <h4>Course Only</h4>
+      <p>Teacher lecture notes, participant workbook, and discussion guide for the 8–12 week class.</p>
+    </div>
+    <div class="format-card">
+      <p class="step">Level Two — Default</p>
+      <h4>Course + 30-Day Companion</h4>
+      <p>Everything in Level One, plus a daily reading plan that carries the class into the other six days of the week.</p>
+    </div>
+    <div class="format-card">
+      <p class="step">Level Three</p>
+      <h4>Complete Class Experience</h4>
+      <p>Full course, daily companion, and connected care or mentoring resources for pastorally sensitive topics.</p>
+    </div>
+  </div>
+  <div class="name-strip">
+    <div class="closing-line">"What begins in class on Sunday continues in every member's life all week long."</div>
+    <div class="names">Product naming on the table: <b>Class Companion</b> · <b>Between Sundays</b> · <b>ABF Daily Journey Builder</b></div>
+  </div>
+</section>
+
+<footer>
+  <div><b>LifeTogether Ministries</b> — Adult Bible Fellowship Library</div>
+  <div>Felt Need Track + Biblical Formation Track, stitched into one class, six affinity groups, 8–12 weeks at a time.</div>
+  <a class="backtop" href="#framework">↑ Back to top</a>
+</footer>
+
+</body>
+</html>

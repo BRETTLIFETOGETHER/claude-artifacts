@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SPARK Weekend Engine &middot; LifeTogether</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#c9a84c;--glt:#e2c97e;--gdk:#8a6e30;--cr:#f7f4ed;--ink:#12131a;--lock:#6a7a9a;--ok:#5a9a6a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lato',sans-serif;background:#0e0c14;color:#f0ece0;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(5,3,11,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:stretch;padding:0 14px;overflow-x:auto;}
+.nbr{display:flex;flex-direction:column;justify-content:center;padding:9px 12px 9px 0;margin-right:5px;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.nbr-t{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--g);line-height:1;}
+.nbr-s{font-size:5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;margin-top:2px;}
+.nt{padding:0 12px;font-size:7.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;cursor:pointer;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.25);display:flex;align-items:center;white-space:nowrap;background:none;font-family:'Lato',sans-serif;transition:all .12s;flex-shrink:0;}
+.nt:hover{color:rgba(255,255,255,.6);}
+.nt.on{color:var(--g);border-bottom-color:var(--g);}
+.nt:disabled{opacity:.3;cursor:not-allowed;}
+.pr{margin-left:auto;font-size:7px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--gdk);border:1px solid rgba(201,168,76,.25);padding:4px 10px;align-self:center;cursor:pointer;background:none;font-family:'Lato',sans-serif;flex-shrink:0;}
+.pr:hover{background:rgba(201,168,76,.1);color:var(--g);}
+
+.pnl{display:none;}.pnl.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:34px 22px 70px;}
+.kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.55);display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.kk::before{content:'';width:14px;height:1px;background:rgba(201,168,76,.4);}
+.h{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,44px);font-weight:400;color:#fff;line-height:.94;margin-bottom:10px;}
+.h em{font-style:italic;color:var(--g);}
+.sub{font-size:12px;color:rgba(255,255,255,.36);line-height:1.72;margin-bottom:22px;max-width:690px;}
+
+.priv{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid rgba(106,122,154,.4);background:rgba(106,122,154,.1);margin-bottom:20px;}
+.priv-ic{font-size:18px;flex-shrink:0;}
+.priv-t{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#8a9ac0;margin-bottom:5px;}
+.priv-d{font-size:11px;color:rgba(255,255,255,.5);line-height:1.65;}
+
+.step{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--gdk);margin:24px 0 9px;display:flex;align-items:center;gap:9px;}
+.step::before{content:'';width:12px;height:1px;background:rgba(138,110,48,.7);}
+.hint{font-size:10.5px;color:rgba(255,255,255,.3);line-height:1.65;margin-bottom:9px;font-style:italic;}
+.ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#f0ece0;padding:14px 16px;font-size:12.5px;font-family:'Lato',sans-serif;outline:none;resize:vertical;line-height:1.7;}
+.ta::placeholder{color:rgba(255,255,255,.17);}
+.ta:focus{border-color:rgba(201,168,76,.45);}
+.inrow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
+.inrow .ta{flex:1;min-width:150px;resize:none;}
+.opts{display:flex;gap:4px;flex-wrap:wrap;}
+.opt{padding:9px 14px;border:1px solid rgba(255,255,255,.11);color:rgba(255,255,255,.38);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;background:none;font-family:'Lato',sans-serif;transition:all .12s;}
+.opt:hover{border-color:rgba(201,168,76,.4);color:var(--g);}
+.opt.on{border-color:var(--g);color:var(--g);background:rgba(201,168,76,.1);}
+.opt small{display:block;font-size:7.5px;letter-spacing:.5px;text-transform:none;font-weight:400;opacity:.65;margin-top:3px;}
+
+.btn{background:var(--g);color:#000;border:none;padding:12px 26px;font-size:9.5px;font-weight:900;letter-spacing:2.2px;text-transform:uppercase;cursor:pointer;font-family:'Lato',sans-serif;}
+.btn:hover{background:var(--glt);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btn.ghost{background:none;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.45);}
+.btn.ghost:hover{border-color:rgba(201,168,76,.4);color:var(--g);}
+.btn.sm{padding:8px 15px;font-size:8.5px;}
+.think{display:none;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin:14px 0;}
+.think.on{display:flex;}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pl 1.2s infinite;}
+@keyframes pl{0%,100%{opacity:1;}50%{opacity:.12;}}
+.err{display:none;font-size:11px;color:#e08080;padding:12px;background:rgba(180,50,50,.1);border:1px solid rgba(180,50,50,.2);margin-top:12px;}
+.err.on{display:block;}
+.recap{padding:14px 16px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);margin-top:16px;font-size:11.5px;color:rgba(255,255,255,.6);line-height:1.7;}
+.recap b{color:var(--g);}
+
+.vidbox{position:relative;padding-bottom:56.25%;height:0;background:#000;border:1px solid rgba(201,168,76,.2);margin-bottom:8px;}
+.vidbox iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.vidph{padding:44px 20px;text-align:center;border:1px dashed rgba(255,255,255,.14);color:rgba(255,255,255,.25);font-size:12px;font-style:italic;line-height:1.8;margin-bottom:8px;}
+
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.07);color:var(--g);font-size:11px;margin:0 4px 4px 0;}
+.chip button{background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:11px;padding:0;font-family:'Lato',sans-serif;}
+.chip button:hover{color:#e08080;}
+.chip .tok{font-size:7px;letter-spacing:1px;opacity:.5;text-transform:uppercase;}
+
+.sheet{background:var(--cr);color:var(--ink);padding:42px 48px;margin-bottom:8px;}
+.sh-kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:#a08a4a;margin-bottom:10px;}
+.sh-t{font-family:'Playfair Display',serif;font-size:clamp(23px,3.4vw,34px);font-weight:400;line-height:1.05;margin-bottom:7px;}
+.sh-s{font-size:13px;color:#6d6d78;font-family:Georgia,serif;font-style:italic;line-height:1.65;margin-bottom:18px;}
+.sh-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:22px;}
+.pill{font-size:7px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;color:#8a7540;border:1px solid rgba(160,138,74,.35);padding:4px 10px;}
+.blk{margin-bottom:24px;}
+.blbl{font-size:7px;letter-spacing:3.5px;text-transform:uppercase;font-weight:700;color:#a09888;display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.blbl::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.09);}
+.bidea{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;line-height:1.45;padding:15px 17px;background:rgba(201,168,76,.09);border-left:3px solid var(--g);}
+.com p{font-family:Georgia,serif;font-size:13px;line-height:1.9;color:#4a4a55;margin-bottom:12px;}
+.q{display:grid;grid-template-columns:28px 1fr;gap:11px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.07);}
+.q:last-child{border-bottom:none;}
+.qn{font-family:'Playfair Display',serif;font-size:19px;color:var(--g);opacity:.6;line-height:1.2;}
+.qt{font-size:14px;color:#25252f;line-height:1.6;margin-bottom:4px;}
+.qnote{font-size:10.5px;color:#8a8a95;font-style:italic;line-height:1.6;}
+.qwho{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#a08a4a;margin-top:4px;}
+.app{padding:15px 17px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.28);}
+.app-a{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;line-height:1.5;margin-bottom:6px;}
+.app-d{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#a08a4a;}
+.dayq{display:grid;grid-template-columns:72px 1fr;gap:13px;padding:13px 0;border-bottom:1px solid rgba(0,0,0,.07);}
+.dayq:last-child{border-bottom:none;}
+.dq-d{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#a08a4a;padding-top:3px;}
+.dq-q{font-size:13.5px;color:#25252f;line-height:1.6;margin-bottom:4px;}
+.dq-f{font-size:10.5px;color:#8a8a95;font-style:italic;line-height:1.6;}
+.pray{font-family:Georgia,serif;font-size:13px;font-style:italic;line-height:1.85;color:#4a4a55;padding:14px 17px;background:rgba(0,0,0,.025);}
+.wr-l{height:1px;background:rgba(0,0,0,.12);margin-bottom:19px;}
+.nm{color:#8a6e30;font-weight:700;}
+
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.box{padding:16px;border:1px solid rgba(255,255,255,.07);border-top:2px solid var(--bc);background:rgba(255,255,255,.02);}
+.box-t{font-family:'Playfair Display',serif;font-size:14px;font-style:italic;color:var(--bc);margin-bottom:5px;}
+.box-d{font-size:10.5px;color:rgba(255,255,255,.42);line-height:1.65;}
+
+@media print{
+  body{background:#fff;}
+  .nav,.pnl:not(.on),.noprint,.vidbox,.vidph{display:none!important;}
+  .wrap{padding:0;max-width:100%;}
+  .sheet{padding:0;margin:0;page-break-after:always;}
+  .blk{page-break-inside:avoid;}
+}
+@media(max-width:760px){.sheet{padding:26px 22px;}.g3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nbr"><div class="nbr-t">Weekend Engine</div><div class="nbr-s">SPARK &middot; LifeTogether</div></div>
+  <button class="nt on" onclick="tab(0)">Setup</button>
+  <button class="nt" onclick="tab(1)">&#128274; My People</button>
+  <button class="nt" id="t2" onclick="tab(2)" disabled>Watch &amp; Study</button>
+  <button class="nt" id="t3" onclick="tab(3)" disabled>The Week</button>
+  <button class="pr" onclick="window.print()">&#128424; Print</button>
+</nav>
+
+<!-- SETUP -->
+<div id="p0" class="pnl on"><div class="wrap">
+  <p class="kk">This Weekend's Message</p>
+  <h1 class="h">Drop In the Video.<br><em>Get the Whole Week.</em></h1>
+  <p class="sub">Paste the YouTube link so the video plays right alongside the study. Paste the transcript so the engine writes from what was actually preached &mdash; not a summary.</p>
+
+  <div class="step">Step One &middot; The Video</div>
+  <div class="hint">Any YouTube link works. It embeds below and travels with the curriculum all week.</div>
+  <input class="ta" id="yt" style="resize:none" placeholder="https://www.youtube.com/watch?v=..." oninput="prev()">
+  <div id="vprev" style="margin-top:8px"></div>
+
+  <div class="step">Step Two &middot; The Transcript</div>
+  <div class="hint">On YouTube: click the <b>&hellip;</b> under the video &rarr; <b>Show transcript</b> &rarr; select all &rarr; paste here. Takes about thirty seconds and the whole week is built from the pastor's actual words. A manuscript or detailed outline works just as well.</div>
+  <textarea class="ta" id="tr" rows="7" placeholder="Paste the YouTube transcript, your manuscript, or a detailed outline here..."></textarea>
+
+  <div class="step">Step Three &middot; Series and Week</div>
+  <div class="inrow">
+    <input class="ta" id="series" placeholder="Series title (optional)">
+    <input class="ta" id="wknum" style="max-width:150px" placeholder="Week 1 of 6">
+  </div>
+
+  <div class="step">Step Four &middot; Which Version</div>
+  <div class="opts" id="oMode"></div>
+
+  <div class="step">Step Five &middot; Depth</div>
+  <div class="opts" id="oDepth"></div>
+
+  <div class="recap" id="recap"></div>
+
+  <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" id="gob" onclick="gen()">Build This Week &rarr;</button>
+    <button class="btn ghost" onclick="tab(1)">Add Names First</button>
+  </div>
+  <div class="think" id="think"><div class="pulse"></div><span style="font-size:12px;color:rgba(255,255,255,.38)" id="tmsg">Building&hellip;</span></div>
+  <div class="err" id="err"></div>
+</div></div>
+
+<!-- MY PEOPLE -->
+<div id="p1" class="pnl"><div class="wrap">
+  <p class="kk">Personalization</p>
+  <h1 class="h">My <em>People.</em></h1>
+  <div class="priv">
+    <span class="priv-ic">&#128274;</span>
+    <div><div class="priv-t">Names Never Leave This Device</div>
+    <div class="priv-d">Here is exactly how this works. The engine writes the study using placeholders &mdash; SPOUSE, KID1, M1 &mdash; and never sees a single real name. Your browser swaps the real names in afterward, locally. Nothing with your wife's name or your group roster is ever sent to any server, ours or anyone else's. That is not a promise about policy. It is how it is built.</div></div>
+  </div>
+
+  <div class="step">You</div>
+  <div class="inrow"><input class="ta" id="me" placeholder="Your first name" oninput="stash()"></div>
+
+  <div class="step">Spouse</div>
+  <div class="hint">Adds a couples version with both names written into the questions.</div>
+  <div class="inrow"><input class="ta" id="sp" placeholder="Spouse's first name" oninput="stash()"></div>
+
+  <div class="step">Kids</div>
+  <div class="inrow">
+    <input class="ta" id="kidin" placeholder="Child's first name" onkeydown="if(event.key==='Enter')addK()">
+    <button class="btn sm" onclick="addK()">Add</button>
+  </div>
+  <div id="kids" style="margin-top:8px"></div>
+
+  <div class="step">Small Group Members</div>
+  <div class="hint">First names only. Questions get directed to specific people so nobody hides and nobody dominates.</div>
+  <div class="inrow">
+    <input class="ta" id="memin" placeholder="First name" onkeydown="if(event.key==='Enter')addM()">
+    <button class="btn sm" onclick="addM()">Add</button>
+  </div>
+  <div id="mems" style="margin-top:8px"></div>
+
+  <div class="g3" style="margin-top:26px">
+    <div class="box" style="--bc:#5a88c9"><div class="box-t">Personal Version</div><div class="box-d">Written to you by name. Solo reflection, journaling prompts, no group language anywhere.</div></div>
+    <div class="box" style="--bc:#8a6a9a"><div class="box-t">Couples Version</div><div class="box-d">Both names in the questions. Built for the drive home and the conversation after the kids are down.</div></div>
+    <div class="box" style="--bc:#5a8a6a"><div class="box-t">Group Version</div><div class="box-d">Questions assigned to specific members by name, so the quiet one gets asked and the talker gets a turn to listen.</div></div>
+  </div>
+  <div style="margin-top:20px"><button class="btn" onclick="tab(0)">&larr; Back to Setup</button></div>
+</div></div>
+
+<!-- WATCH & STUDY -->
+<div id="p2" class="pnl"><div class="wrap">
+  <p class="kk noprint">Watch and Work Through It</p>
+  <h1 class="h noprint">This Weekend's <em>Message.</em></h1>
+  <div id="vidOut" class="noprint"></div>
+  <div id="curOut"></div>
+</div></div>
+
+<!-- THE WEEK -->
+<div id="p3" class="pnl"><div class="wrap">
+  <p class="kk noprint">Seven Days</p>
+  <h1 class="h noprint">The <em>Week.</em></h1>
+  <div id="weekOut"></div>
+</div></div>
+
+<script>
+var MODE=[
+{k:"personal",t:"Personal",d:"Just you"},
+{k:"couple",t:"Couples",d:"You and your spouse"},
+{k:"group",t:"Small Group",d:"Your group by name"},
+{k:"family",t:"Family",d:"Whole household"}];
+var DEPTH=[{k:"light",t:"Light",d:"30 min"},{k:"standard",t:"Standard",d:"60 min"},{k:"deep",t:"In Depth",d:"90 min"}];
+
+var S={mode:"group",depth:"standard"};
+var P={me:"",sp:"",kids:[],mems:[]};
+var R=null;
+try{var raw=localStorage.getItem("spkppl");if(raw)P=JSON.parse(raw);}catch(e){}
+
+function tab(i){
+  for(var k=0;k<4;k++)document.getElementById("p"+k).classList.remove("on");
+  document.getElementById("p"+i).classList.add("on");
+  var t=document.getElementsByClassName("nt");
+  for(var k=0;k<t.length;k++)t[k].classList.remove("on");
+  t[i].classList.add("on");window.scrollTo(0,0);
+}
+function savep(){try{localStorage.setItem("spkppl",JSON.stringify(P));}catch(e){}}
+function stash(){P.me=document.getElementById("me").value.trim();P.sp=document.getElementById("sp").value.trim();savep();draw();}
+function addK(){var v=document.getElementById("kidin").value.trim();if(!v)return;P.kids.push(v);document.getElementById("kidin").value="";savep();people();draw();}
+function addM(){var v=document.getElementById("memin").value.trim();if(!v)return;P.mems.push(v);document.getElementById("memin").value="";savep();people();draw();}
+function delK(i){P.kids.splice(i,1);savep();people();draw();}
+function delM(i){P.mems.splice(i,1);savep();people();draw();}
+function people(){
+  var h="";
+  for(var i=0;i<P.kids.length;i++)h+="<span class='chip'>"+esc(P.kids[i])+" <span class='tok'>KID"+(i+1)+"</span><button onclick='delK("+i+")'>\u2715</button></span>";
+  document.getElementById("kids").innerHTML=h||"<span style='font-size:10.5px;color:rgba(255,255,255,.2);font-style:italic'>No children added</span>";
+  h="";
+  for(var i=0;i<P.mems.length;i++)h+="<span class='chip'>"+esc(P.mems[i])+" <span class='tok'>M"+(i+1)+"</span><button onclick='delM("+i+")'>\u2715</button></span>";
+  document.getElementById("mems").innerHTML=h||"<span style='font-size:10.5px;color:rgba(255,255,255,.2);font-style:italic'>No members added</span>";
+  document.getElementById("me").value=P.me;document.getElementById("sp").value=P.sp;
+}
+function opts(id,arr,key){
+  var h="";
+  for(var i=0;i<arr.length;i++){var o=arr[i];
+    h+="<button class='opt"+(S[key]===o.k?" on":"")+"' onclick=\"pick('"+key+"','"+o.k+"')\">"+o.t+"<small>"+o.d+"</small></button>";}
+  document.getElementById(id).innerHTML=h;
+}
+function pick(k,v){S[k]=v;draw();}
+function nm(a,k){for(var i=0;i<a.length;i++){if(a[i].k===k)return a[i].t;}return k;}
+function draw(){
+  opts("oMode",MODE,"mode");opts("oDepth",DEPTH,"depth");
+  var who="";
+  if(S.mode==="personal")who=P.me?"written to <b>"+esc(P.me)+"</b>":"add your name for a personalized version";
+  else if(S.mode==="couple")who=(P.me&&P.sp)?"written for <b>"+esc(P.me)+"</b> and <b>"+esc(P.sp)+"</b>":"add both names for a couples version";
+  else if(S.mode==="group")who=P.mems.length?"questions assigned to <b>"+P.mems.map(esc).join(", ")+"</b>":"add group members so questions get assigned by name";
+  else who=P.kids.length?"including <b>"+P.kids.map(esc).join(", ")+"</b>":"add your kids for family questions";
+  document.getElementById("recap").innerHTML="Building a <b>"+nm(MODE,S.mode)+"</b> study at <b>"+nm(DEPTH,S.depth)+"</b> depth &mdash; "+who+
+   ". Names are merged in your browser after the study is written. They are never sent anywhere.";
+}
+function esc(s){return (s||"").replace(/</g,"&lt;");}
+
+// YOUTUBE
+function vid(u){
+  if(!u)return "";
+  var m=u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  return m?m[1]:"";
+}
+function prev(){
+  var id=vid(document.getElementById("yt").value.trim());
+  document.getElementById("vprev").innerHTML=id?
+   "<div class='vidbox'><iframe src='https://www.youtube.com/embed/"+id+"' allowfullscreen title='Sermon video'></iframe></div>":"";
+}
+
+// MERGE — names swapped in locally, never sent
+function merge(t){
+  if(!t)return "";
+  var s=String(t);
+  if(P.me)s=s.replace(/\[YOU\]/g,"<span class='nm'>"+esc(P.me)+"</span>");
+  if(P.sp)s=s.replace(/\[SPOUSE\]/g,"<span class='nm'>"+esc(P.sp)+"</span>");
+  for(var i=0;i<P.kids.length;i++)s=s.replace(new RegExp("\\[KID"+(i+1)+"\\]","g"),"<span class='nm'>"+esc(P.kids[i])+"</span>");
+  for(var i=0;i<P.mems.length;i++)s=s.replace(new RegExp("\\[M"+(i+1)+"\\]","g"),"<span class='nm'>"+esc(P.mems[i])+"</span>");
+  s=s.replace(/\[YOU\]/g,"you").replace(/\[SPOUSE\]/g,"your spouse");
+  s=s.replace(/\[KID\d+\]/g,"your child").replace(/\[M\d+\]/g,"someone in the group");
+  return s;
+}
+
+function gen(){
+  var tr=document.getElementById("tr").value.trim();
+  if(!tr){document.getElementById("err").textContent="Paste the transcript or an outline first \u2014 that is what the study is built from.";document.getElementById("err").classList.add("on");return;}
+  var ser=document.getElementById("series").value.trim(),wn=document.getElementById("wknum").value.trim();
+  var b=document.getElementById("gob"),th=document.getElementById("think"),er=document.getElementById("err");
+  b.disabled=true;b.textContent="Building...";th.classList.add("on");er.classList.remove("on");
+  document.getElementById("tmsg").textContent="Reading the message and writing your "+nm(MODE,S.mode)+" study\u2026";
+
+  var tok="IMPORTANT \u2014 PLACEHOLDER RULE: You will never be given real names. Use these exact placeholder tokens and the reader's own software will substitute the real names locally: [YOU] for the reader, [SPOUSE] for their husband or wife, [KID1] [KID2] for children, and ";
+  tok+=P.mems.length?("[M1] through [M"+P.mems.length+"] for the "+P.mems.length+" small group members. ") : "[M1] [M2] [M3] for group members. ";
+  tok+="Write the tokens directly into the sentences so they read naturally once replaced. Example: 'Ask [SPOUSE] what they noticed in you this week.' or 'Direct this one to [M2] before anyone else answers.'";
+
+  var mg={
+   personal:"PERSONAL SOLO STUDY. Address [YOU] directly in second person. No group language, no we, no icebreakers. Reflective and journaling-oriented.",
+   couple:"COUPLES STUDY for [YOU] and [SPOUSE]. Every question is something the two of them work through together. Use both tokens naturally. Assume a real marriage with real friction, not a highlight reel.",
+   group:"SMALL GROUP STUDY. Assign specific questions to specific members using the M tokens \u2014 put the assignment in the 'who' field. Rotate so the same person is not always first. Give the quiet members the safer questions early and the deeper ones later.",
+   family:"FAMILY STUDY including children ([KID1], [KID2]). Every question needs an entry point a child can answer and depth an adult can sit with. Note which family member to direct each question to."}[S.mode];
+
+  var q="You are the master curriculum architect for Lifetogether Ministries. A pastor has supplied the full transcript of this weekend's sermon. Build the complete study from what was ACTUALLY PREACHED \u2014 use the preacher's own illustrations, phrases, and emphases, not generic material on the topic.\n\n"+
+   "SERMON TRANSCRIPT:\n"+tr.slice(0,14000).replace(/"/g,"'")+"\n\n"+
+   (ser?"SERIES: "+ser.replace(/"/g,"'")+"\n":"")+(wn?"WEEK: "+wn.replace(/"/g,"'")+"\n":"")+
+   "FORMAT: "+mg+"\nDEPTH: "+nm(DEPTH,S.depth)+" session.\n\n"+tok+"\n\n"+
+   "Commentary must be three substantive paragraphs a leader could read aloud. Questions must be formation questions that make people lean in, not comprehension questions. The application is one specific irreversible act with a deadline.\n\n"+
+   "Respond ONLY with valid JSON, no markdown fences:\n"+
+   '{"title":"","subtitle":"","big_idea":"","quote":"","scripture_ref":"","commentary":["","",""],'+
+   '"open_q":"","questions":[{"q":"","note":"","who":""},{"q":"","note":"","who":""},{"q":"","note":"","who":""},{"q":"","note":"","who":""},{"q":"","note":"","who":""},{"q":"","note":"","who":""}],'+
+   '"application":"","deadline":"","prayer":"","verse_text":"","verse_ref":"",'+
+   '"daily":[{"day":"Sunday","q":"","follow":""},{"day":"Monday","q":"","follow":""},{"day":"Tuesday","q":"","follow":""},{"day":"Wednesday","q":"","follow":""},{"day":"Thursday","q":"","follow":""},{"day":"Friday","q":"","follow":""},{"day":"Saturday","q":"","follow":""}]}';
+
+  fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:3500,messages:[{role:"user",content:q}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var tx="",cc=d.content||[];
+    for(var i=0;i<cc.length;i++){if(cc[i].type==="text")tx=cc[i].text;}
+    R=JSON.parse(tx.replace(/```json/g,"").replace(/```/g,"").trim());
+    render();
+    document.getElementById("t2").disabled=false;document.getElementById("t3").disabled=false;
+    b.disabled=false;b.textContent="Build This Week \u2192";th.classList.remove("on");tab(2);
+  }).catch(function(){
+    er.textContent="Generation failed. Try pasting a shorter section of the transcript and building again.";
+    er.classList.add("on");b.disabled=false;b.textContent="Build This Week \u2192";th.classList.remove("on");
+  });
+}
+
+function render(){
+  var id=vid(document.getElementById("yt").value.trim());
+  document.getElementById("vidOut").innerHTML=id?
+   "<div class='vidbox'><iframe src='https://www.youtube.com/embed/"+id+"' allowfullscreen title='Sermon video'></iframe></div>":
+   "<div class='vidph'>No video link added.<br>Paste a YouTube URL on the Setup tab and it will play here all week.</div>";
+
+  var ser=document.getElementById("series").value.trim(),wn=document.getElementById("wknum").value.trim();
+  var pills="<span class='pill'>"+nm(MODE,S.mode)+"</span><span class='pill'>"+nm(DEPTH,S.depth)+"</span>";
+  if(S.mode==="group"&&P.mems.length)pills+="<span class='pill'>"+P.mems.length+" Members</span>";
+
+  var com="";for(var i=0;i<(R.commentary||[]).length;i++)com+="<p>"+merge(esc(R.commentary[i]))+"</p>";
+  var qs="";for(var i=0;i<(R.questions||[]).length;i++){var x=R.questions[i];
+    qs+="<div class='q'><div class='qn'>"+(i+1)+"</div><div><div class='qt'>"+merge(esc(x.q))+"</div>"+
+     (x.note?"<div class='qnote'>"+merge(esc(x.note))+"</div>":"")+
+     (x.who?"<div class='qwho'>Ask "+merge(esc(x.who))+"</div>":"")+"</div></div>";}
+  var dq="";for(var i=0;i<(R.daily||[]).length;i++){var d=R.daily[i];
+    dq+="<div class='dayq'><div class='dq-d'>"+esc(d.day)+"</div><div><div class='dq-q'>"+merge(esc(d.q))+"</div>"+
+     (d.follow?"<div class='dq-f'>Go deeper: "+merge(esc(d.follow))+"</div>":"")+"</div></div>";}
+  var lines="";for(var i=0;i<6;i++)lines+="<div class='wr-l'></div>";
+
+  document.getElementById("curOut").innerHTML="<div class='sheet'>"+
+   "<div class='sh-kk'>"+(ser?esc(ser)+" &middot; ":"")+(wn?esc(wn):"This Weekend")+"</div>"+
+   "<h2 class='sh-t'>"+merge(esc(R.title))+"</h2><p class='sh-s'>"+merge(esc(R.subtitle))+"</p>"+
+   "<div class='sh-meta'>"+pills+"</div>"+
+   "<div class='blk'><div class='blbl'>The Big Idea</div><div class='bidea'>"+merge(esc(R.big_idea))+"</div></div>"+
+   (R.quote?"<div class='blk'><div class='blbl'>From the Message</div><div class='pray'>"+merge(esc(R.quote))+"</div></div>":"")+
+   "<div class='blk'><div class='blbl'>Opening Question</div><div class='bidea' style='background:rgba(0,0,0,.025);border-left-color:rgba(0,0,0,.15)'>"+merge(esc(R.open_q))+"</div>"+
+    (R.scripture_ref?"<div class='qwho' style='margin-top:9px'>Text: "+esc(R.scripture_ref)+"</div>":"")+"</div>"+
+   "<div class='blk'><div class='blbl'>Commentary</div><div class='com'>"+com+"</div></div>"+
+   "<div class='blk'><div class='blbl'>Discussion</div>"+qs+"</div>"+
+   "<div class='blk'><div class='blbl'>This Week's Application</div><div class='app'><div class='app-a'>"+
+    merge(esc(R.application))+"</div><div class='app-d'>By "+esc(R.deadline)+"</div></div></div>"+
+   "<div class='blk'><div class='blbl'>Memory Verse</div><div class='app' style='background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.1);text-align:center'>"+
+    "<div class='app-a'>&ldquo;"+esc(R.verse_text)+"&rdquo;</div><div class='app-d'>"+esc(R.verse_ref)+"</div></div></div>"+
+   "<div class='blk'><div class='blbl'>Closing Prayer</div><div class='pray'>"+merge(esc(R.prayer))+"</div></div>"+
+   "<div class='blk'><div class='blbl'>Notes</div>"+lines+"</div></div>";
+
+  document.getElementById("weekOut").innerHTML="<div class='sheet'>"+
+   "<div class='sh-kk'>Daily Q&amp;A &middot; "+merge(esc(R.title))+"</div>"+
+   "<h2 class='sh-t' style='font-size:26px'>Seven Days, Seven Questions</h2>"+
+   "<div class='sh-meta'>"+pills+"</div>"+dq+"</div>";
+}
+
+people();draw();prev();
+</script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+
+@font-face { font-family: 'Playfair Display'; src: url('../fonts/PlayfairDisplay-Regular.ttf'); font-weight: 400; }
+@font-face { font-family: 'Playfair Display'; src: url('../fonts/PlayfairDisplay-Medium.ttf'); font-weight: 500; }
+@font-face { font-family: 'Playfair Display'; src: url('../fonts/PlayfairDisplay-SemiBold.ttf'); font-weight: 600; }
+@font-face { font-family: 'Playfair Display'; src: url('../fonts/PlayfairDisplay-Bold.ttf'); font-weight: 700; }
+@font-face { font-family: 'Playfair Display'; src: url('../fonts/PlayfairDisplay-Black.ttf'); font-weight: 900; }
+@font-face { font-family: 'Playfair Display'; src: url('../fonts/PlayfairDisplay-Italic-Italic.ttf'); font-weight: 400; font-style: italic; }
+
+@font-face { font-family: 'Spectral'; src: url('../fonts/Spectral-Regular.ttf'); font-weight: 400; }
+@font-face { font-family: 'Spectral'; src: url('../fonts/Spectral-Medium.ttf'); font-weight: 500; }
+@font-face { font-family: 'Spectral'; src: url('../fonts/Spectral-SemiBold.ttf'); font-weight: 600; }
+@font-face { font-family: 'Spectral'; src: url('../fonts/Spectral-Bold.ttf'); font-weight: 700; }
+@font-face { font-family: 'Spectral'; src: url('../fonts/Spectral-Italic.ttf'); font-weight: 400; font-style: italic; }
+
+@font-face { font-family: 'Inter'; src: url('../fonts/Inter-Regular.ttf'); font-weight: 300 800; }
+@font-face { font-family: 'Inter'; src: url('../fonts/Inter-Italic.ttf'); font-weight: 300 800; font-style: italic; }
+
+@font-face { font-family: 'Archivo'; src: url('../fonts/Archivo-Regular.ttf'); font-weight: 400; }
+@font-face { font-family: 'Archivo'; src: url('../fonts/Archivo-Medium.ttf'); font-weight: 500; }
+@font-face { font-family: 'Archivo'; src: url('../fonts/Archivo-SemiBold.ttf'); font-weight: 600; }
+@font-face { font-family: 'Archivo'; src: url('../fonts/Archivo-Bold.ttf'); font-weight: 700; }
+
+:root {
+  --navy: #132038;
+  --navy-deep: #0C1626;
+  --cream: #FAF5E9;
+  --cream-warm: #F3EBD8;
+  --gold: #B8912F;
+  --gold-light: #D9B961;
+  --ink: #21283A;
+  --ink-soft: #4A5063;
+  --cream-text: #F3ECDB;
+  --cream-muted: #C9C3AE;
+}
+
+* { box-sizing: border-box; }
+
+@page { size: letter; margin: 0; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+}
+
+.page {
+  width: 8.5in;
+  height: 11in;
+  position: relative;
+  page-break-after: always;
+  overflow: hidden;
+}
+.page:last-child { page-break-after: avoid; }
+
+.pad { padding: 0.62in 0.72in; height: 100%; }
+
+/* ---------- shared bits ---------- */
+.eyebrow {
+  font-family: 'Archivo', sans-serif;
+  font-size: 9.5pt;
+  font-weight: 600;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+}
+.eyebrow.gold { color: var(--gold); }
+.eyebrow.navy { color: var(--navy); }
+
+.rule {
+  height: 2px;
+  width: 54px;
+  background: var(--gold);
+  margin: 10px 0 18px 0;
+}
+.rule.center { margin-left: auto; margin-right: auto; }
+
+h1.headline {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 6px 0;
+  line-height: 1.12;
+}
+h1.headline.on-navy { color: var(--cream-text); }
+
+.subhead {
+  font-family: 'Spectral', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-size: 13.5pt;
+  margin: 4px 0 18px 0;
+}
+.subhead.on-navy { color: var(--cream-muted); }
+
+.body-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.3pt;
+  line-height: 1.62;
+  color: var(--ink-soft);
+}
+.body-text.on-navy { color: var(--cream-muted); }
+
+/* ================= PAGE 1 — COVER ================= */
+.cover {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color: var(--cream-text);
+}
+.cover .pad { display: flex; flex-direction: column; justify-content: space-between; }
+.cover-top { padding-top: 0.35in; }
+.cover-mark {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 600;
+  letter-spacing: 3.5px;
+  font-size: 10.5pt;
+  color: var(--gold-light);
+  text-transform: uppercase;
+}
+.cover-goldline { height: 1px; background: rgba(217,185,97,0.45); margin: 14px 0 0.9in 0; }
+.cover-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 46pt;
+  line-height: 1.06;
+  margin: 0;
+}
+.cover-title .amp { color: var(--gold-light); }
+.cover-sub {
+  font-family: 'Spectral', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16pt;
+  color: var(--cream-muted);
+  margin-top: 0.3in;
+  max-width: 5.6in;
+  line-height: 1.45;
+}
+.cover-triad { display: flex; gap: 0.4in; margin-top: 0.55in; }
+.cover-triad .item { flex: 1; border-top: 1px solid rgba(217,185,97,0.55); padding-top: 12px; }
+.cover-triad .word {
+  font-family: 'Archivo', sans-serif; font-weight: 700; letter-spacing: 2px;
+  color: var(--gold-light); font-size: 11pt; text-transform: uppercase;
+}
+.cover-triad .desc { font-family: 'Inter', sans-serif; font-size: 9pt; color: var(--cream-muted); margin-top: 4px; line-height: 1.5; }
+
+.cover-bottom { padding-bottom: 0.15in; }
+.cover-foot-rule { height: 1px; background: rgba(217,185,97,0.35); margin-bottom: 12px; }
+.cover-foot {
+  font-family: 'Archivo', sans-serif; font-size: 8.5pt; letter-spacing: 0.6px;
+  color: var(--cream-muted); text-transform: uppercase;
+}
+.cover-foot b { color: var(--gold-light); font-weight: 600; }
+
+/* ================= PAGE — CREAM SECTIONS ================= */
+.cream-page { background: var(--cream); }
+
+.two-col { display: flex; gap: 0.5in; margin-top: 6px; }
+.two-col .col { flex: 1; }
+.col-label {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 9pt;
+  letter-spacing: 1.2px; text-transform: uppercase; color: var(--navy);
+  margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1.5px solid var(--gold);
+}
+ul.bullets { list-style: none; margin: 0; padding: 0; }
+ul.bullets li {
+  font-family: 'Inter', sans-serif; font-size: 9.8pt; color: var(--ink-soft);
+  line-height: 1.55; padding-left: 16px; position: relative; margin-bottom: 8px;
+}
+ul.bullets li:before {
+  content: ""; position: absolute; left: 0; top: 6px;
+  width: 6px; height: 6px; background: var(--gold);
+}
+
+.promise-box {
+  background: var(--navy); color: var(--cream-text);
+  padding: 0.32in 0.4in; margin-top: 0.28in;
+  border-left: 4px solid var(--gold);
+}
+.promise-box .eyebrow { color: var(--gold-light); margin-bottom: 6px; }
+.promise-box .ptitle {
+  font-family: 'Playfair Display', serif; font-weight: 600; font-size: 16pt;
+  line-height: 1.28; margin: 0 0 8px 0;
+}
+.promise-box p { font-family: 'Inter', sans-serif; font-size: 9.6pt; color: var(--cream-muted); line-height: 1.55; margin: 0; }
+
+/* ---- resource rack grid ---- */
+.rack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 22px; margin-top: 0.22in; }
+.rack-card {
+  background: var(--cream-warm); border: 1px solid rgba(184,145,47,0.28);
+  padding: 12px 14px; min-height: 0.92in;
+}
+.rack-num {
+  font-family: 'Playfair Display', serif; font-weight: 700; color: var(--gold);
+  font-size: 15pt; line-height: 1; margin-bottom: 4px;
+}
+.rack-title {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 10.3pt;
+  color: var(--navy); margin-bottom: 3px;
+}
+.rack-desc { font-family: 'Spectral', serif; font-size: 8.9pt; color: var(--ink-soft); line-height: 1.4; }
+
+.foundation-strip {
+  margin-top: 0.24in; padding-top: 12px; border-top: 1px solid rgba(184,145,47,0.35);
+  font-family: 'Inter', sans-serif; font-size: 9pt; color: var(--ink-soft); line-height: 1.55;
+}
+.foundation-strip b { color: var(--navy); font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.6px;}
+
+/* ================= NAVY SECTION PAGE ================= */
+.navy-page { background: linear-gradient(170deg, var(--navy) 0%, var(--navy-deep) 100%); }
+
+.breakthrough-list { margin-top: 0.22in; }
+.bt-row {
+  display: flex; align-items: flex-start; gap: 18px;
+  padding: 14px 0; border-bottom: 1px solid rgba(217,185,97,0.22);
+}
+.bt-row:last-child { border-bottom: none; }
+.bt-num {
+  font-family: 'Playfair Display', serif; font-weight: 700; color: var(--gold-light);
+  font-size: 20pt; width: 0.55in; flex-shrink: 0;
+}
+.bt-title {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 11pt;
+  color: var(--cream-text); margin-bottom: 3px;
+}
+.bt-desc { font-family: 'Inter', sans-serif; font-size: 9.3pt; color: var(--cream-muted); line-height: 1.5; }
+
+/* ================= PAGE 5 — LEGACY + CHURCH ================= */
+.panel {
+  background: var(--cream-warm); border: 1px solid rgba(184,145,47,0.28);
+  padding: 0.24in 0.28in; margin-bottom: 0.2in;
+}
+.panel-title {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 10.5pt;
+  color: var(--navy); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 10px;
+}
+.church-levels { display: flex; flex-direction: column; gap: 8px; }
+.level-row { display: flex; gap: 12px; align-items: baseline; }
+.level-badge {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 8.3pt;
+  color: var(--cream-text); background: var(--navy); padding: 3px 8px; flex-shrink: 0; letter-spacing: 0.5px;
+}
+.level-text { font-family: 'Inter', sans-serif; font-size: 9.4pt; color: var(--ink-soft); line-height: 1.4; }
+.level-text b { color: var(--navy); }
+
+.pull-quote {
+  font-family: 'Spectral', serif; font-style: italic; font-size: 12.5pt;
+  color: var(--navy); line-height: 1.55; margin-top: 0.22in;
+  padding: 0.02in 0 0.02in 0.24in; border-left: 3px solid var(--gold);
+}
+
+/* ================= PAGE 6 — MEMBERSHIP ================= */
+.tier-row { display: flex; gap: 14px; margin-top: 0.2in; }
+.tier-card {
+  flex: 1; background: var(--cream-warm); border: 1px solid rgba(184,145,47,0.3);
+  padding: 0.2in 0.18in; display: flex; flex-direction: column;
+}
+.tier-card.featured { background: var(--navy); border-color: var(--gold); }
+.tier-name {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 9.5pt;
+  letter-spacing: 0.8px; text-transform: uppercase; color: var(--navy); margin-bottom: 6px;
+}
+.tier-card.featured .tier-name { color: var(--gold-light); }
+.tier-price {
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 19pt;
+  color: var(--navy); margin-bottom: 2px;
+}
+.tier-card.featured .tier-price { color: var(--cream-text); }
+.tier-price span { font-family:'Inter',sans-serif; font-weight:400; font-size:8.5pt; color: var(--ink-soft); }
+.tier-card.featured .tier-price span { color: var(--cream-muted); }
+.tier-for { font-family:'Spectral',serif; font-style:italic; font-size:8.7pt; color: var(--ink-soft); margin-bottom: 10px; }
+.tier-card.featured .tier-for { color: var(--cream-muted); }
+ul.tier-list { list-style: none; margin: 0; padding: 0; flex-grow:1; }
+ul.tier-list li {
+  font-family:'Inter',sans-serif; font-size: 8.5pt; color: var(--ink-soft);
+  line-height: 1.5; padding-left: 13px; position: relative; margin-bottom: 6px;
+}
+.tier-card.featured ul.tier-list li { color: var(--cream-muted); }
+ul.tier-list li:before { content:"—"; position:absolute; left:0; color: var(--gold); }
+
+.founding-box {
+  margin-top: 0.24in; background: var(--cream); border: 1.5px dashed var(--gold);
+  padding: 0.2in 0.26in;
+}
+.founding-box .ftitle {
+  font-family:'Playfair Display',serif; font-weight:600; font-size: 13.5pt; color: var(--navy); margin-bottom: 6px;
+}
+.founding-box p { font-family:'Inter',sans-serif; font-size: 9.3pt; color: var(--ink-soft); line-height: 1.55; margin:0; }
+
+.compliance-note {
+  margin-top: 0.2in; font-family:'Inter',sans-serif; font-size: 7.6pt; color: var(--ink-soft);
+  font-style: italic; line-height: 1.5; border-top: 1px solid rgba(184,145,47,0.3); padding-top: 8px;
+}
+
+/* ================= PAGE 7 — ADVANTAGE ================= */
+.adv-table { display: flex; gap: 0.4in; margin-top: 0.28in; }
+.adv-col { flex: 1; }
+.adv-head {
+  font-family:'Archivo',sans-serif; font-weight:700; font-size: 9.3pt; letter-spacing: 0.8px;
+  text-transform: uppercase; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1.5px solid var(--gold-light);
+  color: var(--cream-text);
+}
+.adv-col.dim .adv-head { color: var(--cream-muted); border-bottom-color: rgba(217,185,97,0.35); }
+.adv-item { font-family:'Inter',sans-serif; font-size: 9.6pt; color: var(--cream-text); margin-bottom: 9px; padding-left: 14px; position: relative; line-height:1.45;}
+.adv-col.dim .adv-item { color: var(--cream-muted); }
+.adv-item:before { content:"+"; position:absolute; left:0; color: var(--gold-light); font-weight:700; }
+.adv-col.dim .adv-item:before { content:"·"; color: var(--cream-muted); }
+
+.advantage-quote {
+  margin-top: 0.35in; font-family:'Spectral',serif; font-style: italic; font-size: 13.5pt;
+  color: var(--cream-text); line-height: 1.6; padding-left: 0.24in; border-left: 3px solid var(--gold-light);
+}
+
+/* ================= PAGE 8 — NEXT STEPS ================= */
+.promise-lines { margin-top: 0.2in; }
+.promise-line {
+  font-family:'Spectral',serif; font-size: 11.5pt; color: var(--ink); line-height: 1.9;
+  padding-left: 18px; position: relative;
+}
+.promise-line:before { content:"✦"; position:absolute; left:0; color: var(--gold); font-size: 8pt; top: 6px; }
+
+.steps-row { display:flex; gap: 16px; margin-top: 0.26in; }
+.step { flex:1; }
+.step-num {
+  font-family:'Playfair Display',serif; font-weight:700; font-size: 17pt; color: var(--gold); margin-bottom: 4px;
+}
+.step-title { font-family:'Archivo',sans-serif; font-weight:700; font-size: 9.6pt; color: var(--navy); margin-bottom: 4px; }
+.step-desc { font-family:'Inter',sans-serif; font-size: 8.7pt; color: var(--ink-soft); line-height: 1.5; }
+
+.contact-block {
+  margin-top: 0.32in; background: var(--navy); color: var(--cream-text);
+  padding: 0.26in 0.3in;
+}
+.contact-name { font-family:'Playfair Display',serif; font-weight:700; font-size: 14pt; margin-bottom: 3px; }
+.contact-role { font-family:'Spectral',serif; font-style:italic; font-size: 9.8pt; color: var(--cream-muted); margin-bottom: 12px; }
+.contact-line { font-family:'Archivo',sans-serif; font-size: 8.8pt; color: var(--gold-light); letter-spacing: 0.4px; margin-bottom: 3px; }
+
+.tagline-foot {
+  margin-top: 0.26in; text-align:center;
+  font-family:'Archivo',sans-serif; font-weight: 600; font-size: 9pt; letter-spacing: 1.6px;
+  text-transform: uppercase; color: var(--navy);
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 : COVER ============ -->
+<div class="page cover">
+  <div class="pad">
+    <div class="cover-top">
+      <div class="cover-mark">Lifetogether Presents</div>
+      <div class="cover-goldline"></div>
+      <h1 class="cover-title">Christian<br>Advisor<br>Network<span class="amp">™</span></h1>
+      <div class="cover-sub">Build a practice that reflects your faith and changes families for generations.</div>
+      <div class="cover-triad">
+        <div class="item"><div class="word">Grow</div><div class="desc">Personally — faith, leadership, and calling</div></div>
+        <div class="item"><div class="word">Serve</div><div class="desc">Families — across every generation and transition</div></div>
+        <div class="item"><div class="word">Multiply</div><div class="desc">Kingdom impact — through churches and communities</div></div>
+      </div>
+    </div>
+    <div class="cover-bottom">
+      <div class="cover-foot-rule"></div>
+      <div class="cover-foot">A Practice Brief for <b>RIA Principals &amp; Advisory Firms</b> &nbsp;·&nbsp; Built on Ron Blue's Biblical Financial Wisdom &amp; Lifetogether's 25-Year Campaign Architecture</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAGE 2 : THE OPPORTUNITY ============ -->
+<div class="page cream-page">
+  <div class="pad">
+    <div class="eyebrow navy">The Opportunity</div>
+    <h1 class="headline">More Than a Professional Association</h1>
+    <div class="subhead">A resource, relationship, training, and ministry ecosystem</div>
+    <div class="body-text">
+      The Christian Advisor Network equips advisors with biblically sound resources they can use personally, professionally, with client families, and in partnership with local churches. The advisor no longer has to wonder what to send, what to say, how to begin the conversation, or how to serve the entire family — the Network provides the answer, the script, the exercise, the presentation, the follow-up, and the next step.
+    </div>
+
+    <div class="two-col" style="margin-top:0.28in;">
+      <div class="col">
+        <div class="col-label">Who the Advisor Becomes</div>
+        <ul class="bullets">
+          <li>A stronger follower of Christ</li>
+          <li>A more effective practice leader</li>
+          <li>A trusted guide to families</li>
+          <li>An equipper of the next generation</li>
+          <li>A strategic partner to pastors and churches</li>
+          <li>A catalyst for biblical financial wisdom and generous living</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="col-label">What the Platform Enables</div>
+        <ul class="bullets">
+          <li>Personal and spiritual growth</li>
+          <li>A differentiated, values-aligned practice</li>
+          <li>Deeper, more meaningful client conversations</li>
+          <li>Multi-generational family engagement</li>
+          <li>Ethical, compliance-aware church partnerships</li>
+          <li>Repeatable resources for every stage of service</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="promise-box">
+      <div class="eyebrow">The Central Promise</div>
+      <div class="ptitle">Everything a Christian Advisor Needs to Grow Personally and Serve Families Meaningfully</div>
+      <p>Every major resource moves from intention to conversation, from conversation to relationship, and from relationship to transformation — advisor guide, client-facing PDF, conversation script, family discussion guide, and follow-up tools, all in one system.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAGE 3 : RESOURCE RACK ============ -->
+<div class="page cream-page">
+  <div class="pad">
+    <div class="eyebrow navy">The Complete Resource Rack™</div>
+    <h1 class="headline" style="font-size:24pt;">A Biblical Resource for Every Conversation, Transition, and Family Need</h1>
+    <div class="subhead">Christian advisors encounter issues that go far beyond investments. The Resource Rack equips them for the whole person, the whole family, and the whole journey.</div>
+
+    <div class="rack-grid">
+      <div class="rack-card"><div class="rack-num">01</div><div class="rack-title">Faith &amp; Spiritual Formation</div><div class="rack-desc">Faith and finances, uncertainty, contentment, calling, spiritual disciplines, eternal perspective.</div></div>
+      <div class="rack-card"><div class="rack-num">02</div><div class="rack-title">Marriage &amp; Money</div><div class="rack-desc">Money personalities, conflict, transparency, debt, blended families, retirement expectations.</div></div>
+      <div class="rack-card"><div class="rack-num">03</div><div class="rack-title">Parenting &amp; Next Generation</div><div class="rack-desc">Wise children, generosity, responsibility, entitlement, preparing heirs, grandparent influence.</div></div>
+      <div class="rack-card"><div class="rack-num">04</div><div class="rack-title">Family Communication &amp; Unity</div><div class="rack-desc">Family meetings, conflict, shared vision, governance, constitutions, legacy retreats.</div></div>
+      <div class="rack-card"><div class="rack-num">05</div><div class="rack-title">Life Purpose &amp; Calling</div><div class="rack-desc">Purpose, career transition, retirement identity, mentoring, multiplying a life message.</div></div>
+      <div class="rack-card"><div class="rack-num">06</div><div class="rack-title">Financial Wisdom &amp; Stewardship</div><div class="rack-desc">God owns it all, margin, debt, goals, saving, investing, finish lines, gratitude.</div></div>
+      <div class="rack-card"><div class="rack-num">07</div><div class="rack-title">Generosity &amp; Kingdom Impact</div><div class="rack-desc">Family giving, philanthropy, donor-advised funds, missions, foundations, legacy giving.</div></div>
+      <div class="rack-card"><div class="rack-num">08</div><div class="rack-title">Health, Wholeness &amp; Resilience</div><div class="rack-desc">Stress, burnout, health crises, caregiving, Sabbath, grief, whole-life stewardship.</div></div>
+      <div class="rack-card"><div class="rack-num">09</div><div class="rack-title">Retirement &amp; Major Transitions</div><div class="rack-desc">Retirement, business sale, widowhood, relocation, inheritance, end-of-life planning.</div></div>
+      <div class="rack-card"><div class="rack-num">10</div><div class="rack-title">Family Legacy</div><div class="rack-desc">Legacy letters, family stories, faith stories, values, traditions, ethical wills, family videos.</div></div>
+    </div>
+
+    <div class="foundation-strip">
+      <b>THE FOUNDATION&nbsp; </b> Ron Blue's biblical financial wisdom, paired with Lifetogether's campaign, curriculum, conversation, personalization, and churchwide implementation systems — a 25-year foundation no other advisor network can offer.
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAGE 4 : SEVEN BREAKTHROUGH RESOURCES ============ -->
+<div class="page navy-page">
+  <div class="pad">
+    <div class="eyebrow gold">Flagship Systems</div>
+    <h1 class="headline on-navy">The Seven Breakthrough Resources™</h1>
+    <div class="subhead on-navy">Flagship systems that solve major advisor problems and deepen client relationships</div>
+
+    <div class="breakthrough-list">
+      <div class="bt-row"><div class="bt-num">1</div><div><div class="bt-title">Faith &amp; Practice Alignment Assessment™</div><div class="bt-desc">See where faith, life, family, leadership, practice, and Kingdom impact are aligned — and build a 90-day growth plan.</div></div></div>
+      <div class="bt-row"><div class="bt-num">2</div><div><div class="bt-title">Christian Advisor Vision &amp; Values Builder™</div><div class="bt-desc">Create a fully custom vision, mission, values, client promise, team covenant, and ten-year legacy vision.</div></div></div>
+      <div class="bt-row"><div class="bt-num">3</div><div><div class="bt-title">Legacy Family Conversation System™</div><div class="bt-desc">Turn financial-planning meetings into meaningful multi-generational conversations.</div></div></div>
+      <div class="bt-row"><div class="bt-num">4</div><div><div class="bt-title">Family Legacy Builder™</div><div class="bt-desc">Help families transfer faith, wisdom, values, stories, generosity, and wealth — built on the Tom Conway framework.</div></div></div>
+      <div class="bt-row"><div class="bt-num">5</div><div><div class="bt-title">40-Day Christian Advisor Growth Builder™</div><div class="bt-desc">A guided faith-and-practice journey combining spiritual formation with practical growth actions.</div></div></div>
+      <div class="bt-row"><div class="bt-num">6</div><div><div class="bt-title">Advisor-Church Partnership Playbook™</div><div class="bt-desc">Serve churches with wisdom, integrity, clear boundaries, and scalable ministry pathways.</div></div></div>
+      <div class="bt-row"><div class="bt-num">7</div><div><div class="bt-title">Pastor Sermon &amp; Seminar Library™</div><div class="bt-desc">Equip pastors with biblically rich, pastorally sensitive teaching on stewardship, generosity, and legacy.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAGE 5 : LEGACY + CHURCH PARTNERSHIP ============ -->
+<div class="page cream-page">
+  <div class="pad">
+    <div class="eyebrow navy">From Client Meeting to Generational Legacy</div>
+    <h1 class="headline" style="font-size:22pt;">Turn Planning Into Legacy — and Practice Into Ministry</h1>
+
+    <div class="panel">
+      <div class="panel-title">Legacy Family Conversation System™ &amp; Family Legacy Builder™</div>
+      <div class="two-col">
+        <div class="col">
+          <ul class="bullets">
+            <li>100 Legacy Questions &amp; Family Values Card Sort</li>
+            <li>Legacy Timeline &amp; Family Story Interview</li>
+            <li>Family Mission Builder &amp; Generosity Map</li>
+            <li>Next-Generation Readiness Assessment</li>
+          </ul>
+        </div>
+        <div class="col">
+          <ul class="bullets">
+            <li>Six movements: story, values, purpose, next generation, generosity, legacy plan</li>
+            <li>Mission statement and legacy letter</li>
+            <li>Annual family retreat and ten-year vision</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Five Levels of Church Partnership</div>
+      <div class="church-levels">
+        <div class="level-row"><div class="level-badge">LEVEL 1</div><div class="level-text"><b>Resource Provider</b> — articles, devotionals, PDFs, sermon-support resources.</div></div>
+        <div class="level-row"><div class="level-badge">LEVEL 2</div><div class="level-text"><b>Seminar Partner</b> — financial wisdom, retirement, legacy, and estate-planning education.</div></div>
+        <div class="level-row"><div class="level-badge">LEVEL 3</div><div class="level-text"><b>Small-Group Partner</b> — six-week studies, 21-day challenges, 40-day campaigns.</div></div>
+        <div class="level-row"><div class="level-badge">LEVEL 4</div><div class="level-text"><b>Ministry Builder</b> — legacy family, generosity, business owner, and young-family ministries.</div></div>
+        <div class="level-row"><div class="level-badge">LEVEL 5</div><div class="level-text"><b>Strategic Ministry Partner</b> — an annual plan with campaigns, training, and leadership development.</div></div>
+      </div>
+    </div>
+
+    <div class="pull-quote">"Most financial planning focuses on what your family will receive. We also want to help you think about what your family will remember, what they will believe, and how they will be prepared."</div>
+  </div>
+</div>
+
+<!-- ============ PAGE 6 : MEMBERSHIP ============ -->
+<div class="page cream-page">
+  <div class="pad">
+    <div class="eyebrow navy">Membership</div>
+    <h1 class="headline">One Network. Three Ways to Join.</h1>
+    <div class="subhead">Every tier includes the full Resource Rack and the Seven Breakthrough Resources — pricing scales with your practice.</div>
+
+    <div class="tier-row">
+      <div class="tier-card">
+        <div class="tier-name">Individual Advisor</div>
+        <div class="tier-price">$199<span>&nbsp;/ month</span></div>
+        <div class="tier-for">For the solo advisor or single practice</div>
+        <ul class="tier-list">
+          <li>Full Resource Rack access</li>
+          <li>Client-facing PDFs &amp; conversation scripts</li>
+          <li>40-Day Growth Builder (personal use)</li>
+          <li>One client cohort license</li>
+        </ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-name">Practice &amp; Team</div>
+        <div class="tier-price">$499<span>&nbsp;/ month</span></div>
+        <div class="tier-for">For practices up to 10 advisors</div>
+        <ul class="tier-list">
+          <li>Everything in Individual, firm-wide</li>
+          <li>Advisor-branded resource customization</li>
+          <li>Church Partnership Playbook &amp; pastor toolkit</li>
+          <li>Team growth cohort &amp; coaching guide</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">RIA Enterprise Partner</div>
+        <div class="tier-price">Custom</div>
+        <div class="tier-for">For larger RIAs &amp; aggregator firms</div>
+        <ul class="tier-list">
+          <li>Unlimited advisor seats</li>
+          <li>Compliance-reviewed content licensing</li>
+          <li>Co-branded family &amp; church resources</li>
+          <li>Dedicated Kingdom Impact strategist</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="founding-box">
+      <div class="ftitle">The Founding Advisor Cohort</div>
+      <p>A limited group of 20–30 advisors and practices are being invited to join at a founding rate ahead of general availability, in exchange for a case study and testimonial as the Network scales into larger RIA and aggregator relationships. Founding members lock in their rate for three years and receive early access to every new Resource Rack release.</p>
+    </div>
+
+    <div class="compliance-note">The Christian Advisor Network provides biblical and relational content for personal, practice, and ministry use. It is not a substitute for individualized financial, legal, or tax advice, and all client-facing materials are designed for compliance review prior to use.</div>
+  </div>
+</div>
+
+<!-- ============ PAGE 7 : STRATEGIC ADVANTAGE ============ -->
+<div class="page navy-page">
+  <div class="pad">
+    <div class="eyebrow gold">Why This Network</div>
+    <h1 class="headline on-navy">The Strategic Advantage</h1>
+    <div class="subhead on-navy">What traditional advisor networks provide — and what is usually missing</div>
+
+    <div class="adv-table">
+      <div class="adv-col dim">
+        <div class="adv-head">Most Advisor Networks Provide</div>
+        <div class="adv-item">Practice management</div>
+        <div class="adv-item">Investment platforms</div>
+        <div class="adv-item">Compliance</div>
+        <div class="adv-item">Technology</div>
+        <div class="adv-item">Marketing</div>
+        <div class="adv-item">Networking</div>
+      </div>
+      <div class="adv-col">
+        <div class="adv-head">The Christian Advisor Network Adds</div>
+        <div class="adv-item">Spiritual formation</div>
+        <div class="adv-item">Biblically sound financial wisdom</div>
+        <div class="adv-item">Transferable client conversation tools</div>
+        <div class="adv-item">Family legacy &amp; next-generation resources</div>
+        <div class="adv-item">Church partnership systems &amp; pastor sermon support</div>
+        <div class="adv-item">Customizable, advisor-branded family journeys</div>
+      </div>
+    </div>
+
+    <div class="advantage-quote">"We help Christian advisors grow personally, build thriving practices, deepen client relationships, serve entire families, partner with churches, and multiply Kingdom impact."</div>
+  </div>
+</div>
+
+<!-- ============ PAGE 8 : NEXT STEPS ============ -->
+<div class="page cream-page">
+  <div class="pad">
+    <div class="eyebrow navy">Getting Started</div>
+    <h1 class="headline" style="font-size:22pt;">Something Meaningful for Every Client, Every Family, Every Church.</h1>
+
+    <div class="promise-lines">
+      <div class="promise-line">Something meaningful to send every client</div>
+      <div class="promise-line">Something timely for every family transition</div>
+      <div class="promise-line">Something valuable for every generation</div>
+      <div class="promise-line">Something transformational to launch in every church</div>
+    </div>
+
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Schedule a Conversation</div>
+        <div class="step-desc">A 30-minute call to understand your practice, your client base, and where the Network fits.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Choose Your Membership</div>
+        <div class="step-desc">Individual, Practice &amp; Team, or a custom RIA Enterprise Partnership.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Receive Your First Toolkit</div>
+        <div class="step-desc">Your Resource Rack access, client-facing materials, and Growth Builder — ready to use in your next meeting.</div>
+      </div>
+    </div>
+
+    <div class="contact-block">
+      <div class="contact-name">Brett Eastman</div>
+      <div class="contact-role">Founder, Lifetogether &amp; the Christian Advisor Network</div>
+      <div class="contact-line">brett@lifetogether.com</div>
+      <div class="contact-line">40daycampaigns.com</div>
+    </div>
+
+    <div class="tagline-foot">Faithful Advisors · Flourishing Practices · Stronger Families · Healthier Churches · Lasting Legacies</div>
+  </div>
+</div>
+
+</body>
+</html>

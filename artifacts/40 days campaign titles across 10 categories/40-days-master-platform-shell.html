@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 Days Master Platform — Campaign Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0B1526;
+    --navy-panel:#101D33;
+    --navy-line:rgba(201,162,75,0.18);
+    --gold:#C9A24B;
+    --gold-bright:#E4C271;
+    --gold-dim:#8B7332;
+    --ivory:#F3EEE2;
+    --slate:#8D96A8;
+    --slate-dim:#5C6579;
+    --max-w:1180px;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+  body{
+    margin:0; background:var(--navy-deep); color:var(--ivory);
+    font-family:'Cormorant Garamond', serif; font-size:19px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; text-decoration:none; }
+  h1,h2,h3,h4{ font-family:'Playfair Display', serif; margin:0; font-weight:700; }
+  button{ font-family:inherit; cursor:pointer; }
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--gold-bright); outline-offset:3px;
+  }
+
+  .topbar{
+    position:sticky; top:0; z-index:10;
+    background:rgba(11,21,38,0.94); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--navy-line);
+    padding:0.9rem 1.5rem;
+  }
+  .topbar-inner{
+    max-width:var(--max-w); margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  }
+  .crumbs{ display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; }
+  .brand{ font-family:'Playfair Display', serif; font-size:1.02rem; color:var(--gold-bright); }
+  .brand em{ font-style:italic; color:var(--ivory); font-weight:400; }
+  .crumb-link{
+    font-size:0.9rem; color:var(--slate); border:1px solid var(--navy-line);
+    padding:0.35rem 0.85rem; border-radius:2px; transition:color .15s, border-color .15s;
+  }
+  .crumb-link:hover{ color:var(--gold-bright); border-color:var(--gold-dim); }
+  .crumb-sep{ color:var(--slate-dim); }
+  .crumb-current{ color:var(--gold); font-style:italic; font-size:0.92rem; }
+
+  .search-wrap{ position:relative; }
+  .search-input{
+    background:var(--navy-panel); border:1px solid var(--navy-line); color:var(--ivory);
+    font-family:'Cormorant Garamond', serif; font-size:1rem; font-style:italic;
+    padding:0.5rem 1rem; border-radius:2px; width:260px; max-width:55vw;
+  }
+  .search-input::placeholder{ color:var(--slate-dim); }
+
+  .masthead{ max-width:var(--max-w); margin:0 auto; padding:3.4rem 1.5rem 2rem; text-align:center; }
+  .eyebrow{ font-style:italic; letter-spacing:0.26em; text-transform:uppercase; font-size:0.8rem; color:var(--gold); margin-bottom:1rem; }
+  .masthead h1{ font-size:clamp(2rem, 4.2vw, 3.3rem); }
+  .masthead h1 em{ color:var(--gold-bright); font-style:italic; }
+  .masthead p{ color:var(--slate); font-style:italic; max-width:680px; margin:1.1rem auto 0; }
+  .stat-row{ display:flex; justify-content:center; gap:2.4rem; margin-top:2.1rem; flex-wrap:wrap; }
+  .stat-num{ font-family:'Playfair Display', serif; font-size:1.6rem; color:var(--gold-bright); display:block; }
+  .stat-label{ font-size:0.76rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--slate); }
+
+  main{ max-width:var(--max-w); margin:0 auto; padding:1rem 1.5rem 5rem; }
+
+  /* ---- Home: category list ---- */
+  .cat-list{ display:flex; flex-direction:column; }
+  .cat-row{
+    display:flex; align-items:center; gap:1.3rem; padding:1.3rem 0.4rem;
+    border-top:1px solid var(--navy-line); transition:background .15s;
+  }
+  .cat-row:first-child{ border-top:none; }
+  .cat-row:hover{ background:#101d33; }
+  .cat-num{
+    font-family:'Playfair Display', serif; font-size:1.9rem; color:transparent;
+    -webkit-text-stroke:1px var(--gold); width:2.6rem; flex-shrink:0;
+  }
+  .cat-info{ flex:1; min-width:0; }
+  .cat-info h2{ font-size:1.3rem; color:var(--ivory); }
+  .cat-info h2 .new-badge{
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.78rem;
+    color:var(--gold-dim); margin-left:0.6rem;
+  }
+  .tier-chips{ margin-top:0.4rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+  .tier-chip{ font-size:0.82rem; color:var(--slate); border:1px solid var(--navy-line); padding:0.15rem 0.6rem; border-radius:2px; }
+  .cat-total{ font-family:'Playfair Display', serif; color:var(--gold-bright); font-size:1.15rem; flex-shrink:0; }
+  .cat-total .lbl{ display:block; font-family:'Cormorant Garamond', serif; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--slate-dim); text-align:right; }
+
+  /* ---- Category page: tiers ---- */
+  .tier-block{ padding-top:2.4rem; border-top:1px solid var(--navy-line); }
+  .tier-block:first-child{ border-top:none; }
+  .tier-head{ display:flex; align-items:baseline; gap:0.8rem; margin-bottom:1.1rem; }
+  .tier-head h3{ font-size:1.15rem; color:var(--gold-bright); }
+  .tier-head .count{ font-style:italic; color:var(--slate-dim); font-size:0.9rem; }
+  .title-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:0.6rem; margin-bottom:2.2rem; }
+  .title-tile{
+    display:block; border:1px solid var(--navy-line); border-radius:2px;
+    padding:0.65rem 0.9rem; background:var(--navy-panel); font-size:0.98rem;
+    color:var(--ivory); transition:border-color .15s, background .15s;
+  }
+  .title-tile:hover{ border-color:var(--gold-dim); background:#152541; color:var(--gold-bright); }
+
+  /* ---- Detail page ---- */
+  .detail-head{ padding:2.2rem 0 1.5rem; border-bottom:1px solid var(--navy-line); }
+  .detail-head .of{ font-size:0.78rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); }
+  .detail-head h1{ font-size:clamp(1.8rem, 4vw, 2.7rem); margin-top:0.4rem; color:var(--ivory); }
+  .detail-head .sub{ color:var(--slate); font-style:italic; margin-top:0.6rem; font-size:1.08rem; }
+
+  .action-row{ display:flex; gap:0.7rem; flex-wrap:wrap; padding:1.6rem 0; border-bottom:1px solid var(--navy-line); }
+  .action-btn{
+    border:1px solid var(--gold-dim); background:none; color:var(--gold-bright);
+    padding:0.6rem 1.2rem; border-radius:2px; font-size:0.98rem; font-family:'Cormorant Garamond', serif;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .action-btn:hover{ background:var(--navy-panel); border-color:var(--gold); }
+  .action-btn.active{ background:var(--gold); color:var(--navy-deep); border-color:var(--gold); }
+  .action-btn .n{ font-size:0.78rem; opacity:0.75; }
+
+  .section-block{ padding:2rem 0; border-bottom:1px solid var(--navy-line); display:none; }
+  .section-block.open{ display:block; }
+  .section-block h2{ font-size:1.3rem; color:var(--ivory); margin-bottom:0.3rem; }
+  .section-block .section-note{ color:var(--slate); font-style:italic; font-size:0.95rem; margin-bottom:1.3rem; }
+
+  .curric-list{ list-style:none; margin:0; padding:0; }
+  .curric-item{ display:flex; gap:1rem; padding:0.85rem 0; border-top:1px solid var(--navy-line); }
+  .curric-item:first-child{ border-top:none; }
+  .curric-roman{ font-family:'Playfair Display', serif; font-size:1.05rem; color:transparent; -webkit-text-stroke:1px var(--gold-dim); width:2.2rem; flex-shrink:0; }
+  .curric-title{ font-family:'Playfair Display', serif; color:var(--gold-bright); font-size:1.12rem; }
+
+  .phase-block{ margin-bottom:1.4rem; }
+  .phase-block:last-child{ margin-bottom:0; }
+  .phase-toggle{
+    width:100%; display:flex; align-items:center; gap:0.9rem;
+    background:var(--navy-panel); border:1px solid var(--navy-line); border-radius:2px;
+    padding:0.65rem 1rem; color:var(--ivory); font-size:0.98rem;
+  }
+  .phase-toggle .pr{ font-family:'Playfair Display', serif; color:transparent; -webkit-text-stroke:1px var(--gold); font-size:1.05rem; }
+  .phase-toggle .pt{ font-family:'Playfair Display', serif; color:var(--gold-bright); flex:1; text-align:left; }
+  .phase-toggle .pc{ font-size:0.82rem; color:var(--slate-dim); font-style:italic; }
+  .phase-toggle .caret{ color:var(--gold-dim); transition:transform .15s; }
+  .phase-toggle[aria-expanded="true"] .caret{ transform:rotate(90deg); }
+  .phase-days{ display:none; padding:0.85rem 0.2rem 0.2rem; }
+  .phase-days.open{ display:block; }
+  .day-row{ display:flex; align-items:baseline; gap:1rem; padding:0.5rem 0.8rem; border-top:1px solid var(--navy-line); }
+  .day-row:first-child{ border-top:none; }
+  .day-num{ font-size:0.83rem; color:var(--gold-dim); flex-shrink:0; width:4.4rem; }
+  .day-title{ font-size:1rem; }
+
+  .kit-note-box{
+    border:1px solid var(--gold-dim); border-radius:2px; padding:1rem 1.2rem; margin-bottom:1.4rem;
+    background:var(--navy-panel); font-style:italic; color:var(--slate);
+  }
+  .kit-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:0.65rem; }
+  .kit-card{ border:1px solid var(--navy-line); border-radius:2px; padding:0.85rem 1rem; background:var(--navy-panel); text-align:left; color:var(--ivory); }
+  .kit-card .kt{ font-family:'Playfair Display', serif; color:var(--gold-bright); font-size:1rem; }
+  .kit-card .kd{ display:none; font-size:0.92rem; color:var(--slate); margin-top:0.5rem; line-height:1.45; }
+  .kit-card.open .kd{ display:block; }
+  .kit-card .kc{ font-size:0.76rem; color:var(--gold-dim); margin-top:0.4rem; }
+
+  .no-results{ text-align:center; color:var(--slate); font-style:italic; padding:3rem 0; }
+  .search-result-row{
+    display:block; padding:0.8rem 0.4rem; border-top:1px solid var(--navy-line);
+  }
+  .search-result-row:first-child{ border-top:none; }
+  .search-result-row:hover{ background:#101d33; }
+  .search-result-row .srp{ font-size:0.8rem; color:var(--slate-dim); }
+  .search-result-row .srt{ font-family:'Playfair Display', serif; color:var(--gold-bright); font-size:1.1rem; }
+
+  footer{ max-width:var(--max-w); margin:0 auto; padding:3rem 1.5rem 4rem; text-align:center; color:var(--slate-dim); font-style:italic; font-size:0.92rem; }
+
+  @media (max-width: 640px){
+    .title-grid{ grid-template-columns:1fr; }
+    .kit-grid{ grid-template-columns:1fr; }
+    .search-input{ width:160px; }
+    .cat-row{ flex-wrap:wrap; }
+    .cat-total{ margin-left:auto; }
+  }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner" id="topbarInner"></div></div>
+<div id="app"></div>
+<footer>LifeTogether Ministries — the v2 catalog, built to click through from theme to curriculum to full campaign.</footer>
+
+<script>
+(function(){
+
+  var CATALOG = /*__CATALOG_JSON__*/;
+
+  var ROMANS6 = ["I","II","III","IV","V","VI"];
+  var ROMANS5 = ["I","II","III","IV","V"];
+
+  var PHASE_NAMES = ["Where It Begins","Living It Daily","Tested and Tried","Together","A Life Marked By This"];
+
+  var PHASE_DAYS = [
+    ["Introducing {W}","The Story of {W}","Why {W} Matters","{W} in Scripture","The Question {W} Answers","An Invitation Into {W}","The First Step","Starting Where You Are"],
+    ["A Daily Rhythm","Small Steps, Real Change","Building the Habit","When It Feels Hard","Consistency Over Intensity","{W} in the Ordinary Day","Practicing What You've Learned","A Week In — Checking Your Progress"],
+    ["When {W} Is Tested","The Obstacles You'll Face","{W} in the Hard Season","Doubt and Faith","Halfway — Where Are You Now?","Choosing This Anyway","What Pressure Reveals","Strength for the Struggle"],
+    ["Not Meant to Be Alone","Who's Walking With You","{W} in Your Family","{W} in Your Church","Encouraging One Another","Iron Sharpens Iron","The Body, Not Just the Believer","Belonging"],
+    ["What's Changed","Identity, Not Just an Event","Passing It On","The Next 40 Days","A Legacy Worth Leaving","Looking Back to Move Forward","The Commitment That Remains","A Life Marked by {W}"]
+  ];
+
+  var KIT_TEMPLATES = [
+    {label:"Sermon Series", desc:"A six-message pulpit series built from the {W} curriculum — one message per session."},
+    {label:"Small Group Guide", desc:"Adult small group discussion guide, mapped session-by-session to the six-part {W} curriculum."},
+    {label:"Student Edition", desc:"The {W} campaign adapted for middle and high school students — same arc, youth-level language."},
+    {label:"Children's Edition", desc:"A simplified {W} track for kids' ministry, with take-home activity pages for parents."},
+    {label:"Moms & Women's Edition", desc:"The {W} campaign shaped for women's ministry and moms' groups, with space for shared reflection."},
+    {label:"Leader Training Guide", desc:"Everything a small group or campaign leader needs to launch and lead the {W} campaign well."},
+    {label:"Daily Devotional Booklet", desc:"All 40 devotionals from the campaign, collected into a single printable or digital booklet."},
+    {label:"Promo & Launch Assets", desc:"Bulletin inserts, slide graphics, and social assets to launch the {W} campaign churchwide."}
+  ];
+
+  function fill(tpl, word){ return tpl.split("{W}").join(word); }
+
+  function parseTitle(fullTitle){
+    var rest = fullTitle.replace(/^40 Days (of|in|with|at|on|from|through|to)\s+/i, "");
+    var idx = rest.indexOf(":");
+    var theme, subtitle;
+    if (idx !== -1){
+      theme = rest.substring(0, idx).trim();
+      subtitle = rest.substring(idx+1).trim();
+    } else {
+      theme = rest;
+      subtitle = "A 40-day journey into " + theme + ".";
+    }
+    return { theme: theme, subtitle: subtitle };
+  }
+
+  function curriculumFor(theme){
+    return [
+      "Introducing " + theme,
+      "The Biblical Foundation",
+      theme + " in Practice",
+      theme + " in Community",
+      "When It's Tested",
+      "A Life Shaped by " + theme
+    ];
+  }
+
+  function devotionalsFor(theme){
+    var days = [];
+    for (var p=0; p<5; p++){
+      for (var d=0; d<8; d++){
+        days.push(fill(PHASE_DAYS[p][d], theme));
+      }
+    }
+    return days;
+  }
+
+  function totalTitles(){
+    var n = 0;
+    for (var c=0;c<CATALOG.length;c++){
+      for (var t=0;t<CATALOG[c].tiers.length;t++){
+        n += CATALOG[c].tiers[t].titles.length;
+      }
+    }
+    return n;
+  }
+
+  /* ---------------- topbar ---------------- */
+
+  function renderTopbar(route){
+    var el = document.getElementById("topbarInner");
+    var crumbs = '<div class="crumbs"><a class="brand" href="#/">40 Days <em>— Master Platform</em></a>';
+    if (route.name === "cat"){
+      crumbs += '<span class="crumb-sep">/</span><span class="crumb-current">' + CATALOG[route.catIdx].name + '</span>';
+    } else if (route.name === "detail"){
+      var cat = CATALOG[route.catIdx];
+      crumbs += '<span class="crumb-sep">/</span><a class="crumb-link" href="#/cat/' + route.catIdx + '">' + cat.name + '</a>';
+      crumbs += '<span class="crumb-sep">/</span><span class="crumb-current">Campaign</span>';
+    }
+    crumbs += '</div>';
+    var search = '<div class="search-wrap"><input class="search-input" id="searchBox" type="text" placeholder="Search all campaigns…" autocomplete="off"></div>';
+    el.innerHTML = crumbs + search;
+    var box = document.getElementById("searchBox");
+    box.value = window.__lastSearch || "";
+    box.addEventListener("input", function(){
+      window.__lastSearch = box.value;
+      render();
+    });
+  }
+
+  /* ---------------- search ---------------- */
+
+  function renderSearch(query){
+    var q = query.toLowerCase().trim();
+    var html = [];
+    html.push('<main>');
+    html.push('<div class="masthead" style="padding-top:2.4rem;"><h1>Search Results</h1><p>Matches for "' + query + '"</p></div>');
+    var results = [];
+    for (var c=0;c<CATALOG.length;c++){
+      var cat = CATALOG[c];
+      for (var t=0;t<cat.tiers.length;t++){
+        var tier = cat.tiers[t];
+        for (var i=0;i<tier.titles.length;i++){
+          var title = tier.titles[i];
+          if (title.toLowerCase().indexOf(q) !== -1){
+            results.push({catIdx:c, tierIdx:t, titleIdx:i, title:title, catName:cat.name, tierName:tier.name});
+          }
+        }
+      }
+    }
+    if (results.length === 0){
+      html.push('<div class="no-results">No campaigns match your search.</div>');
+    } else {
+      html.push('<div>');
+      var cap = results.length > 300 ? 300 : results.length;
+      for (var r=0; r<cap; r++){
+        var res = results[r];
+        html.push('<a class="search-result-row" href="#/c/' + res.catIdx + '/' + res.tierIdx + '/' + res.titleIdx + '">');
+        html.push('<div class="srp">' + res.catName + ' · ' + res.tierName + '</div>');
+        html.push('<div class="srt">' + res.title + '</div>');
+        html.push('</a>');
+      }
+      if (results.length > 300){
+        html.push('<div class="no-results">Showing first 300 of ' + results.length + ' matches — refine your search.</div>');
+      }
+      html.push('</div>');
+    }
+    html.push('</main>');
+    document.getElementById("app").innerHTML = html.join("");
+  }
+
+  /* ---------------- home ---------------- */
+
+  function renderHome(){
+    var html = [];
+    var total = totalTitles();
+    html.push('<div class="masthead">');
+    html.push('<div class="eyebrow">LifeTogether Ministries</div>');
+    html.push('<h1>The 40 Days <em>Master Platform</em></h1>');
+    html.push('<p>Twenty categories, ' + total + ' campaign titles. Click any title to open its six-session curriculum, its forty devotionals, and the full campaign kit.</p>');
+    html.push('<div class="stat-row">');
+    html.push('<div><span class="stat-num">20</span><span class="stat-label">Categories</span></div>');
+    html.push('<div><span class="stat-num">' + total + '</span><span class="stat-label">Campaign Titles</span></div>');
+    html.push('<div><span class="stat-num">' + (total*6) + '</span><span class="stat-label">Curriculum Sessions</span></div>');
+    html.push('<div><span class="stat-num">' + (total*40) + '</span><span class="stat-label">Devotional Titles</span></div>');
+    html.push('</div></div>');
+
+    html.push('<main><div class="cat-list">');
+    for (var c=0; c<CATALOG.length; c++){
+      var cat = CATALOG[c];
+      var catTotal = 0;
+      var chips = [];
+      for (var t=0;t<cat.tiers.length;t++){
+        catTotal += cat.tiers[t].titles.length;
+        chips.push('<span class="tier-chip">' + cat.tiers[t].name + ' · ' + cat.tiers[t].titles.length + '</span>');
+      }
+      html.push('<a class="cat-row" href="#/cat/' + c + '">');
+      html.push('<span class="cat-num">' + (cat.num < 10 ? "0"+cat.num : cat.num) + '</span>');
+      html.push('<span class="cat-info"><h2>' + cat.name + (cat.isNew ? '<span class="new-badge">new category</span>' : '') + '</h2><span class="tier-chips">' + chips.join("") + '</span></span>');
+      html.push('<span class="cat-total">' + catTotal + '<span class="lbl">titles</span></span>');
+      html.push('</a>');
+    }
+    html.push('</div></main>');
+
+    document.getElementById("app").innerHTML = html.join("");
+  }
+
+  /* ---------------- category page ---------------- */
+
+  function renderCategory(catIdx){
+    var cat = CATALOG[catIdx];
+    var html = [];
+    html.push('<main>');
+    html.push('<div class="masthead" style="padding-top:2.4rem; text-align:left;">');
+    html.push('<div class="eyebrow">Category ' + cat.num + (cat.isNew ? ' · New' : '') + '</div>');
+    html.push('<h1>' + cat.name + '</h1>');
+    html.push('</div>');
+
+    for (var t=0; t<cat.tiers.length; t++){
+      var tier = cat.tiers[t];
+      html.push('<div class="tier-block">');
+      html.push('<div class="tier-head"><h3>' + tier.name + '</h3><span class="count">(' + tier.titles.length + ')</span></div>');
+      html.push('<div class="title-grid">');
+      for (var i=0;i<tier.titles.length;i++){
+        html.push('<a class="title-tile" href="#/c/' + catIdx + '/' + t + '/' + i + '">' + tier.titles[i] + '</a>');
+      }
+      html.push('</div></div>');
+    }
+    html.push('</main>');
+    document.getElementById("app").innerHTML = html.join("");
+  }
+
+  /* ---------------- detail page ---------------- */
+
+  function renderDetail(catIdx, tierIdx, titleIdx){
+    var cat = CATALOG[catIdx];
+    var tier = cat.tiers[tierIdx];
+    var fullTitle = tier.titles[titleIdx];
+    var parsed = parseTitle(fullTitle);
+    var theme = parsed.theme;
+    var subtitle = parsed.subtitle;
+    var curriculum = curriculumFor(theme);
+    var devotionals = devotionalsFor(theme);
+
+    var html = [];
+    html.push('<main>');
+    html.push('<div class="detail-head">');
+    html.push('<div class="of">' + cat.name + ' · ' + tier.name + '</div>');
+    html.push('<h1>' + fullTitle + '</h1>');
+    html.push('<div class="sub">' + subtitle + '</div>');
+    html.push('</div>');
+
+    html.push('<div class="action-row">');
+    html.push('<button class="action-btn" id="btnCurric">Six-Session Curriculum <span class="n">(6)</span></button>');
+    html.push('<button class="action-btn" id="btnDevo">40-Day Devotional <span class="n">(40)</span></button>');
+    html.push('<button class="action-btn" id="btnKit">Create the 40-Day Campaign <span class="n">(kit)</span></button>');
+    html.push('</div>');
+
+    /* curriculum section */
+    html.push('<div class="section-block" id="secCurric">');
+    html.push('<h2>Six-Session Curriculum</h2>');
+    html.push('<div class="section-note">A small group or class arc for ' + theme + ', built to run alongside the 40-day devotional.</div>');
+    html.push('<ul class="curric-list">');
+    for (var s=0; s<curriculum.length; s++){
+      html.push('<li class="curric-item"><span class="curric-roman">' + ROMANS6[s] + '</span><span class="curric-title">' + curriculum[s] + '</span></li>');
+    }
+    html.push('</ul></div>');
+
+    /* devotional section */
+    html.push('<div class="section-block" id="secDevo">');
+    html.push('<h2>The 40 Devotionals</h2>');
+    html.push('<div class="section-note">Grouped into five eight-day movements. Click a movement to open its daily titles.</div>');
+    for (var p=0; p<5; p++){
+      var startDay = p*8+1, endDay = p*8+8;
+      html.push('<div class="phase-block">');
+      html.push('<button class="phase-toggle" data-phase="' + p + '" aria-expanded="false">');
+      html.push('<span class="pr">' + ROMANS5[p] + '</span><span class="pt">' + PHASE_NAMES[p] + '</span><span class="pc">Days ' + startDay + '–' + endDay + '</span><span class="caret">›</span>');
+      html.push('</button>');
+      html.push('<div class="phase-days" id="phase-days-' + p + '">');
+      for (var d=0; d<8; d++){
+        var dayNum = p*8+d+1;
+        var dayLabel = dayNum < 10 ? "Day 0"+dayNum : "Day "+dayNum;
+        html.push('<div class="day-row"><span class="day-num">' + dayLabel + '</span><span class="day-title">' + devotionals[dayNum-1] + '</span></div>');
+      }
+      html.push('</div></div>');
+    }
+    html.push('</div>');
+
+    /* kit / campaign section */
+    html.push('<div class="section-block" id="secKit" style="border-bottom:none;">');
+    html.push('<h2>The 40-Day Campaign</h2>');
+    html.push('<div class="kit-note-box">Assembling this campaign pulls together the six-session curriculum above, all 40 devotionals, and the eight pieces below into one launch-ready package for ' + theme + '.</div>');
+    html.push('<div class="kit-grid">');
+    for (var k=0; k<KIT_TEMPLATES.length; k++){
+      var kit = KIT_TEMPLATES[k];
+      html.push('<button class="kit-card" data-kit="' + k + '"><div class="kt">' + kit.label + '</div><div class="kd">' + fill(kit.desc, theme) + '</div><div class="kc">Click to <span class="kit-verb">expand</span></div></button>');
+    }
+    html.push('</div></div>');
+
+    html.push('</main>');
+    document.getElementById("app").innerHTML = html.join("");
+
+    /* wire up */
+    var secCurric = document.getElementById("secCurric");
+    var secDevo = document.getElementById("secDevo");
+    var secKit = document.getElementById("secKit");
+    var btnCurric = document.getElementById("btnCurric");
+    var btnDevo = document.getElementById("btnDevo");
+    var btnKit = document.getElementById("btnKit");
+
+    function toggleSection(sec, btn){
+      var isOpen = sec.classList.contains("open");
+      if (isOpen){ sec.classList.remove("open"); btn.classList.remove("active"); }
+      else { sec.classList.add("open"); btn.classList.add("active"); }
+    }
+    btnCurric.addEventListener("click", function(){ toggleSection(secCurric, btnCurric); });
+    btnDevo.addEventListener("click", function(){ toggleSection(secDevo, btnDevo); });
+    btnKit.addEventListener("click", function(){ toggleSection(secKit, btnKit); });
+
+    /* open curriculum by default so the click-through described feels immediate */
+    toggleSection(secCurric, btnCurric);
+
+    var phaseButtons = document.querySelectorAll(".phase-toggle");
+    for (var pi=0; pi<phaseButtons.length; pi++){
+      phaseButtons[pi].addEventListener("click", function(){
+        var ph = this.getAttribute("data-phase");
+        var panel = document.getElementById("phase-days-" + ph);
+        var isOpen = this.getAttribute("aria-expanded") === "true";
+        this.setAttribute("aria-expanded", isOpen ? "false" : "true");
+        if (isOpen) panel.classList.remove("open"); else panel.classList.add("open");
+      });
+    }
+
+    var kitCards = document.querySelectorAll(".kit-card");
+    for (var ki=0; ki<kitCards.length; ki++){
+      kitCards[ki].addEventListener("click", function(){
+        this.classList.toggle("open");
+        var verb = this.querySelector(".kit-verb");
+        if (verb) verb.textContent = this.classList.contains("open") ? "collapse" : "expand";
+      });
+    }
+  }
+
+  /* ---------------- routing ---------------- */
+
+  function parseHash(){
+    var h = window.location.hash || "#/";
+    var m1 = h.match(/^#\/c\/(\d+)\/(\d+)\/(\d+)$/);
+    if (m1) return { name:"detail", catIdx:parseInt(m1[1],10), tierIdx:parseInt(m1[2],10), titleIdx:parseInt(m1[3],10) };
+    var m2 = h.match(/^#\/cat\/(\d+)$/);
+    if (m2) return { name:"cat", catIdx:parseInt(m2[1],10) };
+    return { name:"home" };
+  }
+
+  function render(){
+    var route = parseHash();
+    renderTopbar(route);
+    var q = window.__lastSearch || "";
+    if (q.trim().length > 0){
+      renderSearch(q);
+      return;
+    }
+    if (route.name === "detail"){
+      renderDetail(route.catIdx, route.tierIdx, route.titleIdx);
+    } else if (route.name === "cat"){
+      renderCategory(route.catIdx);
+    } else {
+      renderHome();
+    }
+    window.scrollTo(0,0);
+  }
+
+  window.addEventListener("hashchange", render);
+  render();
+
+})();
+</script>
+</body>
+</html>

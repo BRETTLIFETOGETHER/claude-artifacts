@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>200 More Campaigns — 8 per Category</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0E7;--paper-2:#F6F7F0;--ink:#1A2A20;--ink-soft:#41544A;
+    --ink-faint:#7C8A80;--line:#D3D8C9;--moss:#4A7C59;--moss-deep:#2F5B3E;
+    --brass:#A8853C;--brass-soft:#C6A65E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+  .hero{padding:clamp(3rem,9vw,6rem) clamp(1.4rem,5vw,4rem) clamp(2rem,5vw,3.2rem);border-bottom:1px solid var(--line)}
+  .kicker{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--moss-deep);font-weight:600;display:flex;align-items:center;gap:.7rem}
+  .kicker::after{content:"";flex:1;height:1px;background:var(--line);max-width:160px}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(2.4rem,8vw,4.8rem);line-height:.99;letter-spacing:-.015em;margin:1.1rem 0 1.2rem}
+  h1 em{font-style:italic;color:var(--moss-deep)}
+  .lede{max-width:56ch;font-size:clamp(1rem,2.6vw,1.15rem);color:var(--ink-soft)}
+  .meta{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:2.2rem;padding-top:1.4rem;border-top:1px solid var(--line)}
+  .meta .n{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:500;line-height:1}
+  .meta .l{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-top:.35rem}
+
+  .index{padding:clamp(1.6rem,4vw,2.4rem) clamp(1.4rem,5vw,4rem);border-bottom:1px solid var(--line);background:var(--paper-2)}
+  .index-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:1.1rem 0 .7rem}
+  .index-label:first-child{margin-top:0}
+  .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:.15rem 1.6rem}
+  .index-grid a{display:flex;gap:.7rem;align-items:baseline;text-decoration:none;color:var(--ink);padding:.34rem 0;border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
+  .index-grid a:hover{color:var(--moss-deep);border-color:var(--line)}
+  .index-grid .ix{font-family:'Fraunces',serif;font-size:.85rem;color:var(--brass);font-weight:600;min-width:1.7em}
+  .index-grid .ixname{font-size:.9rem}
+
+  main{padding:0 clamp(1.4rem,5vw,4rem)}
+  .band{padding:clamp(2rem,5vw,2.8rem) 0 .4rem;border-bottom:2px solid var(--moss-deep);margin-top:1rem}
+  .band .eyebrow{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .band h2{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(1.6rem,4.5vw,2.4rem);letter-spacing:-.01em;margin-top:.3rem}
+  .band p{color:var(--ink-soft);max-width:62ch;font-size:.95rem;margin-top:.45rem}
+
+  .cats{display:grid;grid-template-columns:1fr;gap:0}
+  @media(min-width:800px){.cats{grid-template-columns:1fr 1fr;gap:0 3.2rem}}
+  .cat{padding:clamp(1.7rem,4vw,2.3rem) 0;border-bottom:1px solid var(--line);scroll-margin-top:1rem}
+  .cat-head{display:flex;gap:.85rem;align-items:baseline;margin-bottom:1rem}
+  .cat-num{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:400;color:var(--brass);line-height:1;font-variant-numeric:lining-nums}
+  .cat-title{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(1.25rem,3vw,1.55rem);letter-spacing:-.01em;line-height:1.1}
+  .cat-note{color:var(--ink-faint);font-size:.78rem;margin-top:.2rem}
+
+  ol.titles{list-style:none;counter-reset:t}
+  ol.titles li{counter-increment:t;display:grid;grid-template-columns:1.8em 1fr;gap:.1rem .6rem;padding:.5rem 0;border-bottom:1px solid rgba(211,216,201,.5)}
+  ol.titles li:last-child{border-bottom:none}
+  ol.titles li::before{content:counter(t,decimal-leading-zero);grid-row:1/3;font-family:'Fraunces',serif;font-size:.8rem;color:var(--ink-faint);padding-top:.15rem}
+  .t-name{font-family:'Fraunces',serif;font-weight:600;font-size:1.02rem;letter-spacing:-.005em;line-height:1.24}
+  .t-sub{font-size:.83rem;color:var(--ink-soft);line-height:1.36}
+
+  footer{padding:clamp(2.4rem,6vw,4rem) clamp(1.4rem,5vw,4rem);color:var(--ink-faint);font-size:.82rem}
+  footer .fnote{max-width:70ch;margin-bottom:.6rem}
+  footer strong{color:var(--ink-soft);font-weight:600}
+
+  @media print{body{background:#fff}.cat{break-inside:avoid;border-color:#ccc}a{color:inherit}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker">LifeTogether · Christian Intelligence™</div>
+  <h1>200 More<br><em>Campaigns</em></h1>
+  <p class="lede">Two hundred fresh campaigns — eight new title and subtitle pairs across each of the twenty-five most-preached categories, in the same voice as the Top 100 and unique against every title built so far.</p>
+  <div class="meta">
+    <div><div class="n">200</div><div class="l">New Titles</div></div>
+    <div><div class="n">25</div><div class="l">Categories</div></div>
+    <div><div class="n">8</div><div class="l">Each</div></div>
+    <div><div class="n">37</div><div class="l">Per Category</div></div>
+  </div>
+</header>
+
+<nav class="index">
+  <div class="index-label">Felt-Need &amp; Life Issues</div>
+  <div class="index-grid">
+    <a href="#c1"><span class="ix">01</span><span class="ixname">Anxiety &amp; Mental Health</span></a>
+    <a href="#c2"><span class="ix">02</span><span class="ixname">Marriage &amp; Relationships</span></a>
+    <a href="#c3"><span class="ix">03</span><span class="ixname">Money &amp; Financial Peace</span></a>
+    <a href="#c4"><span class="ix">04</span><span class="ixname">Generosity &amp; Stewardship</span></a>
+    <a href="#c5"><span class="ix">05</span><span class="ixname">Identity in Christ</span></a>
+    <a href="#c6"><span class="ix">06</span><span class="ixname">Purpose &amp; Calling</span></a>
+    <a href="#c7"><span class="ix">07</span><span class="ixname">Grace &amp; Forgiveness</span></a>
+    <a href="#c8"><span class="ix">08</span><span class="ixname">Rest, Margin &amp; Burnout</span></a>
+    <a href="#c9"><span class="ix">09</span><span class="ixname">Family &amp; Parenting</span></a>
+    <a href="#c10"><span class="ix">10</span><span class="ixname">Faith Over Fear</span></a>
+    <a href="#c11"><span class="ix">11</span><span class="ixname">Freedom &amp; Breakthrough</span></a>
+    <a href="#c12"><span class="ix">12</span><span class="ixname">Hope in Hard Times</span></a>
+  </div>
+  <div class="index-label">Discipleship &amp; Formation</div>
+  <div class="index-grid">
+    <a href="#c13"><span class="ix">13</span><span class="ixname">Following Jesus</span></a>
+    <a href="#c14"><span class="ix">14</span><span class="ixname">Spiritual Habits</span></a>
+    <a href="#c15"><span class="ix">15</span><span class="ixname">Hearing God's Voice</span></a>
+    <a href="#c16"><span class="ix">16</span><span class="ixname">Prayer</span></a>
+    <a href="#c17"><span class="ix">17</span><span class="ixname">The Holy Spirit</span></a>
+  </div>
+  <div class="index-label">Signature Bible Series</div>
+  <div class="index-grid">
+    <a href="#c18"><span class="ix">18</span><span class="ixname">The Sermon on the Mount</span></a>
+    <a href="#c19"><span class="ix">19</span><span class="ixname">Faith in Action · James</span></a>
+    <a href="#c20"><span class="ix">20</span><span class="ixname">Rebuilding · Nehemiah</span></a>
+    <a href="#c21"><span class="ix">21</span><span class="ixname">Spiritual Warfare</span></a>
+    <a href="#c22"><span class="ix">22</span><span class="ixname">Heaven &amp; Eternity</span></a>
+  </div>
+  <div class="index-label">Church, Vision &amp; Outreach</div>
+  <div class="index-grid">
+    <a href="#c23"><span class="ix">23</span><span class="ixname">Church Vision &amp; All In</span></a>
+    <a href="#c24"><span class="ix">24</span><span class="ixname">Invite &amp; Outreach</span></a>
+    <a href="#c25"><span class="ix">25</span><span class="ixname">Community &amp; Belonging</span></a>
+  </div>
+</nav>
+
+<main>
+
+  <div class="band">
+    <div class="eyebrow">Lane One</div>
+    <h2>Felt-Need &amp; Life Issues</h2>
+    <p>Eight more per topic — the everyday struggles the largest churches address head-on.</p>
+  </div>
+  <div class="cats">
+    <section class="cat" id="c1">
+      <div class="cat-head"><div class="cat-num">01</div><div><h2 class="cat-title">Anxiety &amp; Mental Health</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Peace of Mind</span><span class="t-sub">God's calm for a cluttered head</span></li>
+        <li><span class="t-name">The Worry Cure</span><span class="t-sub">Replacing anxiety with trust</span></li>
+        <li><span class="t-name">Unshaken</span><span class="t-sub">Inner peace when everything's uncertain</span></li>
+        <li><span class="t-name">Quiet the Storm Within</span><span class="t-sub">Stilling an anxious heart</span></li>
+        <li><span class="t-name">Free from Fear</span><span class="t-sub">Releasing the grip of dread</span></li>
+        <li><span class="t-name">Mind at Rest</span><span class="t-sub">Ending the war in your head</span></li>
+        <li><span class="t-name">Take a Breath</span><span class="t-sub">Slowing an anxious spirit</span></li>
+        <li><span class="t-name">Peace, Be Still</span><span class="t-sub">Christ's calm over your chaos</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c2">
+      <div class="cat-head"><div class="cat-num">02</div><div><h2 class="cat-title">Marriage &amp; Relationships</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Naked &amp; Unashamed</span><span class="t-sub">Intimacy the way God designed</span></li>
+        <li><span class="t-name">Single &amp; Whole</span><span class="t-sub">Thriving in this season</span></li>
+        <li><span class="t-name">Love &amp; Marriage</span><span class="t-sub">God's blueprint for lasting love</span></li>
+        <li><span class="t-name">Happily Ever After Starts Now</span><span class="t-sub">Building the marriage you want</span></li>
+        <li><span class="t-name">The Vow</span><span class="t-sub">Living out "for better or worse"</span></li>
+        <li><span class="t-name">Cherished</span><span class="t-sub">Loving your spouse well</span></li>
+        <li><span class="t-name">Fireproof Love</span><span class="t-sub">A marriage that survives the flames</span></li>
+        <li><span class="t-name">Better Than Ever</span><span class="t-sub">Renewing love in every season</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c3">
+      <div class="cat-head"><div class="cat-num">03</div><div><h2 class="cat-title">Money &amp; Financial Peace</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Master Your Money</span><span class="t-sub">Taking control of your finances</span></li>
+        <li><span class="t-name">The Debt Snowball</span><span class="t-sub">Climbing out for good</span></li>
+        <li><span class="t-name">Money God's Way</span><span class="t-sub">Biblical wisdom for your wallet</span></li>
+        <li><span class="t-name">Generous Living</span><span class="t-sub">Where money meets purpose</span></li>
+        <li><span class="t-name">Beyond Broke</span><span class="t-sub">Building financial stability</span></li>
+        <li><span class="t-name">Save &amp; Invest</span><span class="t-sub">Preparing wisely for the future</span></li>
+        <li><span class="t-name">The Contentment Key</span><span class="t-sub">Freedom from wanting more</span></li>
+        <li><span class="t-name">Faith &amp; Finances</span><span class="t-sub">Trusting God with every dollar</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c4">
+      <div class="cat-head"><div class="cat-num">04</div><div><h2 class="cat-title">Generosity &amp; Stewardship</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Stewards of It All</span><span class="t-sub">Managing what God entrusts</span></li>
+        <li><span class="t-name">The Generosity Challenge</span><span class="t-sub">40 days of open-handed living</span></li>
+        <li><span class="t-name">Time, Talent, Treasure</span><span class="t-sub">Giving all you've been given</span></li>
+        <li><span class="t-name">Give &amp; It Will Be Given</span><span class="t-sub">Trusting the God who provides</span></li>
+        <li><span class="t-name">The Grateful Giver</span><span class="t-sub">Generosity born of thankfulness</span></li>
+        <li><span class="t-name">Planting for the Future</span><span class="t-sub">Sowing into what lasts</span></li>
+        <li><span class="t-name">Beyond the Tithe</span><span class="t-sub">Growing into radical generosity</span></li>
+        <li><span class="t-name">Holding Loosely</span><span class="t-sub">Freedom from the grip of stuff</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c5">
+      <div class="cat-head"><div class="cat-num">05</div><div><h2 class="cat-title">Identity in Christ</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Child of God</span><span class="t-sub">Living as the Father's own</span></li>
+        <li><span class="t-name">New Creation</span><span class="t-sub">The old is gone, the new has come</span></li>
+        <li><span class="t-name">Image Bearer</span><span class="t-sub">Reflecting the God who made you</span></li>
+        <li><span class="t-name">More Than Enough</span><span class="t-sub">Complete in Christ</span></li>
+        <li><span class="t-name">Free to Be You</span><span class="t-sub">Living beyond others' opinions</span></li>
+        <li><span class="t-name">Who God Says You Are</span><span class="t-sub">Anchoring in His words over you</span></li>
+        <li><span class="t-name">Priceless</span><span class="t-sub">Your worth in the eyes of God</span></li>
+        <li><span class="t-name">Unshakable</span><span class="t-sub">An identity that can't be moved</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c6">
+      <div class="cat-head"><div class="cat-num">06</div><div><h2 class="cat-title">Purpose &amp; Calling</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Born for This</span><span class="t-sub">Stepping into your God-given design</span></li>
+        <li><span class="t-name">God's Plan for You</span><span class="t-sub">Trusting His purpose for your life</span></li>
+        <li><span class="t-name">Dream Again</span><span class="t-sub">Reviving the vision God gave you</span></li>
+        <li><span class="t-name">Find Your Why</span><span class="t-sub">Discovering what you're here to do</span></li>
+        <li><span class="t-name">Purpose in the Pain</span><span class="t-sub">Meaning in the hard seasons</span></li>
+        <li><span class="t-name">Your Unique Calling</span><span class="t-sub">The role only you can play</span></li>
+        <li><span class="t-name">Step Into It</span><span class="t-sub">Moving forward in your purpose</span></li>
+        <li><span class="t-name">Destiny</span><span class="t-sub">Walking into what God prepared</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c7">
+      <div class="cat-head"><div class="cat-num">07</div><div><h2 class="cat-title">Grace &amp; Forgiveness</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Grace Alone</span><span class="t-sub">Saved by nothing you've done</span></li>
+        <li><span class="t-name">Seventy Times Seven</span><span class="t-sub">Forgiving again and again</span></li>
+        <li><span class="t-name">The Cross</span><span class="t-sub">Where grace changed everything</span></li>
+        <li><span class="t-name">Room for Grace</span><span class="t-sub">Extending mercy to the undeserving</span></li>
+        <li><span class="t-name">Radical Forgiveness</span><span class="t-sub">Releasing your deepest wounds</span></li>
+        <li><span class="t-name">Nothing to Prove</span><span class="t-sub">Living in unearned love</span></li>
+        <li><span class="t-name">Grace for Today</span><span class="t-sub">Fresh mercy every morning</span></li>
+        <li><span class="t-name">The Gift You Can't Earn</span><span class="t-sub">Receiving God's favor</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c8">
+      <div class="cat-head"><div class="cat-num">08</div><div><h2 class="cat-title">Rest, Margin &amp; Burnout</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Ruthless Rest</span><span class="t-sub">Fighting for the pause you need</span></li>
+        <li><span class="t-name">Do Less, Be More</span><span class="t-sub">Presence over productivity</span></li>
+        <li><span class="t-name">The Weight of Busy</span><span class="t-sub">Freedom from doing it all</span></li>
+        <li><span class="t-name">Soul Care</span><span class="t-sub">Tending your inner life</span></li>
+        <li><span class="t-name">Find Your Rhythm</span><span class="t-sub">A sustainable pace of life</span></li>
+        <li><span class="t-name">Rest in Him</span><span class="t-sub">Peace that comes from God alone</span></li>
+        <li><span class="t-name">Simplify Your Life</span><span class="t-sub">Clearing out what drains you</span></li>
+        <li><span class="t-name">Beyond Busy</span><span class="t-sub">Escaping the exhausting hustle</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c9">
+      <div class="cat-head"><div class="cat-num">09</div><div><h2 class="cat-title">Family &amp; Parenting</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Family Ties</span><span class="t-sub">Bonds that hold through anything</span></li>
+        <li><span class="t-name">The Discipline of Love</span><span class="t-sub">Correcting with grace</span></li>
+        <li><span class="t-name">Faith Around the Table</span><span class="t-sub">Family devotions that stick</span></li>
+        <li><span class="t-name">Empty Nest, Full Heart</span><span class="t-sub">Thriving in the next chapter</span></li>
+        <li><span class="t-name">Raising Them to Launch</span><span class="t-sub">Preparing kids for life</span></li>
+        <li><span class="t-name">Like Parent, Like Child</span><span class="t-sub">Modeling the faith you want</span></li>
+        <li><span class="t-name">When Parenting Is Hard</span><span class="t-sub">Grace for the struggling parent</span></li>
+        <li><span class="t-name">Loving Your Adult Kids</span><span class="t-sub">Faith for a new relationship</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c10">
+      <div class="cat-head"><div class="cat-num">10</div><div><h2 class="cat-title">Faith Over Fear</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Greater Is He</span><span class="t-sub">The One inside you is stronger</span></li>
+        <li><span class="t-name">Faith Not Fear</span><span class="t-sub">Choosing trust over dread</span></li>
+        <li><span class="t-name">Walk on Water</span><span class="t-sub">Faith to step out of the boat</span></li>
+        <li><span class="t-name">When Life Is Uncertain</span><span class="t-sub">Trusting the God who holds tomorrow</span></li>
+        <li><span class="t-name">Conquer Your Fears</span><span class="t-sub">Winning the inner battle</span></li>
+        <li><span class="t-name">Fear of Failing</span><span class="t-sub">Freedom to try and trust</span></li>
+        <li><span class="t-name">God Is Bigger</span><span class="t-sub">Faith beyond your circumstances</span></li>
+        <li><span class="t-name">Move Forward Anyway</span><span class="t-sub">Courage in the face of fear</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c11">
+      <div class="cat-head"><div class="cat-num">11</div><div><h2 class="cat-title">Freedom &amp; Breakthrough</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Victory</span><span class="t-sub">Winning over what holds you back</span></li>
+        <li><span class="t-name">Escape</span><span class="t-sub">The way out God provides</span></li>
+        <li><span class="t-name">Break the Pattern</span><span class="t-sub">Ending the cycle for good</span></li>
+        <li><span class="t-name">Unchained</span><span class="t-sub">Living free from your past</span></li>
+        <li><span class="t-name">The Turnaround</span><span class="t-sub">When God changes everything</span></li>
+        <li><span class="t-name">Free to Live</span><span class="t-sub">The abundant life Christ offers</span></li>
+        <li><span class="t-name">Overcoming Temptation</span><span class="t-sub">Standing strong when tested</span></li>
+        <li><span class="t-name">Out of the Pit</span><span class="t-sub">Rising from your lowest place</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c12">
+      <div class="cat-head"><div class="cat-num">12</div><div><h2 class="cat-title">Hope in Hard Times</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Grieve with Hope</span><span class="t-sub">Comfort in the face of loss</span></li>
+        <li><span class="t-name">When Dreams Die</span><span class="t-sub">Faith after disappointment</span></li>
+        <li><span class="t-name">He Is Faithful</span><span class="t-sub">God's constancy through it all</span></li>
+        <li><span class="t-name">Joy in the Journey</span><span class="t-sub">Gladness that outlasts the pain</span></li>
+        <li><span class="t-name">Trusting Through Tears</span><span class="t-sub">Faith when it hurts</span></li>
+        <li><span class="t-name">The Long Wait</span><span class="t-sub">Hope while God seems slow</span></li>
+        <li><span class="t-name">Light in the Darkness</span><span class="t-sub">Hope for the hardest night</span></li>
+        <li><span class="t-name">Endure</span><span class="t-sub">Strength to keep believing</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <div class="band">
+    <div class="eyebrow">Lane Two</div>
+    <h2>Discipleship &amp; Formation</h2>
+    <p>Eight more per topic — the growth staples that move a crowd toward maturity.</p>
+  </div>
+  <div class="cats">
+    <section class="cat" id="c13">
+      <div class="cat-head"><div class="cat-num">13</div><div><h2 class="cat-title">Following Jesus</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Sold Out</span><span class="t-sub">Living completely for Jesus</span></li>
+        <li><span class="t-name">Next Steps</span><span class="t-sub">Growing in your walk with Christ</span></li>
+        <li><span class="t-name">Take Up Your Cross</span><span class="t-sub">The call to follow fully</span></li>
+        <li><span class="t-name">In His Steps</span><span class="t-sub">Walking the way Jesus walked</span></li>
+        <li><span class="t-name">Obey</span><span class="t-sub">Trusting Jesus enough to do what He says</span></li>
+        <li><span class="t-name">Disciple</span><span class="t-sub">Becoming who Jesus is making you</span></li>
+        <li><span class="t-name">Leave It All</span><span class="t-sub">Following without looking back</span></li>
+        <li><span class="t-name">Grow Up</span><span class="t-sub">Maturing in your faith</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c14">
+      <div class="cat-head"><div class="cat-num">14</div><div><h2 class="cat-title">Spiritual Habits</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Read the Word</span><span class="t-sub">Making the Bible your daily habit</span></li>
+        <li><span class="t-name">The Devoted Hour</span><span class="t-sub">Time set apart for God</span></li>
+        <li><span class="t-name">Hidden in My Heart</span><span class="t-sub">The habit of Scripture memory</span></li>
+        <li><span class="t-name">Meditate</span><span class="t-sub">Dwelling on the words of God</span></li>
+        <li><span class="t-name">Worship as a Lifestyle</span><span class="t-sub">Daily surrender to God</span></li>
+        <li><span class="t-name">Disciplined</span><span class="t-sub">Habits that build a strong faith</span></li>
+        <li><span class="t-name">Show Up Daily</span><span class="t-sub">Consistency that transforms you</span></li>
+        <li><span class="t-name">The Growing Life</span><span class="t-sub">Habits that keep you maturing</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c15">
+      <div class="cat-head"><div class="cat-num">15</div><div><h2 class="cat-title">Hearing God's Voice</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">God's Will for Your Life</span><span class="t-sub">Finding His direction</span></li>
+        <li><span class="t-name">Which Way Now?</span><span class="t-sub">Guidance for life's crossroads</span></li>
+        <li><span class="t-name">Clear Direction</span><span class="t-sub">Cutting through the confusion</span></li>
+        <li><span class="t-name">Hearing God in Scripture</span><span class="t-sub">Where He speaks most</span></li>
+        <li><span class="t-name">The Guided Life</span><span class="t-sub">Trusting God to lead you</span></li>
+        <li><span class="t-name">When You Don't Know</span><span class="t-sub">Faith while you wait for clarity</span></li>
+        <li><span class="t-name">Follow the Leading</span><span class="t-sub">Responding to God's nudges</span></li>
+        <li><span class="t-name">God Still Speaks</span><span class="t-sub">Listening for Him today</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c16">
+      <div class="cat-head"><div class="cat-num">16</div><div><h2 class="cat-title">Prayer</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Learning to Pray</span><span class="t-sub">A beginner's guide to talking with God</span></li>
+        <li><span class="t-name">Praying Together</span><span class="t-sub">The power of united prayer</span></li>
+        <li><span class="t-name">Prayer Warriors</span><span class="t-sub">Fighting on your knees</span></li>
+        <li><span class="t-name">Morning Prayer</span><span class="t-sub">Starting the day with God</span></li>
+        <li><span class="t-name">Praying for Your Family</span><span class="t-sub">Covering those you love</span></li>
+        <li><span class="t-name">The Prayer Habit</span><span class="t-sub">Making prayer your rhythm</span></li>
+        <li><span class="t-name">Praying God's Word</span><span class="t-sub">Scripture-shaped prayers</span></li>
+        <li><span class="t-name">Ask Big</span><span class="t-sub">Bringing bold requests to God</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c17">
+      <div class="cat-head"><div class="cat-num">17</div><div><h2 class="cat-title">The Holy Spirit</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Come Holy Spirit</span><span class="t-sub">Inviting God's presence and power</span></li>
+        <li><span class="t-name">Life in the Spirit</span><span class="t-sub">Living by God's power daily</span></li>
+        <li><span class="t-name">The Spirit's Power</span><span class="t-sub">Boldness beyond yourself</span></li>
+        <li><span class="t-name">Gifts of the Spirit</span><span class="t-sub">Serving in the Spirit's power</span></li>
+        <li><span class="t-name">Filled Fresh</span><span class="t-sub">A daily renewal of the Spirit</span></li>
+        <li><span class="t-name">Led by the Spirit</span><span class="t-sub">Following God's inner guidance</span></li>
+        <li><span class="t-name">Pentecost</span><span class="t-sub">When the Spirit changed everything</span></li>
+        <li><span class="t-name">Spirit-Empowered</span><span class="t-sub">Living the supernatural life</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <div class="band">
+    <div class="eyebrow">Lane Three</div>
+    <h2>Signature Bible Series</h2>
+    <p>Eight more per book — additional passage angles for the series large churches return to.</p>
+  </div>
+  <div class="cats">
+    <section class="cat" id="c18">
+      <div class="cat-head"><div class="cat-num">18</div><div><h2 class="cat-title">The Sermon on the Mount</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Blessed Are the Peacemakers</span><span class="t-sub">Living as agents of peace</span></li>
+        <li><span class="t-name">Hunger &amp; Thirst</span><span class="t-sub">Longing for righteousness</span></li>
+        <li><span class="t-name">More Than Words</span><span class="t-sub">Faith beyond lip service</span></li>
+        <li><span class="t-name">Salt of the Earth</span><span class="t-sub">Preserving and flavoring your world</span></li>
+        <li><span class="t-name">Give in Secret</span><span class="t-sub">Generosity for God's eyes only</span></li>
+        <li><span class="t-name">By Their Fruit</span><span class="t-sub">Discerning the real from the false</span></li>
+        <li><span class="t-name">Enter the Kingdom</span><span class="t-sub">Living under Christ's rule</span></li>
+        <li><span class="t-name">The Wise Builder</span><span class="t-sub">A life that stands</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c19">
+      <div class="cat-head"><div class="cat-num">19</div><div><h2 class="cat-title">Faith in Action · James</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Double-Minded</span><span class="t-sub">Finding stability in wholehearted faith</span></li>
+        <li><span class="t-name">Slow to Anger</span><span class="t-sub">Wisdom for a reactive world</span></li>
+        <li><span class="t-name">If the Lord Wills</span><span class="t-sub">Humble plans for tomorrow</span></li>
+        <li><span class="t-name">Faith Under Fire</span><span class="t-sub">Standing strong in temptation</span></li>
+        <li><span class="t-name">Bring Them Back</span><span class="t-sub">Restoring the wandering</span></li>
+        <li><span class="t-name">Wealth &amp; Worth</span><span class="t-sub">A right view of riches</span></li>
+        <li><span class="t-name">The Healing Prayer</span><span class="t-sub">Faith for the sick</span></li>
+        <li><span class="t-name">Wisdom for Living</span><span class="t-sub">James on the everyday</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c20">
+      <div class="cat-head"><div class="cat-num">20</div><div><h2 class="cat-title">Rebuilding · Nehemiah</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">A Holy Discontent</span><span class="t-sub">When God burdens your heart to act</span></li>
+        <li><span class="t-name">Survey the Ruins</span><span class="t-sub">Facing what needs rebuilding</span></li>
+        <li><span class="t-name">A Mind to Work</span><span class="t-sub">Wholehearted effort for the mission</span></li>
+        <li><span class="t-name">Halfway There</span><span class="t-sub">Perseverance when you're weary</span></li>
+        <li><span class="t-name">Finish Strong</span><span class="t-sub">Completing what God started</span></li>
+        <li><span class="t-name">After the Wall</span><span class="t-sub">Revival that follows the rebuild</span></li>
+        <li><span class="t-name">Leading the Rebuild</span><span class="t-sub">Courage under opposition</span></li>
+        <li><span class="t-name">Rebuild &amp; Rejoice</span><span class="t-sub">Celebrating God's restoration</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c21">
+      <div class="cat-head"><div class="cat-num">21</div><div><h2 class="cat-title">Spiritual Warfare · Armor of God</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">The Breastplate</span><span class="t-sub">Guarding your heart with righteousness</span></li>
+        <li><span class="t-name">Ready to Go</span><span class="t-sub">Feet fitted with the gospel of peace</span></li>
+        <li><span class="t-name">Authority in Christ</span><span class="t-sub">Your power over the enemy</span></li>
+        <li><span class="t-name">The Name Above</span><span class="t-sub">Victory in the name of Jesus</span></li>
+        <li><span class="t-name">Still Standing</span><span class="t-sub">Firm when the battle ends</span></li>
+        <li><span class="t-name">Praying in the Spirit</span><span class="t-sub">Prayer as spiritual warfare</span></li>
+        <li><span class="t-name">No Fear of the Dark</span><span class="t-sub">Confidence against the enemy</span></li>
+        <li><span class="t-name">Suit Up</span><span class="t-sub">Daily readiness for battle</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c22">
+      <div class="cat-head"><div class="cat-num">22</div><div><h2 class="cat-title">Heaven &amp; Eternity</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">No More Tears</span><span class="t-sub">The promise of a world made right</span></li>
+        <li><span class="t-name">Crowns &amp; Rewards</span><span class="t-sub">Living for what heaven honors</span></li>
+        <li><span class="t-name">The Resurrection</span><span class="t-sub">Our hope of new life</span></li>
+        <li><span class="t-name">When Heaven Comes Down</span><span class="t-sub">The new Jerusalem</span></li>
+        <li><span class="t-name">Face to Face</span><span class="t-sub">The day we see Him</span></li>
+        <li><span class="t-name">Live for Then</span><span class="t-sub">Eternity shaping today</span></li>
+        <li><span class="t-name">The Day of the Lord</span><span class="t-sub">Ready for His return</span></li>
+        <li><span class="t-name">Our Forever</span><span class="t-sub">What waits on the other side</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <div class="band">
+    <div class="eyebrow">Lane Four</div>
+    <h2>Church, Vision &amp; Outreach</h2>
+    <p>Eight more per topic — the moments that align a congregation and open the front door.</p>
+  </div>
+  <div class="cats">
+    <section class="cat" id="c23">
+      <div class="cat-head"><div class="cat-num">23</div><div><h2 class="cat-title">Church Vision &amp; All In</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Find Your Place</span><span class="t-sub">Serving where God made you to shine</span></li>
+        <li><span class="t-name">Bigger Than Us</span><span class="t-sub">Joining God's greater work</span></li>
+        <li><span class="t-name">Church on Mission</span><span class="t-sub">Reaching beyond our walls</span></li>
+        <li><span class="t-name">Made to Multiply</span><span class="t-sub">Growing God's kingdom together</span></li>
+        <li><span class="t-name">One Church, One Mission</span><span class="t-sub">United in purpose</span></li>
+        <li><span class="t-name">Give to the Vision</span><span class="t-sub">Fueling what God is building</span></li>
+        <li><span class="t-name">The Next Generation</span><span class="t-sub">Building a church for those to come</span></li>
+        <li><span class="t-name">Belong to the Body</span><span class="t-sub">Every member matters</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c24">
+      <div class="cat-head"><div class="cat-num">24</div><div><h2 class="cat-title">Invite &amp; Outreach</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Love Your Neighbor</span><span class="t-sub">Reaching the people around you</span></li>
+        <li><span class="t-name">Go</span><span class="t-sub">Answering the Great Commission</span></li>
+        <li><span class="t-name">Invite Sunday</span><span class="t-sub">Bring someone who needs Jesus</span></li>
+        <li><span class="t-name">Serve the City</span><span class="t-sub">Blessing our community with love</span></li>
+        <li><span class="t-name">Everyday Evangelism</span><span class="t-sub">Sharing Jesus naturally</span></li>
+        <li><span class="t-name">For the One</span><span class="t-sub">The heart of God for the lost</span></li>
+        <li><span class="t-name">Sharing Your Faith</span><span class="t-sub">Confidence to tell your story</span></li>
+        <li><span class="t-name">Reach</span><span class="t-sub">Extending grace to a searching world</span></li>
+      </ol>
+    </section>
+    <section class="cat" id="c25">
+      <div class="cat-head"><div class="cat-num">25</div><div><h2 class="cat-title">Community &amp; Belonging</h2></div></div>
+      <ol class="titles">
+        <li><span class="t-name">Small Groups, Big Life</span><span class="t-sub">Growing in circles of faith</span></li>
+        <li><span class="t-name">Friends for the Journey</span><span class="t-sub">Companions in the faith</span></li>
+        <li><span class="t-name">The Welcome Table</span><span class="t-sub">Hospitality that includes everyone</span></li>
+        <li><span class="t-name">Real &amp; Known</span><span class="t-sub">Authentic community that heals</span></li>
+        <li><span class="t-name">Carry Each Other</span><span class="t-sub">Sharing life's burdens together</span></li>
+        <li><span class="t-name">We Need Each Other</span><span class="t-sub">Made for connection, not isolation</span></li>
+        <li><span class="t-name">The Church Family</span><span class="t-sub">Belonging to something bigger</span></li>
+        <li><span class="t-name">Better in Community</span><span class="t-sub">Growing together, not alone</span></li>
+      </ol>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <p class="fnote"><strong>200 new titles · 8 per category.</strong> Fresh against the flagship four and the 25-per-category expansion, so every title here is unique across the collection. Combined, each category now stands at 37, for 925 titles in the flagship line.</p>
+  <p>LifeTogether · Christian Intelligence™ · 200 More Campaigns</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+
+CUSTOM2 = {
+"why":"The old seven questions sent a pastor neck-up. <em>Who will be in the room</em> is not a question anyone can answer well on a Tuesday, and open-ended prompts are where people get stuck and quit. This version asks for two things instead: a few files you already have, and a set of choices you can tap rather than compose.",
+"line":"A few things to bring. A few things to know. Then we build it in your voice.",
+"bring_head":"Ten things to bring",
+"bring_note":"Links and files you already own. Nothing has to be written. This is how the system learns your theology, your vocabulary, your habits and your heart &mdash; and it is the difference between a generated sermon and one that sounds like you.",
+"bring":[
+("Ten sermons you have preached","The ones that best carry your heart, your passion, your theology and your philosophy of ministry. Word files, PDFs, or a link to your sermon archive. This is the single most valuable thing on the list."),
+("A link to your church website","Language, ministries, calendar, and who you say you are in public."),
+("Your mission, vision and values","Whatever document exists, however old."),
+("This year's vision statement","What you told the church in January."),
+("A link to your sermon archive or podcast","If it is online, we do not need the files."),
+("Your church's social media","How you sound when you are not preaching."),
+("Your own LinkedIn or bio","Background, training, and the road you took here."),
+("A recent bulletin or order of service","How your Sunday actually runs."),
+("A small group guide you have used","What your people are already accustomed to."),
+("Anything you wrote that you are proud of","A blog post, a letter to the church, a chapter. One is enough."),
+],
+"know_head":"Ten things to know",
+"know_note":"Tap, do not type. Every one of these is a choice from a list, and most of them you set once for your whole church rather than per message.",
+"know":[
+("What is this Sunday for?","Reach people far from God · Take believers deeper · Mobilize into serving or groups · Move toward a decision or commitment · Comfort and carry a hurting church · Cast vision"),
+("Where does it lead?","Nowhere &mdash; standalone · A 7-day challenge · A 10-day jumpstart · A 21-day challenge · A 30-day journey · A 40-day campaign · A group semester"),
+("Who is in front of you most weeks?","Mostly regulars · A steady flow of guests · Heavy on families · Heavy on seniors · Heavy on students and young adults · Rural · Urban · Suburban"),
+("How long do you preach?","Under 20 minutes · 25 to 30 · 30 to 40 · 40 plus"),
+("Where do you land theologically?","Set once. Denominational family, position on contested questions, translation preference."),
+("What is your voice?","Verse by verse · Topical · Narrative · Conversational · Teaching-heavy · Story-heavy"),
+("How much humor?","None · A little, warm · Self-effacing · Frequent"),
+("How personal do you go?","Rarely · Occasionally · Often · I tell on myself regularly"),
+("What is already fixed this Sunday?","Communion · Baptism · A testimony · Special music · Kids in the room · A business meeting · Nothing"),
+("What do you want them to do before they leave?","Sign a card · Sign up for a group · Take a journal · Talk to someone · Come forward · Text one person · Nothing this week"),
+],
+"honesty":"Nine of the ten are set once. Only the first, second and last change from Sunday to Sunday, which means your second build takes about ninety seconds.",
+"gap":"There is one thing on the bring list most pastors will hesitate over, and it is the one that matters most. Ten of your own sermons is how the system learns that you lean Old Testament, that you open with a story, that you use the word <em>friend</em> from the platform, and that you never say a sentence longer than fourteen words. Without it, we are guessing. With it, the draft sounds like you on your third pass rather than your first.",
+}
+
+SEVENDAY = {
+"claim":"Inspiration to transformation. That is the entire product, and the seven days between Sundays is where it happens.",
+"intro":"A pastor is already anointed to preach. He has a church, a text, and a Sunday. What he does not have is any way to carry that Sunday into Tuesday. The seven-day arc is not extra content &mdash; it is the mechanism that turns a message people liked into a week people lived.",
+"models":[
+("The Process Arc","Seven days that move one idea through a person rather than repeating it seven times.",
+ ["Day 1 &mdash; See it. Observation. What does the passage actually say?",
+  "Day 2 &mdash; Sit with it. Reflection. Where does this land in me?",
+  "Day 3 &mdash; Own it. Confession or agreement. What is true about me here?",
+  "Day 4 &mdash; Do it. Application. One concrete action, today.",
+  "Day 5 &mdash; Share it. Someone else hears about it from you.",
+  "Day 6 &mdash; Deepen it. A second passage, a harder question.",
+  "Day 7 &mdash; Bring it back. What happened? Come ready to say it."],
+ "Best when the goal is personal transformation, and it ends naturally in a Celebration Sunday."),
+("The Purpose Drip","Seven days that take one idea through the five purposes, one per day.",
+ ["Monday &mdash; Fellowship. Who does this touch in your relationships?",
+  "Tuesday &mdash; Discipleship. What does this ask you to grow in?",
+  "Wednesday &mdash; Ministry. Who could you serve with this?",
+  "Thursday &mdash; Evangelism. Who outside the faith comes to mind?",
+  "Friday &mdash; Worship. What does this say about God?",
+  "Saturday &mdash; Household. Bring it to the table.",
+  "Sunday &mdash; Gather. Come back and go again."],
+ "Best when the goal is churchwide alignment, and it maps directly onto the five-purpose framework a church may already teach."),
+],
+"note":"Nobody has run either of these at scale, which is worth saying out loud rather than claiming otherwise. The Process Arc is the more likely to work because it has a shape and an ending. The Purpose Drip is the more likely to sell to a church already built on the five purposes.",
+"why":"Either way, the point is the same. The weekend supplies the inspiration. The week supplies the transformation. And the church that runs the week is running a different kind of ministry than the church that runs a service.",
+}
+
+POSITION = {
+"who":"The buyer is the bivocational pastor. Roughly a third of pastors arrive at a sermon site looking for a message, and the ones who need real help are the men and women writing Saturday night after a full week at another job. Build for them and it works for everyone above them. Build for the large church and it works for nobody else.",
+"funnel":[
+("They come for a sermon","That is the search, and it is the only door most of them will walk through."),
+("They leave with a series","Session one, and the table of contents behind it."),
+("Then a week","Seven days of devotional that carry the Sunday into Tuesday."),
+("Then a strategy","A campaign, a group launch, a next step &mdash; a season rather than a service."),
+("Then the ecosystem","Groups, family, formation. The thing they actually needed and were never shopping for."),
+],
+"line":"They come for a sermon and they get a strategy.",
+"honest":"The competitor has roughly three hundred thousand sermons, fifteen to twenty years of contributions, and now AI generation on top. You will not out-volume them and should stop trying. What they do not have is the campaign library, the week, the household, and the age-aligned versions. That is the whole argument, and it is enough.",
+}

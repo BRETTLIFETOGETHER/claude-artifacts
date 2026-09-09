@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAN Engine Console&trade; &mdash; Profile-Driven Family Stewardship Resources</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0C1D33; --panel:#11253F; --panel2:#152C4B;
+  --line:rgba(201,169,78,.24); --hair:rgba(201,169,78,.14);
+  --gold:#C9A94E; --gold-lt:#E6CE8C;
+  --paper:#EFE9DC; --body:#D6DEE9; --muted:#90A4BD;
+  --red:#D98A6A; --green:#8FBF9F;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--navy);
+  background-image:radial-gradient(120% 50% at 50% 0%, #142A48 0%, #0C1D33 50%, #07121F 100%);
+  background-attachment:fixed;
+  color:var(--body);font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;line-height:1.6;
+}
+.wrap{max-width:800px;margin:0 auto;padding:0 18px}
+h1,h2,h3,h4,h5{font-family:"Playfair Display",Georgia,serif;font-weight:500;color:var(--paper);margin:0}
+p{margin:0 0 .9em}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.label{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.gold{color:var(--gold-lt)}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(9,22,38,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topin{max-width:800px;margin:0 auto;padding:.7rem 18px;display:flex;align-items:center;gap:.7rem}
+.brand{font-family:"Playfair Display",serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.fam{flex:1;min-width:0;font-family:"Playfair Display",serif;color:var(--paper);font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbtn{background:none;border:1px solid var(--line);color:var(--gold);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;padding:.35rem .6rem;white-space:nowrap}
+.tbtn:hover{border-color:var(--gold)}
+.strip{max-width:800px;margin:0 auto;padding:0 18px .6rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.seg{display:flex;border:1px solid var(--hair)}
+.seg button{background:none;border:0;color:var(--muted);font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;padding:.3rem .5rem}
+.seg button.on{background:var(--gold);color:#0C1D33;font-weight:600}
+select.tone{background:var(--panel);border:1px solid var(--hair);color:var(--body);font-size:.72rem;padding:.25rem .4rem;font-family:inherit}
+
+/* hero */
+.hero{padding:34px 0 26px;text-align:center}
+.hero h1{font-size:clamp(2rem,9vw,3.1rem);line-height:1;letter-spacing:-.01em;font-weight:700}
+.hero .tm{font-size:.26em;vertical-align:super;color:var(--gold)}
+.hero .deck{font-style:italic;color:var(--paper);margin:.9rem auto 0;max-width:34ch;font-size:1.02rem}
+.hero .note{color:var(--muted);font-size:.88rem;max-width:42ch;margin:1rem auto 0}
+
+/* sections */
+.sec{padding:28px 0;border-top:1px solid var(--line)}
+.sechead{margin:0 0 1.1rem}
+.sechead h2{font-size:clamp(1.35rem,5.6vw,1.9rem);line-height:1.1}
+.sechead .sub{color:var(--muted);font-style:italic;font-size:.98rem;margin:.4rem 0 0}
+.back{background:none;border:0;color:var(--gold);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;padding:.2rem 0;margin-bottom:.9rem}
+
+/* metrics */
+.mets{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 1.2rem}
+.mets div{flex:1 1 33%;background:var(--navy);padding:.7rem .3rem;text-align:center}
+.mets b{display:block;font-family:"Playfair Display",serif;font-size:1.3rem;color:var(--gold-lt);font-weight:500;line-height:1}
+.mets span{display:block;font-size:.54rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:.35rem}
+.riskpill{display:inline-block;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;padding:.24rem .55rem;border:1px solid currentColor}
+.r-HIGH{color:var(--red)} .r-ELEVATED{color:var(--gold)} .r-MODERATE{color:var(--gold-lt)} .r-LOW{color:var(--green)}
+
+/* engine + tool rows */
+.row{display:flex;gap:.85rem;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--hair);padding:.95rem 0;color:inherit}
+.row:hover .rt{color:var(--gold-lt)}
+.rn{font-family:"Playfair Display",serif;color:var(--gold);font-size:1.15rem;min-width:1.6em;line-height:1.3}
+.rmain{flex:1;min-width:0}
+.rt{display:block;font-family:"Playfair Display",serif;font-size:1.06rem;color:var(--paper);line-height:1.25}
+.rs{display:block;font-size:.94rem;color:var(--muted);font-style:italic;margin-top:.18rem;line-height:1.4}
+.rmeta{display:block;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-top:.35rem}
+.arw{color:var(--gold);padding-top:.2rem}
+.done{color:var(--green);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;padding-top:.35rem}
+
+/* output */
+.gate{border:1px solid var(--line);background:var(--panel);padding:.7rem .85rem;margin:0 0 1rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.gate .gl{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);flex:1}
+.out{border:1px solid var(--hair);background:rgba(255,255,255,.02);padding:1.1rem 1.15rem;margin:0 0 1.1rem}
+.out h4{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:1.05rem;margin:1.2rem 0 .45rem;letter-spacing:.01em}
+.out h4:first-child{margin-top:0}
+.out h5{font-size:.92rem;color:var(--paper);margin:.9rem 0 .3rem;letter-spacing:.06em;text-transform:uppercase}
+.out p{font-size:1rem;color:var(--body)}
+.out ul{margin:0 0 .9rem;padding-left:1.1rem}
+.out li{margin:0 0 .3rem;font-size:1rem}
+.out strong{color:var(--paper)}
+.out blockquote{margin:0 0 .9rem;padding-left:.9rem;border-left:2px solid var(--gold);font-style:italic;color:var(--paper)}
+.acts{display:flex;gap:.5rem;flex-wrap:wrap;margin:0 0 1rem}
+.act{background:none;border:1px solid var(--line);color:var(--gold);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;padding:.45rem .75rem}
+.act.primary{background:var(--gold);color:#0C1D33;border-color:var(--gold);font-weight:600}
+.act:disabled{opacity:.45;cursor:default}
+.spin{color:var(--muted);font-style:italic;padding:1.4rem 0;text-align:center}
+.dot{display:inline-block;animation:bl 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
+.err{border:1px solid var(--red);color:var(--red);padding:.8rem .9rem;margin:0 0 1rem;font-size:.95rem}
+.revbox{width:100%;background:var(--panel);border:1px solid var(--hair);color:var(--body);font-family:inherit;font-size:1rem;padding:.7rem;margin:0 0 .6rem}
+
+/* profile form */
+.fld{margin:0 0 .85rem}
+.fld label{display:block;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+.fld input,.fld textarea,.fld select{
+  width:100%;background:var(--panel);border:1px solid var(--hair);color:var(--paper);
+  font-family:inherit;font-size:1rem;padding:.55rem .65rem;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.grid3{display:grid;grid-template-columns:1.4fr .6fr 1fr;gap:.5rem;align-items:end}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 1rem}
+.chip{border:1px solid var(--hair);color:var(--muted);font-size:.82rem;padding:.28rem .55rem;background:none}
+.chip.on{border-color:var(--gold);color:var(--gold-lt);background:rgba(201,169,78,.09)}
+.kid{border-bottom:1px solid var(--hair);padding:.7rem 0}
+.rm{background:none;border:0;color:var(--red);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase}
+.subhead{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:1.05rem;margin:1.5rem 0 .6rem;border-bottom:1px solid var(--hair);padding-bottom:.3rem}
+
+.foot{text-align:center;padding:36px 0 60px;border-top:1px solid var(--line);margin-top:26px}
+.foot p{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0}
+
+@media (min-width:660px){ body{font-size:19px} .mets div{flex:1 1 20%} }
+@media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="topin">
+    <span class="brand">CAN</span>
+    <span class="fam" id="famLabel">&mdash;</span>
+    <button class="tbtn" id="btnProfile" type="button">Profile</button>
+  </div>
+  <div class="strip">
+    <span class="label">Language</span>
+    <span class="seg" id="langSeg">
+      <button type="button" data-lang="faith-forward">Forward</button>
+      <button type="button" data-lang="faith-friendly">Friendly</button>
+      <button type="button" data-lang="values-based">Values</button>
+    </span>
+    <select class="tone" id="toneSel">
+      <option value="reflective">Reflective</option>
+      <option value="practical">Practical</option>
+      <option value="executive">Executive</option>
+      <option value="conversational">Conversational</option>
+      <option value="faith-centered">Faith-centered</option>
+    </select>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>CAN Engine Console&trade; &nbsp;&middot;&nbsp; AI recommends. The advisor approves.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================ STATE ============================ */
+
+var STAGES = ["Unknown","Identified","Introduced","Connected","Engaged","Trusted"];
+
+var CONCERNS = ["Entitlement","Communication","Inheritance readiness","Succession","Family conflict","Generosity","Business transition","Aging","Surviving spouse","Lack of purpose"];
+var ASPIRATIONS = ["Unity","Impact","Generosity","Business continuity","Next-generation preparation","Faith transfer","Story preservation","Legacy"];
+var TEAM = ["CPA","Estate attorney","Insurance advisor","Trustee","Family office","Pastor","Coach","Counselor","Philanthropy advisor","Business advisor"];
+
+var PROFILE = {
+  familyName:"Anderson",
+  g1a:"John", g1aAge:67, g1aStage:5,
+  g1b:"Susan", g1bAge:65, g1bStage:4,
+  netWorth:"$22M estimated family net worth",
+  business:"Family manufacturing business; eldest son expected to enter leadership",
+  daf:true,
+  faithNote:"Strong Christian faith orientation; long-time church members",
+  faithLanguage:"faith-forward",
+  tone:"reflective",
+  children:[
+    {name:"Michael", age:38, stage:3, note:"Expected business successor"},
+    {name:"Lauren", age:35, stage:1, note:"Disconnected from family financial discussions"},
+    {name:"David", age:31, stage:2, note:"Spouse cautious about inherited wealth"}
+  ],
+  grandkids:4, g3Stage:0,
+  concerns:["Entitlement","Inheritance readiness","Succession","Communication"],
+  aspirations:["Unity","Next-generation preparation","Faith transfer","Generosity"],
+  team:["CPA","Estate attorney","Pastor"],
+  journeys:0, assessments:1, lastMeetingYears:3, stories:0,
+  advisor:"Dana Whitfield", advisorAge:63, firm:"Smith Wealth Partners",
+  secondaryAdvisor:false, successionComplete:false
+};
+
+var CACHE = {};
+var VIEW = {name:"engines", engine:null, tool:null};
+
+/* ============================ ENGINES + TOOLS ============================ */
+
+var ENGINES = [
+  {k:"e1", n:"1", name:"Family Intelligence Engine\u2122", promise:"Know the family before you advise the family."},
+  {k:"e2", n:"2", name:"Stewardship Prescription Engine\u2122", promise:"Recommend the right conversation at the right time."},
+  {k:"e3", n:"3", name:"Personalization & Publishing Engine\u2122", promise:"Make every resource feel like it was created for this family."},
+  {k:"e4", n:"4", name:"Advisor Intelligence Engine\u2122", promise:"Remember more, prepare better, relate more deeply."},
+  {k:"e5", n:"5", name:"Family Experience Engine\u2122", promise:"Turn insight into conversation, and conversation into action."},
+  {k:"e6", n:"6", name:"Relationship Intelligence Engine\u2122", promise:"Measure what traditional AUM reporting cannot see."},
+  {k:"e7", n:"7", name:"Enterprise Intelligence Engine\u2122", promise:"Scale what previously existed only in great advisors' heads."}
+];
+
+var TOOLS = [
+  {id:"t1", e:"e1", name:"Family Discovery Brief\u2122", sub:"What we now know, and what we still need to ask.", aud:"Advisor",
+   ins:"Produce a Family Discovery Brief. Sections: ## What We Know (the material facts, organised, not merely restated), ## What This Suggests (interpretation, not storage), ## What We Do Not Yet Know (the specific questions the advisor should ask next). Be concrete about this family."},
+  {id:"t2", e:"e1", name:"Family Priority Map\u2122", sub:"Urgency, risk, opportunity, and gap.", aud:"Advisor",
+   ins:"Produce a Family Priority Map with exactly these headings: ## High Urgency, ## Moderate Risk, ## Opportunity, ## Gap, ## Advisor Relationship Risk. One short paragraph under each, naming the specific family members involved."},
+  {id:"t3", e:"e1", name:"Family Opportunity Summary\u2122", sub:"The lowest-conflict doors into this family.", aud:"Advisor",
+   ins:"Identify three entry points that would create family participation with the least relational friction, ranked. For each: why it is low-conflict for this family, who to involve first, and what it could unlock next."},
+  {id:"t4", e:"e1", name:"Life Transition Alerts\u2122", sub:"What is coming that no one has scheduled.", aud:"Advisor",
+   ins:"List the life, business, and family transitions this family is likely approaching in the next 12 to 60 months based on ages, roles, and business facts given. For each: the signal in the profile, the planning window, and the conversation that should happen before it arrives. Do not invent facts."},
+
+  {id:"t5", e:"e2", name:"Recommended Next Step\u2122", sub:"The single most useful next experience.", aud:"Advisor",
+   ins:"Produce one prescription in this exact format: ## Primary Recommendation, ## Why, ## Who Participates, ## Desired Outcome, ## Advisor Role, ## Recommended Follow-On, ## Confidence. Confidence must be High, Moderate, or More Information Needed, with one sentence of justification. Choose from CAN journeys such as What's in Your Hand, Wisdom Before Wealth, Family Legacy Journey, Generous Together, Next Generation Journey, Living Legacy, Finish Well."},
+  {id:"t6", e:"e2", name:"Full Prescription Sheet\u2122", sub:"Journey, conversation, meeting, assessment, specialist, content, action.", aud:"Advisor",
+   ins:"Give one recommendation in each of the seven prescription categories, using these headings: ## Journey, ## Conversation, ## Meeting, ## Assessment, ## Specialist, ## Content, ## Action. One or two sentences each, specific to this family. Add a final ## Sequence line ordering them over the next twelve months."},
+  {id:"t7", e:"e2", name:"Specialist Recommendation\u2122", sub:"Who else belongs in the room, and why now.", aud:"Advisor",
+   ins:"Recommend two or three outside specialists this family needs, each in this format: ## Issue Identified, then Professional to Consider, Why, and Advisor Role. Coordinate rather than replace. Never give tax, legal, or investment advice yourself."},
+
+  {id:"t8", e:"e3", name:"Personalized 30-Day Journey\u2122", sub:"Week map plus Day One, written for this family by name.", aud:"Family",
+   ins:"Build the opening of a personalized 30-day journey for this family. Sections: ## The Journey (one paragraph addressed to the parents by name, naming the children), ## Week One Understand, ## Week Two Reflect, ## Week Three Discuss, ## Week Four Decide (one or two sentences each), then ## Day One in full with a short teaching, one reflection question, one personal action, and one conversation prompt."},
+  {id:"t9", e:"e3", name:"Couple Discussion Guide\u2122", sub:"Align the marriage before the children are invited in.", aud:"Family",
+   ins:"Write a couple discussion guide addressed to the two parents by name. Sections: ## Our Life, ## Our Wealth, ## Our Children, ## Our Giving, ## Our Future, ## Our Legacy. Three questions under each, specific to this family's actual situation and concerns. Add ## Before You Compare Answers with one short instruction."},
+  {id:"t10", e:"e3", name:"Next-Generation Guide\u2122", sub:"Their own experience, not their parents' material.", aud:"Family",
+   ins:"Write a short guide addressed directly to the adult children by name, one section per child that reflects that child's noted situation, plus a shared ## Before You Inherit Anything section. Frame the central question as who am I becoming before I receive more responsibility. Never discuss amounts."},
+  {id:"t11", e:"e3", name:"Family Meeting Guide\u2122", sub:"The family-facing invitation and agenda.", aud:"Family",
+   ins:"Write the family-facing meeting packet: ## Why We Are Meeting (from the parents, in their voice), ## What to Expect, ## Before You Come (two pieces of pre-work), ## What We Will Discuss (agenda of four items), ## What We Will Not Decide Yet. Keep it warm and non-threatening to a disconnected adult child."},
+  {id:"t12", e:"e3", name:"Legacy Letter Starter\u2122", sub:"The letter the next generation actually keeps.", aud:"Family",
+   ins:"Write a legacy letter starter for the parents: ## What to Write About (five prompts drawn from this family's specific history and concerns), then ## A Draft Opening of roughly 120 words in the parents' voice addressed to their children by name, which they can edit rather than start from blank."},
+
+  {id:"t13", e:"e4", name:"Family Stewardship Intelligence Brief\u2122", sub:"Never walk into a significant meeting unprepared.", aud:"Advisor",
+   ins:"Produce the pre-meeting brief with these headings: ## Who Is Attending, ## What Matters Right Now, ## What They Told Us Last Time, ## Who Is Missing, ## What I Should Ask, ## What I Should Listen For, ## What I Should Avoid, ## What Could Come Next. Where the profile lacks history, say plainly that it is not yet captured."},
+  {id:"t14", e:"e4", name:"Five Questions to Ask\u2122", sub:"Prioritized, and in order.", aud:"Advisor",
+   ins:"Give exactly five questions the advisor should ask at the next meeting, numbered in the order they should be asked. Under each, one line on why this question now and what a concerning answer would sound like."},
+  {id:"t15", e:"e4", name:"Follow-Up Draft\u2122", sub:"The 48-hour note, ready to edit.", aud:"Advisor",
+   ins:"Draft the 48-hour follow-up message from the advisor to the parents. Include a short summary of priorities, decisions to confirm, outstanding questions, assigned actions with owners, and one warm personal line. Keep it under 200 words and leave one clearly marked blank for the advisor's own sentence."},
+  {id:"t16", e:"e4", name:"Next Best Action\u2122", sub:"One move, this week.", aud:"Advisor",
+   ins:"Name the single highest-value action the advisor should take within seven days. Sections: ## The Action, ## Why This One First, ## Exactly How (a script or specific steps), ## What Success Looks Like in 30 Days. Be decisive; do not list alternatives."},
+
+  {id:"t17", e:"e5", name:"Family Meeting Kit\u2122", sub:"Agenda, exercise, worksheet, follow-up.", aud:"Advisor",
+   ins:"Build a facilitated family meeting kit: ## Objective, ## Participants, ## Opening Exercise, ## Agenda with timings for a two-hour meeting, ## Conversation Questions (five), ## Decision Worksheet Items, ## Closing, ## Follow-Up Owners. Written for the advisor as facilitator."},
+  {id:"t18", e:"e5", name:"Generosity Experience\u2122", sub:"Generosity as an experience, not content.", aud:"Family",
+   ins:"Design the Generous Together experience for this family across seven steps: giving interests assessment, teaching, personal reflection, family cause map, family meeting, giving decision, follow-up impact conversation. One short paragraph per step, specific to this family, including how it could re-engage a disconnected adult child and involve grandchildren where appropriate."},
+  {id:"t19", e:"e5", name:"Decision Worksheet & Action Plan\u2122", sub:"From discussion to decision to owner.", aud:"Family",
+   ins:"Produce a decision worksheet for this family's most pressing open decision, using: ## The Decision, ## Why It Matters Now, ## Options A B and C with honest trade-offs, ## Who Is Affected, ## Values at Stake, ## Professional Advice Needed, ## Review Date. Then ## Action Plan with 30-day, 90-day, and one-year items, each with a named owner."},
+
+  {id:"t20", e:"e6", name:"Relationship Depth Report\u2122", sub:"Computed scores, with the narrative behind them.", aud:"Advisor", metrics:true,
+   ins:"Interpret the computed relationship metrics supplied above. Sections: ## What the Numbers Say, ## Where the Trust Is Concentrated, ## What Would Happen If the Primary Advisor Retired Tomorrow, ## The Three Moves That Change the Score. Use the supplied numbers exactly; do not recalculate or invent figures."},
+  {id:"t21", e:"e6", name:"Relationship Risk Alert\u2122", sub:"Classification, drivers, and the actions that clear it.", aud:"Advisor", metrics:true,
+   ins:"Write the risk alert using the supplied classification and drivers exactly as given. Sections: ## Classification (restate it), ## What Is Driving It (each driver, one line), ## Recommended Actions (four, in priority order, each with an owner and a timeframe), ## If Nothing Changes. Be direct."},
+
+  {id:"t22", e:"e7", name:"Relationship Equity Rollup\u2122", sub:"What one household changes at the firm level.", aud:"CEO", metrics:true,
+   ins:"Write a short enterprise note for the firm's CEO showing how this single household's engagement moves firm-level relationship equity. Sections: ## This Household Today, ## What Changes If the Recommended Journey Completes, ## The Same Pattern Across the Book (reason by proportion only; state clearly that firm-wide figures are illustrative until real data is connected), ## What Leadership Should Track Monthly."}
+];
+
+/* ============================ METRICS ============================ */
+
+function computeMetrics(){
+  var stages = [Number(PROFILE.g1aStage), Number(PROFILE.g1bStage)];
+  var g2 = PROFILE.children.map(function(c){ return Number(c.stage); });
+  stages = stages.concat(g2);
+  if (Number(PROFILE.grandkids) > 0) { stages.push(Number(PROFILE.g3Stage)); }
+  var sum = 0;
+  for (var i=0;i<stages.length;i++){ sum += stages[i]; }
+  var depth = stages.length ? Math.round((sum / (stages.length * 5)) * 100) : 0;
+  var g2known = g2.filter(function(s){ return s >= 3; }).length;
+  var g2cov = g2.length ? Math.round((g2known / g2.length) * 100) : 0;
+  var spouse = Number(PROFILE.g1bStage) >= 3 ? "Engaged" : "Not engaged";
+  var g3cov = Number(PROFILE.grandkids) > 0 ? (Number(PROFILE.g3Stage) >= 3 ? 100 : 0) : 0;
+
+  var drivers = [];
+  var pts = 0;
+  if (Number(PROFILE.g1aAge) >= 65){ pts++; drivers.push("Primary client is " + PROFILE.g1aAge); }
+  if (Number(PROFILE.advisorAge) >= 60){ pts++; drivers.push("Lead advisor is " + PROFILE.advisorAge + " with no stated succession"); }
+  if (!PROFILE.secondaryAdvisor){ pts += 1; drivers.push("No secondary advisor relationship in the household"); }
+  if (g2cov < 50){ pts += 2; drivers.push("Only " + g2known + " of " + g2.length + " adult children at connected or better"); }
+  if (Number(PROFILE.g1bStage) < 3){ pts++; drivers.push("Spouse relationship is below connected"); }
+  if (Number(PROFILE.lastMeetingYears) >= 2){ pts++; drivers.push("No family meeting in " + PROFILE.lastMeetingYears + " years"); }
+  if (!PROFILE.successionComplete){ pts++; drivers.push("Succession discussion incomplete"); }
+  if (Number(PROFILE.grandkids) > 0 && Number(PROFILE.g3Stage) < 2){ pts++; drivers.push("No G3 engagement"); }
+
+  var cls = pts >= 6 ? "HIGH" : (pts >= 4 ? "ELEVATED" : (pts >= 2 ? "MODERATE" : "LOW"));
+  return {depth:depth, g2cov:g2cov, g3cov:g3cov, spouse:spouse, g2known:g2known, g2total:g2.length,
+          risk:cls, points:pts, drivers:drivers};
+}
+
+/* ============================ PROMPT ============================ */
+
+function profileText(){
+  var p = PROFILE;
+  var s = "FAMILY PROFILE\n";
+  s += "Family: The " + p.familyName + " family\n";
+  s += "Generation 1: " + p.g1a + " (" + p.g1aAge + ", relationship stage " + STAGES[p.g1aStage] + ") and " + p.g1b + " (" + p.g1bAge + ", relationship stage " + STAGES[p.g1bStage] + ")\n";
+  s += "Adult children:\n";
+  for (var i=0;i<p.children.length;i++){
+    var c = p.children[i];
+    s += "  - " + c.name + ", age " + c.age + ", relationship stage " + STAGES[c.stage] + (c.note ? ". " + c.note : "") + "\n";
+  }
+  s += "Grandchildren: " + p.grandkids + (Number(p.grandkids) > 0 ? " (relationship stage " + STAGES[p.g3Stage] + ")" : "") + "\n";
+  s += "Wealth: " + p.netWorth + "\n";
+  s += "Business: " + (p.business || "None stated") + "\n";
+  s += "Charitable vehicle: " + (p.daf ? "Donor-advised fund in place" : "None stated") + "\n";
+  s += "Faith: " + (p.faithNote || "Not stated") + "\n";
+  s += "Stated concerns: " + (p.concerns.join(", ") || "None stated") + "\n";
+  s += "Stated aspirations: " + (p.aspirations.join(", ") || "None stated") + "\n";
+  s += "Existing professional team: " + (p.team.join(", ") || "None stated") + "\n";
+  s += "Stewardship history: " + p.journeys + " journeys completed, " + p.assessments + " assessments completed, last family meeting " + p.lastMeetingYears + " years ago, " + p.stories + " family stories captured\n";
+  s += "Advisor: " + p.advisor + " (" + p.advisorAge + "), " + p.firm + ". Secondary advisor relationship: " + (p.secondaryAdvisor ? "yes" : "none") + ". Succession discussion: " + (p.successionComplete ? "complete" : "incomplete") + "\n";
+  return s;
+}
+
+function metricsText(){
+  var m = computeMetrics();
+  var s = "\nCOMPUTED RELATIONSHIP METRICS (calculated by the system, use these exact figures)\n";
+  s += "Relationship Depth Score: " + m.depth + " of 100\n";
+  s += "Next-Generation Coverage: " + m.g2cov + "% (" + m.g2known + " of " + m.g2total + " adult children at connected or better)\n";
+  s += "Spouse engagement: " + m.spouse + "\n";
+  s += "G3 coverage: " + m.g3cov + "%\n";
+  s += "Risk classification: " + m.risk + "\n";
+  s += "Risk drivers: " + (m.drivers.length ? m.drivers.join("; ") : "None") + "\n";
+  return s;
+}
+
+function langRule(){
+  var l = PROFILE.faithLanguage;
+  if (l === "faith-forward") {
+    return "FAITH LANGUAGE: Faith-forward. Explicit Christian framing is welcome. You may reference stewardship of what God has entrusted, and may quote at most one short NIV verse only where it genuinely fits.";
+  }
+  if (l === "faith-friendly") {
+    return "FAITH LANGUAGE: Faith-friendly. Acknowledge that faith and values shape this family's decisions, but do not quote Scripture and do not use churchy phrasing.";
+  }
+  return "FAITH LANGUAGE: Values-based. Use no religious language of any kind. Speak in terms of values, purpose, character, and responsibility.";
+}
+
+function buildPrompt(tool, revision){
+  var s = "You are an engine inside CAN, a family stewardship and relationship-retention operating system used by advisors at registered investment advisory firms.\n\n";
+  s += profileText();
+  if (tool.metrics) { s += metricsText(); }
+  s += "\n" + langRule() + "\n";
+  s += "TONE: " + PROFILE.tone + ".\n";
+  s += "AUDIENCE: " + (tool.aud === "Advisor" ? "The advisor. Never shown to the family as written." : (tool.aud === "CEO" ? "The firm's chief executive." : "The family. It will carry the advisor's name and the firm's name."));
+  s += "\n\nTASK: Produce " + tool.name.replace(/\u2122/g, "") + ". " + tool.ins + "\n\n";
+  s += "RULES\n";
+  s += "- Use only the facts in the profile. Where something is unknown, say what should be asked rather than inventing it.\n";
+  s += "- Name real family members from the profile. Generic content is a failure.\n";
+  s += "- Never give tax, legal, or investment advice. Point to the appropriate specialist instead.\n";
+  s += "- Do not discuss specific inheritance amounts with or about the next generation.\n";
+  s += "- Output finished text only: no preamble, no explanation of what you are about to do, no closing offer to help.\n";
+  s += "- Format in markdown using ## for section headings, - for bullets, and ** ** for emphasis. Under 450 words.\n";
+  if (revision) {
+    s += "\nADVISOR REVISION INSTRUCTION (this overrides the above where they conflict): " + revision + "\n";
+  }
+  return s;
+}
+
+/* ============================ API ============================ */
+
+async function callClaude(prompt){
+  var res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      messages: [{role: "user", content: prompt}]
+    })
+  });
+  if (!res.ok) { throw new Error("Request failed (" + res.status + ")"); }
+  var data = await res.json();
+  var out = "";
+  for (var i=0;i<data.content.length;i++){
+    if (data.content[i].type === "text") { out += data.content[i].text; }
+  }
+  return out.trim();
+}
+
+/* ============================ MARKDOWN ============================ */
+
+function esc(t){
+  return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function inline(t){
+  t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  t = t.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+  return t;
+}
+function mdToHtml(src){
+  var lines = esc(src).split("\n");
+  var html = "";
+  var inList = false;
+  for (var i=0;i<lines.length;i++){
+    var ln = lines[i].replace(/\s+$/,"");
+    var t = ln.replace(/^\s+/,"");
+    if (t === "") { if (inList){ html += "</ul>"; inList = false; } continue; }
+    if (t.indexOf("### ") === 0) {
+      if (inList){ html += "</ul>"; inList = false; }
+      html += "<h5>" + inline(t.slice(4)) + "</h5>"; continue;
+    }
+    if (t.indexOf("## ") === 0) {
+      if (inList){ html += "</ul>"; inList = false; }
+      html += "<h4>" + inline(t.slice(3)) + "</h4>"; continue;
+    }
+    if (t.indexOf("# ") === 0) {
+      if (inList){ html += "</ul>"; inList = false; }
+      html += "<h4>" + inline(t.slice(2)) + "</h4>"; continue;
+    }
+    if (t.indexOf("&gt; ") === 0) {
+      if (inList){ html += "</ul>"; inList = false; }
+      html += "<blockquote>" + inline(t.slice(5)) + "</blockquote>"; continue;
+    }
+    if (t.indexOf("- ") === 0 || t.indexOf("* ") === 0) {
+      if (!inList){ html += "<ul>"; inList = true; }
+      html += "<li>" + inline(t.slice(2)) + "</li>"; continue;
+    }
+    var num = t.match(/^(\d+)\.\s+(.*)$/);
+    if (num) {
+      if (!inList){ html += "<ul>"; inList = true; }
+      html += "<li><strong>" + num[1] + ".</strong> " + inline(num[2]) + "</li>"; continue;
+    }
+    if (inList){ html += "</ul>"; inList = false; }
+    html += "<p>" + inline(t) + "</p>";
+  }
+  if (inList){ html += "</ul>"; }
+  return html;
+}
+
+/* ============================ STORAGE ============================ */
+
+async function saveProfile(){
+  try {
+    if (typeof window.storage !== "undefined" && window.storage) {
+      await window.storage.set("can:profile", JSON.stringify(PROFILE));
+    }
+  } catch (err) { /* storage unavailable; session only */ }
+}
+async function loadProfile(){
+  try {
+    if (typeof window.storage !== "undefined" && window.storage) {
+      var r = await window.storage.get("can:profile");
+      if (r && r.value) {
+        var saved = JSON.parse(r.value);
+        for (var k in saved) { if (Object.prototype.hasOwnProperty.call(saved, k)) { PROFILE[k] = saved[k]; } }
+      }
+    }
+  } catch (err) { /* first run or unavailable */ }
+}
+
+/* ============================ VIEWS ============================ */
+
+function toolsFor(k){
+  return TOOLS.filter(function(t){ return t.e === k; });
+}
+function toolById(id){
+  for (var i=0;i<TOOLS.length;i++){ if (TOOLS[i].id === id) { return TOOLS[i]; } }
+  return null;
+}
+
+function metricsBar(){
+  var m = computeMetrics();
+  return '<div class="mets">' +
+    '<div><b>' + m.depth + '</b><span>Depth score</span></div>' +
+    '<div><b>' + m.g2cov + '%</b><span>G2 coverage</span></div>' +
+    '<div><b>' + m.g3cov + '%</b><span>G3 coverage</span></div>' +
+    '<div><b>' + (m.spouse === "Engaged" ? "Yes" : "No") + '</b><span>Spouse engaged</span></div>' +
+    '<div><b>' + m.g2total + '</b><span>Adult children</span></div>' +
+    '<div><b><span class="riskpill r-' + m.risk + '">' + m.risk + '</span></b><span>Retention risk</span></div>' +
+    '</div>';
+}
+
+function renderEngines(){
+  var h = '<div class="wrap">';
+  h += '<div class="hero"><h1>CAN Engine Console<span class="tm">&trade;</span></h1>' +
+       '<p class="deck">Every resource below is generated from one family profile &mdash; not selected from a library.</p>' +
+       '<p class="note">Change the profile, the faith language, or the tone, and every output changes with it. Nothing reaches the family until the advisor approves it.</p></div>';
+  h += '<div class="sec"><div class="sechead"><h2>The ' + PROFILE.familyName + ' family</h2>' +
+       '<p class="sub">Computed from the current profile. These figures are arithmetic, not AI.</p></div>';
+  h += metricsBar();
+  h += '<button class="act" data-go="profile" type="button">Edit this family profile</button></div>';
+
+  h += '<div class="sec"><div class="sechead"><h2>Seven engines</h2>' +
+       '<p class="sub">' + TOOLS.length + ' clickable resources. Tap an engine.</p></div>';
+  for (var i=0;i<ENGINES.length;i++){
+    var e = ENGINES[i];
+    var count = toolsFor(e.k).length;
+    var built = toolsFor(e.k).filter(function(t){ return CACHE[t.id]; }).length;
+    h += '<button class="row" type="button" data-engine="' + e.k + '">' +
+           '<span class="rn">' + e.n + '</span>' +
+           '<span class="rmain"><span class="rt">' + e.name + '</span>' +
+           '<span class="rs">' + e.promise + '</span>' +
+           '<span class="rmeta">' + count + ' resources' + (built ? ' &middot; ' + built + ' generated' : '') + '</span></span>' +
+           '<span class="arw">&rsaquo;</span></button>';
+  }
+  h += '</div></div>';
+  return h;
+}
+
+function renderEngine(k){
+  var e = null;
+  for (var i=0;i<ENGINES.length;i++){ if (ENGINES[i].k === k) { e = ENGINES[i]; } }
+  var list = toolsFor(k);
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">';
+  h += '<button class="back" type="button" data-go="engines">&lsaquo; All engines</button>';
+  h += '<div class="sechead"><h2>' + e.name + '</h2><p class="sub">' + e.promise + '</p></div>';
+  for (var j=0;j<list.length;j++){
+    var t = list[j];
+    h += '<button class="row" type="button" data-tool="' + t.id + '">' +
+           '<span class="rn">' + (j+1) + '</span>' +
+           '<span class="rmain"><span class="rt">' + t.name + '</span>' +
+           '<span class="rs">' + t.sub + '</span>' +
+           '<span class="rmeta">For the ' + t.aud.toLowerCase() + (t.metrics ? ' &middot; uses computed metrics' : '') + '</span></span>' +
+           (CACHE[t.id] ? '<span class="done">Ready</span>' : '<span class="arw">&rsaquo;</span>') +
+           '</button>';
+  }
+  h += '</div></div>';
+  return h;
+}
+
+function renderTool(id){
+  var t = toolById(id);
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">';
+  h += '<button class="back" type="button" data-go="engine:' + t.e + '">&lsaquo; Back</button>';
+  h += '<div class="sechead"><h2>' + t.name + '</h2><p class="sub">' + t.sub + '</p></div>';
+  h += '<div class="gate"><span class="gl">AI recommends &middot; advisor approves</span>' +
+       '<span class="label">' + PROFILE.faithLanguage + ' &middot; ' + PROFILE.tone + '</span></div>';
+  if (t.metrics) { h += metricsBar(); }
+  h += '<div id="outzone">';
+  if (CACHE[id]) {
+    h += '<div class="acts">' +
+           '<button class="act primary" data-gen="' + id + '" type="button">Regenerate</button>' +
+           '<button class="act" data-copy="' + id + '" type="button">Copy</button>' +
+           '<button class="act" data-revise="' + id + '" type="button">Revise with a note</button>' +
+         '</div>';
+    h += '<div class="out">' + mdToHtml(CACHE[id]) + '</div>';
+  } else {
+    h += '<p style="color:var(--muted)">This resource has not been generated for the ' + PROFILE.familyName + ' family yet.</p>' +
+         '<div class="acts"><button class="act primary" data-gen="' + id + '" type="button">Generate for this family</button></div>';
+  }
+  h += '</div></div></div>';
+  return h;
+}
+
+function chipRow(list, selected, group){
+  var h = '<div class="chips">';
+  for (var i=0;i<list.length;i++){
+    var on = selected.indexOf(list[i]) > -1;
+    h += '<button class="chip' + (on ? ' on' : '') + '" type="button" data-chip="' + group + '" data-val="' + list[i] + '">' + list[i] + '</button>';
+  }
+  return h + '</div>';
+}
+function stageSelect(val, attrs){
+  var h = '<select ' + attrs + '>';
+  for (var i=0;i<STAGES.length;i++){
+    h += '<option value="' + i + '"' + (Number(val) === i ? ' selected' : '') + '>' + i + ' ' + STAGES[i] + '</option>';
+  }
+  return h + '</select>';
+}
+
+function renderProfileView(){
+  var p = PROFILE;
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">';
+  h += '<button class="back" type="button" data-go="engines">&lsaquo; Done</button>';
+  h += '<div class="sechead"><h2>Family profile</h2><p class="sub">The master context layer. Everything the engines produce is built from this.</p></div>';
+
+  h += '<div class="fld"><label>Family name</label><input data-f="familyName" value="' + p.familyName + '"></div>';
+
+  h += '<div class="subhead">Generation one</div>';
+  h += '<div class="grid3"><div class="fld" style="margin:0"><label>Name</label><input data-f="g1a" value="' + p.g1a + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Age</label><input data-f="g1aAge" value="' + p.g1aAge + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Stage</label>' + stageSelect(p.g1aStage, 'data-f="g1aStage"') + '</div></div>';
+  h += '<div class="grid3" style="margin-top:.5rem"><div class="fld" style="margin:0"><label>Name</label><input data-f="g1b" value="' + p.g1b + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Age</label><input data-f="g1bAge" value="' + p.g1bAge + '"></div>' +
+       '<div class="fld" style="margin:0"><label>Stage</label>' + stageSelect(p.g1bStage, 'data-f="g1bStage"') + '</div></div>';
+
+  h += '<div class="subhead">Adult children</div>';
+  for (var i=0;i<p.children.length;i++){
+    var c = p.children[i];
+    h += '<div class="kid"><div class="grid3">' +
+         '<div class="fld" style="margin:0"><label>Name</label><input data-kid="' + i + '" data-k="name" value="' + c.name + '"></div>' +
+         '<div class="fld" style="margin:0"><label>Age</label><input data-kid="' + i + '" data-k="age" value="' + c.age + '"></div>' +
+         '<div class="fld" style="margin:0"><label>Stage</label>' + stageSelect(c.stage, 'data-kid="' + i + '" data-k="stage"') + '</div></div>' +
+         '<div class="fld" style="margin:.5rem 0 .3rem"><label>Note</label><input data-kid="' + i + '" data-k="note" value="' + c.note + '"></div>' +
+         '<button class="rm" type="button" data-rmkid="' + i + '">Remove</button></div>';
+  }
+  h += '<button class="act" type="button" data-addkid="1" style="margin-top:.7rem">Add a child</button>';
+
+  h += '<div class="subhead">Generation three</div>';
+  h += '<div class="grid2"><div class="fld"><label>Grandchildren</label><input data-f="grandkids" value="' + p.grandkids + '"></div>' +
+       '<div class="fld"><label>G3 stage</label>' + stageSelect(p.g3Stage, 'data-f="g3Stage"') + '</div></div>';
+
+  h += '<div class="subhead">Situation</div>';
+  h += '<div class="fld"><label>Wealth</label><input data-f="netWorth" value="' + p.netWorth + '"></div>';
+  h += '<div class="fld"><label>Business</label><input data-f="business" value="' + p.business + '"></div>';
+  h += '<div class="fld"><label>Faith orientation</label><input data-f="faithNote" value="' + p.faithNote + '"></div>';
+  h += '<div class="fld"><label>Donor-advised fund or foundation</label><select data-f="daf"><option value="yes"' + (p.daf ? ' selected' : '') + '>Yes</option><option value="no"' + (!p.daf ? ' selected' : '') + '>No</option></select></div>';
+
+  h += '<div class="subhead">Stated concerns</div>' + chipRow(CONCERNS, p.concerns, "concerns");
+  h += '<div class="subhead">Stated aspirations</div>' + chipRow(ASPIRATIONS, p.aspirations, "aspirations");
+  h += '<div class="subhead">Professional team</div>' + chipRow(TEAM, p.team, "team");
+
+  h += '<div class="subhead">Stewardship history</div>';
+  h += '<div class="grid2"><div class="fld"><label>Journeys completed</label><input data-f="journeys" value="' + p.journeys + '"></div>' +
+       '<div class="fld"><label>Assessments completed</label><input data-f="assessments" value="' + p.assessments + '"></div></div>';
+  h += '<div class="grid2"><div class="fld"><label>Years since family meeting</label><input data-f="lastMeetingYears" value="' + p.lastMeetingYears + '"></div>' +
+       '<div class="fld"><label>Stories captured</label><input data-f="stories" value="' + p.stories + '"></div></div>';
+
+  h += '<div class="subhead">Advisor and firm</div>';
+  h += '<div class="grid2"><div class="fld"><label>Lead advisor</label><input data-f="advisor" value="' + p.advisor + '"></div>' +
+       '<div class="fld"><label>Advisor age</label><input data-f="advisorAge" value="' + p.advisorAge + '"></div></div>';
+  h += '<div class="fld"><label>Firm</label><input data-f="firm" value="' + p.firm + '"></div>';
+  h += '<div class="grid2"><div class="fld"><label>Secondary advisor</label><select data-f="secondaryAdvisor"><option value="yes"' + (p.secondaryAdvisor ? ' selected' : '') + '>Yes</option><option value="no"' + (!p.secondaryAdvisor ? ' selected' : '') + '>No</option></select></div>' +
+       '<div class="fld"><label>Succession discussion</label><select data-f="successionComplete"><option value="yes"' + (p.successionComplete ? ' selected' : '') + '>Complete</option><option value="no"' + (!p.successionComplete ? ' selected' : '') + '>Incomplete</option></select></div></div>';
+
+  h += '<div class="subhead">Live metrics</div>' + metricsBar();
+  h += '<button class="act primary" type="button" data-go="engines">Save and return</button>';
+  h += '</div></div>';
+  return h;
+}
+
+function render(){
+  var app = document.getElementById("app");
+  var h = "";
+  if (VIEW.name === "engines") { h = renderEngines(); }
+  else if (VIEW.name === "engine") { h = renderEngine(VIEW.engine); }
+  else if (VIEW.name === "tool") { h = renderTool(VIEW.tool); }
+  else if (VIEW.name === "profile") { h = renderProfileView(); }
+  app.innerHTML = h;
+  document.getElementById("famLabel").innerHTML = "The " + PROFILE.familyName + " family";
+  var segs = document.getElementById("langSeg").getElementsByTagName("button");
+  for (var i=0;i<segs.length;i++){
+    segs[i].className = (segs[i].getAttribute("data-lang") === PROFILE.faithLanguage) ? "on" : "";
+  }
+  document.getElementById("toneSel").value = PROFILE.tone;
+  window.scrollTo(0, 0);
+}
+
+/* ============================ GENERATION ============================ */
+
+async function generate(id, revision){
+  var t = toolById(id);
+  var zone = document.getElementById("outzone");
+  if (!zone) { return; }
+  zone.innerHTML = '<div class="spin">Building ' + t.name.replace(/\u2122/g,"") + ' for the ' + PROFILE.familyName + ' family<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>';
+  try {
+    var text = await callClaude(buildPrompt(t, revision));
+    CACHE[id] = text;
+    VIEW = {name:"tool", engine:t.e, tool:id};
+    render();
+  } catch (err) {
+    zone.innerHTML = '<div class="err">Could not reach the generation service. ' + esc(String(err.message || err)) +
+      '<br><br>This console generates live text through Claude, so it needs to run inside the Claude app rather than a saved local copy.</div>' +
+      '<div class="acts"><button class="act primary" data-gen="' + id + '" type="button">Try again</button></div>';
+  }
+}
+
+/* ============================ EVENTS ============================ */
+
+document.addEventListener("click", function(e){
+  var el = e.target.closest ? e.target.closest("[data-go],[data-engine],[data-tool],[data-gen],[data-copy],[data-revise],[data-chip],[data-addkid],[data-rmkid],[data-lang]") : null;
+  if (!el) { return; }
+
+  if (el.hasAttribute("data-lang")) {
+    PROFILE.faithLanguage = el.getAttribute("data-lang");
+    saveProfile(); render(); return;
+  }
+  if (el.hasAttribute("data-go")) {
+    var g = el.getAttribute("data-go");
+    if (g === "engines") { VIEW = {name:"engines"}; saveProfile(); }
+    else if (g === "profile") { VIEW = {name:"profile"}; }
+    else if (g.indexOf("engine:") === 0) { VIEW = {name:"engine", engine:g.split(":")[1]}; }
+    render(); return;
+  }
+  if (el.hasAttribute("data-engine")) { VIEW = {name:"engine", engine:el.getAttribute("data-engine")}; render(); return; }
+  if (el.hasAttribute("data-tool")) { var tid = el.getAttribute("data-tool"); VIEW = {name:"tool", engine:toolById(tid).e, tool:tid}; render(); return; }
+  if (el.hasAttribute("data-gen")) { generate(el.getAttribute("data-gen"), null); return; }
+
+  if (el.hasAttribute("data-copy")) {
+    var txt = CACHE[el.getAttribute("data-copy")] || "";
+    if (navigator.clipboard) { navigator.clipboard.writeText(txt); }
+    el.innerHTML = "Copied";
+    setTimeout(function(){ el.innerHTML = "Copy"; }, 1400);
+    return;
+  }
+  if (el.hasAttribute("data-revise")) {
+    var rid = el.getAttribute("data-revise");
+    var zone = document.getElementById("outzone");
+    var box = document.createElement("div");
+    box.innerHTML = '<textarea class="revbox" id="revText" rows="3" placeholder="What should change? For example: soften the section addressed to Lauren, or make this one page shorter."></textarea>' +
+                    '<div class="acts"><button class="act primary" id="revGo" type="button">Regenerate with this note</button></div>';
+    zone.insertBefore(box, zone.firstChild);
+    document.getElementById("revText").focus();
+    document.getElementById("revGo").addEventListener("click", function(){
+      generate(rid, document.getElementById("revText").value);
+    });
+    return;
+  }
+  if (el.hasAttribute("data-chip")) {
+    var group = el.getAttribute("data-chip");
+    var val = el.getAttribute("data-val");
+    var arr = PROFILE[group];
+    var ix = arr.indexOf(val);
+    if (ix > -1) { arr.splice(ix, 1); } else { arr.push(val); }
+    saveProfile(); render(); return;
+  }
+  if (el.hasAttribute("data-addkid")) {
+    PROFILE.children.push({name:"New child", age:30, stage:0, note:""});
+    saveProfile(); render(); return;
+  }
+  if (el.hasAttribute("data-rmkid")) {
+    PROFILE.children.splice(Number(el.getAttribute("data-rmkid")), 1);
+    saveProfile(); render(); return;
+  }
+});
+
+function applyField(el){
+  if (el.hasAttribute("data-f")) {
+    var f = el.getAttribute("data-f");
+    var v = el.value;
+    if (f === "daf" || f === "secondaryAdvisor" || f === "successionComplete") { PROFILE[f] = (v === "yes"); }
+    else { PROFILE[f] = v; }
+    saveProfile();
+    if (f === "familyName") { document.getElementById("famLabel").innerHTML = "The " + v + " family"; }
+    return true;
+  }
+  if (el.hasAttribute("data-kid")) {
+    PROFILE.children[Number(el.getAttribute("data-kid"))][el.getAttribute("data-k")] = el.value;
+    saveProfile();
+    return true;
+  }
+  return false;
+}
+
+document.addEventListener("change", function(e){
+  var el = e.target;
+  if (el.id === "toneSel") { PROFILE.tone = el.value; saveProfile(); return; }
+  if (applyField(el)) {
+    if (el.tagName === "SELECT" && VIEW.name === "profile") { render(); }
+  }
+});
+document.addEventListener("input", function(e){ applyField(e.target); });
+
+/* ============================ BOOT ============================ */
+
+(async function(){
+  await loadProfile();
+  render();
+})();
+</script>
+</body>
+</html>

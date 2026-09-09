@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LifeTogether Systems and Product Plan — An Opinionated Operating Plan for Josh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1729;
+  --body:#42536B;
+  --muted:#7A8AA0;
+  --line:#E4E9F0;
+  --line-soft:#EEF2F7;
+  --bg:#F4F7FB;
+  --card:#FFFFFF;
+  --blue:#1D5FD8;
+  --blue-deep:#153F91;
+  --blue-tint:#EDF3FF;
+  --amber:#9A5B06;
+  --amber-tint:#FDF4E5;
+  --red:#A62222;
+  --red-tint:#FDEEEE;
+  --green:#1B6B4A;
+  --green-tint:#EAF6F0;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(11,23,41,.04), 0 8px 24px rgba(11,23,41,.05);
+  --shadow-lift:0 2px 4px rgba(11,23,41,.05), 0 18px 40px rgba(11,23,41,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:96px}
+body{
+  margin:0; background:var(--bg); color:var(--body);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{color:var(--ink); font-weight:700; letter-spacing:-.02em; margin:0}
+p{margin:0 0 1.05em}
+a{color:var(--blue); text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--ink); font-weight:650}
+
+/* ---------- masthead ---------- */
+.masthead{
+  background:linear-gradient(168deg,#0B1729 0%, #14294A 55%, #1B3A6B 100%);
+  color:#fff; padding:64px 0 72px; position:relative; overflow:hidden;
+}
+.masthead::after{
+  content:""; position:absolute; inset:auto -10% -60% 55%; height:420px;
+  background:radial-gradient(closest-side, rgba(29,95,216,.45), transparent 70%);
+  pointer-events:none;
+}
+.wrap{max-width:1220px; margin:0 auto; padding:0 32px}
+.eyebrow{
+  font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  color:#8FB4F2; margin-bottom:18px;
+}
+.masthead h1{
+  color:#fff; font-size:clamp(30px,4.2vw,50px); line-height:1.1; max-width:19ch; font-weight:800;
+}
+.masthead .sub{
+  margin-top:20px; max-width:62ch; color:#C3D3EA; font-size:18px;
+}
+.stamp-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:30px; position:relative; z-index:2}
+.stamp{
+  font-size:12.5px; font-weight:600; letter-spacing:.04em; padding:7px 13px; border-radius:999px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); color:#DCE8FA;
+}
+.stamp.live{background:rgba(29,95,216,.28); border-color:rgba(143,180,242,.5); color:#fff}
+
+/* ---------- layout ---------- */
+.shell{max-width:1220px; margin:0 auto; padding:0 32px; display:grid; grid-template-columns:236px minmax(0,1fr); gap:52px; align-items:start}
+.toc{position:sticky; top:24px; padding:28px 0 40px}
+.toc-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:14px}
+.toc a{
+  display:block; padding:7px 0 7px 14px; border-left:2px solid var(--line);
+  color:var(--body); font-size:14.5px; font-weight:500; line-height:1.35;
+}
+.toc a:hover{color:var(--ink); border-left-color:#B9C6D8; text-decoration:none}
+.toc a.active{color:var(--blue); border-left-color:var(--blue); font-weight:600}
+.toc a .n{color:var(--muted); font-size:12px; font-family:"JetBrains Mono",monospace; margin-right:7px}
+.toc a.active .n{color:var(--blue)}
+main{padding:44px 0 100px; min-width:0}
+
+/* ---------- sections ---------- */
+section{margin-bottom:64px; scroll-margin-top:96px}
+.sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:8px}
+.sec-num{
+  font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:500;
+  color:var(--blue); background:var(--blue-tint); padding:4px 9px; border-radius:6px;
+}
+h2{font-size:clamp(24px,2.6vw,31px); line-height:1.2}
+.sec-deck{color:var(--muted); font-size:16px; margin:0 0 26px; max-width:70ch}
+h3{font-size:20px; margin:34px 0 12px}
+h4{font-size:16px; margin:22px 0 8px; letter-spacing:-.01em}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 30px}
+.card + .card{margin-top:18px}
+.card p:last-child{margin-bottom:0}
+.prose{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:32px 34px}
+.prose > :first-child{margin-top:0}
+.prose > :last-child{margin-bottom:0}
+
+/* ---------- TL;DR ---------- */
+.tldr{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:16px}
+.tldr .card{padding:26px 26px 28px; border-top:3px solid var(--blue)}
+.tldr h4{margin:0 0 10px; font-size:15px; color:var(--blue-deep); letter-spacing:.01em}
+.tldr p{font-size:15.5px; margin:0}
+
+/* ---------- findings ---------- */
+.finding{display:grid; grid-template-columns:auto 1fr; gap:18px; padding:22px 0; border-bottom:1px solid var(--line-soft)}
+.finding:last-child{border-bottom:0; padding-bottom:0}
+.finding:first-child{padding-top:0}
+.finding .tag{
+  font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--blue-deep); background:var(--blue-tint); border-radius:6px; padding:6px 10px;
+  white-space:nowrap; align-self:start; margin-top:2px;
+}
+.finding p{margin:0; font-size:15.5px}
+
+/* ---------- verdict grid (four points) ---------- */
+.verdicts{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; margin:22px 0 8px}
+.verdict{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow)}
+.verdict .head{display:flex; align-items:center; gap:10px; margin-bottom:10px}
+.pill{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:5px 9px; border-radius:5px}
+.pill.ok{background:var(--green-tint); color:var(--green)}
+.pill.partial{background:var(--amber-tint); color:var(--amber)}
+.verdict h4{margin:0; font-size:15.5px}
+.verdict p{font-size:15px; margin:0}
+
+/* ---------- schema table ---------- */
+.table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:var(--card); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; min-width:620px; font-size:15px}
+th{
+  text-align:left; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  font-weight:600; padding:15px 20px; border-bottom:1px solid var(--line); background:#FAFCFF;
+}
+td{padding:14px 20px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.field{color:var(--ink); font-weight:600; white-space:nowrap}
+.vocab{font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--blue-deep)}
+
+.code{
+  font-family:"JetBrains Mono",monospace; font-size:13.5px; background:#0B1729; color:#D7E3F7;
+  padding:16px 20px; border-radius:10px; overflow-x:auto; white-space:pre; margin:14px 0 18px;
+}
+code.inline{font-family:"JetBrains Mono",monospace; font-size:.88em; background:var(--blue-tint); color:var(--blue-deep); padding:2px 6px; border-radius:4px}
+
+/* ---------- phases ---------- */
+.tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
+.tab{
+  font-family:inherit; font-size:14.5px; font-weight:600; color:var(--body); cursor:pointer;
+  background:var(--card); border:1px solid var(--line); border-radius:999px; padding:10px 18px;
+  transition:all .15s ease;
+}
+.tab:hover{border-color:#B9C6D8; color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--blue); border-color:var(--blue); color:#fff}
+.tab .lead{font-family:"JetBrains Mono",monospace; font-size:12px; opacity:.7; margin-right:7px}
+.panel[hidden]{display:none}
+.panel h3{margin-top:0}
+.spec{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-top:22px}
+.spec-box{border:1px solid var(--line); border-radius:10px; padding:16px 18px; background:#FAFCFF}
+.spec-box .label{font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:7px}
+.spec-box p{font-size:14.5px; margin:0}
+.spec-box.excl{background:#FBFCFD}
+.spec-box.excl .label{color:var(--amber)}
+
+ul.clean{list-style:none; padding:0; margin:14px 0}
+ul.clean li{position:relative; padding-left:22px; margin-bottom:10px; font-size:15.5px}
+ul.clean li::before{content:""; position:absolute; left:2px; top:.62em; width:7px; height:7px; border-radius:2px; background:var(--blue); opacity:.55}
+ol.steps{counter-reset:s; list-style:none; padding:0; margin:16px 0}
+ol.steps li{counter-increment:s; position:relative; padding-left:42px; margin-bottom:14px; font-size:15.5px}
+ol.steps li::before{
+  content:counter(s); position:absolute; left:0; top:0; width:27px; height:27px; border-radius:50%;
+  background:var(--blue-tint); color:var(--blue-deep); font-size:13px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; font-family:"JetBrains Mono",monospace;
+}
+
+/* ---------- ranked automations ---------- */
+.rank{display:flex; gap:20px; padding:24px 0; border-bottom:1px solid var(--line-soft)}
+.rank:last-child{border-bottom:0; padding-bottom:0}
+.rank .num{
+  font-family:"JetBrains Mono",monospace; font-size:26px; font-weight:500; color:var(--blue);
+  line-height:1; opacity:.5; min-width:34px;
+}
+.rank h4{margin:0 0 6px}
+.rank .when{font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--green); background:var(--green-tint); padding:4px 9px; border-radius:5px; display:inline-block; margin-bottom:9px}
+.rank p{font-size:15.5px; margin:0}
+.deferred li{font-size:15.5px}
+.deferred strong{display:inline}
+
+/* ---------- timeline ---------- */
+.timeline{position:relative; margin-top:8px}
+.timeline::before{content:""; position:absolute; left:11px; top:8px; bottom:8px; width:2px; background:var(--line)}
+.tl-item{position:relative; padding-left:44px; margin-bottom:22px}
+.tl-item::before{
+  content:""; position:absolute; left:4px; top:24px; width:16px; height:16px; border-radius:50%;
+  background:#fff; border:3px solid var(--blue);
+}
+.tl-item .card{padding:22px 26px}
+.tl-when{font-family:"JetBrains Mono",monospace; font-size:12.5px; font-weight:500; color:var(--blue); letter-spacing:.04em; text-transform:uppercase}
+.tl-item h4{margin:5px 0 10px; font-size:17px}
+.tl-item p{font-size:15.5px}
+.done{
+  margin-top:14px; padding:12px 16px; background:var(--green-tint); border-radius:8px;
+  font-size:14.5px; color:#14563B;
+}
+.done b{color:var(--green); font-weight:700; text-transform:uppercase; font-size:11.5px; letter-spacing:.09em; display:block; margin-bottom:3px}
+.owners{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-top:26px}
+.owner{border:1px solid var(--line); border-radius:10px; padding:18px 20px; background:var(--card); box-shadow:var(--shadow)}
+.owner .who{font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--blue-deep); margin-bottom:8px}
+.owner p{font-size:14.5px; margin:0}
+
+/* ---------- risks ---------- */
+.risk{display:grid; grid-template-columns:auto 1fr; gap:18px; padding:24px 0; border-bottom:1px solid var(--line-soft)}
+.risk:last-child{border-bottom:0; padding-bottom:0}
+.risk:first-child{padding-top:0}
+.risk .sev{
+  font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600; letter-spacing:.05em;
+  padding:6px 10px; border-radius:6px; white-space:nowrap; align-self:start; height:fit-content;
+}
+.sev.s1{background:var(--red-tint); color:var(--red)}
+.sev.s2{background:var(--amber-tint); color:var(--amber)}
+.sev.s3{background:var(--blue-tint); color:var(--blue-deep)}
+.risk h4{margin:0 0 8px; font-size:16.5px}
+.mit{margin-top:10px; font-size:15px; padding-left:14px; border-left:3px solid var(--line)}
+.mit b{font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:3px}
+
+/* ---------- callouts ---------- */
+.callout{
+  border-left:3px solid var(--blue); background:var(--blue-tint); border-radius:0 10px 10px 0;
+  padding:18px 22px; margin:22px 0; font-size:15.5px; color:#20365C;
+}
+.callout.warn{border-left-color:var(--amber); background:var(--amber-tint); color:#5C3A05}
+.callout .kicker{font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:6px; color:var(--blue-deep)}
+.callout.warn .kicker{color:var(--amber)}
+.callout p:last-child{margin-bottom:0}
+
+/* ---------- script / framing quotes ---------- */
+.script{background:#FAFCFF; border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:14px}
+.script .to{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--blue); margin-bottom:10px}
+.script p{font-size:15.5px; color:var(--ink); margin:0; font-style:italic}
+
+/* ---------- stages ---------- */
+.stage{display:grid; grid-template-columns:150px 1fr; gap:24px; padding:26px 0; border-bottom:1px solid var(--line-soft)}
+.stage:last-child{border-bottom:0; padding-bottom:0}
+.stage:first-child{padding-top:0}
+.stage .when{font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--blue); font-weight:500; line-height:1.4}
+.stage .when em{display:block; font-style:normal; font-family:Inter,sans-serif; font-size:12px; color:var(--muted); margin-top:4px; letter-spacing:.06em; text-transform:uppercase}
+.stage p{font-size:15.5px}
+.bench{background:var(--amber-tint); border-radius:8px; padding:12px 16px; font-size:14.5px; color:#5C3A05; margin-top:12px}
+.bench b{display:block; font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--amber); margin-bottom:3px}
+
+.commitments{display:flex; flex-wrap:wrap; gap:9px; margin-top:18px}
+.chip{font-size:13.5px; font-weight:500; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:9px 13px; color:var(--body)}
+.chip b{color:var(--ink); font-weight:650}
+
+footer{border-top:1px solid var(--line); padding:34px 0 60px; color:var(--muted); font-size:14px}
+footer .wrap{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap}
+
+.toc-toggle{display:none}
+
+@media (max-width:940px){
+  .shell{grid-template-columns:1fr; gap:0}
+  .toc{position:static; padding:22px 0 0; border-bottom:1px solid var(--line)}
+  .toc-inner{display:none; padding-bottom:18px}
+  .toc-inner.open{display:block}
+  .toc-toggle{
+    display:block; width:100%; text-align:left; font-family:inherit; font-size:14px; font-weight:600;
+    color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:13px 16px; cursor:pointer;
+  }
+  .stage{grid-template-columns:1fr; gap:8px}
+  .wrap,.shell{padding:0 20px}
+  .prose{padding:24px 22px}
+  .card{padding:22px 22px}
+  .masthead{padding:48px 0 54px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none !important}}
+@media print{
+  .toc,.masthead::after{display:none}
+  body{background:#fff; font-size:11pt}
+  .shell{grid-template-columns:1fr; padding:0}
+  .card,.prose,.table-wrap{box-shadow:none; break-inside:avoid}
+  section{break-inside:auto}
+  .panel[hidden]{display:block !important}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">LifeTogether Ministries &nbsp;·&nbsp; Internal &nbsp;·&nbsp; Late August 2026</div>
+    <h1>Systems and Product Plan: an opinionated operating plan for Josh</h1>
+    <p class="sub">The bottleneck is not the app. It is a retrievable library and a captured version of Brett's assembly method. Fix those first, earn latitude with two fast visible wins, and build the questionnaire-to-content product in gated phases.</p>
+    <div class="stamp-row">
+      <span class="stamp live">Status: proposed</span>
+      <span class="stamp">Horizon: 90 days</span>
+      <span class="stamp">Owner: Josh</span>
+      <span class="stamp">Approvals: Brett · Hana · John</span>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="toc" aria-label="Contents">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <div class="toc-inner" id="tocInner">
+      <div class="toc-label">Contents</div>
+      <a href="#tldr"><span class="n">00</span>The short version</a>
+      <a href="#findings"><span class="n">01</span>Key findings</a>
+      <a href="#diagnosis"><span class="n">02</span>Diagnosis</a>
+      <a href="#architecture"><span class="n">03</span>Information architecture</a>
+      <a href="#app"><span class="n">04</span>The app</a>
+      <a href="#migration"><span class="n">05</span>Website and dev workflow</a>
+      <a href="#automations"><span class="n">06</span>Automations, ranked</a>
+      <a href="#plan"><span class="n">07</span>Revised 90-day plan</a>
+      <a href="#risks"><span class="n">08</span>Risks</a>
+      <a href="#role"><span class="n">09</span>Role and boundaries</a>
+      <a href="#recommendations"><span class="n">10</span>Recommendations</a>
+      <a href="#caveats"><span class="n">11</span>Caveats</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- TL;DR -->
+    <section id="tldr">
+      <div class="sec-head"><span class="sec-num">00</span><h2>The short version</h2></div>
+      <p class="sec-deck">Three claims that carry the rest of the document.</p>
+      <div class="tldr">
+        <div class="card">
+          <h4>Fix the library and the method, not the app</h4>
+          <p>Ship a searchable internal assistant and a GitHub migration inside the first month to earn latitude, and treat the questionnaire-to-content product as a phased build on Supabase and pgvector that starts life as a Claude-grounded prototype.</p>
+        </div>
+        <div class="card">
+          <h4>The 90-day sequencing is right but too linear</h4>
+          <p>Inventory, taxonomy, and capturing Brett's method have to run in parallel from week one rather than month by month, because the app and the campaigns both depend on artifacts produced in month one.</p>
+        </div>
+        <div class="card">
+          <h4>Challenge the absolutism in point 1</h4>
+          <p>You do not need the whole terabyte organized before anything works. You need the top few hundred assets tagged and Brett's method documented. Organization is the critical path for the product, not for your first visible wins.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINDINGS -->
+    <section id="findings">
+      <div class="sec-head"><span class="sec-num">01</span><h2>Key findings</h2></div>
+      <p class="sec-deck">The externally verifiable facts the tooling recommendations rest on. Every price and product claim here is current as of late August 2026 and should be reverified before it becomes a budget line.</p>
+      <div class="card">
+        <div class="finding">
+          <span class="tag">Airtable</span>
+          <p>Airtable is the right system of record for the metadata layer despite a real ownership risk. Bending Spoons S.p.A. (NASDAQ: BSP) announced a definitive agreement on August 4, 2026 to acquire Airtable in an all-cash deal valuing it at $1.285 billion enterprise value, about $2.25 billion equity value, expected to close before year-end pending regulatory approval. That acquirer has a track record of squeezing acquired products: Noloco's analysis of prior Bending Spoons deals notes that Evernote's Pro plan rose significantly after acquisition and that WeTransfer cut staff shortly after its deal closed, and Skift's read is that cost discipline tends to come before product investment. Design so the schema is exportable and not locked in.</p>
+        </div>
+        <div class="finding">
+          <span class="tag">Supabase</span>
+          <p>Supabase with the built-in pgvector extension is the right foundation for the retrieval product. Metacto's May 2026 verified pricing guide lists pgvector as included free on all plans; Supabase Pro runs $25 a month per organization with the first project included and additional projects from $10, providing an 8 GB database and removing the inactivity pause. That keeps vectors, app data, and auth in one Postgres database Josh can point AI tools at.</p>
+        </div>
+        <div class="finding">
+          <span class="tag">Inference</span>
+          <p>Claude API economics make the assembly step cheap enough to prototype freely. Claude Sonnet 5 is priced at $2 per million input tokens and $10 per million output. Prompt caching cuts cached input to roughly $0.20 to $0.30 per million, since cache hits cost 10 percent of the base input price per CloudZero, and the Batch API adds a flat 50 percent discount on both input and output per Anthropic's docs. The two discounts stack. Embeddings via Voyage are trivially cheap, with voyage-4-lite at $0.02 per million tokens and 200 million free tokens on the voyage-4 generation.</p>
+        </div>
+        <div class="finding">
+          <span class="tag">Deploys</span>
+          <p>The Netlify-to-GitHub migration is low-risk and well supported. Netlify's GitHub App gives continuous deployment, Deploy Previews, and branch deploys, and you can connect a repo without breaking the existing live site because the old deploy stays untouched until you cut the domain over.</p>
+        </div>
+        <div class="finding">
+          <span class="tag">Drive</span>
+          <p>Claude's Google Drive connector reads and analyzes files but cannot reorganize them in place. Anthropic's claude-code issue #51040 records that operations modifying existing items — moving a file to another folder, renaming, deleting or trashing, updating metadata — are missing, which makes the connector effectively read-only. The inventory work needs a deliberate approach, not a one-click "organize my Drive" fantasy.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIAGNOSIS -->
+    <section id="diagnosis">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Diagnosis</h2></div>
+      <p class="sec-deck">What is actually on the critical path, where the existing plan is wrong, and how your four points hold up.</p>
+
+      <div class="prose">
+        <p>The actual critical path to the product Brett wants runs through three artifacts, in this order of dependency: a controlled vocabulary and metadata schema; a few hundred priority assets actually tagged against that schema; and a written, testable specification of how Brett assembles a recommendation by hand today. Everything else, including the app, the campaigns, and most of the automation lab, is downstream of those three.</p>
+
+        <p>Brett's 90-day plan gets the content right and the sequencing wrong. It reads as three sequential monthly phases: organize, then build the engine, then build campaign prototypes. That is too linear and it back-loads the highest-risk item. The campaign prototypes in month three and the flagship project in month two both require the taxonomy and Brett's documented method, which are month-one deliverables. If month one slips, and inventory projects always slip, months two and three collapse. Run inventory, taxonomy, and method capture concurrently from week one, and pull one flagship campaign prototype forward so you have something to show by the end of month one rather than month three.</p>
+
+        <p>The plan is right about the operating rule — one ranked queue, three active projects, Brett feeds the queue and not you — and right about the division of labor. Those are the load-bearing governance decisions and you should lock them before touching any tool.</p>
+      </div>
+
+      <h3>Your four points, judged plainly</h3>
+      <div class="verdicts">
+        <div class="verdict">
+          <div class="head"><span class="pill partial">Right, overstated</span></div>
+          <h4>1. Organization is the bottleneck</h4>
+          <p>Right in direction, wrong in absolutism. The app depends on the data layer. But "until that exists, every AI feature is just Brett's memory with extra steps" overstates it. You can ship a genuinely useful grounded internal assistant over a few hundred well-tagged assets while the long tail stays messy. Do not hold visible wins hostage to a complete inventory you will not finish for months. Organize the priority set, ship against it, expand.</p>
+        </div>
+        <div class="verdict">
+          <div class="head"><span class="pill ok">Correct</span></div>
+          <h4>2. Move off zip-file Netlify onto GitHub</h4>
+          <p>Correct and unambiguous. This is table stakes, it is teachable in days, and it de-risks everything the two younger staff touch. Do it early. It is also a clean, visible win that costs almost nothing.</p>
+        </div>
+        <div class="verdict">
+          <div class="head"><span class="pill ok">Correct</span></div>
+          <h4>3. The app is retrieval and assembly</h4>
+          <p>Correct, and the most important thing you understand that Brett probably does not. The model is a commodity. The taxonomy, the metadata quality, the intake design, and the assembly logic are the product. Spend your effort there.</p>
+        </div>
+        <div class="verdict">
+          <div class="head"><span class="pill ok">Correct, underrated</span></div>
+          <h4>4. Capture Brett's workflow before automating it</h4>
+          <p>Whatever Brett does by hand is the spec. Sit with him, record it, turn it into a written procedure and a Claude Project, and only then automate. Automate before you capture and you will hard-code his current shortcuts while missing the judgment that makes his output good.</p>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <span class="kicker">The addition your read is missing</span>
+        <p>Rights and provenance are not a footnote. They are a schema field and a gating step. The library contains material with mixed contributors, vintages, and publishability. The original Doing Life Together series (Zondervan, 2002), field-tested at Saddleback Church, was credited to Brett Eastman, Dee Eastman, Todd Wendorff and Denise Wendorff, with Doug Fields co-authoring the student editions, and much of the 20-year archive will carry similar shared authorship and publisher rights. If the app assembles a curated packet that includes something LifeTogether cannot license or resell, that is a real liability, especially with wealthy family and advisor clients. Provenance has to be captured during inventory, not retrofitted.</p>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture">
+      <div class="sec-head"><span class="sec-num">03</span><h2>Information architecture</h2></div>
+      <p class="sec-deck">A two-tier system: Airtable as the human-facing system of record for structured metadata, Supabase Postgres with pgvector as the machine-facing layer for embeddings and retrieval. Google Drive stays where the files live.</p>
+
+      <div class="prose">
+        <p>Do not try to make Drive the database, and do not try to make one tool do everything.</p>
+        <p><strong>Why not Notion.</strong> Notion is excellent for documents and light wikis, but its database is weaker for the controlled-vocabulary, relational, view-heavy work you need, and full Notion AI — Notion Agent, AI Meeting Notes, Enterprise Search — now requires the Business plan at $20 per member per month billed annually, after the standalone $10 AI add-on was eliminated in May 2025. Airtable's relational model, views, and form intake fit the inventory job better.</p>
+        <p><strong>Why not Drive as the database.</strong> Drive has no schema, no controlled vocabulary, and no reliable query layer, which is exactly the problem you are solving.</p>
+        <p><strong>Why Airtable despite the acquisition risk.</strong> It is the fastest way for a non-engineer to build a real relational catalog with intake forms, and the schema is exportable to CSV or Postgres if you ever need to leave. Current list pricing is Free, Team at $20 per seat per month, and Business at $45 per seat per month billed annually, with billing per editor — viewers and form submitters are free — which keeps costs down since most of the team only needs to view or submit.</p>
+      </div>
+
+      <h3>Proposed metadata schema</h3>
+      <p>One row per asset in an Airtable <strong>Assets</strong> table.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>Definition and controlled values</th></tr></thead>
+          <tbody>
+            <tr><td class="field">Asset ID</td><td>Auto-generated, stable, never reused.</td></tr>
+            <tr><td class="field">Title / Original filename</td><td>Human title, plus the filename exactly as found in Drive.</td></tr>
+            <tr><td class="field">Drive link</td><td>Canonical location of the file.</td></tr>
+            <tr><td class="field">Asset type</td><td><span class="vocab">Manuscript · Session guide · Leader notes · Video script · Video file · Slide deck · Marketing asset · Assessment · Other</span></td></tr>
+            <tr><td class="field">Format</td><td><span class="vocab">Doc · PDF · Slides · Video · Audio · Image</span></td></tr>
+            <tr><td class="field">Topic tags</td><td>Multi-select from a locked vocabulary: <span class="vocab">Discipleship · Generosity · Legacy · Marriage · Parenting · Prayer · Evangelism · Leadership · Stewardship · Values · Family formation</span></td></tr>
+            <tr><td class="field">Audience</td><td><span class="vocab">Church · Family · Advisor · Individual · Mixed</span></td></tr>
+            <tr><td class="field">Series or campaign</td><td>Linked record to a <strong>Series</strong> table.</td></tr>
+            <tr><td class="field">Session number</td><td>Integer, where applicable.</td></tr>
+            <tr><td class="field">Completion status</td><td><span class="vocab">Raw idea · Draft · Review · Approved · Published</span></td></tr>
+            <tr><td class="field">Rights status</td><td><span class="vocab">Owned/publishable · Owned/internal only · Third-party/licensed · Third-party/unclear · Do not use</span></td></tr>
+            <tr><td class="field">Contributors</td><td>Linked to a <strong>People</strong> table; captures co-authors such as Doug Fields, Dee Eastman, and the Wendorffs from the original series.</td></tr>
+            <tr><td class="field">Vintage</td><td>Year created, or best estimate.</td></tr>
+            <tr><td class="field">Approval owner</td><td>Defaults to Brett for anything customer-facing.</td></tr>
+            <tr><td class="field">Version</td><td>Semantic-lite, see convention below.</td></tr>
+            <tr><td class="field">Embedded status</td><td>Boolean: is this in the vector store yet.</td></tr>
+            <tr><td class="field">Notes</td><td>Free text, deliberately the only free-text field.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="kicker">The decision that matters most</span>
+        <p>Controlled vocabularies matter more than any other single choice here. Free-text tags will rot within weeks. Lock the topic list, audience list, type list, and status list as single or multi-selects, and make adding a new vocabulary term a deliberate act that goes through Hana rather than something anyone types on the fly.</p>
+      </div>
+
+      <h3>Versioning and naming</h3>
+      <p><strong>Versioning.</strong> Semantic-lite: <code class="inline">vMAJOR.MINOR</code>, where MAJOR increments on a substantive content change Brett approves and MINOR on edits and formatting. Store the version in the metadata row and in the filename. Do not rely on Drive's invisible version history as your source of truth; it does not survive downloads, copies, or moves.</p>
+      <p><strong>File naming.</strong> Apply going forward, backfill only the priority set.</p>
+      <div class="code">[Series]_[Audience]_[Type]_[Session##]_[Title-kebab]_v[MAJOR.MINOR]
+
+Generosity_Family_SessionGuide_03_teaching-your-kids-to-give_v1.2</div>
+
+      <h3>Where each layer lives</h3>
+      <ul class="clean">
+        <li><strong>Files:</strong> Google Drive, reorganized into a shallow folder tree by Series then Audience. Do not build a deep tree; depth is where organization goes to die.</li>
+        <li><strong>Metadata:</strong> Airtable, one base, the tables above.</li>
+        <li><strong>Embeddings and retrieval:</strong> Supabase Postgres with pgvector, populated from the approved subset only.</li>
+      </ul>
+
+      <div class="callout warn">
+        <span class="kicker">Hard truth about Drive automation</span>
+        <p>Claude's Drive connector can find, read, summarize, and cross-reference existing files and can save new files it generates, but per Anthropic's own issue tracker it cannot rename, move, trash, or update metadata on files that already exist. The "point Claude at my Drive and have it clean up" plan does not exist as a one-click action. The realistic path: use Claude, or Claude Code with Drive synced locally via Drive for desktop, to read files and propose metadata rows and new names; a human approves; then either Claude writes renamed copies into the new structure or a person does the moves. Budget human time for this. It is the unglamorous core of month one.</p>
+      </div>
+    </section>
+
+    <!-- THE APP -->
+    <section id="app">
+      <div class="sec-head"><span class="sec-num">04</span><h2>The app</h2></div>
+      <p class="sec-deck">Three phases. Each one is shippable, each one unlocks the next, and each has an explicit data prerequisite that gates it.</p>
+
+      <div class="tabs" role="tablist" aria-label="Build phases">
+        <button class="tab" role="tab" id="tab0" aria-controls="panel0" aria-selected="true"><span class="lead">Phase 0</span>Brett in a box</button>
+        <button class="tab" role="tab" id="tab1" aria-controls="panel1" aria-selected="false"><span class="lead">Phase 1</span>Grounded retrieval app</button>
+        <button class="tab" role="tab" id="tab2" aria-controls="panel2" aria-selected="false"><span class="lead">Phase 2</span>Productized campaign app</button>
+      </div>
+
+      <div class="prose panel" id="panel0" role="tabpanel" aria-labelledby="tab0">
+        <h3>Phase 0 — the "Brett in a box" prototype</h3>
+        <p><strong>Weeks, not months.</strong> Before any custom app, formalize Brett's current manual workflow as a single Claude Project loaded with the approved priority assets plus a written assembly procedure: his intake questions, his selection logic, his output format. This is not the product. It is the spec and the first demo, and it proves the assembly logic works on something Brett already half-does.</p>
+        <p>Claude Projects hold far more than the 200K context window suggests, because paid plans switch to a retrieval mode that expands effective capacity by up to 10x as project knowledge grows, so a few hundred trimmed assets is workable.</p>
+        <div class="spec">
+          <div class="spec-box"><div class="label">Includes</div><p>A fixed intake questionnaire run inside the project, retrieval over the loaded assets, and a curated output packet.</p></div>
+          <div class="spec-box excl"><div class="label">Excludes</div><p>Any real user login, any assessment scoring, anything customer-facing.</p></div>
+          <div class="spec-box"><div class="label">Data required</div><p>The priority assets, tagged, plus the written assembly procedure.</p></div>
+        </div>
+      </div>
+
+      <div class="prose panel" id="panel1" role="tabpanel" aria-labelledby="tab1" hidden>
+        <h3>Phase 1 — the grounded retrieval app (the real MVP)</h3>
+        <ul class="clean">
+          <li><strong>Data layer.</strong> Supabase Postgres holding the asset metadata mirror plus a pgvector column for embeddings.</li>
+          <li><strong>Ingestion.</strong> A script built with Claude Code that pulls approved assets, chunks them, embeds each chunk with Voyage, and stores vectors plus metadata. Only Approved or Published, rights-clear assets get embedded.</li>
+          <li><strong>Retrieval.</strong> Hybrid search — vector similarity plus keyword — filtered by the structured metadata for audience, topic, and rights.</li>
+          <li><strong>Assembly.</strong> A Claude API call that takes intake answers plus retrieved chunks and produces a curated recommendation with citations back to source asset IDs.</li>
+          <li><strong>Intake.</strong> A simple web form, built with Lovable at roughly $25 a month or v0 at roughly $20, deployed on Netlify, writing answers to Supabase.</li>
+          <li><strong>Human gate.</strong> Nothing goes to a client without Brett's approval. The app produces a draft packet, not a finished deliverable.</li>
+        </ul>
+        <div class="spec">
+          <div class="spec-box"><div class="label">Includes</div><p>Intake form, retrieval, assembly draft, source citations, an internal review screen.</p></div>
+          <div class="spec-box excl"><div class="label">Excludes</div><p>The personality or values assessment, self-serve customer accounts, payment, and one-click polished output.</p></div>
+          <div class="spec-box"><div class="label">Data required</div><p>Priority assets embedded, rights status populated so the app never surfaces "Do not use" material, and reliable audience tags.</p></div>
+        </div>
+      </div>
+
+      <div class="prose panel" id="panel2" role="tabpanel" aria-labelledby="tab2" hidden>
+        <h3>Phase 2 — the productized questionnaire-to-campaign app</h3>
+        <p>This is the product Brett is describing. It adds the personality or values assessment layer, scored and mapped to content attributes; user accounts by client type — pastor, family, advisor, individual; saved and shareable campaign outputs; attractive previews for sales conversations; and packaged multi-week campaigns as first-class objects.</p>
+        <p>This is where a front-end tool like Softr, sitting over the Airtable and Supabase data, earns its place for client-facing portals, because Airtable's own Interfaces are weak for external users while Softr provides logins, permissions, and white-label apps without per-seat costs.</p>
+        <div class="spec">
+          <div class="spec-box"><div class="label">Data required first</div><p>A validated assessment instrument, a critical mass of the library embedded, and campaign templates defined by Brett.</p></div>
+          <div class="spec-box excl"><div class="label">Gate</div><p>Do not build Phase 2 speculatively. Phase 1 must be shipping approved packets and a real client engagement must be pulling for the assessment.</p></div>
+        </div>
+      </div>
+
+      <h3>Cost, and the build-vs-buy fork</h3>
+      <div class="prose">
+        <p><strong>Assembly is cheap.</strong> At Sonnet 5 pricing of $2 per million input and $10 per million output, a curated packet that reads tens of thousands of tokens of retrieved context and writes a few thousand tokens of output costs cents. Prompt caching of the standing instructions, with cache reads at 10 percent of base input, plus the 50 percent Batch discount for non-interactive generation cut that further, and the two stack. One pricing wrinkle worth watching: Anthropic launched the $2/$10 Sonnet 5 rate as introductory pricing, and as of late August 2026 the most current Anthropic documentation indicates the previously scheduled September 1 increase to $3/$15 was cancelled and $2/$10 is now standard; some third-party trackers still cite the old expiry, so verify before you build a budget on it. Either way, the expense in this project is human curation and approval time, not inference. Do not let anyone justify architectural complexity on the basis of token cost.</p>
+        <p><strong>The fork.</strong> If the assessment turns out to require a validated, licensed instrument — an established values or personality inventory — that is a procurement and legal decision that could gate Phase 2 for months. If Brett is comfortable with a proprietary, LifeTogether-authored assessment, you control the timeline. Push hard for the proprietary route unless a client contractually requires a named instrument.</p>
+      </div>
+    </section>
+
+    <!-- MIGRATION -->
+    <section id="migration">
+      <div class="sec-head"><span class="sec-num">05</span><h2>Website and dev workflow migration</h2></div>
+      <p class="sec-deck">Move the two staff from zip-upload Netlify deploys to GitHub-backed continuous deployment without breaking a single live site. Low risk if you do it per-site, in parallel to the existing deploy, and cut over only once verified.</p>
+
+      <div class="prose">
+        <h4 style="margin-top:0">Step by step, per site</h4>
+        <ol class="steps">
+          <li>Inventory the live sites and their current Netlify projects. For each, capture the custom domain, DNS, and build settings. Many of these are likely plain static sites with no build step, which makes this easier.</li>
+          <li>Create a GitHub organization for LifeTogether. Add the two staff and Josh. Use the free tier; private repos are free.</li>
+          <li>For one low-stakes site first, create a repo and commit the current site files. Teach the staff to do this through GitHub Desktop, not the command line. GitHub Desktop plus the browser covers their entire workflow and removes the biggest source of fear.</li>
+          <li>Connect the repo to a new Netlify site, or link the repo to the existing site, using the Netlify GitHub App, which handles continuous deployment via OAuth. Configure build settings if any; for static sites the publish directory is often the root or a <code class="inline">dist</code> / <code class="inline">build</code> folder.</li>
+          <li>Verify the GitHub-driven deploy produces an identical site on a Netlify preview URL. Only then point the custom domain at it. The old zip-based project stays untouched until cutover, so there is always a rollback.</li>
+          <li>Turn on Deploy Previews so every change gets a preview URL before it hits production. This is the single feature that will most change how they work: they can show Brett a preview link instead of gambling on a live deploy.</li>
+          <li>Repeat for each remaining site, most stakeful last.</li>
+        </ol>
+
+        <h4>Training the two staff</h4>
+        <p>They use ChatGPT Pro and Claude Max daily and are starting Claude Code, so they are not starting cold.</p>
+        <ul class="clean">
+          <li><strong>Teach the mental model first, not commands.</strong> A repo is the single source of truth, a commit is a labeled save point, main is what is live, a branch is a safe place to try things, a pull request is "review before it goes live." Skip Git internals entirely.</li>
+          <li><strong>Tools.</strong> GitHub Desktop for commit, push, branch, and PR; VS Code or their editor for edits; Claude Code for the actual building. They never need the terminal for Git in this workflow.</li>
+          <li><strong>Guardrails.</strong> Protect the main branch so nothing deploys without a PR. Mistakes become recoverable and review becomes a habit.</li>
+          <li><strong>Self-paced backup.</strong> The free interactive GitHub Skills courses and a GitHub-for-non-programmers guide, but the real teaching is you pairing with them on their own real site for two sessions.</li>
+          <li><strong>Connect Claude Code to GitHub</strong> via the web setup (<code class="inline">/web-setup</code>) so they can drive repo changes from Claude Code, which is exactly the muscle they already have.</li>
+        </ul>
+
+        <div class="done" style="margin-top:22px">
+          <b>Done looks like</b>
+          Every live site deploys from a GitHub repo on push, main is protected, Deploy Previews are on, and both staff can independently make a change on a branch, open a PR, preview it, and merge it. Time budget: a week of part-time work.
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTOMATIONS -->
+    <section id="automations">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Automations, ranked by value over effort</h2></div>
+      <p class="sec-deck">Three to build now. Everything else is deliberately deferred, with the reason attached.</p>
+
+      <div class="card">
+        <div class="rank">
+          <div class="num">1</div>
+          <div>
+            <span class="when">Build first</span>
+            <h4>Searchable internal assistant grounded in approved LifeTogether material</h4>
+            <p>Highest value, and the effort is mostly the inventory work you are doing anyway. This is the single feature that most directly attacks "nobody can answer what we have on X," it is what makes Brett's memory scalable, and it is the natural first slice of the app.</p>
+          </div>
+        </div>
+        <div class="rank">
+          <div class="num">2</div>
+          <div>
+            <span class="when">Build second</span>
+            <h4>Weekly "what Brett created this week" report</h4>
+            <p>Very low effort, high visibility, and it directly serves the queue-and-approval governance model by making Brett's output visible without him doing anything. A meeting-notes tool plus a scheduled Claude summary over new Drive files gets you most of the way. Build it second because it is a fast morale-and-trust win.</p>
+          </div>
+        </div>
+        <div class="rank">
+          <div class="num">3</div>
+          <div>
+            <span class="when">Build third</span>
+            <h4>Meeting transcripts into projects and next actions</h4>
+            <p>High value for a team drowning in Brett's ideas, and modern tools make it cheap. This feeds the ranked queue directly: transcript in, structured candidate tasks out, Hana triages.</p>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:26px"><strong>Why these three over the others:</strong> the internal assistant is the product's foundation and the biggest pain reliever; the weekly report is the cheapest trust-builder and reinforces the operating model; transcript-to-actions is the highest-leverage way to stop Brett's idea firehose from overwhelming Hana.</p>
+
+      <h3>Deliberately deferred, and why</h3>
+      <div class="card deferred">
+        <ul class="clean">
+          <li><strong>Deduplicating new content against the library.</strong> Valuable, but it depends on the embeddings existing, so it is a Phase 1-plus byproduct rather than a standalone early build.</li>
+          <li><strong>Routing approved content to the correct folder and database.</strong> The Drive connector cannot move existing files reliably, so this stays fragile until you have a defined intake path. Build it for new content only, later.</li>
+          <li><strong>Personalized campaign recommendations from intake.</strong> This is the app itself, Phase 1 and 2, not a side automation.</li>
+          <li><strong>Consistent file naming and metadata automation.</strong> Partially a byproduct of the inventory workflow; full automation is low ROI until volume justifies it.</li>
+          <li><strong>Intake forms for pastors, families, advisors.</strong> Build these as the front door to Phase 1, not as standalone automations.</li>
+          <li><strong>Flagging items awaiting approval and drafting product briefs from recordings.</strong> Useful, second wave, after the top three prove the pattern.</li>
+        </ul>
+      </div>
+
+      <h3>Tooling for the connective layer</h3>
+      <div class="prose">
+        <p>Use Make over Zapier. Its credit-based pricing — paid plans from $9 a month for 10,000 credits on annual billing, against Zapier's $19.99 a month for 750 tasks — is materially cheaper for the multi-step, AI-heavy workflows you will build, with the caveat that polling-heavy scenarios can burn credits. For meeting capture, pick a tool that gets the transcript into your pipeline cleanly: a bot-free option such as Granola, paid from around $18 a month, avoids the awkwardness of a recorder announcing itself in client and family conversations, whereas Fireflies, Pro at roughly $10 to $18 per user per month, is stronger if you later want CRM sync.</p>
+      </div>
+    </section>
+
+    <!-- 90-DAY PLAN -->
+    <section id="plan">
+      <div class="sec-head"><span class="sec-num">07</span><h2>Revised 90-day plan</h2></div>
+      <p class="sec-deck">Month one runs weekly because it is the month that decides the rest. After that, fortnights.</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Week 1</div>
+            <h4>Governance and foundations</h4>
+            <p>Lock the operating agreements. Stand up the single ranked queue in Airtable or wherever Hana already lives. Create the GitHub org. Draft the metadata schema and controlled vocabularies and get Hana to ratify them. Sit with Brett for at least two working sessions and record how he assembles a recommendation by hand; this begins the method capture.</p>
+            <div class="done"><b>Done</b> Queue exists and is the only intake path; schema v1 ratified; two Brett sessions recorded.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Week 2</div>
+            <h4>First visible wins</h4>
+            <p>Migrate one low-stakes website to GitHub-backed deploys and train the two staff on the GitHub Desktop workflow using that real site. Begin the priority inventory: identify the first 100 assets with Brett and start tagging them against the schema, capturing rights status as you go.</p>
+            <div class="done"><b>Done</b> One site live from GitHub with Deploy Previews on; both staff have opened and merged a PR; 25 to 40 assets tagged.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Week 3</div>
+            <h4>Assistant prototype and inventory momentum</h4>
+            <p>Stand up the "Brett in a box" Claude Project over the assets tagged so far plus the written assembly procedure. Migrate the remaining sites to GitHub. Continue tagging toward 100.</p>
+            <div class="done"><b>Done</b> A working grounded Claude Project that answers "what do we have on X" over the priority set; all sites on GitHub; 60 to 80 assets tagged.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Week 4</div>
+            <h4>Close month one</h4>
+            <p>Finish the first 100 priority assets tagged with rights status. Turn the recorded Brett sessions into a written, versioned assembly procedure and a reusable Claude Project template. Ship the weekly "what Brett created" report as a running automation. Demo the internal assistant to the team.</p>
+            <div class="done"><b>Done</b> 100 assets tagged and rights-flagged; assembly procedure documented; weekly report running; assistant demoed.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Weeks 5–6</div>
+            <h4>Phase 1 data layer</h4>
+            <p>Stand up Supabase with pgvector. Build the ingestion script in Claude Code that embeds the approved subset. Build hybrid retrieval.</p>
+            <div class="done"><b>Done</b> Approved assets embedded and queryable; retrieval returns correct, rights-clear results with source IDs.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Weeks 7–8</div>
+            <h4>Phase 1 app MVP</h4>
+            <p>Build the intake form in Lovable or v0, deploy on Netlify, wire it to Supabase, and build the assembly call that turns intake plus retrieved chunks into a draft packet with citations and an internal review screen. Requires Brett's decision on the fixed intake questions and the output format.</p>
+            <div class="done"><b>Done</b> End to end: intake in, draft curated packet out, with a human approval gate.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Weeks 9–10</div>
+            <h4>First real campaign prototype, end to end</h4>
+            <p>Take one flagship series from source through the pipeline to a complete, Brett-approved campaign package with an attractive preview usable in a sales conversation. Add transcript-to-actions feeding the queue. Requires Brett's content approval on the flagship.</p>
+            <div class="done"><b>Done</b> One sellable campaign prototype exists and has been used, or is ready to use, in a live client conversation; transcripts now generate queue candidates.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="card">
+            <div class="tl-when">Weeks 11–12</div>
+            <h4>Harden and templatize</h4>
+            <p>Turn the flagship pipeline into a repeatable, documented method so the team can produce campaign prototypes two through five without Josh doing each by hand. Populate more of the library into the vector store. Decide pricing and packaging of campaigns with John. Requires John's business-model input and Hana's workflow sign-off.</p>
+            <div class="done"><b>Done</b> A documented, repeatable campaign-production method; at least a second campaign prototype produced via the method; a first pricing model from John.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Who decides what</h3>
+      <div class="owners">
+        <div class="owner">
+          <div class="who">Brett decides</div>
+          <p>The fixed intake questions, the output and packet format, which flagship goes first, all content and theological approvals, and whether the assessment is proprietary or a licensed instrument.</p>
+        </div>
+        <div class="owner">
+          <div class="who">Hana decides</div>
+          <p>Schema and vocabulary ratification, queue priorities, and workflow sign-off.</p>
+        </div>
+        <div class="owner">
+          <div class="who">John decides</div>
+          <p>Campaign pricing and packaging.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS -->
+    <section id="risks">
+      <div class="sec-head"><span class="sec-num">08</span><h2>Risks</h2></div>
+      <p class="sec-deck">Ordered by likelihood of killing the project, each with the mitigation that has to be in place early.</p>
+
+      <div class="card">
+        <div class="risk">
+          <span class="sev s1">Risk 1</span>
+          <div>
+            <h4>Brett bypasses the queue and reverts to handing ideas to people directly</h4>
+            <p>The single biggest threat, because it destroys the operating model that makes everything else survivable. Every idea arrives with equal urgency and the ranked queue becomes decoration.</p>
+            <div class="mit"><b>Mitigation, first two weeks</b> Get the "Brett feeds the queue, not people" agreement in writing and, critically, make the queue so easy for Brett to dump into that it is lower friction than grabbing someone. If the queue is more work than a hallway ask, he will not use it.</div>
+          </div>
+        </div>
+        <div class="risk">
+          <span class="sev s1">Risk 2</span>
+          <div>
+            <h4>The inventory stalls, month one slips, and months two and three cascade</h4>
+            <p>Inventory is boring and open-ended, and it is where this kind of project usually dies.</p>
+            <div class="mit"><b>Mitigation</b> Cap the first pass at exactly 100 assets, timebox it, and explicitly allow the long tail to stay messy. Ship the assistant against the 100 so there is a visible payoff pulling the work forward.</div>
+          </div>
+        </div>
+        <div class="risk">
+          <span class="sev s2">Risk 3</span>
+          <div>
+            <h4>Rights and provenance get skipped, and the app later surfaces non-publishable material</h4>
+            <p>Given the shared authorship and publisher relationships across the archive, this is a genuine liability, not a theoretical one.</p>
+            <div class="mit"><b>Mitigation</b> Make rights status a required field from the first asset, and make "Do not use" and "unclear" hard filters in retrieval from day one.</div>
+          </div>
+        </div>
+        <div class="risk">
+          <span class="sev s2">Risk 4</span>
+          <div>
+            <h4>Josh gets pulled into ad-hoc errands and the role collapses into assistant work</h4>
+            <p>Exactly what Brett said he did not want, and it happens by drift rather than decision.</p>
+            <div class="mit"><b>Mitigation</b> The operating agreements in section 09, secured in the first two weeks before momentum sets the pattern.</div>
+          </div>
+        </div>
+        <div class="risk">
+          <span class="sev s3">Risk 5</span>
+          <div>
+            <h4>Over-engineering the app before the data exists</h4>
+            <p>The tempting failure mode, because building is more fun than tagging.</p>
+            <div class="mit"><b>Mitigation</b> Enforce the phase gates. No Supabase build until the priority assets are tagged; no Phase 2 assessment work until Phase 1 ships.</div>
+          </div>
+        </div>
+        <div class="risk">
+          <span class="sev s3">Secondary</span>
+          <div>
+            <h4>Airtable price increases, and key-person dependency on Josh</h4>
+            <p>Both real but manageable. The Bending Spoons deal and its history make price and free-tier tightening plausible, so keep the schema exportable. Key-person risk is answered by documenting the repeatable method as you go, which is already in the plan.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROLE -->
+    <section id="role">
+      <div class="sec-head"><span class="sec-num">09</span><h2>Role and boundaries</h2></div>
+      <p class="sec-deck">Own systems and repeatable methods, not tasks. The title should signal it: Innovation Lab Director beats Coordinator, because "coordinator" invites people to route coordination — read: errands — to you. Take the Director framing and live up to it by producing systems, not by being available.</p>
+
+      <h3>How to frame the role to each person</h3>
+      <div class="script">
+        <div class="to">To Brett</div>
+        <p>"I turn your ideas and archives into systems and finished products. The fastest way to lose that is for me to become the person you hand individual tasks to. Feed the queue, and I will give you completed prototypes and a library you can actually search. Every customer-facing thing still comes to you for content and theological approval; I am not deciding content, I am building the machine that assembles and ships it."</p>
+      </div>
+      <div class="script">
+        <div class="to">To Hana</div>
+        <p>"You own priorities; I own building. You approve workflows before I roll them out. We keep one ranked queue and no more than three active projects. I will not start a fourth thing without something coming off the list, and I will not accept work that skips the queue, including from Brett."</p>
+      </div>
+      <div class="script">
+        <div class="to">To John</div>
+        <p>"You own business model and pricing. I will build the campaign-production method and the app so that whatever you decide to sell, we can produce and preview repeatably. Tell me the packaging you want to test and I will make it demoable."</p>
+      </div>
+
+      <h3>Six operating agreements to get in writing in week one</h3>
+      <div class="prose">
+        <ol class="steps">
+          <li><strong>One queue.</strong> All work, including Brett's ideas, enters through the single ranked queue that Hana prioritizes. No side-channel tasking.</li>
+          <li><strong>Three-active-project cap.</strong> Nothing new starts until something finishes or is explicitly de-prioritized.</li>
+          <li><strong>A standing weekly triage with Hana,</strong> with Brett feeding the queue beforehand, so priority-setting is a scheduled act rather than a constant interruption.</li>
+          <li><strong>Named approval gates.</strong> Brett for content and theology, Hana for workflows, John for pricing. Anything customer-facing requires the named approver before it ships.</li>
+          <li><strong>A visible-wins cadence.</strong> A short weekly update showing what shipped, so the structural work is legible and Josh is not judged only on the slow inventory grind.</li>
+          <li><strong>Explicit protection of build time.</strong> A block of the week that is not interruptible for ad-hoc requests, because deep structural work cannot happen in fragments.</li>
+        </ol>
+        <p style="margin-bottom:0">The through-line: your leverage comes from building things that keep working when Brett changes direction. Every agreement above exists to protect that, and the moment the work collapses into ad-hoc requests, the value Brett is actually hiring you for disappears.</p>
+      </div>
+    </section>
+
+    <!-- RECOMMENDATIONS -->
+    <section id="recommendations">
+      <div class="sec-head"><span class="sec-num">10</span><h2>Recommendations</h2></div>
+      <p class="sec-deck">Four stages, each with the benchmark that would change the plan rather than merely delay it.</p>
+
+      <div class="card">
+        <div class="stage">
+          <div class="when">Stage 1<em>First two weeks</em></div>
+          <div>
+            <p>Lock the six operating agreements before anything else; they are the foundation everything stands on. Stand up the single queue and make it frictionless for Brett. Ratify the metadata schema and controlled vocabularies with Hana. Record Brett's manual assembly method in at least two sessions. Migrate one low-stakes website to GitHub and train the two staff on it.</p>
+            <div class="bench"><b>Benchmark</b> If Brett will not commit to the queue discipline, stop building automations and solve the governance problem first, because nothing downstream survives without it.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="when">Stage 2<em>Rest of month one</em></div>
+          <div>
+            <p>Tag the first 100 priority assets with rights status. Ship the grounded internal assistant over that set, and the weekly Brett-output report.</p>
+            <div class="bench"><b>Benchmark</b> If you cannot get 100 assets tagged in the month, the taxonomy is too heavy. Simplify the vocabulary and try again rather than pushing on.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="when">Stage 3<em>Weeks 5 to 8</em></div>
+          <div>
+            <p>Build the Supabase and pgvector data layer, the ingestion pipeline, and the Phase 1 intake-to-draft app.</p>
+            <div class="bench"><b>Benchmark</b> If retrieval quality is poor, the problem is almost always tagging and chunking, not the model. Fix the data before touching the model or the prompt.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="when">Stage 4<em>Weeks 9 to 12</em></div>
+          <div>
+            <p>Produce the first Brett-approved campaign prototype end to end, add transcript-to-actions, then templatize the method and get John's pricing.</p>
+            <div class="bench"><b>Benchmark to advance to Phase 2</b> Phase 1 must be shipping approved packets and a real client engagement must be pulling for the assessment feature. Do not build Phase 2 speculatively.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Tooling commitments</h3>
+      <div class="commitments">
+        <span class="chip"><b>Airtable</b> — metadata, schema kept exportable</span>
+        <span class="chip"><b>Supabase + pgvector</b> — retrieval</span>
+        <span class="chip"><b>Voyage</b> — embeddings</span>
+        <span class="chip"><b>Claude API, Sonnet 5 tier</b> — assembly</span>
+        <span class="chip"><b>Netlify + GitHub</b> — sites</span>
+        <span class="chip"><b>GitHub Desktop</b> — non-technical staff</span>
+        <span class="chip"><b>Make</b> — connective automation</span>
+        <span class="chip"><b>Softr</b> — client portals, Phase 2</span>
+        <span class="chip"><b>Granola</b> — bot-free transcript capture</span>
+      </div>
+    </section>
+
+    <!-- CAVEATS -->
+    <section id="caveats">
+      <div class="sec-head"><span class="sec-num">11</span><h2>Caveats</h2></div>
+      <p class="sec-deck">What could make parts of this wrong, and what to reverify before committing money or promises.</p>
+      <div class="card">
+        <ul class="clean">
+          <li><strong>Airtable's ownership is changing.</strong> The Bending Spoons acquisition was announced August 4, 2026 at a $1.285 billion enterprise value and is expected to close before year-end, and the acquirer's history with Evernote and WeTransfer makes price and free-tier tightening plausible. The mitigation — exportable schema, no deep lock-in — is in the plan, but revisit the choice if prices jump materially.</li>
+          <li><strong>Pricing and feature facts here are current as of late August 2026,</strong> and this category moves fast. The Claude Sonnet 5 rate of $2/$10 launched as introductory pricing; the most current Anthropic documentation indicates the scheduled increase to $3/$15 was cancelled, but some trackers still show the old schedule. Reverify before committing budget.</li>
+          <li><strong>The Google Drive connector cannot reorganize existing files.</strong> That is a documented, hard constraint, and it makes month-one inventory more manual than Brett may expect. Do not promise a one-click Drive cleanup.</li>
+          <li><strong>The Phase 2 assessment layer may carry licensing implications</strong> if a named third-party instrument is required. That is a legal and content decision that can gate the timeline and is outside what Josh can resolve by building.</li>
+          <li><strong>Claude Projects capacity is generous but not infinite.</strong> It expands via retrieval mode as knowledge grows, and behavior changes as knowledge scales. The "Brett in a box" prototype is a spec and a demo, not the production product.</li>
+          <li><strong>This plan assumes Brett actually cedes the queue discipline.</strong> If he does not, the realistic sequencing changes and the governance problem becomes the whole first month's work.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>LifeTogether Ministries — internal planning document. Status: proposed, not approved.</span>
+    <span>Prepared for Josh · Late August 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Phase tabs
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){
+        var panel = document.getElementById(t.getAttribute('aria-controls'));
+        var on = (t === tab);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        if (panel) panel.hidden = !on;
+      });
+    });
+    tab.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(tab);
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+        e.preventDefault();
+        var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        next.focus(); next.click();
+      }
+    });
+  });
+
+  // TOC scrollspy
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function(l){ map[l.getAttribute('href').slice(1)] = l; });
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section'));
+  if ('IntersectionObserver' in window){
+    var visible = new Set();
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) visible.add(en.target.id); else visible.delete(en.target.id);
+      });
+      var current = sections.filter(function(s){ return visible.has(s.id); })[0];
+      if (current){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        if (map[current.id]) map[current.id].classList.add('active');
+      }
+    }, { rootMargin: '-96px 0px -65% 0px', threshold: 0 });
+    sections.forEach(function(s){ obs.observe(s); });
+  }
+
+  // Mobile contents toggle
+  var toggle = document.getElementById('tocToggle');
+  var inner = document.getElementById('tocInner');
+  if (toggle && inner){
+    toggle.addEventListener('click', function(){
+      var open = inner.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    inner.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth <= 940){
+        inner.classList.remove('open');
+        toggle.setAttribute('aria-expanded','false');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

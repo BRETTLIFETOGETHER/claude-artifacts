@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lifetogether — Campaign Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;0,900;1,500;1,600&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#080e16;
+    --navy:#0b1726;
+    --navy-2:#0e1d30;
+    --panel:#132439;
+    --panel-2:#16293f;
+    --gold:#c9a35c;
+    --gold-bright:#e3c186;
+    --cream:#ece7d8;
+    --muted:#8b94a5;
+    --muted-dim:#5f6a7c;
+    --ivory:#f4efe3;
+    --line:rgba(255,255,255,.08);
+    --line-gold:rgba(201,163,92,.22);
+    --display:'Playfair Display',Georgia,serif;
+    --body:'Spectral',Georgia,serif;
+    --ui:'Archivo',system-ui,sans-serif;
+    --maxw:1280px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--body);
+    background:var(--navy);
+    color:var(--cream);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;width:100%}
+  .eyebrow{
+    font-family:var(--ui);font-size:11px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+  }
+
+  /* ============ UTILITY BAR ============ */
+  .util{
+    background:var(--ink);
+    border-bottom:1px solid var(--line);
+    font-family:var(--ui);
+  }
+  .util .wrap{
+    display:flex;justify-content:space-between;align-items:center;
+    height:38px;font-size:12px;letter-spacing:.04em;color:var(--muted);
+  }
+  .util a{transition:color .2s}
+  .util a:hover{color:var(--gold-bright)}
+  .util .util-left{letter-spacing:.16em;text-transform:uppercase;font-size:10.5px;color:var(--muted-dim)}
+  .util .util-right{display:flex;gap:26px;align-items:center}
+  .util .util-right .pipe{color:rgba(255,255,255,.12)}
+
+  /* ============ HEADER ============ */
+  header.site{
+    position:sticky;top:0;z-index:100;
+    background:rgba(11,23,38,.86);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line-gold);
+  }
+  .bar{
+    display:flex;align-items:center;justify-content:space-between;
+    height:78px;
+  }
+  /* logo */
+  .brand{display:flex;align-items:baseline;gap:2px;flex-shrink:0}
+  .brand .mark{
+    font-family:var(--display);font-weight:800;font-size:25px;
+    letter-spacing:-.01em;color:var(--cream);
+  }
+  .brand .mark em{font-style:italic;color:var(--gold)}
+  .brand .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:3px;align-self:flex-end;margin-bottom:6px}
+
+  /* nav */
+  nav.primary{display:flex;align-items:center;gap:2px}
+  .nav-item{position:relative}
+  .nav-link{
+    display:flex;align-items:center;gap:6px;
+    font-family:var(--ui);font-size:13px;font-weight:500;
+    letter-spacing:.02em;color:var(--cream);
+    padding:14px 16px;border-radius:6px;cursor:pointer;
+    transition:color .2s,background .2s;white-space:nowrap;
+  }
+  .nav-link .chev{
+    width:8px;height:8px;border-right:1.4px solid var(--muted);
+    border-bottom:1.4px solid var(--muted);transform:rotate(45deg) translateY(-1px);
+    transition:transform .25s,border-color .2s;
+  }
+  .nav-item:hover .nav-link{color:var(--gold-bright)}
+  .nav-item:hover .nav-link .chev{border-color:var(--gold);transform:rotate(225deg) translateY(-1px)}
+  .nav-link.active{color:var(--gold-bright)}
+
+  /* CTA */
+  .cta{
+    font-family:var(--ui);font-size:12.5px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink);background:var(--gold);
+    padding:12px 22px;border-radius:3px;margin-left:14px;flex-shrink:0;
+    transition:background .2s,transform .2s,box-shadow .2s;
+    box-shadow:0 0 0 rgba(201,163,92,0);
+  }
+  .cta:hover{background:var(--gold-bright);transform:translateY(-1px);box-shadow:0 8px 24px -10px rgba(201,163,92,.6)}
+
+  /* ============ DROPDOWNS ============ */
+  .dropdown{
+    position:absolute;top:calc(100% + 10px);left:0;
+    background:var(--panel);
+    border:1px solid var(--line-gold);border-radius:10px;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.7);
+    padding:10px;min-width:288px;
+    opacity:0;visibility:hidden;transform:translateY(8px);
+    transition:opacity .22s,transform .22s,visibility .22s;
+    z-index:90;
+  }
+  .nav-item:hover .dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+  .dropdown::before{content:"";position:absolute;top:-10px;left:0;right:0;height:10px}
+  .dd-link{
+    display:block;padding:11px 14px;border-radius:7px;
+    font-family:var(--body);font-size:15px;color:var(--cream);
+    transition:background .18s,color .18s,padding-left .18s;
+  }
+  .dd-link span.sub{display:block;font-family:var(--ui);font-size:11px;color:var(--muted);letter-spacing:.02em;margin-top:2px}
+  .dd-link:hover{background:var(--panel-2);color:var(--gold-bright);padding-left:18px}
+  .dd-head{
+    font-family:var(--ui);font-size:10.5px;font-weight:600;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--gold);padding:8px 14px 6px;
+  }
+
+  /* mega menu (Campaigns) */
+  .dropdown.mega{
+    left:50%;transform:translateX(-50%) translateY(8px);
+    min-width:880px;padding:0;overflow:hidden;
+  }
+  .nav-item:hover .dropdown.mega{transform:translateX(-50%) translateY(0)}
+  .mega-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+  .mega-col{padding:24px 26px}
+  .mega-col + .mega-col{border-left:1px solid var(--line)}
+  .mega-col .dd-head{padding:0 0 14px}
+  .mega-link{
+    display:block;font-family:var(--body);font-size:14.5px;color:var(--cream);
+    padding:7px 0;transition:color .18s,padding-left .18s;border-bottom:1px solid transparent;
+  }
+  .mega-link:hover{color:var(--gold-bright);padding-left:6px}
+  .mega-foot{
+    grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;
+    background:var(--ink);padding:18px 26px;border-top:1px solid var(--line-gold);
+  }
+  .mega-foot .ft-text{font-family:var(--body);font-style:italic;color:var(--muted);font-size:14px}
+  .mega-foot .ft-links{display:flex;gap:8px}
+  .pill{
+    font-family:var(--ui);font-size:11.5px;font-weight:600;letter-spacing:.04em;
+    padding:9px 16px;border-radius:3px;transition:.2s;
+  }
+  .pill.gold{background:var(--gold);color:var(--ink)}
+  .pill.gold:hover{background:var(--gold-bright)}
+  .pill.ghost{border:1px solid var(--line-gold);color:var(--gold)}
+  .pill.ghost:hover{background:var(--panel);color:var(--gold-bright)}
+
+  /* ============ MOBILE ============ */
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
+  .hamburger span{width:24px;height:2px;background:var(--cream);transition:.3s}
+  .mobile-nav{display:none}
+
+  @media(max-width:1080px){
+    nav.primary,.bar > .cta{display:none}
+    .hamburger{display:flex}
+    .wrap{padding:0 22px}
+    .mobile-nav{
+      display:block;position:fixed;inset:78px 0 0;z-index:99;
+      background:var(--navy);overflow-y:auto;
+      transform:translateX(100%);transition:transform .35s ease;
+      padding:18px 0 60px;
+    }
+    body.menu-open .mobile-nav{transform:translateX(0)}
+    body.menu-open{overflow:hidden}
+    body.menu-open .hamburger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    body.menu-open .hamburger span:nth-child(2){opacity:0}
+    body.menu-open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .m-item{border-bottom:1px solid var(--line)}
+    .m-trigger{
+      display:flex;justify-content:space-between;align-items:center;
+      width:100%;background:none;border:0;color:var(--cream);cursor:pointer;
+      font-family:var(--ui);font-size:16px;font-weight:500;letter-spacing:.02em;
+      padding:18px 22px;text-align:left;
+    }
+    .m-trigger .chev{
+      width:9px;height:9px;border-right:1.6px solid var(--muted);
+      border-bottom:1.6px solid var(--muted);transform:rotate(45deg);transition:transform .25s;
+    }
+    .m-item.open .m-trigger{color:var(--gold-bright)}
+    .m-item.open .m-trigger .chev{transform:rotate(225deg);border-color:var(--gold)}
+    .m-sub{max-height:0;overflow:hidden;transition:max-height .35s ease;background:var(--ink)}
+    .m-item.open .m-sub{max-height:760px}
+    .m-sub a{display:block;font-family:var(--body);font-size:15px;color:var(--muted);padding:13px 34px}
+    .m-sub a:hover{color:var(--gold-bright)}
+    .m-cta{margin:24px 22px 0}
+    .m-cta a{display:block;text-align:center;background:var(--gold);color:var(--ink);
+      font-family:var(--ui);font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+      font-size:13px;padding:16px;border-radius:3px}
+  }
+
+  /* ============ CONTENT SLOT (blank) ============ */
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:90px 32px}
+  .slot{
+    text-align:center;border:1px dashed var(--line-gold);border-radius:14px;
+    padding:80px 60px;max-width:760px;width:100%;background:
+      radial-gradient(120% 140% at 50% 0%,rgba(201,163,92,.05),transparent 60%);
+  }
+  .slot .eyebrow{display:block;margin-bottom:22px}
+  .slot h1{
+    font-family:var(--display);font-weight:700;font-size:clamp(34px,5vw,52px);
+    line-height:1.08;letter-spacing:-.01em;color:var(--cream);
+  }
+  .slot h1 em{font-style:italic;color:var(--gold)}
+  .slot p{margin-top:20px;color:var(--muted);font-size:17px;font-style:italic;max-width:480px;margin-left:auto;margin-right:auto}
+
+  /* ============ FOOTER ============ */
+  footer.site{background:var(--ink);border-top:1px solid var(--line-gold);margin-top:auto}
+  .foot-top{padding:64px 0 50px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:40px}
+  .foot-brand .mark{font-family:var(--display);font-weight:800;font-size:24px;color:var(--cream)}
+  .foot-brand .mark em{font-style:italic;color:var(--gold)}
+  .foot-brand p{margin-top:16px;color:var(--muted);font-size:15px;max-width:280px;font-style:italic}
+  .foot-brand .signoff{margin-top:22px;font-family:var(--ui);font-size:12px;letter-spacing:.04em;color:var(--muted-dim)}
+  .foot-brand .signoff a{color:var(--gold);transition:.2s}
+  .foot-brand .signoff a:hover{color:var(--gold-bright)}
+  .foot-col h4{
+    font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:18px;
+  }
+  .foot-col a{display:block;font-size:14.5px;color:var(--muted);padding:6px 0;transition:color .18s,padding-left .18s}
+  .foot-col a:hover{color:var(--gold-bright);padding-left:4px}
+  .foot-bottom{border-top:1px solid var(--line);padding:24px 0}
+  .foot-bottom .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot-bottom .copy{font-family:var(--ui);font-size:11.5px;letter-spacing:.05em;color:var(--muted-dim)}
+  .foot-bottom .legal{display:flex;gap:22px;font-family:var(--ui);font-size:11.5px;letter-spacing:.05em}
+  .foot-bottom .legal a{color:var(--muted-dim);transition:.2s}
+  .foot-bottom .legal a:hover{color:var(--gold)}
+
+  @media(max-width:900px){.foot-grid{grid-template-columns:1fr 1fr;gap:36px}.foot-brand{grid-column:1/-1}}
+  @media(max-width:520px){.foot-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ===== UTILITY BAR ===== -->
+<div class="util">
+  <div class="wrap">
+    <div class="util-left">25+ Years · Hundreds of Churches · Purpose Driven Heritage</div>
+    <div class="util-right">
+      <a href="#">brett@lifetogether.com</a>
+      <span class="pipe">|</span>
+      <a href="#">Request a Sample</a>
+      <span class="pipe">|</span>
+      <a href="#">Search</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="site">
+  <div class="wrap bar">
+    <a href="#" class="brand">
+      <span class="mark">Life<em>together</em></span><span class="dot"></span>
+    </a>
+
+    <nav class="primary">
+      <!-- HOME -->
+      <div class="nav-item"><a href="#" class="nav-link active">Home</a></div>
+
+      <!-- CAMPAIGNS — mega menu -->
+      <div class="nav-item">
+        <a href="#" class="nav-link">Campaigns <i class="chev"></i></a>
+        <div class="dropdown mega">
+          <div class="mega-grid">
+            <div class="mega-col">
+              <div class="dd-head">Browse by Goal</div>
+              <a href="#" class="mega-link">Launch Small Groups</a>
+              <a href="#" class="mega-link">Start the Year Strong</a>
+              <a href="#" class="mega-link">Build Generosity</a>
+              <a href="#" class="mega-link">Strengthen Families</a>
+              <a href="#" class="mega-link">Deepen Prayer</a>
+              <a href="#" class="mega-link">Improve Emotional Health</a>
+              <a href="#" class="mega-link">Create Churchwide Unity</a>
+              <a href="#" class="mega-link">Turn a Sermon Series into a Campaign</a>
+            </div>
+            <div class="mega-col">
+              <div class="dd-head">Browse by Category</div>
+              <a href="#" class="mega-link">Seasonal Campaigns</a>
+              <a href="#" class="mega-link">Purpose Driven / Five Purposes</a>
+              <a href="#" class="mega-link">Prayer &amp; Spiritual Formation</a>
+              <a href="#" class="mega-link">Peace, Anxiety &amp; Emotional Health</a>
+              <a href="#" class="mega-link">Community &amp; Small Groups</a>
+              <a href="#" class="mega-link">Marriage, Family &amp; Parenting</a>
+              <a href="#" class="mega-link">Giving &amp; Generosity</a>
+              <a href="#" class="mega-link">Stewardship &amp; Financial Wisdom</a>
+            </div>
+            <div class="mega-col">
+              <div class="dd-head">More Categories</div>
+              <a href="#" class="mega-link">Legacy &amp; Family Wealth</a>
+              <a href="#" class="mega-link">Leadership &amp; Serving</a>
+              <a href="#" class="mega-link">Mission &amp; Outreach</a>
+              <a href="#" class="mega-link">Healing, Recovery &amp; Freedom</a>
+              <a href="#" class="mega-link">Church Vision &amp; Alignment</a>
+              <a href="#" class="mega-link">Marketplace &amp; Work</a>
+              <a href="#" class="mega-link">Age &amp; Stage Campaigns</a>
+              <a href="#" class="mega-link">Search &amp; Filter the Full Catalog →</a>
+            </div>
+          </div>
+          <div class="mega-foot">
+            <span class="ft-text">Not sure where to start? Let us match you.</span>
+            <div class="ft-links">
+              <a href="#" class="pill ghost">Featured Campaigns</a>
+              <a href="#" class="pill gold">Find My Campaign</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="nav-item">
+        <a href="#" class="nav-link">How It Works <i class="chev"></i></a>
+        <div class="dropdown">
+          <a href="#" class="dd-link">What Is a 40-Day Campaign?</a>
+          <a href="#" class="dd-link">Formats: 7, 21, 30 &amp; 40 Days</a>
+          <a href="#" class="dd-link">What's Included</a>
+          <a href="#" class="dd-link">Case Studies &amp; Examples</a>
+        </div>
+      </div>
+
+      <!-- PRICING -->
+      <div class="nav-item"><a href="#" class="nav-link">Pricing</a></div>
+
+      <!-- CUSTOM CAMPAIGNS -->
+      <div class="nav-item">
+        <a href="#" class="nav-link">Custom Campaigns <i class="chev"></i></a>
+        <div class="dropdown">
+          <a href="#" class="dd-link">Turn Your Sermon Series into a Campaign
+            <span class="sub">Your sermons may already contain the campaign</span></a>
+          <a href="#" class="dd-link">Pastor-Branded Devotionals</a>
+          <a href="#" class="dd-link">Author / Publisher Campaigns</a>
+          <a href="#" class="dd-link">Church-Branded Campaigns</a>
+          <a href="#" class="dd-link">Network / Denomination Editions</a>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="nav-item">
+        <a href="#" class="nav-link">About <i class="chev"></i></a>
+        <div class="dropdown">
+          <a href="#" class="dd-link">Our Story</a>
+          <a href="#" class="dd-link">Why 40 Days Work</a>
+          <a href="#" class="dd-link">Lifetogether History</a>
+          <a href="#" class="dd-link">Purpose Driven Legacy</a>
+          <a href="#" class="dd-link">Partner With Us</a>
+        </div>
+      </div>
+
+      <!-- RESOURCES -->
+      <div class="nav-item">
+        <a href="#" class="nav-link">Resources <i class="chev"></i></a>
+        <div class="dropdown">
+          <div class="dd-head">For Pastors &amp; Leaders</div>
+          <a href="#" class="dd-link">Pastor Resources</a>
+          <a href="#" class="dd-link">Campaign Planning Guides</a>
+          <a href="#" class="dd-link">Small Group Launch Tools</a>
+          <a href="#" class="dd-link">Generosity Campaign Resources</a>
+          <a href="#" class="dd-link">Seasonal Campaign Ideas</a>
+          <a href="#" class="dd-link">Advisor / Financial Ministry Resources</a>
+          <a href="#" class="dd-link">Articles &amp; White Papers</a>
+        </div>
+      </div>
+    </nav>
+
+    <a href="#" class="cta">Schedule a Call</a>
+
+    <button class="hamburger" aria-label="Menu" id="burger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== MOBILE NAV ===== -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="m-item"><button class="m-trigger" data-static>Home</button></div>
+  <div class="m-item">
+    <button class="m-trigger">Campaigns <i class="chev"></i></button>
+    <div class="m-sub">
+      <a href="#">Browse by Goal</a>
+      <a href="#">Browse by Category</a>
+      <a href="#">Seasonal Campaigns</a>
+      <a href="#">Featured Campaigns</a>
+      <a href="#">Find My Campaign</a>
+      <a href="#">Search the Full Catalog</a>
+    </div>
+  </div>
+  <div class="m-item">
+    <button class="m-trigger">How It Works <i class="chev"></i></button>
+    <div class="m-sub">
+      <a href="#">What Is a 40-Day Campaign?</a>
+      <a href="#">Formats: 7, 21, 30 &amp; 40 Days</a>
+      <a href="#">What's Included</a>
+      <a href="#">Case Studies &amp; Examples</a>
+    </div>
+  </div>
+  <div class="m-item"><button class="m-trigger" data-static>Pricing</button></div>
+  <div class="m-item">
+    <button class="m-trigger">Custom Campaigns <i class="chev"></i></button>
+    <div class="m-sub">
+      <a href="#">Turn Your Sermon Series into a Campaign</a>
+      <a href="#">Pastor-Branded Devotionals</a>
+      <a href="#">Author / Publisher Campaigns</a>
+      <a href="#">Church-Branded Campaigns</a>
+      <a href="#">Network / Denomination Editions</a>
+    </div>
+  </div>
+  <div class="m-item">
+    <button class="m-trigger">About <i class="chev"></i></button>
+    <div class="m-sub">
+      <a href="#">Our Story</a>
+      <a href="#">Why 40 Days Work</a>
+      <a href="#">Lifetogether History</a>
+      <a href="#">Purpose Driven Legacy</a>
+      <a href="#">Partner With Us</a>
+    </div>
+  </div>
+  <div class="m-item">
+    <button class="m-trigger">Resources <i class="chev"></i></button>
+    <div class="m-sub">
+      <a href="#">Pastor Resources</a>
+      <a href="#">Campaign Planning Guides</a>
+      <a href="#">Small Group Launch Tools</a>
+      <a href="#">Generosity Campaign Resources</a>
+      <a href="#">Seasonal Campaign Ideas</a>
+      <a href="#">Advisor / Financial Ministry Resources</a>
+      <a href="#">Articles &amp; White Papers</a>
+    </div>
+  </div>
+  <div class="m-cta"><a href="#">Schedule a Call</a></div>
+</div>
+
+<!-- ===== CONTENT SLOT (intentionally blank) ===== -->
+<main>
+  <div class="slot">
+    <span class="eyebrow">Lifetogether · Campaign Platform</span>
+    <h1>Page <em>content</em> goes here</h1>
+    <p>This is the shared layout shell. The header, navigation, dropdowns, and footer repeat on every page — each page's body drops into this slot.</p>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site">
+  <div class="foot-top">
+    <div class="wrap foot-grid">
+      <div class="foot-brand">
+        <div class="mark">Life<em>together</em></div>
+        <p>Ready-made and custom churchwide campaigns that turn messages into movements.</p>
+        <div class="signoff">Brett Eastman, Founder · <a href="#">brett@lifetogether.com</a></div>
+      </div>
+
+      <div class="foot-col">
+        <h4>Campaigns</h4>
+        <a href="#">Explore Campaigns</a>
+        <a href="#">Seasonal Campaigns</a>
+        <a href="#">Campaign Finder</a>
+        <a href="#">Giving &amp; Generosity</a>
+        <a href="#">Stewardship &amp; Finances</a>
+        <a href="#">Purpose Driven Campaigns</a>
+        <a href="#">Small Group Campaigns</a>
+        <a href="#">Family Campaigns</a>
+      </div>
+
+      <div class="foot-col">
+        <h4>For Churches</h4>
+        <a href="#">For Pastors</a>
+        <a href="#">For Church Staff</a>
+        <a href="#">For Small Group Pastors</a>
+        <a href="#">For Generosity Pastors</a>
+        <a href="#">For Family Ministry Leaders</a>
+        <a href="#">Schedule a Call</a>
+      </div>
+
+      <div class="foot-col">
+        <h4>Custom Work</h4>
+        <a href="#">Pastor-Branded Campaigns</a>
+        <a href="#">Sermon Series Campaigns</a>
+        <a href="#">Author / Publisher Campaigns</a>
+        <a href="#">Network / Denomination</a>
+        <a href="#">Full Custom Production</a>
+      </div>
+
+      <div class="foot-col">
+        <h4>About &amp; Resources</h4>
+        <a href="#">Our Story</a>
+        <a href="#">Why 40 Days Work</a>
+        <a href="#">Purpose Driven Legacy</a>
+        <a href="#">Partner With Us</a>
+        <a href="#">Donors &amp; Strategic Partners</a>
+        <a href="#">Blog · Samples · FAQs</a>
+        <a href="#">Case Studies &amp; Guides</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot-bottom">
+    <div class="wrap">
+      <div class="copy">© 2026 Lifetogether. All rights reserved.</div>
+      <div class="legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Donors &amp; Strategic Partners</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const burger = document.getElementById('burger');
+  burger.addEventListener('click', () => document.body.classList.toggle('menu-open'));
+
+  // Mobile accordion dropdowns
+  document.querySelectorAll('.m-trigger').forEach(btn => {
+    if (btn.hasAttribute('data-static')) return;
+    btn.addEventListener('click', () => {
+      btn.parentElement.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>

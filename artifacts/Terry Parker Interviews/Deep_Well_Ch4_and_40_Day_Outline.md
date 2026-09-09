@@ -1,0 +1,235 @@
+# The Deep Well
+
+### Forty-Day Companion Outline, and Chapter Four in Full
+
+---
+
+## The forty days
+
+Same numbering as the advisor and secular editions. Seven, seven, seven, seven, six, six. Every day closes with a family exercise rather than an individual one, and every reading is short enough to be read aloud at a table.
+
+**Chapter One · The First Thirty Feet**
+1. Who Dug the First Thirty · Deuteronomy 8:17-18 · The founder standing on work he did not do.
+2. The Land Was Already Here · Psalm 24:1 · Ownership settled before any of us arrived.
+3. A Wife of Noble Character · Proverbs 31:10-31 · The person who built it with him and is not in the story.
+4. Ask Your Father, He Will Tell You · Deuteronomy 32:7 · The generations behind the one you remember.
+5. The Vineyards You Did Not Plant · Joshua 24:13 · Receiving what was made ready.
+6. What Do You Have · 1 Corinthians 4:7 · The question that ends the argument.
+7. Twelve Stones · Joshua 4:1-9 · Building a marker so the children ask.
+
+**Chapter Two · He Knew Where the Water Was**
+8. When Your Children Ask · Exodus 12:26-27 · The question is the opening, not the interruption.
+9. Impress Them on Your Children · Deuteronomy 6:6-9 · Not a curriculum. A way of talking.
+10. What He Taught the Hired Man · Proverbs 4:1-9 · Teaching the stranger what you withhold from your son.
+11. You Will Know When You Are Older · Proverbs 3:1-6 · The sentence that means something else.
+12. The Failures You Have Not Mentioned · 2 Corinthians 12:9 · The part of the story that would actually help them.
+13. Reliable People · 2 Timothy 2:2 · Knowledge that survives one generation.
+14. A Good Man Leaves an Inheritance · Proverbs 13:22 · What "inheritance" was ever meant to include.
+
+**Chapter Three · Amos Carried the Water**
+15. Who Carries Your Water · Job 31:13-15 · The people you have never wondered about.
+16. Do Not Delay the Wages · Leviticus 19:13 · Delay is its own message.
+17. Provide What Is Right · Colossians 4:1 · Fair is the floor.
+18. Leave the Edges of the Field · Ruth 2:8-16 · Margin built into the system on purpose.
+19. No Longer a Servant · Philemon 15-16 · Reclassifying a person.
+20. The Watching · Titus 2:7-8 · What children learn from how the household treats people.
+21. The Least of These · Matthew 25:37-40 · Who was in your house and you did not see.
+
+**Chapter Four · What He Never Said**
+22. Speaking the Truth in Love · Ephesians 4:15 · Both halves, or neither.
+23. The Two Good Years · Proverbs 27:5-6 · Open rebuke and hidden love.
+24. They Are Not Ready · 1 Corinthians 13:11 · Who decided that, and when.
+25. Nothing You Could Have Done · Esther 4:12-14 · The people you protected from being useful.
+26. Truth in the Inner Parts · Psalm 51:6 · The version of the story you tell yourself.
+27. Let Your Yes Be Yes · Matthew 5:37 · Silence is an answer.
+28. Bearing With One Another · Colossians 3:12-14 · What it takes to hear it after it is said.
+
+**Chapter Five · Before the Dry Year**
+29. The Prudent See Danger · Proverbs 22:3 · Acting while it is still optional.
+30. Count the Cost · Luke 14:28-30 · Sitting down before you build.
+31. The Ant in Summer · Proverbs 6:6-8 · Storing in the season that does not feel urgent.
+32. Tomorrow We Will Go · James 4:13-15 · You do not control the calendar.
+33. A Time for Everything · Ecclesiastes 3:1-8 · Including this one.
+34. Oil in the Lamps · Matthew 25:1-13 · Readiness is not a feeling.
+
+**Chapter Six · Dig Your Own**
+35. He Gave Them Room · Genesis 26:17-22 · Isaac moving on and digging again.
+36. Choose for Yourselves · Joshua 24:14-15 · A decision that has to be theirs.
+37. Two Sons and a Field · Matthew 21:28-31 · The one who said no and went.
+38. Not Lording It Over · 1 Peter 5:2-3 · Authority that does not seize.
+39. Committed Them to the Lord · Acts 14:23 · Handing people over.
+40. The Rope in Your Hand · Philippians 1:3-6 · Confidence in what continues without you.
+
+---
+
+# Chapter Four
+
+## What He Never Said
+
+I have told you about Amos, and I have watched your faces while I told it, and I know what you did with the story. You put your grandfather somewhere high up and you left him there. That is what the story is for, and I told it to you on purpose, and I do not take any of it back.
+
+But there were two years I have never described to you, and they came directly after, and I am going to describe them now.
+
+---
+
+The well went sixty feet, and my father had cut a mark into the stone at the rim, a shallow notch about the width of a thumb, and every rope that ever went down that shaft was tied at the same point. He did that so a man could stand in the dark and know by feel how far he had let out. It was the kind of thing he did. He had a hundred of them and never explained one.
+
+The autumn I was twenty-six, he began doing something new. He would draw a bucket, and then instead of turning for the house he would stand there a moment with the rope in his hand, running it back through his fingers, looking at nothing.
+
+I saw him do it maybe five times before I stopped seeing it, which is how these things go. You notice, and then the noticing becomes part of the landscape, and then it is invisible.
+
+The water was dropping. He knew it in the autumn. He said nothing for two years.
+
+---
+
+I want to give you his reasons before I give you anything else, because they were good ones, and because if I let you decide too early that he was a coward you will not learn anything from this, and I did not tell you about Amos so that you could turn around and convict him.
+
+He said nothing because he was not certain. A well drops in a dry season and comes back in a wet one, and he had seen it happen twice, and a man who raises an alarm over a thing that corrects itself has spent something he cannot get back.
+
+He said nothing because of my mother. She had lost a brother to a bad year when she was a girl, and she had a way of going quiet about water that the whole household had learned to work around.
+
+He said nothing because Hollis was newly married and Nell was fifteen and I was twenty-six and useless, and because there was nothing any of us could have done about a shaft sixty feet down in the ground.
+
+And he said nothing because he intended to fix it himself, quietly, before it ever became anyone else's problem. That was the reason he would have given if you had pressed him, and I believe he believed it.
+
+Every one of those is true. I have gone over them for forty years and I cannot find the lie in any of them. That is exactly what makes them dangerous.
+
+---
+
+Here is what I could not explain for a long time, and it is the only thing in this chapter I actually want you to carry.
+
+Those two years were the best two years of his life.
+
+I do not mean he was happy. I mean he was extraordinary. In those two years my father gave water to the Dunmore place for eleven months without being asked and without once mentioning it. He paid to have the roof done on the widow's house at the end of the lane, and he arranged it so that she believed the parish had done it. He settled the dispute at the market between the two brothers who had not spoken in nine years, and he settled it by giving up something of his own that neither of them ever knew about.
+
+He was decisive in those two years in a way he had never been. He made calls quickly. He did not consult. When Hollis asked why we were not planting the lower field, he said we were not planting the lower field, and Hollis, who was twenty-nine and had opinions, simply said all right.
+
+Everyone in that house loved him more in those two years than they had ever loved him.
+
+I loved him more. I want to say that plainly because I have heard people tell this kind of story about their fathers with a coldness in it, and there is no coldness in me about this. I thought he was the finest man I had ever been near, and I was not wrong, and I was watching a man purchase all of it with a silence, and I could not see the transaction because I was standing inside it.
+
+---
+
+I found out in April, at night, and by accident.
+
+I had gone out for a reason I no longer remember and he was at the well with a lamp on the stone, and he had the rope out across his knees, and he was working knots into it. Small ones, a hand apart, the way you would mark a line you meant to measure something with repeatedly.
+
+He looked up and saw me and did not startle, which told me he had been expecting to be caught by somebody eventually and had already decided what his face would do.
+
+"Go to bed," he said.
+
+"How long," I said.
+
+He did not pretend not to understand. I will give him that for the rest of my life. He said, "Since the autumn before last," and then he looked back down at the rope and kept tying, and I stood there in the cold and did the arithmetic, and the arithmetic came out to nineteen months, and inside those nineteen months I could see the Dunmore water and the widow's roof and the two brothers at the market, all of it now standing in a different light and none of it any less real.
+
+That is the part I need you to hold on to. Nothing he did in those two years became false when I learned what he had been holding. The roof was still on the widow's house. That is not how it works. It was all true and it was all purchased, both at once, and I have never found the words to say that cleanly.
+
+---
+
+Hollis found out three weeks later, from me, because I could not carry it, which is its own small failure and I am not going to defend it.
+
+The conversation happened in the kitchen with all five of us in it and it did not go the way these things go in stories. Nobody shouted. My father sat down at the table like a man who had been waiting to sit down for two years and was almost glad of it.
+
+Hollis said, "You knew in the autumn before last."
+
+"I did."
+
+"You let me plan the lower field."
+
+"I did."
+
+And Hollis stood there and I could see him reaching past the obvious thing toward something underneath it, and then he found it, and when he said it he said it quietly, which is why it landed.
+
+"You didn't tell us because you weren't sure," he said. "That's what you'll say. But that's not it. You didn't tell us because while we didn't know, you were the only one who could decide."
+
+My father did not answer.
+
+"Two years," Hollis said. "Two years where nobody could disagree with you, because nobody had the thing they'd need in order to disagree. And you were good to us. You were so good to us."
+
+---
+
+My father gave the defense. I have given it myself since, more than once, to people I love, and I recognized the shape of it the second time out of my own mouth and it did not stop me.
+
+He said they were not ready.
+
+He said it would have frightened your mother, and that some things are a man's to carry.
+
+He said there was nothing any of you could have done.
+
+And on that last one Hollis said the thing that I think finished it, which was: you decided there was nothing we could do, and then you made sure of it.
+
+---
+
+But it was not Hollis who ended the conversation. It was my mother, and she had not said a word until then, and she did not raise her voice either.
+
+She said, "Silas. You decided I couldn't carry it."
+
+He started to say something about her brother.
+
+"You have been deciding that for thirty years," she said, "and you have been calling it love, and I have let you, because it was easier for me too. So I am not only accusing you." She stopped and I watched her decide whether to say the rest. "But I want you to know that I have been treated well in this house and I have not once been trusted in it, and I did not understand until tonight that those were different things."
+
+Nobody said anything after that. Nell was crying, quietly, the way a fifteen-year-old cries when she understands the shape of something before she understands the content. My father sat at the table with his hands flat on the wood and did not defend himself again.
+
+---
+
+There was no resolution that night, and I have come to believe there was not supposed to be one.
+
+What happened was smaller and slower. In the morning, before it was properly light, my father woke Hollis and took him out to the well and put the lamp on the stone and showed him the knots in the rope. He did not apologize. I do not think he ever said the word. He showed him where the water had been in the autumn before last and where it was that morning and how to read the difference, and then he handed him the rope and went inside and left him out there.
+
+Hollis stood at that well until the sun came up.
+
+It was the first thing my father had ever given him that he could not take back.
+
+---
+
+Now here is why I have told you this, and I want you to hear the whole of it before you decide what to do with it.
+
+I have done this to you.
+
+Not about water. About the other thing, the one from three years ago that you know about now, and about the year before that. And when I did it I had my reasons, and my reasons were as good as his, and they were about protecting your mother and about the fact that you were in the middle of something and about there being nothing you could have done.
+
+And for a while I was very good to you. I noticed that at the time and I did not let myself look straight at it.
+
+I am telling you now because I have had my hand on that rope for a long while and I only just recognized the feel of it.
+
+---
+
+## The Translation
+
+Every family has water. It goes by other names. A number that only one person actually knows. A diagnosis. A business that is not what it was two years ago. A decision that has already been made and has not been announced. A will that says something the people in the room have not been told.
+
+The instinct to hold it is not greed and it is rarely cowardice. It is almost always love, and that is precisely why it survives so long unexamined. Nobody interrogates a motive that feels like love.
+
+But there is a second thing running underneath, and it is the reason this chapter exists.
+
+**Information is authority.** In a family, the person who knows the most decides the most, and the arrangement holds without anyone ever agreeing to it. So a parent who withholds a hard fact is not only protecting his children from distress. He is also, at the same moment and usually without meaning to, preserving the only structural position from which his judgment cannot be challenged. Those two things arrive together, they cannot be separated by good intentions, and the second one does not announce itself.
+
+The tell is generosity. In our family it was the widow's roof and the Dunmore water. In yours it may be the trip you paid for, the unusual patience, the year you were easier to live with than you had been in a decade. When a normally guarded person becomes conspicuously good, something is being financed. That is not cynicism. It is simply how the arithmetic works, and it is worth knowing about yourself before someone else notices it about you.
+
+Notice also what the father's three defenses have in common. They were not ready. It would have frightened her. There was nothing you could have done. Every one of them is a judgment about another adult's capacity, made unilaterally, by the only person with access to the facts, and then used to justify withholding those same facts. The reasoning closes on itself. Once you are inside it there is no evidence that could get you out, which is a reliable sign that you are not reasoning at all.
+
+Paul gives the standard in one phrase and both halves are load-bearing. *Speaking the truth in love, we will grow to become in every respect the mature body of him who is the head, that is, Christ.* Truth without love is a weapon and most families have felt one. Love without truth is what happened in that kitchen, and it looks so much better from the outside that it can run for years.
+
+The mother's line is the one to sit with, because it is the cost stated exactly. Being treated well and being trusted are different things, and a family can supply the first for thirty years while never once supplying the second, and the people receiving it will often not be able to name what is missing.
+
+And notice how it actually resolved. Not with an apology, which he never gave, and not with a confession, which would have been about him. It resolved when he walked his son out to the well before dawn and taught him to read the rope. He gave away the one thing that had kept him necessary. That is the only apology that counts in a family, and it is the reason this chapter sits where it does, immediately before the chapter about acting early. A family cannot decide anything together until everyone in the room is holding the same facts.
+
+---
+
+### The Family Exercise
+
+Each of you write down one thing you currently know that the others do not, and that affects them. Not a secret you are keeping for someone else. Something that is yours.
+
+Then, beside it, write the reason you have not said it. Write the real one, not the presentable one.
+
+Then answer this: if you said it tonight, what would you lose? If the honest answer is that you would lose the ability to decide something alone, you have found your rope.
+
+---
+
+### Three Questions
+
+*What do I know that the people I love do not, and how long have I known it?*
+
+*Who in this family have I decided is not strong enough, and when exactly did I make that decision, and did I ever check?*
+
+*Have I been unusually good to someone lately, and if so, what is it paying for?*

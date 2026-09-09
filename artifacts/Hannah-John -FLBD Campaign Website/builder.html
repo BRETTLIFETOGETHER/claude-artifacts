@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Legacy Campaign Builder™ — The Family Legacy Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.bmast{padding:clamp(56px,7vw,92px) 0;text-align:center}
+.bmast .lede{margin:20px auto 0;text-align:center;color:#D7E1D2}
+.hd-hero{position:relative;overflow:hidden}
+.hd-hero>.wrap{position:relative;z-index:2}
+.hd-hero .heroimg{position:absolute;inset:0;background-image:url(img/hero-campaign.jpg);background-size:cover;background-position:center 40%}
+.hd-hero .heroimg::after{content:"";position:absolute;inset:0;background:linear-gradient(168deg,rgba(7,20,14,.95) 0%,rgba(11,32,24,.89) 45%,rgba(15,46,35,.74) 100%)}
+.wrap.narrow{max-width:860px}
+.bgrid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,3.4vw,44px);align-items:start}
+@media(max-width:980px){.bgrid{grid-template-columns:1fr}}
+.pane{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh-1);padding:clamp(20px,2.8vw,30px)}
+.pane label{display:block;font-weight:600;font-size:12.5px;color:#33452F;margin:16px 0 7px}
+.pane label:first-of-type{margin-top:0}
+.pane input[type=text]{width:100%;border:1.5px solid #DCE3CE;background:#FDFDF8;border-radius:10px;
+  padding:12px 14px;font-family:var(--ff-b);font-size:13.5px;color:var(--ink);outline:none;box-sizing:border-box}
+.pane input:focus{border-color:#8FBE3F;background:#fff}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{border:1.5px solid #DCE3CE;background:#fff;border-radius:999px;padding:9px 14px;cursor:pointer;
+  font-family:var(--ff-b);font-weight:600;font-size:12px;color:#41544A;transition:all .15s}
+.opts button:hover{border-color:#8FBE3F}
+.opts button.sel{background:linear-gradient(126deg,#2F6B3A,#8FBE3F);border-color:transparent;color:#fff}
+.gen{margin-top:22px}
+/* the generated draft */
+.draft{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh-2);overflow:hidden;display:none}
+.draft.show{display:block}
+.draft .dcov{padding:clamp(26px,3.4vw,38px);color:#fff;background:linear-gradient(150deg,#123A2C,#0F2E23 60%,#0A1F17)}
+.draft .dcov .pill{background:rgba(255,255,255,.14);color:#E8F0E2}
+.draft .dcov h3{font-family:var(--ff-h);font-weight:600;color:#fff;font-size:clamp(22px,2.8vw,30px);line-height:1.14;margin-top:14px}
+.draft .dcov .dsub{font-style:italic;color:#D8C89B;margin-top:8px;font-size:14.5px}
+.draft .dcov .dby{margin-top:14px;font-weight:600;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#CFE0CB}
+.draft .body{padding:clamp(22px,3vw,34px)}
+.wkmap{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:640px){.wkmap{grid-template-columns:1fr}}
+.wk{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#FBFCF7}
+.wk i{font-style:normal;font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#8FBE3F}
+.wk b{display:block;font-family:var(--ff-h);font-weight:600;font-size:14.5px;color:var(--ink);margin-top:4px}
+.wk p{margin:6px 0 0;font-size:12px;color:#61705F;line-height:1.55}
+.dh{font-family:var(--ff-h);font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#2F5E36;margin:24px 0 10px;padding-top:18px;border-top:1px solid var(--line)}
+.dh:first-child{margin-top:0;padding-top:0;border:0}
+.d1p p{margin:0 0 12px;font-size:14.5px;color:#39463E;line-height:1.72}
+.dverse{background:#FBFAE8;border-left:4px solid #CE9F4F;border-radius:0 12px 12px 0;padding:14px 18px;font-size:14px;color:#4A452C;margin:6px 0 16px}
+.dverse b{display:block;font-weight:600;font-size:10.5px;letter-spacing:.14em;color:#8A6A24;margin-top:6px}
+.pulls{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pulls span{font-weight:600;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#57833B;
+  border:1.5px solid #DCE6C8;background:#fff;border-radius:999px;padding:6px 11px}
+.wmark{margin-top:20px;background:#F3F6EC;border:1.5px dashed #C9D8A8;border-radius:12px;padding:14px 18px;
+  font-size:12.5px;color:#4E5E42;font-style:italic}
+.dctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+</style>
+</head>
+<body>
+
+<header class="dark bmast hd-hero">
+  <div class="heroimg"></div>
+  <div class="wrap narrow">
+    <span class="pill dark rv in"><i></i>Family Legacy Campaign Builder&trade;</span>
+    <h1 class="rv in" style="margin-top:20px">A Journey Written<br><span class="au">For Your Family, By Name.</span></h1>
+    <p class="lede rv in d1" style="max-width:56ch">The Builder turns a family's assessment, values, and season into a personalized thirty-day journey — drawn from the 200-tool library, assembled by the overlay system, and finished by the shepherd's hand. Try the working demonstration below.</p>
+  </div>
+</header>
+
+<section class="sec lightbg">
+  <div class="wrap">
+    <div class="bgrid">
+      <div class="pane rv">
+        <label>Your family name</label>
+        <input id="bfam" type="text" placeholder="e.g. Conway">
+        <label>Who is this journey for?</label>
+        <div class="opts" id="baud">
+          <button data-v="The whole family" class="sel">The whole family</button>
+          <button data-v="A couple">A couple</button>
+          <button data-v="The rising generation">The rising generation</button>
+          <button data-v="Grandparents">Grandparents</button>
+        </div>
+        <label>The season your family is in</label>
+        <div class="opts" id="bpri">
+          <button data-v="values" class="sel">Clarifying our values</button>
+          <button data-v="heirs">Preparing the next generation</button>
+          <button data-v="estate">Talking about what's been built</button>
+          <button data-v="giving">Learning to give together</button>
+          <button data-v="story">Capturing our story</button>
+        </div>
+        <label>Length</label>
+        <div class="opts" id="blen">
+          <button data-v="7">Seven days</button>
+          <button data-v="21">Twenty-one days</button>
+          <button data-v="30" class="sel">Thirty days</button>
+        </div>
+        <label>Voice</label>
+        <div class="opts" id="btone">
+          <button data-v="c" class="sel">Christian</button>
+          <button data-v="v">Values-based</button>
+        </div>
+        <div class="gen">
+          <button class="btn grad" id="bgen" style="border:0;cursor:pointer">Draft Our Family's Journey <span class="ar">→</span></button>
+        </div>
+        <p style="margin-top:14px;font-size:11px;font-style:italic;color:var(--mute)">Working demonstration — deterministic, in this browser. The platform edition draws on the family's full assessment and interviews.</p>
+      </div>
+
+      <div class="draft" id="draft">
+        <div class="dcov">
+          <span class="pill"><i></i><span id="dlen">Thirty Days</span> · Personalized Journey</span>
+          <h3 id="dtitle"></h3>
+          <p class="dsub" id="dsub"></p>
+          <p class="dby">Prepared with your guide · Tom Conway and Brett Eastman</p>
+        </div>
+        <div class="body">
+          <div class="dh">The Journey, Week By Week</div>
+          <div class="wkmap" id="dweeks"></div>
+          <div class="dh">Drawn From The Library</div>
+          <div class="pulls" id="dpulls"></div>
+          <div class="dh">Day One — A Working Draft</div>
+          <div class="d1p" id="dday"></div>
+          <div class="wmark">A working draft in the framework's voice. Before anything reaches your family's hands, your guide reads every word — authentic to your story, aligned to the teaching, and approved by a shepherd, not shipped by a machine.</div>
+          <div class="dctas">
+            <a class="btn grad sm" href="order.html#custom">Custom Work &amp; Pricing <span class="ar">→</span></a>
+            <a class="btn linegreen sm" href="find.html">Find A Certified Guide <span class="ar">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <span class="pill light"><i></i>How The Builder Thinks</span>
+      <h2>One Library. <span class="au">Every Family Different.</span></h2>
+      <p class="lede">The Builder never invents doctrine and never starts from a blank page. It selects, sequences, and personalizes from the approved library — then hands the draft to a person.</p>
+    </div>
+    <div class="steps" style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.2vw,24px)">
+      <div class="pane rv"><i style="font-style:normal;font-family:var(--ff-h);font-weight:600;font-size:13px;color:#8FBE3F">One</i><b style="display:block;font-family:var(--ff-h);font-weight:600;font-size:17px;color:var(--ink);margin-top:8px">The Family Speaks</b><p style="margin:10px 0 0;font-size:13px;line-height:1.65;color:#4A5A4C">The assessment, the interviews, the values worksheet — everything the family has already told us becomes the brief.</p></div>
+      <div class="pane rv d1"><i style="font-style:normal;font-family:var(--ff-h);font-weight:600;font-size:13px;color:#8FBE3F">Two</i><b style="display:block;font-family:var(--ff-h);font-weight:600;font-size:17px;color:var(--ink);margin-top:8px">The Library Answers</b><p style="margin:10px 0 0;font-size:13px;line-height:1.65;color:#4A5A4C">Two hundred approved tools in twenty collections — the Builder selects and sequences the right ones for this family's season.</p></div>
+      <div class="pane rv d2"><i style="font-style:normal;font-family:var(--ff-h);font-weight:600;font-size:13px;color:#8FBE3F">Three</i><b style="display:block;font-family:var(--ff-h);font-weight:600;font-size:17px;color:var(--ink);margin-top:8px">The Shepherd Finishes</b><p style="margin:10px 0 0;font-size:13px;line-height:1.65;color:#4A5A4C">A certified guide reads, edits, and blesses every draft before a family ever sees it. The machine drafts; the shepherd delivers.</p></div>
+    </div>
+    <div class="rv d2" style="margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn linegreen" href="toolkit.html#library200">Browse The 200-Tool Library <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<script src="data.js"></script>
+<script src="intel.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var fam=FLstore.get('flt:fam'); if(fam) document.getElementById('bfam').value=fam;
+  ['baud','bpri','blen','btone'].forEach(function(id){
+    document.getElementById(id).addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      this.querySelectorAll('button').forEach(function(x){x.classList.remove('sel')});
+      b.classList.add('sel');
+    });
+  });
+  var PLANS={
+    values:{t:"What We Hold",sub:"Naming the values our family actually lives, and choosing the ones we will carry",
+      col:"Values and Identity",
+      pulls:["Family Values Assessment","Values-to-Behavior Map","Family Identity Statement","Family Conversation Cards","Family Mission Statement"],
+      wks:[["Notice","The values already at work in our house — chosen or not."],
+           ["Name","From everything we admire, the five we will actually keep."],
+           ["Practice","Turning each value into one behavior a grandchild could recognize."],
+           ["Commit","The family statement, said out loud, at our own table."]],
+      vc:["Proverbs 4:23","\u201CAbove all else, guard your heart, for everything you do flows from it.\u201D"],
+      vv:["A family proverb","\u201CWhat a family repeats, a family becomes.\u201D"],
+      d1:["Most families assume they know their values. Very few have ever said them out loud in the same room.",
+          "This week is not about choosing impressive words. It is about noticing what is already true — the values your family lives on an ordinary Tuesday, whether anyone chose them or not.",
+          "Tonight, each person finishes one sentence: \u201CIn our family, we always\u2026\u201D No editing, no correcting. Just listen to what comes back."]},
+    heirs:{t:"Ready To Receive",sub:"Preparing the next generation before anything is transferred to them",
+      col:"Rising Generation",
+      pulls:["Heir Readiness Assessment","Next-Generation Discussion Guide","Responsibility Development Plan","Family Responsibility Ladder","Annual Heir Development Plan"],
+      wks:[["See","What the next generation has actually watched us do."],
+           ["Ask","The questions we have never asked them — and they have never asked us."],
+           ["Entrust","One real responsibility, given this month, with room to fail."],
+           ["Walk","The rhythm that keeps preparation going after day thirty."]],
+      vc:["Psalm 78:4","\u201CWe will tell the next generation the praiseworthy deeds of the Lord.\u201D"],
+      vv:["A family proverb","\u201CPreparation is the inheritance that makes every other inheritance safe.\u201D"],
+      d1:["No one in your family is unprepared on purpose. Preparation simply never happens automatically — it is not exposure, it is engagement.",
+          "This journey does not begin with what the next generation will receive. It begins with who they are becoming — because readiness is built years before it is needed.",
+          "Tonight's question, asked by a parent and answered by everyone: \u201CWhat is one thing you hope our family never loses?\u201D"]},
+    estate:{t:"What We Say Before The Papers",sub:"Communicating intentions with honesty, wisdom, and peace",
+      col:"Wealth Transfer",
+      pulls:["Estate Communication Planner","Inheritance Preparation Journey","Fairness Versus Equality Exercise","Trust Purpose Conversation","Family Estate Meeting Kit"],
+      wks:[["Understand","Why silence feels safe and never is."],
+           ["Prepare","What to say, what not to say yet, and how to answer hard questions."],
+           ["Speak","The first conversation — small, honest, unhurried."],
+           ["Continue","How this becomes a family rhythm rather than one hard night."]],
+      vc:["Ecclesiastes 2:18\u201319","\u201CI must leave it to the one who comes after me. And who knows whether he will be wise or a fool?\u201D"],
+      vv:["A family proverb","\u201CWhat is unsaid does not stay unsaid. It gets guessed.\u201D"],
+      d1:["Solomon's worry sits under nearly every family: the one who comes after may not be ready. But notice what he never considers — that the person could be prepared.",
+          "The documents will do their work later. This month is about the conversations only you can have, while everyone is still at the table.",
+          "Tonight, no numbers. One sentence from each parent: \u201CWhat I most want you to understand about what we have built is\u2026\u201D"]},
+    giving:{t:"Open Hands",sub:"Learning generosity together, as a family practice rather than a transaction",
+      col:"Generosity and Philanthropy",
+      pulls:["Generosity Discovery Guide","Family Giving Profile","Family Giving Meeting Kit","Next-Generation Giving Journey","Charitable Priority Builder"],
+      wks:[["Receive","Seeing everything in the house as entrusted, not owned."],
+           ["Discover","Where each person's heart already leans — causes, places, people."],
+           ["Decide","One giving decision, made together, this month."],
+           ["Rhythm","The yearly generosity conversation your family will actually keep."]],
+      vc:["2 Corinthians 9:7","\u201CGod loves a cheerful giver.\u201D"],
+      vv:["A family proverb","\u201CA family that gives together learns what it loves together.\u201D"],
+      d1:["Generosity taught as a duty lasts a season. Generosity discovered as a joy lasts generations.",
+          "This journey is not about amounts. It is about the family learning, together, where its open hands want to go.",
+          "Tonight, the youngest person answers first: \u201CIf our family could help anyone this year, who would you choose?\u201D"]},
+    story:{t:"The Story We Carry",sub:"Capturing the voices, turning points, and faith that made this family",
+      col:"Legacy and Story",
+      pulls:["Family Story Interview","Grandparent Wisdom Book","Family Timeline","Legacy Letter","Family Traditions Journal"],
+      wks:[["Listen","The questions we never asked — childhood, work, faith, failure, turning points."],
+           ["Record","One elder interview, captured this month, kept forever."],
+           ["Write","The first legacy letter, drafted and read aloud."],
+           ["Keep","The traditions and stories that become the family's library."]],
+      vc:["Deuteronomy 32:7","\u201CRemember the days of old\u2026 ask your father and he will tell you.\u201D"],
+      vv:["A family proverb","\u201CA story untold is an inheritance unclaimed.\u201D"],
+      d1:["Every family is one generation away from losing the stories that explain it.",
+          "This month, the goal is simple and urgent: get the voices down. Not polished — present.",
+          "Tonight, someone asks an elder one question and lets it run: \u201CWhat is a moment that changed the direction of your life?\u201D"]}
+  };
+  function sel(id){var b=document.querySelector('#'+id+' button.sel');return b?b.getAttribute('data-v'):''}
+  document.getElementById('bgen').addEventListener('click',function(){
+    var fam=(document.getElementById('bfam').value||'').trim()||'Our';
+    var famT=fam==='Our'?'Our Family':'The '+fam+' Family';
+    if(fam!=='Our') FLstore.set('flt:fam',fam);
+    var pri=sel('bpri'), len=sel('blen'), tone=sel('btone'), aud=sel('baud');
+    var P=PLANS[pri];
+    var lenT=len==='7'?'Seven Days':(len==='21'?'Twenty-One Days':'Thirty Days');
+    document.getElementById('dlen').textContent=lenT;
+    document.getElementById('dtitle').textContent=famT+': '+P.t;
+    document.getElementById('dsub').textContent=P.sub+' \u2014 written for '+aud.toLowerCase()+'.';
+    var wkn=len==='7'?['Day 1\u20132','Day 3\u20134','Day 5\u20136','Day 7']:(len==='21'?['Week One','Week Two','Week Three','Final Days']:['Week One','Week Two','Week Three','Week Four']);
+    document.getElementById('dweeks').innerHTML=P.wks.map(function(w,i){
+      return '<div class="wk"><i>'+wkn[i]+'</i><b>'+w[0]+'</b><p>'+w[1]+'</p></div>';
+    }).join('');
+    document.getElementById('dpulls').innerHTML='<span style="border-color:#CDD8B8;color:#7C877E">Collection · '+P.col+'</span>'+P.pulls.map(function(t){return '<span>'+t+'</span>'}).join('');
+    var v=tone==='c'?P.vc:P.vv;
+    document.getElementById('dday').innerHTML=
+      '<div class="dverse">'+v[1]+'<b>'+v[0]+'</b></div>'+
+      P.d1.map(function(x){return '<p>'+x.replace('your family',famT.replace('The ','the '))+'</p>'}).join('');
+    document.getElementById('draft').classList.add('show');
+    document.getElementById('draft').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  FLobserve();
+})();
+</script>
+</body>
+</html>

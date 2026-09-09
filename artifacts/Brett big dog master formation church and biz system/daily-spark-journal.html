@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Daily Spark &middot; Journal &amp; Return Loop</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#c9a84c;--glt:#e2c97e;--gdk:#8a6e30;--lock:#6a7a9a;--send:#5a9a6a;--ok:#5a9a6a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lato',sans-serif;background:#0e0c14;color:#f0ece0;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(5,3,11,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:stretch;padding:0 14px;overflow-x:auto;}
+.nbr{display:flex;flex-direction:column;justify-content:center;padding:9px 12px 9px 0;margin-right:5px;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.nbr-t{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--g);line-height:1;}
+.nbr-s{font-size:5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;margin-top:2px;}
+.nt{padding:0 11px;font-size:7px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;cursor:pointer;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.25);display:flex;align-items:center;gap:5px;white-space:nowrap;background:none;font-family:'Lato',sans-serif;transition:all .12s;flex-shrink:0;}
+.nt:hover{color:rgba(255,255,255,.6);}
+.nt.on{color:var(--g);border-bottom-color:var(--g);}
+.badge{font-size:8px;background:rgba(201,168,76,.18);color:var(--g);padding:1px 6px;border-radius:8px;}
+.who{margin-left:auto;font-size:7px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--gdk);border:1px solid rgba(201,168,76,.25);padding:4px 9px;align-self:center;cursor:pointer;background:none;font-family:'Lato',sans-serif;flex-shrink:0;}
+.who:hover{background:rgba(201,168,76,.08);color:var(--g);}
+
+.pnl{display:none;}.pnl.on{display:block;}
+.wrap{max-width:900px;margin:0 auto;padding:34px 22px 70px;}
+.kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.55);display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.kk::before{content:'';width:14px;height:1px;background:rgba(201,168,76,.4);}
+.h{font-family:'Playfair Display',serif;font-size:clamp(25px,4.4vw,44px);font-weight:400;color:#fff;line-height:.94;margin-bottom:10px;}
+.h em{font-style:italic;color:var(--g);}
+.sub{font-size:12px;color:rgba(255,255,255,.36);line-height:1.72;margin-bottom:24px;max-width:660px;}
+
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:19px 21px;margin-bottom:6px;}
+.card.gold{border-color:rgba(201,168,76,.24);background:rgba(201,168,76,.05);}
+.clbl{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--g);display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.clbl::before{content:'';width:11px;height:1px;background:var(--g);}
+.big{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:#fff;line-height:1.45;}
+.med{font-size:12px;color:rgba(255,255,255,.56);line-height:1.7;}
+.sm{font-size:10.5px;color:rgba(255,255,255,.36);line-height:1.6;}
+
+/* PRIVACY BANNERS */
+.priv{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid rgba(106,122,154,.4);background:rgba(106,122,154,.1);margin-bottom:18px;}
+.priv-ic{font-size:18px;flex-shrink:0;}
+.priv-t{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#8a9ac0;margin-bottom:5px;}
+.priv-d{font-size:11px;color:rgba(255,255,255,.5);line-height:1.65;}
+.send{border-color:rgba(90,154,106,.4);background:rgba(90,154,106,.1);}
+.send .priv-t{color:#7aba8a;}
+
+/* JOURNAL */
+.jtypes{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px;}
+.jt{padding:5px 11px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.3);font-size:7.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;cursor:pointer;background:none;font-family:'Lato',sans-serif;transition:all .1s;}
+.jt:hover,.jt.on{border-color:var(--jc);color:var(--jc);background:rgba(255,255,255,.05);}
+.prompt-box{padding:22px 24px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.22);margin-bottom:6px;}
+.prompt-d{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:var(--gdk);margin-bottom:9px;}
+.prompt-t{font-family:'Playfair Display',serif;font-size:clamp(17px,2.6vw,23px);font-style:italic;color:#fff;line-height:1.5;margin-bottom:9px;}
+.prompt-s{font-size:11px;color:rgba(255,255,255,.4);line-height:1.65;font-style:italic;}
+.ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#f0ece0;padding:16px 18px;font-size:13px;font-family:Georgia,serif;outline:none;resize:vertical;line-height:1.85;margin-bottom:10px;}
+.ta::placeholder{color:rgba(255,255,255,.16);font-family:'Lato',sans-serif;font-size:12px;}
+.ta:focus{border-color:rgba(201,168,76,.45);}
+.btn{background:var(--g);color:#000;border:none;padding:11px 22px;font-size:9.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Lato',sans-serif;}
+.btn:hover{background:var(--glt);}
+.btn.ghost{background:none;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.45);}
+.btn.ghost:hover{border-color:rgba(201,168,76,.4);color:var(--g);}
+.btn.green{background:var(--send);color:#02120a;}
+.btn.green:hover{background:#6aba7a;}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.saved{font-size:10px;color:var(--ok);letter-spacing:1px;opacity:0;transition:opacity .3s;}
+.saved.on{opacity:1;}
+
+.ent{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-left:3px solid var(--ec);padding:15px 17px;margin-bottom:5px;}
+.ent-m{display:flex;align-items:center;gap:9px;margin-bottom:7px;flex-wrap:wrap;}
+.ent-t{font-size:7px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--ec);}
+.ent-d{font-size:8.5px;color:rgba(255,255,255,.22);}
+.ent-x{margin-left:auto;font-size:10px;color:rgba(255,255,255,.18);cursor:pointer;background:none;border:none;font-family:'Lato',sans-serif;padding:0;}
+.ent-x:hover{color:#e08080;}
+.ent-p{font-size:9.5px;color:rgba(255,255,255,.28);font-style:italic;margin-bottom:6px;line-height:1.5;}
+.ent-c{font-size:12px;color:rgba(255,255,255,.6);line-height:1.8;white-space:pre-wrap;font-family:Georgia,serif;}
+.empty{text-align:center;padding:36px;color:rgba(255,255,255,.25);font-style:italic;font-size:12.5px;line-height:1.8;}
+
+/* LADDER */
+.rung{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 18px;border:1px solid rgba(255,255,255,.07);margin-bottom:5px;background:rgba(255,255,255,.02);transition:all .12s;}
+.rung.at{border-color:var(--rc);background:rgba(255,255,255,.05);}
+.rung.done{border-left:3px solid var(--ok);}
+.rung-n{font-family:'Playfair Display',serif;font-size:26px;color:var(--rc);opacity:.4;line-height:1;}
+.rung.done .rung-n{opacity:.9;color:var(--ok);}
+.rung-t{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:#fff;margin-bottom:4px;}
+.rung-a{font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:8px;}
+.rung-r{font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--rc);opacity:.7;}
+.tapbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.tap{padding:11px 20px;border:1px solid rgba(255,255,255,.14);background:none;color:rgba(255,255,255,.5);font-size:11px;cursor:pointer;font-family:'Lato',sans-serif;transition:all .12s;}
+.tap:hover{border-color:var(--send);color:#7aba8a;}
+.tap.hit{border-color:var(--send);background:rgba(90,154,106,.14);color:#7aba8a;}
+.wordin{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#f0ece0;padding:11px 14px;font-size:14px;font-family:'Playfair Display',serif;font-style:italic;outline:none;width:100%;max-width:280px;}
+.wordin:focus{border-color:rgba(90,154,106,.5);}
+.sent-log{padding:12px 15px;border:1px solid rgba(90,154,106,.25);background:rgba(90,154,106,.06);margin-bottom:4px;}
+.sent-m{font-size:7px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#7aba8a;margin-bottom:4px;}
+.sent-c{font-size:12px;color:rgba(255,255,255,.6);line-height:1.65;font-style:italic;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.box{padding:16px 16px;border:1px solid rgba(255,255,255,.07);border-top:2px solid var(--bc);background:rgba(255,255,255,.02);}
+.box-w{font-size:6.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.2);display:block;margin-bottom:5px;}
+.box-t{font-family:'Playfair Display',serif;font-size:14px;font-style:italic;color:var(--bc);margin-bottom:5px;line-height:1.2;}
+.box-d{font-size:10px;color:rgba(255,255,255,.42);line-height:1.6;}
+.box-e{font-size:9.5px;color:rgba(201,168,76,.55);font-style:italic;line-height:1.55;margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.06);}
+
+.stats{display:flex;gap:16px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat-n{font-family:'Playfair Display',serif;font-size:23px;color:var(--g);display:block;line-height:1;}
+.stat-l{font-size:6px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;display:block;margin-top:3px;}
+
+/* IDENTITY */
+.idov{display:none;position:fixed;inset:0;background:rgba(4,3,8,.95);z-index:500;overflow-y:auto;padding:40px 20px;}
+.idov.on{display:block;}
+.idin{max-width:740px;margin:0 auto;background:#100e1c;border:1px solid rgba(201,168,76,.2);padding:32px 34px;}
+.idgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+.idb{padding:13px 12px;border:1px solid rgba(255,255,255,.1);background:none;color:rgba(255,255,255,.5);cursor:pointer;font-family:'Lato',sans-serif;text-align:left;transition:all .12s;}
+.idb:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.05);}
+.idb.on{border-color:var(--g);background:rgba(201,168,76,.1);color:var(--g);}
+.idb-ic{font-size:16px;display:block;margin-bottom:4px;}
+.idb-t{font-family:'Playfair Display',serif;font-size:13.5px;font-style:italic;display:block;}
+.idg{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.22);margin:16px 0 7px;}
+
+@media(max-width:800px){.g4,.g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}.idgrid{grid-template-columns:1fr 1fr;}}
+@media(max-width:520px){.g4,.g3,.idgrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nbr"><div class="nbr-t">The Daily Spark</div><div class="nbr-s">Sermon Next Steps</div></div>
+  <button class="nt on" onclick="tab(0)">Today</button>
+  <button class="nt" onclick="tab(1)">&#128274; Journal <span class="badge" id="jb" style="display:none">0</span></button>
+  <button class="nt" onclick="tab(2)">&#128228; To My Church</button>
+  <button class="nt" onclick="tab(3)">Before Sunday</button>
+  <button class="nt" onclick="tab(4)">Every Audience</button>
+  <button class="nt" onclick="tab(5)">For Leaders</button>
+  <button class="who" onclick="openId()" id="whobtn">Who are you?</button>
+</nav>
+
+<!-- TODAY -->
+<div id="p0" class="pnl on"><div class="wrap">
+  <p class="kk">Day <span id="dnum">1</span> &middot; <span id="ddate"></span></p>
+  <h1 class="h">Today's <em>Spark.</em></h1>
+  <p class="sub" id="idline">Tap <b>Who are you?</b> in the corner &mdash; today's spark gets written for your actual life. No account, no email, nothing to sign up for.</p>
+  <div class="card gold"><div class="clbl">&#128293; The One Sentence</div>
+    <div class="big">God is not working on your circumstances. He is working on your character &mdash; and he will use your circumstances to do it.</div></div>
+  <div class="card"><div class="clbl">&#9889; Feet on the Floor</div>
+    <div style="font-family:'Playfair Display',serif;font-size:23px;font-style:italic;color:#fff">&ldquo;Lord, today form Christ in me. Nothing less.&rdquo;</div></div>
+  <div class="card" id="idspark"><div class="clbl">&#127919; Your Spark Today</div>
+    <div class="med">Choose who you are and this becomes specific &mdash; your kids, your marriage, your work, your season.</div></div>
+  <div class="g2" style="margin-top:6px">
+    <div class="card" style="cursor:pointer" onclick="tab(1)"><div class="clbl">&#128274; Private Journal</div>
+      <div class="med" style="margin-bottom:8px">Today's prompt is ready. Nobody sees this but you.</div>
+      <button class="btn">Write Today &rarr;</button></div>
+    <div class="card" style="cursor:pointer" onclick="tab(2)"><div class="clbl">&#128228; To My Church</div>
+      <div class="med" style="margin-bottom:8px">One tap tells your pastor you showed up today.</div>
+      <button class="btn green">Send One Tap &rarr;</button></div>
+  </div>
+</div></div>
+
+<!-- JOURNAL -->
+<div id="p1" class="pnl"><div class="wrap">
+  <p class="kk">Private Formation Journal</p>
+  <h1 class="h">Nobody Sees This<br><em>But You.</em></h1>
+  <div class="priv">
+    <span class="priv-ic">&#128274;</span>
+    <div><div class="priv-t">Locked to This Device</div>
+    <div class="priv-d">Everything you write here stays in this browser. It is never uploaded, never sent to your pastor, never seen by your group, never stored on any server, and never sold to anyone. If you clear your browser data it is gone permanently &mdash; including from us, because we never had it.</div></div>
+  </div>
+  <p class="sub">Thirty daily prompts that rotate through eight kinds of formation. Write two lines or two pages. There is no scoring and no one is reading.</p>
+
+  <div class="jtypes" id="jtypes"></div>
+  <div class="prompt-box">
+    <div class="prompt-d">Day <span id="jday">1</span> &middot; <span id="jtype">Reflection</span></div>
+    <div class="prompt-t" id="jprompt"></div>
+    <div class="prompt-s" id="jhelp"></div>
+  </div>
+  <textarea class="ta" id="jta" rows="7" placeholder="Write freely. No one is reading this. Not even us."></textarea>
+  <div class="btnrow">
+    <button class="btn" onclick="saveJ()">Save Entry</button>
+    <button class="btn ghost" onclick="nextP()">New Prompt</button>
+    <button class="btn ghost" onclick="document.getElementById('jta').value=''">Clear</button>
+    <span class="saved" id="jsaved">&#10003; Saved to this device</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="stat-n" id="s1">0</span><span class="stat-l">Entries</span></div>
+    <div class="stat"><span class="stat-n" id="s2">0</span><span class="stat-l">Days Written</span></div>
+    <div class="stat"><span class="stat-n" id="s3">0</span><span class="stat-l">Words</span></div>
+    <div class="stat"><span class="stat-n">30</span><span class="stat-l">Prompts</span></div>
+  </div>
+  <div style="margin-top:26px"><p class="kk">Your Entries</p><div id="jlist"></div></div>
+</div></div>
+
+<!-- TO MY CHURCH -->
+<div id="p2" class="pnl"><div class="wrap">
+  <p class="kk">The Return Loop</p>
+  <h1 class="h">To My Pastor.<br><em>And Only My Pastor.</em></h1>
+  <div class="priv send">
+    <span class="priv-ic">&#128228;</span>
+    <div><div class="priv-t">Church Only &middot; Never Public</div>
+    <div class="priv-d">What you send here goes to your pastor and church staff. Nothing else. It is never posted publicly, never shared with other members, never sold, and never used for anything but caring for you and shaping what gets taught. Your name is only attached if you choose to attach it &mdash; and nothing is read from the stage without asking you first.</div></div>
+  </div>
+  <p class="sub">Start at the top rung. Each one takes less than a minute. You do not have to climb &mdash; but the pastor reads every one, and the person who taps in week one often tells the story by week five.</p>
+  <div id="ladder"></div>
+  <div style="margin-top:26px"><p class="kk">What You've Sent</p><div id="slist"></div></div>
+</div></div>
+
+<!-- BEFORE SUNDAY -->
+<div id="p3" class="pnl"><div class="wrap">
+  <p class="kk">The Missing Layer</p>
+  <h1 class="h">Before <em>Sunday.</em></h1>
+  <p class="sub">Everything else in SPARK happens after the sermon. This is the layer that primes the congregation before they arrive &mdash; while there is still time to invite someone, still time to read the text, still time to come expecting something.</p>
+  <div class="g4" id="before"></div>
+  <div class="card" style="margin-top:16px"><div class="clbl">&#128200; Why This Layer Matters</div>
+    <div class="med">A congregation that arrives cold receives an announcement. A congregation that has read the passage, prayed for the service, and invited someone arrives already leaning forward. The pre-Sunday layer costs four touches and roughly doubles the formation depth of the message itself.</div></div>
+</div></div>
+
+<!-- EVERY AUDIENCE -->
+<div id="p4" class="pnl"><div class="wrap">
+  <p class="kk">The Missing Layer</p>
+  <h1 class="h">Every <em>Audience.</em></h1>
+  <p class="sub">One message, produced once, written seven ways. Right now most churches write for one adult who was present. These are the six who were not accounted for.</p>
+  <div class="g3" id="aud"></div>
+</div></div>
+
+<!-- FOR LEADERS -->
+<div id="p5" class="pnl"><div class="wrap">
+  <p class="kk">The Missing Layer</p>
+  <h1 class="h">For <em>Leaders.</em></h1>
+  <p class="sub">The sermon goes to more than the congregation. Four groups need their own version &mdash; and the group leader needs theirs a day early or the whole system stalls on Tuesday.</p>
+  <div class="g2" id="lead"></div>
+  <div class="card" style="margin-top:16px"><div class="clbl">&#128202; The Formation Dashboard</div>
+    <div class="med" style="margin-bottom:12px">The pastor's actual product is not the response card. It is knowing where the week broke.</div>
+    <div class="g4" id="dash"></div>
+  </div>
+</div></div>
+
+<!-- IDENTITY -->
+<div class="idov" id="idov"><div class="idin">
+  <p class="kk">No account. No email. Nothing to sign up for.</p>
+  <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#fff;margin-bottom:8px;line-height:1">Who are <em style="font-style:italic;color:var(--g)">you?</em></h2>
+  <p style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.7;margin-bottom:16px">Tap what fits. Today's spark gets written for your life. Stored on this device only, changeable any time.</p>
+  <div id="idbody"></div>
+  <div style="display:flex;gap:8px;margin-top:18px">
+    <button class="btn" onclick="saveId()">That's Me &rarr;</button>
+    <button class="btn ghost" onclick="closeId()">Skip</button>
+  </div>
+</div></div>
+
+<script>
+var JP=[
+{t:"reflection",p:"What happened in you today that you have not told anyone?",h:"Not what happened to you. What happened in you."},
+{t:"gratitude",p:"Name three specific things from the last 24 hours. Not family or health \u2014 the actual moment.",h:"Specific gratitude changes the brain. General gratitude changes the mood."},
+{t:"confession",p:"What is the one thing from today you would rather not write down?",h:"Name it plainly. Then write forgiven over it. 1 John 1:9."},
+{t:"god question",p:"What question do you think God is asking you right now?",h:"Not your question for him. His for you. Sit with it before you answer."},
+{t:"reflection",p:"Where did you feel most alive today, and where did you feel most distant from God?",h:"The Ignatian examen, five hundred years old and still the best daily practice available."},
+{t:"next step",p:"What is the one thing you know you are supposed to do and have not done?",h:"You already know. Write it, and write when it happens."},
+{t:"prayer",p:"Who came to mind today that you should be praying for?",h:"One name. Pray for them now, before you close this."},
+{t:"lament",p:"What are you angry, sad, or confused about that you have not said out loud to God?",h:"A third of the Psalms are complaints. He can handle yours."},
+{t:"gratitude",p:"What is something ordinary today that you would miss if it were gone?",h:"The unremarkable things are the ones you stop seeing first."},
+{t:"reflection",p:"If someone watched your last week, what would they say you actually believe?",h:"Not what you say you believe. What your calendar and your money say."},
+{t:"confession",p:"Where were you unkind today \u2014 in tone, in thought, or in what you withheld?",h:"Unkindness in tone counts. Write it."},
+{t:"god question",p:"What have you asked God to change that he may be trying to use?",h:"Not causing. Using. The difference matters enormously."},
+{t:"vision",p:"Who do you want to be in three years, and what would have to change starting now?",h:"Nobody drifts into character. Name the trait and the practice."},
+{t:"prayer",p:"Write a prayer you would be embarrassed for anyone to read.",h:"That is the one God has been waiting for."},
+{t:"reflection",p:"What is the thing you are most afraid someone will find out about you?",h:"Naming it privately is the first step out of its power."},
+{t:"gratitude",p:"Who has shaped you that you have never properly thanked?",h:"Write their name. Then consider whether they should hear it."},
+{t:"next step",p:"What conversation have you been avoiding?",h:"Write who, what, and when. The when is what makes it real."},
+{t:"lament",p:"What have you lost this year that you have not fully grieved?",h:"Grief that is skipped does not disappear. It relocates."},
+{t:"confession",p:"Where did you perform today instead of being honest?",h:"Church, work, home, online \u2014 name the specific room."},
+{t:"reflection",p:"What are you doing with your life that would not matter if the resurrection is true?",h:"And what would matter more?"},
+{t:"god question",p:"If God said you could ask him one thing and get a straight answer, what would you ask?",h:"That question is worth sitting with longer than the answer."},
+{t:"vision",p:"What would your household look like in a year if this week's practice held?",h:"Be concrete. Name what would be different at the dinner table."},
+{t:"prayer",p:"What have you stopped praying for because you gave up?",h:"Write it again. Habakkuk 2:3."},
+{t:"gratitude",p:"What is one hard thing that made you better?",h:"James 1:2-4. Not every hardship is discipline, but none is wasted."},
+{t:"next step",p:"Who needs to hear from you this week, and what is stopping you?",h:"Send it before you overthink it."},
+{t:"reflection",p:"Are you more like Jesus than you were a year ago? What is the actual evidence?",h:"Attendance is not evidence. Name a specific change or name that there is not one."},
+{t:"confession",p:"What are you addicted to that you would not call an addiction?",h:"Phone, approval, control, food, comparison, work. Name yours."},
+{t:"lament",p:"Where does it feel like God has been silent?",h:"Say it plainly. The Psalms give you permission."},
+{t:"vision",p:"What do you want said about you at your funeral, and are you becoming that person?",h:"The gap between the two is your formation agenda."},
+{t:"reflection",p:"What is the one thing from this week you want to still be carrying a year from now?",h:"Write it. Come back to this entry in twelve months."}];
+
+var JC={"reflection":"#5a88c9","gratitude":"#5a9a6a","confession":"#8a5a6a","god question":"#c9a84c","next step":"#8a4a4a","prayer":"#7a6a9a","lament":"#6a7a9a","vision":"#5a5a9a"};
+
+var LAD=[
+{n:"1",t:"One Tap",a:"Did you open the Daily Spark today? Tap yes. That is the whole ask.",r:"60-80% respond",c:"#5a9a6a",k:"tap"},
+{n:"2",t:"One Word",a:"Reply with one word from this week. Not a sentence. One word.",r:"30-40% respond",c:"#5a88c9",k:"word"},
+{n:"3",t:"One Sentence",a:"What happened this week because of Sunday? One sentence is enough.",r:"15-25% respond",c:"#8a6a9a",k:"sent"},
+{n:"4",t:"Your Story",a:"Three sentences or a voice memo. What actually changed, and what it cost you.",r:"5-10% respond",c:"#aa7a5a",k:"story"},
+{n:"5",t:"Share on Sunday",a:"Would you let the pastor tell your story from the stage? He will ask you first, and you can say no.",r:"1-2% say yes",c:"#c9a84c",k:"stage"}];
+
+var BEF=[
+{w:"Thursday",t:"The Text Drop",d:"The passage for Sunday, sent three days early with one sentence of framing. Nothing else.",e:"Read this before Sunday. It is where we are going.",c:"#5a88c9"},
+{w:"Friday",t:"The Invite Window",d:"The last useful moment to ask someone. After Saturday morning the ask feels rushed and lands badly.",e:"Who came to mind just now? Text them today, not Sunday morning.",c:"#7a5a9a"},
+{w:"Saturday",t:"The Prayer Prompt",d:"One sentence asking the congregation to pray for the service and the people who will walk in cold.",e:"Pray for the person sitting near you tomorrow who almost did not come.",c:"#5a8a6a"},
+{w:"Sunday AM",t:"The Expectation",d:"A single line before they leave the house. Sets posture, not information.",e:"Come expecting God to say one specific thing to you today.",c:"#c9a84c"}];
+
+var AUD=[
+{t:"Kids &middot; Ages 5-10",d:"Same truth, concrete language, one question a parent can ask at bedtime. Never a worksheet.",e:"God cares more about who you are becoming than what you are doing.",c:"#5a8a6a"},
+{t:"Students &middot; 11-18",d:"Same truth, honest tone, no clich\u00e9. Formatted for a phone and short enough to actually read.",e:"The situation you want out of might be the classroom.",c:"#7a5a9a"},
+{t:"The Family Together",d:"All three levels aligned so the dinner table question actually works across every age present.",e:"One table, one question, everyone answers at their own altitude.",c:"#c9a84c"},
+{t:"Online and Streaming",d:"No lobby, no card, no handshake. Everything must be in the stream or it does not exist for them.",e:"A different pathway entirely, not a lesser version of the in-person one.",c:"#5a88c9"},
+{t:"The Absent",d:"The person who missed. Not a guilt message \u2014 a three-minute catch-up so they can rejoin the week.",e:"Here is what you missed in ninety seconds. You are not behind.",c:"#6a7a9a"},
+{t:"First-Time Guest",d:"A twenty-year member and a first-time guest need completely different next steps. Right now they get the same card.",e:"Nothing is expected of you. Here is one thing if you want it.",c:"#aa7a5a"},
+{t:"The Forwardable",d:"A version built to be sent to someone who does not go to church. No insider language, no assumed belief.",e:"The congregation is the distribution network. Give them something worth sending.",c:"#9a6a4a"},
+{t:"Maturity Level",d:"New believer, growing, mature. Three different next steps from one sermon.",e:"The same invitation cannot serve week three and year thirty.",c:"#5a5a9a"},
+{t:"Accessibility",d:"Large text, audio-first, plain language, and translation for the languages actually in your room.",e:"Formation that only reaches the literate and the English-speaking is not finished.",c:"#5a8a7a"}];
+
+var LEAD=[
+{t:"Group Leaders &mdash; One Day Early",d:"The single highest-leverage fix in the whole system. Leaders receive the guide Saturday, not Monday. A leader who opens the guide the night before leads a measurably different meeting.",e:"If the leader gets it Monday, the Tuesday group is a review. If Saturday, it is a formation."},
+{t:"Staff",d:"The sermon applied to the team's own work. Every staff meeting opens with the same truth the congregation is carrying \u2014 or the staff is the least formed group in the building.",e:"What does this message change about how we work this week?"},
+{t:"Elders and Board",d:"Governance formation. The decision in front of the board this month, run through the lens of Sunday's truth.",e:"How does this message shape the decision we are about to make?"},
+{t:"Volunteers and Worship",d:"The people who serve during the service often receive the least of it. They need their own version, delivered before they serve.",e:"You are giving out all morning. Here is something for you first."}];
+
+var DASH=[
+{t:"Sunday Response",d:"Cards, taps, sign-ups. The vanity number every church already has.",c:"#6a7a9a"},
+{t:"Monday Activation",d:"Who did something within 24 hours. The single best predictor of the whole week.",c:"#5a88c9"},
+{t:"Wednesday Hold",d:"Where the arc actually breaks. If Monday is 80% and Wednesday is 22%, your architecture fails Wednesday.",c:"#aa7a5a"},
+{t:"90-Day Outcome",d:"Still in a group, still reading, still giving. The only number that means anything.",c:"#5a9a6a"}];
+
+var IDG=[["Season of Life",[
+{id:"father",ic:"&#128104;",t:"Father",sp:"Tonight before bed, ask one of your kids what is one thing you wish I did more of. Then just listen."},
+{id:"mother",ic:"&#128105;",t:"Mother",sp:"Speak a blessing over one child out loud today. Use their name. Name who they are becoming."},
+{id:"married",ic:"&#128141;",t:"Married",sp:"Ask your spouse what is one area of my character you have watched God working on. Do not defend yourself."},
+{id:"single",ic:"&#128100;",t:"Single",sp:"Text one friend and tell them one specific thing you have noticed God doing in them. No ask attached."},
+{id:"student",ic:"&#127891;",t:"Student",sp:"Before your first class, pray the one sentence. Then notice one moment where character mattered more than performance."},
+{id:"empty",ic:"&#127968;",t:"Empty Nest",sp:"Call one adult child and ask about their life without offering advice. That restraint is the formation."}]],
+["Work and Calling",[
+{id:"business",ic:"&#128188;",t:"Business",sp:"Before your first meeting Monday, ask what Christlike character looks like in this specific room. Then do that."},
+{id:"caregiver",ic:"&#129309;",t:"Caregiver",sp:"You are in a classroom you did not choose. Name one thing this season produced that comfort never would have."},
+{id:"leader",ic:"&#129517;",t:"Ministry Leader",sp:"Name the one person you are personally discipling. If you cannot, that is this week's assignment."},
+{id:"retired",ic:"&#9749;",t:"Retired",sp:"Who is the one younger person who would take your call? Reach out today."}]],
+["Where You Are",[
+{id:"new",ic:"&#127793;",t:"New to Faith",sp:"Read Philippians 1:6. He started it. He finishes it. You do not have to get this right immediately."},
+{id:"long",ic:"&#128218;",t:"Long-Time",sp:"Be honest: are you more like Jesus than a year ago? What is the actual evidence?"},
+{id:"hard",ic:"&#127785;",t:"Hard Season",sp:"Ask a different question. Not get me out of this, but what are you forming in me through this."},
+{id:"skeptic",ic:"&#10067;",t:"Not Sure Yet",sp:"You are welcome with the questions intact. What would have to be true for this to be worth believing?"}]]];
+
+var D={j:[],s:[],id:null,pi:0,rung:0};
+try{var raw=localStorage.getItem("dsp2");if(raw)D=JSON.parse(raw);}catch(e){}
+function save(){try{localStorage.setItem("dsp2",JSON.stringify(D));}catch(e){}}
+var pick=null,jfilter="all";
+
+function tab(i){
+  for(var k=0;k<6;k++)document.getElementById("p"+k).classList.remove("on");
+  document.getElementById("p"+i).classList.add("on");
+  var t=document.getElementsByClassName("nt");
+  for(var k=0;k<t.length;k++)t[k].classList.remove("on");
+  t[i].classList.add("on");window.scrollTo(0,0);
+}
+
+// JOURNAL
+function jtypes(){
+  var seen={},list=["all"];
+  for(var i=0;i<JP.length;i++){if(!seen[JP[i].t]){seen[JP[i].t]=1;list.push(JP[i].t);}}
+  var h="";
+  for(var i=0;i<list.length;i++){var x=list[i];
+    var c=x==="all"?"#c9a84c":JC[x];
+    h+="<button class='jt"+(jfilter===x?" on":"")+"' style='--jc:"+c+"' onclick=\"setJF('"+x+"')\">"+(x==="all"?"All 30":x)+"</button>";}
+  document.getElementById("jtypes").innerHTML=h;
+}
+function setJF(t){
+  jfilter=t;
+  if(t!=="all"){for(var i=0;i<JP.length;i++){if(JP[i].t===t){D.pi=i;break;}}}
+  save();jtypes();showP();
+}
+function showP(){
+  var p=JP[D.pi%JP.length];
+  document.getElementById("jday").textContent=(D.pi%JP.length)+1;
+  document.getElementById("jtype").textContent=p.t;
+  document.getElementById("jprompt").textContent=p.p;
+  document.getElementById("jhelp").textContent=p.h;
+}
+function nextP(){
+  if(jfilter==="all"){D.pi=(D.pi+1)%JP.length;}
+  else{var n=D.pi;for(var i=1;i<=JP.length;i++){var k=(D.pi+i)%JP.length;if(JP[k].t===jfilter){n=k;break;}}D.pi=n;}
+  save();showP();document.getElementById("jta").value="";
+}
+function saveJ(){
+  var v=document.getElementById("jta").value.trim();
+  if(!v)return;
+  var p=JP[D.pi%JP.length],n=new Date();
+  D.j.unshift({id:n.getTime(),t:p.t,p:p.p,c:v,
+   d:n.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),
+   tm:n.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})});
+  save();document.getElementById("jta").value="";
+  var s=document.getElementById("jsaved");s.classList.add("on");
+  setTimeout(function(){s.classList.remove("on");},2200);
+  jlist();jstats();nextP();
+}
+function delJ(id){
+  if(!confirm("Delete this entry permanently?"))return;
+  D.j=D.j.filter(function(e){return e.id!==id;});save();jlist();jstats();
+}
+function jlist(){
+  var el=document.getElementById("jlist");
+  if(!D.j.length){el.innerHTML="<div class='empty'>No entries yet.<br>Write your first one above.<br><span style='font-size:10px;opacity:.7'>Stored on this device only. Never uploaded.</span></div>";return;}
+  var h="";
+  for(var i=0;i<D.j.length;i++){var e=D.j[i];
+    h+="<div class='ent' style='--ec:"+(JC[e.t]||"#c9a84c")+"'><div class='ent-m'>";
+    h+="<span class='ent-t'>"+e.t+"</span><span class='ent-d'>"+e.d+" \u00b7 "+e.tm+"</span>";
+    h+="<button class='ent-x' onclick='delJ("+e.id+")'>\u2715</button></div>";
+    h+="<div class='ent-p'>"+e.p+"</div>";
+    h+="<div class='ent-c'>"+e.c.replace(/</g,"&lt;")+"</div></div>";}
+  el.innerHTML=h;
+}
+function jstats(){
+  var w=0,days={};
+  for(var i=0;i<D.j.length;i++){w+=D.j[i].c.split(/\s+/).length;days[D.j[i].d]=1;}
+  document.getElementById("s1").textContent=D.j.length;
+  document.getElementById("s2").textContent=Object.keys(days).length;
+  document.getElementById("s3").textContent=w>999?(w/1000).toFixed(1)+"k":w;
+  var b=document.getElementById("jb");
+  b.textContent=D.j.length;b.style.display=D.j.length?"inline":"none";
+}
+
+// LADDER
+function ladder(){
+  var h="";
+  for(var i=0;i<LAD.length;i++){var r=LAD[i];
+    var done=D.s.filter(function(x){return x.k===r.k;}).length>0;
+    h+="<div class='rung"+(D.rung===i?" at":"")+(done?" done":"")+"' style='--rc:"+r.c+"'>";
+    h+="<div class='rung-n'>"+(done?"\u2713":r.n)+"</div><div>";
+    h+="<div class='rung-t'>"+r.t+"</div><div class='rung-a'>"+r.a+"</div>";
+    h+="<div class='rung-r'>"+r.r+"</div>";
+    if(r.k==="tap"){h+="<div class='tapbtns'><button class='tap"+(done?" hit":"")+"' onclick=\"snd('tap','Yes \u2014 read it today')\">\u2713 Yes, I read it</button><button class='tap' onclick=\"snd('tap','Not yet today')\">Not yet</button></div>";}
+    else if(r.k==="word"){h+="<div class='tapbtns' style='margin-top:10px'><input class='wordin' id='wIn' placeholder='One word...'><button class='btn green' onclick=\"sndIn('word','wIn')\">Send</button></div>";}
+    else if(r.k==="sent"){h+="<div style='margin-top:10px'><textarea class='ta' id='sIn' rows='2' style='margin-bottom:8px' placeholder='One sentence. What happened?'></textarea><button class='btn green' onclick=\"sndIn('sent','sIn')\">Send to Pastor</button></div>";}
+    else if(r.k==="story"){h+="<div style='margin-top:10px'><textarea class='ta' id='stIn' rows='4' style='margin-bottom:8px' placeholder='Three sentences. What changed, and what did it cost you?'></textarea><button class='btn green' onclick=\"sndIn('story','stIn')\">Send My Story</button></div>";}
+    else{h+="<div class='tapbtns'><button class='tap"+(done?" hit":"")+"' onclick=\"snd('stage','Yes \u2014 you may ask me about sharing')\">Yes, you can ask me</button><button class='tap' onclick=\"snd('stage','Not right now')\">Not right now</button></div>";}
+    h+="</div></div>";}
+  document.getElementById("ladder").innerHTML=h;
+}
+function snd(k,txt){
+  var n=new Date();
+  D.s.unshift({id:n.getTime(),k:k,c:txt,d:n.toLocaleDateString("en-US",{month:"short",day:"numeric"}),tm:n.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})});
+  var idx=0;for(var i=0;i<LAD.length;i++){if(LAD[i].k===k)idx=i;}
+  if(idx>=D.rung)D.rung=Math.min(idx+1,LAD.length-1);
+  save();ladder();slist();
+}
+function sndIn(k,id){
+  var el=document.getElementById(id);if(!el)return;
+  var v=el.value.trim();if(!v)return;
+  el.value="";snd(k,v);
+}
+function slist(){
+  var el=document.getElementById("slist");
+  if(!D.s.length){el.innerHTML="<div class='empty'>Nothing sent yet.<br>Start with one tap above \u2014 it takes a second.</div>";return;}
+  var h="";
+  for(var i=0;i<D.s.length;i++){var s=D.s[i];
+    var nm="";for(var j=0;j<LAD.length;j++){if(LAD[j].k===s.k)nm=LAD[j].t;}
+    h+="<div class='sent-log'><div class='sent-m'>"+nm+" \u00b7 "+s.d+" "+s.tm+" \u00b7 sent to your church</div>";
+    h+="<div class='sent-c'>\u201c"+s.c.replace(/</g,"&lt;")+"\u201d</div></div>";}
+  el.innerHTML=h;
+}
+
+// STATIC GRIDS
+function grids(){
+  var h="";
+  for(var i=0;i<BEF.length;i++){var b=BEF[i];
+    h+="<div class='box' style='--bc:"+b.c+"'><span class='box-w'>"+b.w+"</span><div class='box-t'>"+b.t+"</div><div class='box-d'>"+b.d+"</div><div class='box-e'>\u201c"+b.e+"\u201d</div></div>";}
+  document.getElementById("before").innerHTML=h;
+  h="";
+  for(var i=0;i<AUD.length;i++){var a=AUD[i];
+    h+="<div class='box' style='--bc:"+a.c+"'><div class='box-t'>"+a.t+"</div><div class='box-d'>"+a.d+"</div><div class='box-e'>\u201c"+a.e+"\u201d</div></div>";}
+  document.getElementById("aud").innerHTML=h;
+  h="";
+  for(var i=0;i<LEAD.length;i++){var l=LEAD[i];
+    h+="<div class='box' style='--bc:#c9a84c'><div class='box-t'>"+l.t+"</div><div class='box-d'>"+l.d+"</div><div class='box-e'>\u201c"+l.e+"\u201d</div></div>";}
+  document.getElementById("lead").innerHTML=h;
+  h="";
+  for(var i=0;i<DASH.length;i++){var x=DASH[i];
+    h+="<div class='box' style='--bc:"+x.c+"'><div class='box-t'>"+x.t+"</div><div class='box-d'>"+x.d+"</div></div>";}
+  document.getElementById("dash").innerHTML=h;
+}
+
+// IDENTITY
+function openId(){
+  var h="";
+  for(var g=0;g<IDG.length;g++){
+    h+="<div class='idg'>"+IDG[g][0]+"</div><div class='idgrid'>";
+    var a=IDG[g][1];
+    for(var i=0;i<a.length;i++){var x=a[i];
+      h+="<button class='idb"+(pick===x.id||(!pick&&D.id===x.id)?" on":"")+"' onclick=\"selId('"+x.id+"')\">";
+      h+="<span class='idb-ic'>"+x.ic+"</span><span class='idb-t'>"+x.t+"</span></button>";}
+    h+="</div>";}
+  document.getElementById("idbody").innerHTML=h;
+  document.getElementById("idov").classList.add("on");document.body.style.overflow="hidden";
+}
+function selId(id){pick=id;openId();}
+function closeId(){document.getElementById("idov").classList.remove("on");document.body.style.overflow="";}
+function saveId(){if(pick){D.id=pick;save();applyId();}closeId();}
+function applyId(){
+  if(!D.id)return;
+  var f=null;
+  for(var g=0;g<IDG.length;g++){var a=IDG[g][1];for(var i=0;i<a.length;i++){if(a[i].id===D.id)f=a[i];}}
+  if(!f)return;
+  document.getElementById("whobtn").innerHTML=f.ic+" "+f.t;
+  document.getElementById("idline").innerHTML="Written for you today \u2014 <b style='color:var(--g)'>"+f.t+"</b>. Tap your name in the corner to change it.";
+  document.getElementById("idspark").innerHTML="<div class='clbl'>&#127919; Your Spark Today \u00b7 "+f.t+"</div><div class='big'>\u201c"+f.sp+"\u201d</div>";
+}
+
+jtypes();showP();jlist();jstats();ladder();slist();grids();applyId();
+document.getElementById("ddate").textContent=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+document.getElementById("idov").addEventListener("click",function(e){if(e.target.id==="idov")closeId();});
+</script>
+</body>
+</html>

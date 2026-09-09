@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palacios Art House — The Journey Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=Karla:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#2C1A26; --vine:#1F3A31; --clay:#9E4A34; --rose:#6E3244;
+    --linen:#F0E7DB; --gold:#E3A64B; --ink:#2A1820; --warm:#F3E9DC;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#1a1016;}
+  body{font-family:'Karla',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+
+  .panel{
+    width:11in;height:8.5in;
+    padding:0.62in 0.85in 1.0in;
+    position:relative;overflow:hidden;
+    margin:0 auto 26px;display:block;
+    page-break-after:always;break-after:page;
+  }
+  .panel:last-child{page-break-after:auto;break-after:auto;}
+
+  .d{background:var(--plum);color:var(--warm);}
+  .v{background:var(--vine);color:var(--warm);}
+  .c{background:var(--clay);color:#FBF1E6;}
+  .r{background:var(--rose);color:#FBEFE6;}
+  .l{background:var(--linen);color:var(--ink);}
+  .d .ac,.v .ac,.r .ac{color:var(--gold);}
+  .c .ac{color:#FFE0AE;}
+  .l .ac{color:var(--clay);}
+
+  .num{
+    position:absolute;top:0.38in;right:0.66in;
+    font-family:'Fraunces',Georgia,serif;font-weight:300;
+    font-size:5.2rem;line-height:1;opacity:.13;letter-spacing:-.03em;
+  }
+  .eyebrow{font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;font-weight:700;opacity:.82;margin:0 0 .4rem;}
+  .rule{width:2.1in;height:2px;background:currentColor;opacity:.5;margin:0 0 .85rem;}
+  h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:2.3rem;line-height:1.06;letter-spacing:-.015em;margin:0 0 .7rem;}
+  h2{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1rem;line-height:1.18;margin:0 0 .12rem;}
+  h2 .need{display:block;font-family:'Karla',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;opacity:.72;margin-bottom:.28rem;}
+  p{font-size:.87rem;line-height:1.58;margin:0 0 .72rem;max-width:34em;}
+  .lead{font-size:1rem;line-height:1.55;}
+  .small{font-size:.775rem;line-height:1.5;}
+  .foot{
+    position:absolute;left:.85in;right:.85in;bottom:.46in;
+    border-top:1px solid currentColor;opacity:.42;padding-top:.26rem;
+    display:flex;justify-content:space-between;
+    font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  }
+  .cols{display:flex;gap:.6in;align-items:flex-start;}
+  .col{flex:1;min-width:0;}
+  .col-wide{flex:1.45;}
+  .col-narrow{flex:.85;}
+  .accentbar{border-left:3px solid currentColor;padding-left:.9rem;}
+  .grid2{display:flex;gap:.55in;}
+  .grid2 .col{flex:1;}
+  .grid3{display:flex;gap:.5in;}
+  .grid3 .col{flex:1;}
+  .tag{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.78;margin:0 0 .45rem;}
+  .quote{font-family:'Fraunces',Georgia,serif;font-weight:300;font-style:italic;font-size:1.2rem;line-height:1.35;max-width:28em;}
+
+  .jl{margin:0;padding:0;list-style:none;}
+  .jl li{
+    display:flex;gap:.5rem;align-items:flex-start;
+    padding:.34rem 0;border-bottom:1px solid rgba(255,255,255,.16);
+    font-size:.765rem;line-height:1.38;
+  }
+  .jl li:first-child{border-top:1px solid rgba(255,255,255,.16);}
+  .l .jl li,.l .jl li:first-child{border-color:rgba(42,24,32,.16);}
+  .fmt{
+    flex:0 0 1.55rem;text-align:center;
+    font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:.68rem;
+    border:1px solid currentColor;border-radius:2px;
+    padding:.06rem 0;margin-top:.08rem;opacity:.85;
+  }
+  .jl strong{font-weight:700;display:block;}
+  .jl span.sub{opacity:.85;}
+
+  .stack > div{padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:.775rem;line-height:1.42;}
+  .stack > div:first-child{border-top:1px solid rgba(255,255,255,.2);}
+  .l .stack > div{border-color:rgba(42,24,32,.2);}
+  .row{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;}
+
+  .cover{display:flex;flex-direction:column;justify-content:center;}
+  .cover h1{font-size:3.7rem;line-height:.99;font-weight:400;margin-bottom:1rem;}
+  .cover .kicker{font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;margin-bottom:1.4rem;}
+  .brushline{height:3px;background:linear-gradient(90deg,var(--gold) 0%,var(--clay) 42%,var(--rose) 72%,transparent 100%);margin:1.2rem 0;width:6.4in;}
+
+  @page{size:11in 8.5in;margin:0;}
+  @media print{ body{background:#fff;} .panel{margin:0;box-shadow:none;} }
+  @media screen{ .panel{box-shadow:0 14px 44px rgba(0,0,0,.45);} }
+  @media (max-width:1140px){
+    .panel{width:auto;max-width:760px;height:auto;min-height:0;padding:2.3rem 1.4rem 3.4rem;}
+    .cols,.grid2,.grid3{flex-direction:column;gap:1.4rem;}
+    .num{font-size:3.2rem;top:.9rem;right:1.1rem;}
+    h1{font-size:1.9rem;}
+    .cover h1{font-size:2.4rem;}
+    .foot{left:1.4rem;right:1.4rem;bottom:1.3rem;font-size:.54rem;}
+    .brushline{width:100%;}
+    p{max-width:none;}
+    .jl li{font-size:.81rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 1 COVER -->
+<section class="panel d cover">
+  <div class="kicker ac">Palacios Art House · Volume Four · Concept</div>
+  <h1>The Journey<br>Library</h1>
+  <div class="brushline"></div>
+  <p class="lead" style="max-width:30em;">Fifty guided journeys across ten categories — ten days, twenty-one days, or a full month.</p>
+  <p class="small" style="margin-top:1.4rem;opacity:.82;max-width:30em;">The same ten felt-need categories that organize the tool library organize this one. That is deliberate: a woman who takes the Sacred Seasons Assessment lands in a category, the category holds five journeys, the journeys lead to an experience, and the experience often ends in a commission. One architecture, running the whole length of the business.</p>
+  <div class="foot"><span>Palacios Art House · McMinnville, Oregon</span><span>10 Categories · 5 Journeys Each · 50 Total</span></div>
+</section>
+
+<!-- 2 FORMATS -->
+<section class="panel l">
+  <div class="num">02</div>
+  <p class="eyebrow ac">Three Lengths, Three Different Products</p>
+  <div class="rule"></div>
+  <h1>Ten days is a taste.<br>Thirty is a <span class="ac">season.</span></h1>
+  <div class="grid3">
+    <div class="col">
+      <h2 class="ac">10 Days</h2>
+      <p class="tag">Entry · One finished piece</p>
+      <p class="small">One felt need, one arc, one painting. Short enough that a woman who has never finished a devotional will finish this. Each day carries Scripture, a short devotional from John, reflection questions, a creative exercise, a journal prompt, and a prayer. She ends with a piece, a title for it, and a word for the season.</p>
+      <p class="small"><strong>$19–$39 · 30 journeys in this library</strong></p>
+    </div>
+    <div class="col">
+      <h2 class="ac">21 Days</h2>
+      <p class="tag">Habit · Three movements</p>
+      <p class="small">Long enough for a practice to take hold. Three weeks in three movements — name it, work it, carry it — building toward one larger work or a set of three companion pieces. This is the natural length for a women's ministry group, a cohort, or a January launch, and it is where the daily video from Kim and John earns its keep.</p>
+      <p class="small"><strong>$39–$79 · 14 journeys in this library</strong></p>
+    </div>
+    <div class="col">
+      <h2 class="ac">30 Days</h2>
+      <p class="tag">Season · A body of work</p>
+      <p class="small">A month is not a longer journal; it is a different product. Five movements, a real body of work at the end, and enough time for something to actually change. Sold as a cohort, licensed to churches for a season, and the only format that ends with something worth hanging in a show — or handing to a family as an heirloom.</p>
+      <p class="small"><strong>$79–$149, or church license · 6 journeys</strong></p>
+    </div>
+  </div>
+  <p class="small" style="margin-top:.5rem;"><strong>The honest math:</strong> 10 categories × 5 journeys = 50. Thirty are 10-day, fourteen are 21-day, six are 30-day. Four categories carry no 30-day journey on purpose — nobody in acute burnout, and no couple, is signing up for a month.</p>
+  <div class="foot"><span>Palacios Art House</span><span>The Three Formats</span></div>
+</section>
+
+<!-- 3 CATEGORIES 1-2 -->
+<section class="panel v">
+  <div class="num">03</div>
+  <p class="eyebrow ac">Categories One &amp; Two · Journeys 1–10</p>
+  <div class="rule"></div>
+  <h1>Rest, and <span class="ac">Freedom</span></h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Category One · Rest &amp; Renewal</span>"I'm so tired I can't think straight."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>Breathe Again</strong><span class="sub">Ten quiet days for a woman who has forgotten how to stop</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Still Waters</strong><span class="sub">Psalm 23 in color, five unhurried minutes at a time</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Sabbath Palette</strong><span class="sub">One color, one week, one recovered practice of rest</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Room to Breathe</strong><span class="sub">Three weeks of clearing space in a life that has none</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Unhurried</strong><span class="sub">Learning the pace of Jesus with a brush in your hand</span></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Category Two · Freedom &amp; Perfectionism</span>"I'm not creative. I'd ruin it."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>Created Free</strong><span class="sub">Out of pressure and comparison, into play and grace</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Ruined Page</strong><span class="sub">Ten days of making things badly, entirely on purpose</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Good Enough</strong><span class="sub">A recovering perfectionist learns to call something finished</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Joy Restored</strong><span class="sub">Three weeks of recovering delight, play, and permission</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Fearless Hands</strong><span class="sub">Undoing the voice that says you were never the creative one</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Rest · Freedom</span></div>
+</section>
+
+<!-- 4 CATEGORIES 3-4 -->
+<section class="panel c">
+  <div class="num">04</div>
+  <p class="eyebrow ac">Categories Three &amp; Four · Journeys 11–20</p>
+  <div class="rule"></div>
+  <h1>Grief, and <span class="ac">Direction</span></h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Category Three · Grief &amp; Loss</span>"I don't have words for this anymore."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>Beauty from Brokenness</strong><span class="sub">Gentle days written for the second year, not the first month</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Remembrance Piece</strong><span class="sub">A photograph, a phrase, a memory — made visible and kept</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Light in the Darkness</strong><span class="sub">Hope worked slowly back into the places that went quiet</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Kintsugi</strong><span class="sub">Gold in the break: three weeks on the theology of repair</span></span></li>
+        <li><span class="fmt ac">30</span><span><strong>A Crown of Beauty</strong><span class="sub">Isaiah 61 across a season of mourning, ending in something made</span></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Category Four · Direction &amp; Discernment</span>"I don't know what season I'm in."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>My Word for This Season</strong><span class="sub">Naming what God is forming — then painting it where you'll see it</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Doorway</strong><span class="sub">The room you are leaving and the door you are standing in front of</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Two Roads</strong><span class="sub">Scripture, counsel, and color for a decision you cannot make</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Sacred Seasons</strong><span class="sub">Discerning your season and marking God's faithfulness inside it</span></span></li>
+        <li><span class="fmt ac">30</span><span><strong>Courage to Begin Again</strong><span class="sub">A month of starting over, honestly and without hurrying it</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Grief · Direction</span></div>
+</section>
+
+<!-- 5 CATEGORIES 5-6 -->
+<section class="panel l">
+  <div class="num">05</div>
+  <p class="eyebrow ac">Categories Five &amp; Six · Journeys 21–30</p>
+  <div class="rule"></div>
+  <h1>Identity, and <span class="ac">Marriage</span></h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Category Five · Identity &amp; Belovedness</span>"I've been everyone's everything for twenty years."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>Known by Name</strong><span class="sub">The names God gives, and the one you need this particular year</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Beloved</strong><span class="sub">Ten days of identity as a daughter, painted without a face</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Labels</strong><span class="sub">Writing what you have been called — and covering it in color</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Rooted</strong><span class="sub">Three weeks of being grounded in love you did nothing to earn</span></span></li>
+        <li><span class="fmt ac">30</span><span><strong>Her Story in Color</strong><span class="sub">A whole life with God, mapped across one long canvas</span></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Category Six · Marriage &amp; Couples</span>"We want something better than another dinner out."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>The Art of Us</strong><span class="sub">Ten evenings, thirty questions, one canvas the two of you share</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Canvas &amp; Covenant</strong><span class="sub">Revisiting the promise and painting what has actually been kept</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Grace in the Gaps</strong><span class="sub">For a couple finding their way back toward each other</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>The Story We're Writing</strong><span class="sub">Three weeks on the chapter that is still ahead of you</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>A Legacy of Love</strong><span class="sub">What this marriage will hand down when neither of you is in the room</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Identity · Marriage</span></div>
+</section>
+
+<!-- 6 CATEGORIES 7-8 -->
+<section class="panel r">
+  <div class="num">06</div>
+  <p class="eyebrow ac">Categories Seven &amp; Eight · Journeys 31–40</p>
+  <div class="rule"></div>
+  <h1>Legacy, and <span class="ac">the Church</span></h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Category Seven · Family &amp; Legacy</span>"We want to leave them more than money."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>Legacy in Color</strong><span class="sub">Values, Scripture, story, and blessing — finally made visible</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Symbols We Live By</strong><span class="sub">Five family values, five images, one visual language you can use</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Blessing</strong><span class="sub">A written and painted blessing for each child and grandchild</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Handing It Down</strong><span class="sub">Three weeks naming the faith and stories you want to outlive you</span></span></li>
+        <li><span class="fmt ac">30</span><span><strong>Generations</strong><span class="sub">A month-long family project that ends in one heirloom piece</span></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Category Eight · Church &amp; Worship</span>"We want them to see it, not only hear it."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>The Word Made Visible</strong><span class="sub">Ten days of Scripture seen rather than only heard</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Sacred Ordinary</strong><span class="sub">Finding God in an ordinary week, in color</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Open Hands</strong><span class="sub">Surrender, trust, and generosity as a visual practice</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Art as Worship</strong><span class="sub">A congregation-wide creative practice, licensed and self-run</span></span></li>
+        <li><span class="fmt ac">30</span><span><strong>The Painted Liturgy</strong><span class="sub">Advent or Lent walked together, one image each week of the season</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Legacy · Church</span></div>
+</section>
+
+<!-- 7 CATEGORIES 9-10 -->
+<section class="panel v">
+  <div class="num">07</div>
+  <p class="eyebrow ac">Categories Nine &amp; Ten · Journeys 41–50</p>
+  <div class="rule"></div>
+  <h1>Leaders, and <span class="ac">Makers</span></h1>
+  <div class="grid2">
+    <div class="col">
+      <h2><span class="need ac">Category Nine · Leaders &amp; Burnout</span>"I don't remember the last thing I did for joy."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>Creative Sabbath</strong><span class="sub">Ten days for someone who genuinely does not know how to rest</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Output Detox</strong><span class="sub">Making things nobody will see, review, or measure</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Presence Over Pressure</strong><span class="sub">Recovering soul, imagination, and joy without leaving the job</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Made to Flourish</strong><span class="sub">From surviving the work to actually living inside it</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>The Well</strong><span class="sub">Three weeks of refilling what leadership quietly drains</span></span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2><span class="need ac">Category Ten · Artists &amp; Calling</span>"I think I'm supposed to make things."</h2>
+      <ul class="jl">
+        <li><span class="fmt ac">10</span><span><strong>Created to Create</strong><span class="sub">Permission, identity, and the image of God in a maker</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>Voice &amp; Vocabulary</strong><span class="sub">Finding your actual signature instead of chasing what sells</span></span></li>
+        <li><span class="fmt ac">10</span><span><strong>The Working Artist</strong><span class="sub">Pricing, commissions, and talking about money without apologizing</span></span></li>
+        <li><span class="fmt ac">21</span><span><strong>Comparison &amp; Calling</strong><span class="sub">Three weeks with the thing that steals most artists' joy</span></span></li>
+        <li><span class="fmt ac">30</span><span><strong>The Body of Work</strong><span class="sub">A month of daily making that ends in a real, showable series</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Leaders · Artists</span></div>
+</section>
+
+<!-- 8 BUILD ORDER -->
+<section class="panel l">
+  <div class="num">08</div>
+  <p class="eyebrow ac">What To Build First</p>
+  <div class="rule"></div>
+  <h1>Write two.<br>Then <span class="ac">let sales decide</span><br>the third.</h1>
+  <div class="cols">
+    <div class="col col-wide">
+      <p>Fifty journeys is a decade of writing, and it should be read as a map rather than a plan. What makes it valuable now is not the volume — it is that any conversation with a church, a partner, or a guest can end with a specific title rather than a vague promise. That is worth having on paper long before most of it is written.</p>
+      <p>Two journeys carry the first year: <em>Paint Your Prayer</em> and <em>Created Free</em>, both already named in earlier work. Write those completely, with the daily video, and sell them hard. The third should be chosen by what actually sells — and my expectation is that it will be <em>My Word for This Season</em>, because January is the one month of the year when people go looking for exactly that, and it is the shortest path from a free download to a paid experience.</p>
+      <p>One structural note worth deciding early: every 21-day and 30-day journey should be built from an existing 10-day rather than written from scratch. Same spine, deeper work, more movements. Otherwise this library becomes fifty unrelated writing projects instead of ten families with three depths each.</p>
+    </div>
+    <div class="col col-narrow accentbar">
+      <p class="tag ac">Sequence</p>
+      <div class="stack small">
+        <div class="row"><span><strong>Year 1</strong> Paint Your Prayer, Created Free</span><span class="ac">10-day</span></div>
+        <div class="row"><span><strong>Year 1</strong> My Word for This Season</span><span class="ac">Jan launch</span></div>
+        <div class="row"><span><strong>Year 2</strong> Legacy in Color</span><span class="ac">10 → 21</span></div>
+        <div class="row"><span><strong>Year 2</strong> Sacred Seasons</span><span class="ac">21-day</span></div>
+        <div class="row"><span><strong>Year 2</strong> The Painted Liturgy</span><span class="ac">Church</span></div>
+      </div>
+      <p class="small" style="margin-top:.55rem;opacity:.85;">Five written journeys is a real catalog. Fifty is a map showing where the road goes.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Palacios Art House</span><span>Build Order</span></div>
+</section>
+
+<!-- 9 CLOSE -->
+<section class="panel d cover">
+  <p class="eyebrow ac">One Architecture, End To End</p>
+  <div class="rule"></div>
+  <h1 style="font-size:2.8rem;font-weight:500;">Need. Journey.<br><span class="ac">Experience. Piece.</span></h1>
+  <div class="brushline"></div>
+  <p class="lead" style="max-width:31em;">She names what she's carrying. A journey meets her there for ten days, three weeks, or a month. Somewhere in it she decides she wants to do this in a real studio with real people. She books. And often, at the end, she asks whether you would paint something for her family.</p>
+  <p class="small" style="max-width:31em;opacity:.85;margin-top:1.2rem;">Ten categories run the entire length of that path — the assessment, the tool library, the journey library, the experiences, and the commissions all use the same ten. Nothing has to be translated between stages, nothing gets orphaned, and a single conversation can move from a free download to a five-figure heirloom without ever changing vocabulary.</p>
+  <div class="foot"><span>Palacios Art House · McMinnville, Oregon</span><span>30 Ten-Day · 14 Twenty-One-Day · 6 Thirty-Day</span></div>
+</section>
+
+</body>
+</html>

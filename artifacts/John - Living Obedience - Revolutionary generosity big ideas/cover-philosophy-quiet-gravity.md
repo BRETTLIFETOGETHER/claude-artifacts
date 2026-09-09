@@ -1,0 +1,16 @@
+# QUIET GRAVITY
+### A design philosophy for the Living Obedience covers
+
+---
+
+**The movement.** Weight without noise. This is an aesthetic built for subjects too serious to shout about — where the drama lives in the density of the dark rather than the brightness of the light, and where a single warm source is asked to do the work that a lesser hand would give to ten. Everything is atmosphere. Nothing is illustration.
+
+**Space and form.** The canvas is a deep field, unbroken, that the eye must adjust to before it can see. Form arrives slowly: an edge, a horizon, a line — never an object. The composition holds a single structural event and refuses to add a second. Vast tracts of the surface do nothing at all, and that emptiness is the most laboured part of the work; it has been tuned across dozens of passes until the darkness itself has tonal variation, a quiet internal weather that rewards long looking and is invisible at a glance. The lower third is reserved and slightly settled, a place where light pools and the eye comes to rest.
+
+**Colour and material.** A palette of two temperatures in permanent negotiation — a cold, deep, ink-blue ground and a warm gold that never becomes yellow and never becomes orange. Between them sits a narrow band of indigo and umber where the two argue, and that band is where the piece actually lives. Colour is layered rather than applied: field over field over field, each one nearly transparent, accumulated with the patience of glaze on panel. Over everything, a fine analogue grain — the tooth of paper, the noise of film — so that the surface reads as a made thing rather than a rendered one, and a vignette so gentle that it is felt rather than seen.
+
+**Scale and rhythm.** One gesture, held large. The single luminous event occupies a commanding portion of the field and then stops; there is no secondary flourish, no supporting mark, no decoration in the corners. Rhythm comes from gradation rather than repetition — the slow, meticulously calibrated fall from light to dark across hundreds of steps, each one placed by hand until no band or seam survives anywhere in the transition. This smoothness is the signature of the work and the clearest evidence of the hours behind it.
+
+**Composition and hierarchy.** Every element bends toward the type. Light does not merely exist in the frame; it travels, and it travels downward and forward, arriving at the lower third where the words wait. Legibility is earned by the art — a warmed zone, a settled tone, an atmospheric halo — and never by a box, a scrim, or a bar laid over the image. Typography is restrained to the point of severity: a serif of real quality set with generous letterspacing, a fine gold rule, and nothing else. The words are small relative to the field, because the field is what makes them credible.
+
+**The standard.** The finished piece must look as though it took an enormous number of hours, because it should — the product of deep expertise, painstaking attention, and the judgement of someone at the top of their field. Every gradient step, every grain value, every millimetre of margin is a decision that has been made and remade. Nothing here may read as templated, generated, or arrived at quickly. The test is simple: cover the words. What remains must still hold the wall.

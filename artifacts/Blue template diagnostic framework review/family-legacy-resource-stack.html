@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Legacy Resource Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1a56db;
+    --blue-dark:#12318c;
+    --blue-soft:#e8effc;
+    --ink:#0f172a;
+    --body:#3f4c60;
+    --muted:#71809a;
+    --line:#dfe5ee;
+    --bg:#f4f6fa;
+    --white:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--body);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+  h1,h2,h3,h4{color:var(--ink);margin:0;line-height:1.2;letter-spacing:-0.02em;}
+  p{margin:0 0 16px;}
+  .eyebrow{
+    font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--blue);margin-bottom:14px;
+  }
+  /* hero */
+  .hero{background:var(--white);border-bottom:1px solid var(--line);padding:56px 0 44px;}
+  .hero h1{font-size:38px;font-weight:800;margin-bottom:16px;}
+  .hero .sub{font-size:19px;color:var(--body);max-width:640px;margin-bottom:28px;}
+  .spine{border-left:2px solid var(--blue);padding-left:18px;margin:0 0 28px;}
+  .spine div{font-size:14px;color:var(--muted);padding:3px 0;}
+  .spine div b{color:var(--ink);font-weight:600;}
+  .btn{
+    display:inline-block;background:var(--blue);color:#fff;text-decoration:none;
+    font-weight:600;font-size:15px;padding:13px 24px;border-radius:8px;border:none;cursor:pointer;
+    font-family:inherit;
+  }
+  .btn:hover{background:var(--blue-dark);}
+  .btn.ghost{background:transparent;color:var(--blue);border:1px solid var(--line);}
+  /* sections */
+  section{padding:48px 0;border-bottom:1px solid var(--line);}
+  section h2{font-size:27px;font-weight:700;margin-bottom:12px;}
+  .lede{font-size:17px;max-width:640px;margin-bottom:28px;}
+  .card{
+    background:var(--white);border:1px solid var(--line);border-radius:12px;
+    padding:24px;margin-bottom:14px;
+  }
+  .grid{display:grid;gap:14px;}
+  @media(min-width:700px){.g2{grid-template-columns:1fr 1fr;}}
+  /* seats */
+  .seat{
+    background:var(--white);border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+    cursor:pointer;text-align:left;font-family:inherit;font-size:15px;color:var(--ink);
+    font-weight:600;width:100%;display:block;transition:border-color .15s,box-shadow .15s;
+  }
+  .seat span{display:block;font-weight:400;font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.45;}
+  .seat:hover{border-color:var(--blue);}
+  .seat.on{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-soft);}
+  /* diagnostic */
+  .q{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:12px;}
+  .q .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+  .q p{font-size:15.5px;color:var(--ink);margin-bottom:14px;}
+  .scale{display:flex;gap:6px;}
+  .scale button{
+    flex:1;padding:10px 0;border:1px solid var(--line);background:#fff;border-radius:7px;
+    font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;
+  }
+  .scale button:hover{border-color:var(--blue);color:var(--blue);}
+  .scale button.on{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .scalekey{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:8px;}
+  /* result */
+  .result{background:var(--white);border:2px solid var(--blue);border-radius:12px;padding:26px;}
+  .score{font-size:44px;font-weight:800;color:var(--blue);line-height:1;}
+  .score small{font-size:16px;color:var(--muted);font-weight:600;}
+  .band{font-size:22px;font-weight:700;color:var(--ink);margin:10px 0 12px;}
+  .rx{background:var(--blue-soft);border-radius:9px;padding:16px 18px;margin-top:16px;}
+  .rx h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-dark);margin-bottom:6px;}
+  .rx p{font-size:15px;margin-bottom:0;color:var(--ink);}
+  .hidden{display:none;}
+  /* pathway */
+  .step{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);}
+  .step:last-child{border-bottom:none;}
+  .step .n{
+    flex:0 0 34px;height:34px;border-radius:50%;background:var(--blue-soft);color:var(--blue-dark);
+    font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;
+  }
+  .step h4{font-size:15.5px;margin-bottom:2px;}
+  .step div p{font-size:14.5px;margin:0;color:var(--muted);}
+  /* layers */
+  .layer{background:var(--white);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:16px 18px;margin-bottom:10px;}
+  .layer h4{font-size:15.5px;margin-bottom:3px;}
+  .layer p{font-size:14.5px;margin:0;color:var(--muted);}
+  /* domains */
+  .dom{
+    background:var(--white);border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+    cursor:pointer;text-align:left;width:100%;font-family:inherit;display:block;margin-bottom:10px;
+  }
+  .dom:hover{border-color:var(--blue);}
+  .dom h4{font-size:16px;margin-bottom:4px;}
+  .dom .meta{font-size:12.5px;color:var(--muted);}
+  .tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:3px 8px;border-radius:5px;background:var(--blue-soft);color:var(--blue-dark);margin-left:6px;
+  }
+  .tag.warn{background:#fdf0e3;color:#9a5b12;}
+  .detail{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:24px;}
+  .detail .row{padding:12px 0;border-bottom:1px solid var(--line);}
+  .detail .row:last-child{border-bottom:none;}
+  .detail .row .k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:4px;}
+  .detail .row .v{font-size:15px;color:var(--ink);}
+  /* pricing */
+  .tier{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:12px;}
+  .tier.rec{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-soft);}
+  .tier h4{font-size:17px;margin-bottom:4px;}
+  .tier .price{font-size:22px;font-weight:700;color:var(--blue);margin:8px 0;}
+  .tier ul{margin:10px 0 0;padding-left:18px;font-size:14.5px;color:var(--body);}
+  .tier li{margin-bottom:5px;}
+  /* ledger */
+  table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--white);}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+  td.st{font-weight:600;color:var(--ink);white-space:nowrap;}
+  .note{font-size:13.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:14px;margin-top:20px;}
+  footer{padding:36px 0 60px;font-size:13px;color:var(--muted);}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+  @media(max-width:600px){
+    .hero h1{font-size:29px;}
+    .hero .sub{font-size:17px;}
+    section h2{font-size:23px;}
+    .score{font-size:36px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Family Legacy Intelligence</div>
+    <h1>The Family Legacy Resource Stack</h1>
+    <p class="sub">One architecture behind every family legacy conversation. Each domain is built the same eight ways, so a family experience is consistent, an advisor is never improvising, and the work compounds across generations instead of restarting at every engagement.</p>
+    <div class="spine">
+      <div><b>One architecture.</b> Eight layers, applied identically to every domain.</div>
+      <div><b>Forty domains.</b> The map of family life, from identity to digital legacy.</div>
+      <div><b>One pathway.</b> Discover, discern, journey, equip, create, activate, review, continue.</div>
+    </div>
+    <a class="btn" href="#diagnostic">Find your first layer</a>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The problem it solves</div>
+    <h2>Families have assets, values and intentions. Almost none have a system.</h2>
+    <p class="lede">Legacy is usually treated as a planning event with a signature at the end. This system treats it as a developmental journey the family takes while everyone is still in the room — moving from what we leave behind to how we form a family across generations.</p>
+    <div class="grid g2">
+      <div class="card">
+        <div class="eyebrow">For the family</div>
+        <p style="margin:0;font-size:15px;">Clarity about where you actually are, discernment about what matters in this season, and a tangible artifact at the end of every domain — a mission statement, a blessing letter, a governance charter — that becomes the family's institutional memory.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">For the advisor</div>
+        <p style="margin:0;font-size:15px;">A defensible way to lead the most important conversation in the relationship without drifting into therapy, law or pastoral care. Briefings, discovery questions, scripts, diagnostic signals, and a clear boundary of expertise with a referral path.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Step one</div>
+    <h2>Who is picking this up?</h2>
+    <p class="lede">The stack is the same for everyone. What changes is the seat you sit in, the first layer you build, and what you charge for it.</p>
+    <div class="grid g2" id="seats"></div>
+  </div>
+</section>
+
+<section id="diagnostic">
+  <div class="wrap">
+    <div class="eyebrow">Step two</div>
+    <h2>Stack diagnostic</h2>
+    <p class="lede" id="diagLede">Eight statements, one per layer. Rate each from 1 (not true of us) to 5 (fully true and in regular use). This measures architecture, not effort — many strong practices score low here because the pieces exist but nothing connects them.</p>
+    <div id="questions"></div>
+    <button class="btn" id="scoreBtn" style="margin-top:8px;">Show my result</button>
+    <div id="result" class="hidden" style="margin-top:24px;"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Step three</div>
+    <h2>The master family pathway</h2>
+    <p class="lede">Every domain moves through the same eight-step progression. The order matters: discovery before discernment keeps the family from solving the loudest problem instead of the most important one.</p>
+    <div class="card" id="pathway" style="padding:8px 20px;"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The architecture</div>
+    <h2>Eight layers, every domain</h2>
+    <p class="lede">This is the standardization. Build a domain once at this depth and it is family-ready, advisor-ready, print-ready and repeatable.</p>
+    <div id="layers"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The map</div>
+    <h2>Domain clusters</h2>
+    <p class="lede">Eleven clusters organize the domain map. Tap any cluster to see the stack instantiated for it — the brief, the journey, the family experience, the toolbox, the advisor guide, the artifact it produces, and where it hands off next.</p>
+    <div id="domains"></div>
+    <div id="domainDetail" class="hidden" style="margin-top:14px;"></div>
+    <p class="note">Named domains below are the fifteen confirmed in the library source. Cluster slots without a named domain are gaps in the current map, not omissions from this page.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Proposed economics</div>
+    <h2>How it is sold</h2>
+    <p class="lede">Four ways to buy the same architecture. These figures are proposed for pressure-testing — none have been validated with buyers or approved.</p>
+    <div id="pricing"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Honest status</div>
+    <h2>What exists, what is proposed, what is a concept</h2>
+    <p class="lede">The architecture is further along than the inventory. This ledger keeps the two from being confused in a room where someone might buy it.</p>
+    <div class="card" style="padding:6px 0;overflow-x:auto;">
+      <table id="ledger"></table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Family Legacy Resource Stack — internal working page. Status labels reflect current build reality, not aspiration.
+  </div>
+</footer>
+
+<script>
+var SEATS = [
+  {id:"advisor", name:"Independent advisor or legacy coach",
+   note:"You serve families directly and want a repeatable process instead of a custom engagement each time.",
+   kind:"pro", tier:2},
+  {id:"firm", name:"RIA or multi-advisor firm",
+   note:"You need every advisor delivering the same family experience at the same quality.",
+   kind:"pro", tier:3},
+  {id:"office", name:"Family office or professional practice",
+   note:"Attorney, CPA, philanthropic advisor or family office coordinating specialists around one family.",
+   kind:"pro", tier:3},
+  {id:"ministry", name:"Church or ministry leader",
+   note:"You are forming households, not managing assets, and need the same architecture in ministry language.",
+   kind:"pro", tier:1},
+  {id:"family", name:"A family using it for ourselves",
+   note:"You want the conversations and the artifacts without hiring anyone to run them.",
+   kind:"fam", tier:0}
+];
+
+var Q_PRO = [
+  {l:"Intelligence Brief", t:"Before a family conversation, I can hand the family a short brief explaining why this issue matters and what is at stake if it is left alone."},
+  {l:"Discovery Assessment", t:"I have a consistent instrument that shows a family its current reality — strengths, gaps, risks, readiness — rather than relying on what comes up in conversation."},
+  {l:"21-Day Journey", t:"I can put a personal formation experience in an individual's hands between meetings, and I know whether they did it."},
+  {l:"Four-Session Family Experience", t:"I have a structured multi-session experience the whole family goes through together, not just a single family meeting."},
+  {l:"Family Toolbox", t:"Families leave with worksheets, decision frameworks and conversation guides they actually use without me in the room."},
+  {l:"Advisor Intelligence Guide", t:"I work from prepared discovery questions, conversation scripts and green/yellow/red signals, including a clear line where I stop and refer out."},
+  {l:"Legacy Artifact Builder", t:"Every engagement produces a permanent artifact the family keeps — a charter, a plan, a letter, a storybook."},
+  {l:"Next Best Journey", t:"When one piece of work finishes, the system tells me and the family what the next best conversation is, and momentum carries."}
+];
+
+var Q_FAM = [
+  {l:"Intelligence Brief", t:"We can name why the legacy work matters in words every adult in the family would agree with."},
+  {l:"Discovery Assessment", t:"We have honestly assessed where our family is strong and where it is fragile, rather than assuming we know."},
+  {l:"21-Day Journey", t:"Individual family members have done personal reflection on faith, values and story — not only group conversations."},
+  {l:"Four-Session Family Experience", t:"We have set aside real time, more than once, for the whole family to work through something together."},
+  {l:"Family Toolbox", t:"We have practical tools we return to — conversation guides, planning worksheets, decision frameworks."},
+  {l:"Advisor Intelligence Guide", t:"Someone outside the family helps us have the hard conversations well, and knows when to bring in a specialist."},
+  {l:"Legacy Artifact Builder", t:"We have produced something permanent — a mission statement, a letter, a charter, a storybook — that outlives the conversation."},
+  {l:"Next Best Journey", t:"When one conversation ends, we know what the next one is and roughly when it happens."}
+];
+
+var BANDS_PRO = [
+  {min:34, name:"Operating system in use",
+   rx:"Your architecture is intact. The risk now is drift between advisors and inconsistent artifacts. Standardize the Advisor Intelligence Guide across everyone who touches a family, then pick three families and run a full domain end to end as the reference implementation.",
+   first:"Advisor Intelligence Guide"},
+  {min:25, name:"Assembling",
+   rx:"You have real pieces and no through-line, so each family gets a slightly different version of you. Build the Next Best Journey layer first — a written handoff from each domain to the one that follows — because that is what turns three good meetings into a multi-year relationship.",
+   first:"Next Best Journey"},
+  {min:15, name:"Fragmented",
+   rx:"Strong content, no stack. Start with the Discovery Assessment: without a shared picture of current reality, every recommendation is a guess and the family cannot see progress. One instrument, used with every family, changes the entire conversation within a quarter.",
+   first:"Discovery Assessment"},
+  {min:0, name:"Pre-system",
+   rx:"Every engagement is currently custom, which caps you at the number of families you can personally carry. Build one domain completely — Identity and Story is the least threatening entry point — and use it with ten families before building a second.",
+   first:"Intelligence Brief"}
+];
+
+var BANDS_FAM = [
+  {min:34, name:"Intentional legacy formation",
+   rx:"Your family is already doing the work most families postpone. The next move is governance: put a decision process and a family table in place while relationships are strong, rather than after a health event forces it.",
+   first:"Governance and Succession"},
+  {min:25, name:"Emerging alignment",
+   rx:"You have conversations but not continuity. Choose one domain and take it all the way to a permanent artifact — a written mission statement or a spiritual legacy letter. A finished artifact does more for family alignment than another good discussion.",
+   first:"Values and Vision"},
+  {min:15, name:"Legacy conversations needed",
+   rx:"The intentions are real and the structure is missing. Begin with Identity and Story, because it is the one domain no family resists, and it surfaces the material every later conversation depends on.",
+   first:"Identity and Story"},
+  {min:0, name:"Begin with trust and discovery",
+   rx:"Start smaller than you think. One honest assessment, taken separately by each adult and then compared, will tell you more about your family's readiness than a year of planning meetings.",
+   first:"Discovery Assessment"}
+];
+
+var PATHWAY = [
+  {n:"Discover", d:"What is happening in this family right now?"},
+  {n:"Discern", d:"What matters most in this season?"},
+  {n:"Journey", d:"What experience will help the family grow?"},
+  {n:"Equip", d:"What tools will help them act wisely?"},
+  {n:"Create", d:"What tangible legacy artifact should be produced?"},
+  {n:"Activate", d:"What will the family do in the next ninety days?"},
+  {n:"Review", d:"What changed as a result?"},
+  {n:"Continue", d:"What is the next best conversation or journey?"}
+];
+
+var LAYERS = [
+  {n:"Intelligence Brief", d:"Why this domain matters, what is at stake, and what happens to families that ignore it."},
+  {n:"Discovery Assessment", d:"The family's current reality in this domain — strengths, gaps, risks, readiness."},
+  {n:"21-Day Journey", d:"Personal formation between meetings: short daily readings, Scripture, reflection."},
+  {n:"Four-Session Family Experience", d:"Shared alignment. The whole family works through the domain together."},
+  {n:"Family Toolbox", d:"Worksheets, decision frameworks, conversation guides, planning templates."},
+  {n:"Advisor Intelligence Guide", d:"Briefings, discovery questions, scripts, green/yellow/red signals, boundaries of expertise."},
+  {n:"Legacy Artifact Builder", d:"The permanent output. Every domain produces something the family keeps."},
+  {n:"Next Best Journey", d:"The handoff. Where this domain leads and what conversation comes next."}
+];
+
+var DOMAINS = [
+  {c:"Identity and Story", named:["Family Identity and Story"],
+   brief:"Families that cannot tell their own story accurately tend to repeat its worst chapters and forget its best ones.",
+   assess:"How much of the founding story is known, told and agreed upon across three generations.",
+   journey:"Twenty-one days: Where We Came From",
+   exp:"Four sessions: The Story We Are Still Writing",
+   tools:"Story interview guide, family timeline builder, photograph and artifact index, family naming worksheet",
+   advisor:"Opening the story conversation without becoming the family historian.",
+   artifact:"Family Storybook",
+   next:"Faith and Spiritual Heritage"},
+  {c:"Faith and Spiritual Heritage", named:["Faith and Spiritual Heritage"],
+   brief:"Faith is the one asset that transfers only through relationship. It cannot be assigned in a document.",
+   assess:"Whether conviction is spoken, modeled and owned by the rising generation, or quietly assumed.",
+   journey:"Twenty-one days: The Faith We Received",
+   exp:"Four sessions: What We Believe and Why It Holds",
+   tools:"Spiritual heritage map, blessing script, household rhythms planner, the questions the next generation is actually asking",
+   advisor:"Honoring faith as central without functioning as the family's pastor.",
+   artifact:"Spiritual Legacy Letter",
+   next:"Values and Vision"},
+  {c:"Values and Vision", named:["Family Values and Vision"],
+   brief:"Most families have values. Few have language for them a twenty-four-year-old would repeat without rolling their eyes.",
+   assess:"Whether stated values match observed decisions about money, time and conflict.",
+   journey:"Twenty-one days: What We Actually Value",
+   exp:"Four sessions: Naming What Must Not Be Lost",
+   tools:"Values sort, decision audit, vision drafting frame, one-page mission test",
+   advisor:"Drawing out values the family already holds rather than installing new ones.",
+   artifact:"Family Mission Statement",
+   next:"Relationships and Reconciliation"},
+  {c:"Relationships and Reconciliation", named:["Relationships and Reconciliation","Marriage and Family Leadership"],
+   brief:"Unresolved relational debt is the most common reason a well-drafted plan fails after the first funeral.",
+   assess:"Where trust is strained, which conversations are avoided, and who currently carries the family's relational weight.",
+   journey:"Twenty-one days: Repair Before Transfer",
+   exp:"Four sessions: The Conversations We Keep Postponing",
+   tools:"Relational map, repair and forgiveness guide, sibling dynamics worksheet, hard-conversation script",
+   advisor:"Knowing the line between facilitation and therapy, and referring early rather than heroically.",
+   artifact:"Family Communication Covenant",
+   next:"Communication, Health and Emotional Systems"},
+  {c:"Wealth and Stewardship", named:["Wealth, Stewardship and Responsibility"],
+   brief:"Money teaches whether the family intends it to or not. The only question is what it is currently teaching.",
+   assess:"Whether the next generation understands ownership, responsibility, and the difference between provision and entitlement.",
+   journey:"Twenty-one days: Whose Is It, Really",
+   exp:"Four sessions: What Wealth Is For",
+   tools:"Stewardship primer, allowance-to-inheritance ladder, financial transparency ladder, first-money decisions guide",
+   advisor:"Integrating the technical plan with the formation work without collapsing either into the other.",
+   artifact:"Stewardship Covenant",
+   next:"Parenting and Next Generation"},
+  {c:"Parenting and Next Generation", named:["Parenting and Preparing the Next Generation","Wisdom, Mentoring and Life Experience"],
+   brief:"Preparation beats distribution. The question is not what they receive but who they are becoming before they receive it.",
+   assess:"Readiness by heir rather than by household: competence, character, capacity and calling.",
+   journey:"Twenty-one days: Preparing the Ones Who Come Next",
+   exp:"Four sessions: Raising Heirs Who Can Carry It",
+   tools:"Heir readiness rubric, mentor matching guide, rite-of-passage planner, first responsibility assignments",
+   advisor:"Assessing readiness candidly without ranking children in front of their parents.",
+   artifact:"Heir Development Plan",
+   next:"Governance and Succession"},
+  {c:"Governance and Succession", named:["Succession, Governance and Enduring Legacy"],
+   brief:"Governance is what holds a family together once the founder is no longer in the room to settle disputes.",
+   assess:"Whether decisions have a process or a person, and what happens to that process when the person is gone.",
+   journey:"Twenty-one days: Who Decides, and How",
+   exp:"Four sessions: Building the Family Table",
+   tools:"Family meeting kit, decision rights map, council charter template, succession timeline",
+   advisor:"Coordinating counsel and trustees while keeping the family's voice primary.",
+   artifact:"Family Governance Charter",
+   next:"Business, Property and Enterprise Legacy"},
+  {c:"Generosity and Impact", named:["Generosity and Family Impact","Family Kingdom Impact"],
+   brief:"Giving is the fastest formation tool a family owns. It makes values visible, costly and repeatable.",
+   assess:"Whether generosity is a shared family practice or a private decision made by one generation.",
+   journey:"Twenty-one days: Giving Together",
+   exp:"Four sessions: What We Want Our Giving to Say",
+   tools:"Family giving charter, next-generation grant process, site-visit guide, annual giving review",
+   advisor:"Connecting giving vehicles to formation goals rather than to tax outcomes alone.",
+   artifact:"Family Generosity Plan",
+   next:"Global, Cultural and Digital Legacy"},
+  {c:"Communication, Health and Emotional Systems", named:["Family Flourishing and Whole-Life Well-Being"],
+   brief:"Every family has a nervous system. Wealth amplifies whatever is already there.",
+   assess:"How the family handles stress, conflict, secrecy and health without pretending.",
+   journey:"Twenty-one days: How We Handle Hard Things",
+   exp:"Four sessions: Health, Honesty and the Family We Want to Be",
+   tools:"Communication norms, conflict protocol, well-being check-in, when-to-get-help referral guide",
+   advisor:"Naming what sits outside advisory scope early and warmly, with a referral already in hand.",
+   artifact:"Family Well-Being Agreement",
+   next:"Relationships and Reconciliation"},
+  {c:"Business, Property and Enterprise Legacy", named:[],
+   brief:"The operating business, the land and the lake house carry more family meaning than any account statement.",
+   assess:"Whether ownership, employment and family membership are being confused with one another.",
+   journey:"Twenty-one days: What We Built and Why",
+   exp:"Four sessions: Owners, Operators and Heirs",
+   tools:"Ownership versus employment policy, shared property use agreement, founder transition map, next-generation entry criteria",
+   advisor:"Separating the family conversation from the enterprise decision without dismissing either.",
+   artifact:"Enterprise Continuity Plan",
+   next:"Governance and Succession"},
+  {c:"Global, Cultural and Digital Legacy", named:[],
+   brief:"A family's record now lives in phones, drives and accounts nobody has inventoried.",
+   assess:"What exists digitally, who can reach it, and what the family wants preserved or deleted.",
+   journey:"Twenty-one days: What Will Still Be Found",
+   exp:"Four sessions: The Record We Leave",
+   tools:"Digital asset inventory, archive standards, cultural heritage guide, access protocol",
+   advisor:"Coordinating with counsel on digital access without overstating authority.",
+   artifact:"Family Archive and Digital Legacy Plan",
+   next:"Identity and Story"}
+];
+
+var TIERS = [
+  {n:"Family Edition", p:"$95 per domain",
+   items:["One domain, self-guided","Journey, four-session experience, toolbox","Artifact builder with printable output","No advisor required"]},
+  {n:"Guided Family Journey", p:"$2,500 – $5,000 per family",
+   items:["Advisor-facilitated, three domains","Discovery assessment and intelligence summary","Facilitated family sessions","Two permanent artifacts produced"]},
+  {n:"Advisor Seat", p:"$3,600 per year",
+   items:["Full domain library","All advisor intelligence guides","Unlimited family use within your practice","Print-ready artifact templates"]},
+  {n:"Firm and Enterprise License", p:"From $25,000 per year",
+   items:["Ten or more advisors","Branded and white-labeled editions","Onboarding and certification","Print fulfillment and reporting"]}
+];
+
+var LEDGER = [
+  ["Eight-layer Resource Stack architecture","Defined","This document. Consistent and complete as a spec."],
+  ["Master Family Pathway, eight steps","Defined","Consistent with the core flow across all domains."],
+  ["Forty domains","Asserted","Fifteen named in the library source; eleven clusters named here. The remaining count is not yet enumerated."],
+  ["Domain instances shown on this page","Proposed","Written for this build. None authored as finished resources."],
+  ["Discovery Assessment","Built","Six dimensions, twenty-four items, four bands — at the platform level, not per domain."],
+  ["Interview instruments","Built","Couple, patriarch, matriarch and next-generation interviews."],
+  ["Twenty-one-day journeys","Concept","None authored."],
+  ["Four-session family experiences","Concept","A six-session whole-family campaign is outlined."],
+  ["Advisor Intelligence Guides","Concept","Structure defined, none written."],
+  ["Legacy Artifact Builders","Concept","Artifact types named, no templates produced."],
+  ["Pricing","Proposed","Not validated with any buyer."],
+  ["Advisor pilot","Proposed","Top Ten Family Experience remains an invitation, not a running pilot."]
+];
+
+var seat = null;
+var answers = [];
+var openDomain = -1;
+
+function el(id){ return document.getElementById(id); }
+
+function renderSeats(){
+  var h = "";
+  for (var i=0;i<SEATS.length;i++){
+    h += '<button class="seat" data-i="' + i + '">' + SEATS[i].name +
+         '<span>' + SEATS[i].note + '</span></button>';
+  }
+  el("seats").innerHTML = h;
+  var btns = el("seats").getElementsByClassName("seat");
+  for (var j=0;j<btns.length;j++){
+    btns[j].onclick = function(){ pickSeat(parseInt(this.getAttribute("data-i"),10)); };
+  }
+}
+
+function pickSeat(i){
+  seat = i;
+  var btns = el("seats").getElementsByClassName("seat");
+  for (var k=0;k<btns.length;k++){
+    btns[k].className = (k===i) ? "seat on" : "seat";
+  }
+  answers = [];
+  el("result").className = "hidden";
+  renderQuestions();
+  renderPricing();
+  el("diagLede").innerHTML = (SEATS[i].kind === "fam")
+    ? "Eight statements, one per layer of the stack. Rate each from 1 (not true of us) to 5 (fully true, and we do it). Answer about your family as it is, not as you intend it to be."
+    : "Eight statements, one per layer. Rate each from 1 (not true of my practice) to 5 (fully true and in regular use). This measures architecture, not effort — strong practices often score low because the pieces exist and nothing connects them.";
+  document.getElementById("diagnostic").scrollIntoView();
+}
+
+function qSet(){ return (seat !== null && SEATS[seat].kind === "fam") ? Q_FAM : Q_PRO; }
+
+function renderQuestions(){
+  var set = qSet();
+  var h = "";
+  for (var i=0;i<set.length;i++){
+    h += '<div class="q"><div class="lbl">Layer ' + (i+1) + ' &middot; ' + set[i].l + '</div><p>' + set[i].t + '</p><div class="scale">';
+    for (var v=1;v<=5;v++){
+      h += '<button data-q="' + i + '" data-v="' + v + '">' + v + '</button>';
+    }
+    h += '</div><div class="scalekey"><span>Not true</span><span>Fully true</span></div></div>';
+  }
+  el("questions").innerHTML = h;
+  var bs = el("questions").getElementsByTagName("button");
+  for (var b=0;b<bs.length;b++){
+    bs[b].onclick = function(){
+      var qi = parseInt(this.getAttribute("data-q"),10);
+      var val = parseInt(this.getAttribute("data-v"),10);
+      answers[qi] = val;
+      var row = this.parentNode.getElementsByTagName("button");
+      for (var r=0;r<row.length;r++){ row[r].className = ""; }
+      this.className = "on";
+    };
+  }
+}
+
+function renderResult(){
+  var set = qSet();
+  var total = 0, count = 0;
+  for (var i=0;i<set.length;i++){
+    if (answers[i]) { total += answers[i]; count++; }
+  }
+  if (count < set.length){
+    el("result").className = "";
+    el("result").innerHTML = '<div class="card"><p style="margin:0;">Rate all eight statements to see your result. ' +
+      (set.length - count) + ' still open.</p></div>';
+    return;
+  }
+  var bands = (SEATS[seat].kind === "fam") ? BANDS_FAM : BANDS_PRO;
+  var band = bands[bands.length-1];
+  for (var b=0;b<bands.length;b++){
+    if (total >= bands[b].min){ band = bands[b]; break; }
+  }
+  var weakest = 0;
+  for (var w=1;w<set.length;w++){
+    if (answers[w] < answers[weakest]) { weakest = w; }
+  }
+  var h = '<div class="result">' +
+    '<div class="eyebrow">Your result</div>' +
+    '<div class="score">' + total + '<small> / 40</small></div>' +
+    '<div class="band">' + band.name + '</div>' +
+    '<p>' + band.rx + '</p>' +
+    '<div class="rx"><h4>Build this layer first</h4><p>' + band.first + '</p></div>' +
+    '<div class="rx"><h4>Your lowest-scoring layer</h4><p>' + set[weakest].l +
+    '. If it differs from the prescription above, build the prescribed layer first anyway — sequence matters more than symmetry.</p></div>' +
+    '<div class="rx"><h4>Next ninety days</h4><p>Take one domain from the map below and carry it through all eight steps of the pathway with ' +
+    ((SEATS[seat].kind === "fam") ? "your own family" : "three families") +
+    '. A finished reference implementation is worth more than eight half-built layers.</p></div>' +
+    '</div>';
+  el("result").className = "";
+  el("result").innerHTML = h;
+  el("result").scrollIntoView();
+}
+
+function renderPathway(){
+  var h = "";
+  for (var i=0;i<PATHWAY.length;i++){
+    h += '<div class="step"><div class="n">' + (i+1) + '</div><div><h4>' + PATHWAY[i].n +
+         '</h4><p>' + PATHWAY[i].d + '</p></div></div>';
+  }
+  el("pathway").innerHTML = h;
+}
+
+function renderLayers(){
+  var h = "";
+  for (var i=0;i<LAYERS.length;i++){
+    h += '<div class="layer"><h4>' + (i+1) + '. ' + LAYERS[i].n + '</h4><p>' + LAYERS[i].d + '</p></div>';
+  }
+  el("layers").innerHTML = h;
+}
+
+function renderDomains(){
+  var h = "";
+  for (var i=0;i<DOMAINS.length;i++){
+    var d = DOMAINS[i];
+    var tag = (d.named.length === 0)
+      ? '<span class="tag warn">No named domain yet</span>'
+      : '<span class="tag">' + d.named.length + ' named</span>';
+    h += '<button class="dom" data-i="' + i + '"><h4>' + d.c + tag + '</h4>' +
+         '<div class="meta">Produces: ' + d.artifact + '</div></button>';
+  }
+  el("domains").innerHTML = h;
+  var bs = el("domains").getElementsByClassName("dom");
+  for (var j=0;j<bs.length;j++){
+    bs[j].onclick = function(){ showDomain(parseInt(this.getAttribute("data-i"),10)); };
+  }
+}
+
+function showDomain(i){
+  if (openDomain === i){
+    el("domainDetail").className = "hidden";
+    openDomain = -1;
+    return;
+  }
+  openDomain = i;
+  var d = DOMAINS[i];
+  var namedTxt = (d.named.length === 0)
+    ? "No domain from the fifteen named in the library source maps to this cluster. It is a gap in the map."
+    : d.named.join(" &middot; ");
+  var rows = [
+    ["Cluster", d.c],
+    ["Named domains", namedTxt],
+    ["1. Intelligence Brief", d.brief],
+    ["2. Discovery Assessment", d.assess],
+    ["3. Twenty-one-day journey", d.journey],
+    ["4. Four-session family experience", d.exp],
+    ["5. Family toolbox", d.tools],
+    ["6. Advisor intelligence guide", d.advisor],
+    ["7. Legacy artifact", d.artifact],
+    ["8. Next best journey", d.next]
+  ];
+  var h = '<div class="detail">';
+  for (var r=0;r<rows.length;r++){
+    h += '<div class="row"><div class="k">' + rows[r][0] + '</div><div class="v">' + rows[r][1] + '</div></div>';
+  }
+  h += '<div style="margin-top:16px;"><button class="btn ghost" id="closeDom">Close</button></div></div>';
+  el("domainDetail").className = "";
+  el("domainDetail").innerHTML = h;
+  el("closeDom").onclick = function(){
+    el("domainDetail").className = "hidden";
+    openDomain = -1;
+  };
+  el("domainDetail").scrollIntoView();
+}
+
+function renderPricing(){
+  var rec = (seat === null) ? -1 : SEATS[seat].tier;
+  var h = "";
+  for (var i=0;i<TIERS.length;i++){
+    var cls = (i === rec) ? "tier rec" : "tier";
+    h += '<div class="' + cls + '">';
+    if (i === rec){ h += '<div class="eyebrow">Recommended for your seat</div>'; }
+    h += '<h4>' + TIERS[i].n + '</h4><div class="price">' + TIERS[i].p + '</div><ul>';
+    for (var j=0;j<TIERS[i].items.length;j++){
+      h += '<li>' + TIERS[i].items[j] + '</li>';
+    }
+    h += '</ul></div>';
+  }
+  el("pricing").innerHTML = h;
+}
+
+function renderLedger(){
+  var h = '<tr><th>Component</th><th>Status</th><th>Note</th></tr>';
+  for (var i=0;i<LEDGER.length;i++){
+    h += '<tr><td>' + LEDGER[i][0] + '</td><td class="st">' + LEDGER[i][1] + '</td><td>' + LEDGER[i][2] + '</td></tr>';
+  }
+  el("ledger").innerHTML = h;
+}
+
+renderSeats();
+renderQuestions();
+renderPathway();
+renderLayers();
+renderDomains();
+renderPricing();
+renderLedger();
+el("scoreBtn").onclick = function(){
+  if (seat === null){
+    el("result").className = "";
+    el("result").innerHTML = '<div class="card"><p style="margin:0;">Choose a seat above first — the bands and the prescription differ for a practice and a family.</p></div>';
+    return;
+  }
+  renderResult();
+};
+</script>
+</body>
+</html>

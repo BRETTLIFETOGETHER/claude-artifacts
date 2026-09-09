@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Library — Family Legacy by Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.lmast2{padding:clamp(44px,5.5vw,74px) 0;position:relative;overflow:hidden}
+.lmast2>.wrap{position:relative;z-index:2}
+.lmast2 .heroimg{position:absolute;inset:0;background-image:url(img/hero-reader.jpg);background-size:cover;background-position:center 30%}
+.lmast2 .heroimg::after{content:"";position:absolute;inset:0;background:linear-gradient(168deg,rgba(7,20,14,.96),rgba(11,32,24,.92) 50%,rgba(15,46,35,.82))}
+.wrap.narrow{max-width:880px}
+
+/* sign-in */
+.signcard{max-width:440px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:22px;
+ box-shadow:var(--sh-2);padding:clamp(26px,3.4vw,38px)}
+.signcard h2{font-size:clamp(21px,2.4vw,26px)}
+.signcard label{display:block;font-weight:600;font-size:12.5px;color:#33452F;margin:16px 0 6px}
+.signcard input{width:100%;border:1.5px solid #DCE3CE;background:#FDFDF8;border-radius:10px;padding:12px 14px;
+ font-family:var(--ff-b);font-size:13.5px;color:var(--ink);outline:none;box-sizing:border-box}
+.signcard input:focus{border-color:#8FBE3F;background:#fff}
+.signcard .go{margin-top:20px;width:100%;justify-content:center}
+.signcard .alt{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12.4px;color:#61705F;text-align:center}
+.signcard .alt a{color:#3E7C3B;font-weight:600;text-decoration:none}
+.signnote{margin-top:14px;font-size:11px;font-style:italic;color:var(--mute);text-align:center}
+.roles{display:flex;gap:8px;margin-top:8px}
+.roles button{flex:1;border:1.5px solid #DCE3CE;background:#fff;border-radius:10px;padding:10px;cursor:pointer;
+ font-family:var(--ff-b);font-weight:600;font-size:12px;color:#41544A;transition:all .15s}
+.roles button.sel{background:linear-gradient(126deg,#2F6B3A,#8FBE3F);border-color:transparent;color:#fff}
+
+/* library */
+#lib{display:none}
+#lib.on{display:block}
+.welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.welcome .who b{font-family:var(--ff-h);font-weight:600;font-size:clamp(22px,2.6vw,30px);color:#fff;display:block}
+.welcome .who span{font-size:12.5px;color:#A9BCA9}
+.shelfsec{padding:clamp(34px,4.4vw,58px) 0}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.shead h3{font-family:var(--ff-h);font-weight:600;font-size:clamp(18px,2.2vw,23px);color:var(--ink)}
+.shead span{font-size:11.5px;color:var(--mute);font-style:italic}
+.shead a{margin-left:auto;font-weight:600;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#3E7C3B;text-decoration:none}
+.resume{background:linear-gradient(150deg,#123A2C,#2F6B3A 74%,#6F9E2A);border-radius:20px;padding:clamp(22px,3vw,30px);
+ display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;box-shadow:var(--sh-2)}
+@media(max-width:700px){.resume{grid-template-columns:1fr}}
+.resume>*{min-width:0}
+.resume .rk{font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#E3C480}
+.resume b{display:block;font-family:var(--ff-h);font-weight:600;font-size:clamp(19px,2.3vw,24px);color:#fff;margin-top:7px}
+.resume p{margin:8px 0 0;font-size:13px;color:#C9DCC4}
+.bar{margin-top:14px;height:7px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden}
+.bar i{display:block;height:100%;background:#E3C480;border-radius:99px}
+.shelf6{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(10px,1.4vw,16px)}
+@media(max-width:1000px){.shelf6{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.shelf6{grid-template-columns:repeat(2,1fr)}}
+.shelf6>*{min-width:0}
+.owned{display:block;position:relative;text-decoration:none}
+.owned img{display:block;width:100%;height:auto;border-radius:6px;border:1px solid rgba(20,50,35,.14);
+ box-shadow:0 12px 26px -12px rgba(10,30,20,.4);transition:transform .35s var(--ease)}
+.owned:hover img{transform:translateY(-6px)}
+.owned.lock img{filter:grayscale(.85) opacity(.5)}
+.owned .badge{position:absolute;top:8px;right:8px;font-weight:700;font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+ border-radius:999px;padding:4px 9px;background:#2F6B3A;color:#fff}
+.owned.lock .badge{background:rgba(20,40,28,.72)}
+.owned em{display:block;font-style:normal;font-size:10.5px;color:#75806F;margin-top:8px;line-height:1.35}
+.vidgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vw,18px)}
+@media(max-width:860px){.vidgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.vidgrid{grid-template-columns:1fr}}
+.vidgrid>*{min-width:0}
+.vcard{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--sh-1);text-decoration:none;display:block}
+.vthumb{position:relative;aspect-ratio:16/9;background:#0F2E23;display:grid;place-items:center;overflow:hidden}
+.vthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vthumb .pl{position:relative;z-index:2;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.94);
+ display:grid;place-items:center;font-size:15px;color:#123A2B;padding-left:3px}
+.vthumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,18,12,.2),rgba(6,18,12,.5));z-index:1}
+.vbody{padding:14px 16px}
+.vbody i{font-style:normal;font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8A6A24}
+.vbody b{display:block;font-family:var(--ff-h);font-weight:600;font-size:14px;color:var(--ink);margin-top:5px;line-height:1.3}
+.toolrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:860px){.toolrow{grid-template-columns:1fr}}
+.toolrow>*{min-width:0}
+.trow2{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--sh-1);text-decoration:none;display:block}
+.trow2 b{display:block;font-family:var(--ff-h);font-weight:600;font-size:14px;color:var(--ink)}
+.trow2 span{display:block;font-size:11.5px;color:#75806F;margin-top:4px}
+.certbox{background:#FBFAE8;border:1px solid #EAE7C2;border-radius:18px;padding:clamp(20px,2.8vw,28px)}
+.certbox b{display:block;font-family:var(--ff-h);font-weight:600;font-size:18px;color:#4A452C}
+.certbox p{margin:8px 0 0;font-size:13px;color:#5A4E34;line-height:1.65}
+.cstep{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.cstep span{font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;
+ padding:7px 13px;border:1.5px solid #E0D6AE;color:#8A6A24;background:#fff}
+.cstep span.done{background:#2F6B3A;border-color:transparent;color:#fff}
+.signout{background:none;border:0;color:#A9BCA9;font-family:var(--ff-b);font-weight:600;font-size:12px;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+
+<header class="dark lmast2">
+  <div class="heroimg"></div>
+  <div class="wrap narrow" id="masthead">
+    <span class="pill dark rv in"><i></i>Member Library</span>
+    <h1 class="rv in" style="color:#fff;margin-top:16px">Everything You Own,<br><span class="au">In One Place.</span></h1>
+    <p class="lede rv in d1" style="color:#D7E1D2;max-width:56ch;margin-top:14px">Your books, your session videos, the journey you are walking, the tools you have filled, and your certification progress.</p>
+  </div>
+</header>
+
+<!-- ═══ SIGNED OUT ═══ -->
+<section class="sec lightbg" id="signin">
+  <div class="wrap">
+    <div class="signcard rv">
+      <h2>Sign In</h2>
+      <label>Email</label><input id="em" type="text" placeholder="you@example.com">
+      <label>Password</label><input id="pw" type="password" placeholder="••••••••">
+      <label>I am signing in as</label>
+      <div class="roles" id="roles">
+        <button type="button" data-r="family" class="sel">A family</button>
+        <button type="button" data-r="advisor">An advisor</button>
+      </div>
+      <button class="btn grad go" id="gobtn" style="border:0;cursor:pointer">Open My Library <span class="ar">&rarr;</span></button>
+      <p class="alt">No account yet? <a href="order.html#passes">See the all-access passes</a> or <a href="pathways.html#certification">join a certification cohort</a>.</p>
+      <p class="signnote">Prototype sign-in &mdash; no account is created and nothing is sent anywhere. Any email opens a sample library.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SIGNED IN ═══ -->
+<div id="lib">
+  <section class="dark" style="padding:clamp(22px,3vw,32px) 0">
+    <div class="wrap">
+      <div class="welcome">
+        <div class="who"><b id="hello">Welcome back.</b><span id="plan"></span></div>
+        <button class="signout" id="out">Sign out</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="shelfsec lightbg">
+    <div class="wrap">
+      <div class="resume rv">
+        <div>
+          <span class="rk">Continue Where You Left Off</span>
+          <b id="rtitle">Faith Worth Passing On &middot; Day 4</b>
+          <p id="rsub">Twenty-one days. Four mornings in, seventeen to go.</p>
+          <div class="bar"><i id="rbar" style="width:19%"></i></div>
+        </div>
+        <a class="btn cream" id="rgo" href="reader.html?id=faith-worth-passing-on&amp;day=4">Read This Morning <span class="ar">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="shelfsec">
+    <div class="wrap">
+      <div class="shead rv"><h3>My Books</h3><span id="bkcount"></span><a href="order.html">Add more &rarr;</a></div>
+      <div class="shelf6" id="mybooks"></div>
+    </div>
+  </section>
+
+  <section class="shelfsec lightbg">
+    <div class="wrap">
+      <div class="shead rv"><h3>My Sessions</h3><span>Six teaching videos per title</span><a href="foundation.html">All titles &rarr;</a></div>
+      <div class="vidgrid" id="myvids"></div>
+    </div>
+  </section>
+
+  <section class="shelfsec">
+    <div class="wrap">
+      <div class="shead rv"><h3>My Journeys</h3><span>Thirty-day companions in progress</span><a href="campaigns.html">The library &rarr;</a></div>
+      <div class="shelf6" id="myjourneys"></div>
+    </div>
+  </section>
+
+  <section class="shelfsec lightbg">
+    <div class="wrap">
+      <div class="shead rv"><h3>My Tools</h3><span>Saved in this browser</span><a href="tools.html">All two hundred &rarr;</a></div>
+      <div class="toolrow" id="mytools"></div>
+    </div>
+  </section>
+
+  <section class="shelfsec" id="certsec">
+    <div class="wrap">
+      <div class="certbox rv">
+        <b>Certification Progress</b>
+        <p>Six weeks with Tom, then the six-month journey, then the ongoing relationship. Your cohort begins September 15.</p>
+        <div class="cstep">
+          <span class="done">Applied</span><span class="done">Cohort assigned</span><span>Six-week cohort</span><span>Six-month journey</span><span>Certified</span>
+        </div>
+        <div style="margin-top:18px"><a class="btn grad sm" href="pathways.html#certification">The certification process <span class="ar">&rarr;</span></a></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="data.js"></script>
+<script src="intel.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var K='flmember';
+  function cover(id){ return (window.FDCOVER&&FDCOVER[id])||('img/cover-'+id+'.jpg'); }
+  function devo(id){ return (window.FDDEVO&&FDDEVO[id])||('img/devo-'+id+'.jpg'); }
+
+  function render(role,email){
+    document.getElementById('signin').style.display='none';
+    document.getElementById('lib').classList.add('on');
+    document.getElementById('masthead').style.display='none';
+    var name=(email||'').split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()})||'Friend';
+    document.getElementById('hello').textContent='Welcome back, '+name+'.';
+    document.getElementById('plan').textContent = role==='advisor'
+      ? 'All-Access \u00b7 Advisor Platform \u00b7 renews monthly'
+      : 'All-Access \u00b7 The Family Series \u00b7 renews monthly';
+
+    /* books — owned depends on role */
+    var owned = role==='advisor' ? ['c1','c2','c3','c4','c5','c6'] : ['f1','f2','f3','f4','f5','f6'];
+    var locked = role==='advisor' ? ['f1','f2','f3'] : ['c1','c2','c3'];
+    document.getElementById('bkcount').textContent=owned.length+' of 12 titles';
+    document.getElementById('mybooks').innerHTML=
+      owned.map(function(id){ return '<a class="owned" href="book.html?id='+id+'"><img src="'+cover(id)+'" alt="'+FDBOOKS[id].t+'"><span class="badge">Owned</span><em>'+FDBOOKS[id].t+'</em></a>'; }).join('')
+      + locked.map(function(id){ return '<a class="owned lock" href="order.html#passes"><img src="'+cover(id)+'" alt="'+FDBOOKS[id].t+'"><span class="badge">Add</span><em>'+FDBOOKS[id].t+'</em></a>'; }).join('');
+
+    /* sessions */
+    var t=owned[0], b=FDBOOKS[t];
+    var stills=['img/roundtable-laugh.jpg','img/one-on-one.jpg','img/teaching.jpg','img/workshop.jpg','img/tom-brett-table.jpg','img/three-voices.jpg'];
+    document.getElementById('myvids').innerHTML=(b.toc||[['Session One',''],['Session Two',''],['Session Three',''],['Session Four',''],['Session Five',''],['Session Six','']]).map(function(x,i){
+      return '<a class="vcard" href="book.html?id='+t+'"><div class="vthumb"><img src="'+stills[i%stills.length]+'" alt=""><span class="pl">\u25B6</span></div>'
+       +'<div class="vbody"><i>'+b.t+' \u00b7 Session '+(i+1)+'</i><b>'+x[0]+'</b></div></a>';
+    }).join('');
+
+    /* journeys */
+    var jp = role==='advisor' ? ['c1','c2','c3','c4','c5','c6'] : ['f1','f2','f3','f4','f5','f6'];
+    var pct=[62,28,0,0,0,0];
+    document.getElementById('myjourneys').innerHTML=jp.map(function(id,i){
+      return '<a class="owned'+(pct[i]?'':' lock')+'" href="reader.html?id=family-legacy&day=1"><img src="'+devo(id)+'" alt="Thirty-day companion">'
+       +'<span class="badge">'+(pct[i]?('Day '+Math.round(pct[i]*0.3)):'Not started')+'</span><em>'+FDBOOKS[id].t+'</em></a>';
+    }).join('');
+
+    /* tools saved in this browser */
+    var saved=[], seen={};
+    try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
+      if(k&&k.indexOf('flti:')===0){ var nm=k.split(':')[1]; if(nm&&!seen[nm]){seen[nm]=1;saved.push(nm);} }
+      if(k&&k.indexOf('flt:')===0&&!seen['toolkit']){seen['toolkit']=1;saved.push('__toolkit');}
+    } }catch(e){}
+    var TL=(window.FDTAX?FDTAX.cols.flatMap(function(c){return c[2]}):[]);
+    var html=saved.slice(0,6).map(function(s){
+      if(s==='__toolkit') return '<a class="trow2" href="toolkit.html"><b>The Family Legacy Toolkit</b><span>Six live instruments, saved</span></a>';
+      var full=TL.filter(function(t){return t.replace(/[^A-Za-z0-9]/g,'').slice(0,40)===s})[0]||s;
+      return '<a class="trow2" href="tool.html?t='+encodeURIComponent(full)+'"><b>'+full+'</b><span>In progress</span></a>';
+    }).join('');
+    document.getElementById('mytools').innerHTML=html||'<a class="trow2" href="tools.html"><b>Nothing saved yet</b><span>Open any of the two hundred tools and it appears here</span></a>';
+
+    document.getElementById('certsec').style.display = role==='advisor' ? '' : 'none';
+    FLobserve();
+  }
+
+  document.getElementById('roles').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    this.querySelectorAll('button').forEach(function(x){x.classList.remove('sel')}); b.classList.add('sel');
+  });
+  document.getElementById('gobtn').addEventListener('click',function(){
+    var em=(document.getElementById('em').value||'').trim()||'friend@example.com';
+    var role=(document.querySelector('#roles button.sel')||{dataset:{r:'family'}}).dataset.r;
+    FLstore.set(K, role+'|'+em); render(role,em);
+  });
+  document.getElementById('out').addEventListener('click',function(){ FLstore.set(K,''); location.reload(); });
+
+  var saved=FLstore.get(K);
+  if(saved && saved.indexOf('|')>0){ var p=saved.split('|'); render(p[0],p[1]); }
+  else FLobserve();
+})();
+</script>
+</body>
+</html>

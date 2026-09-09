@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeTogether Intelligence — Ministry Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#12314B;
+    --blue-alt:#1B4568;
+    --line:#DCE7EE;
+    --cream:#F3EEE0;
+    --amber:#D9A544;
+    --rust:#C1502E;
+    --grid: rgba(220,231,238,0.07);
+    --hair: rgba(220,231,238,0.22);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--blue);
+    background-image:
+      repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 42px),
+      repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 42px);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    font-size:16.5px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber); color:var(--blue);}
+  a{color:var(--amber);}
+  .wrap{max-width:860px; margin:0 auto; padding:0 28px;}
+  section{padding:70px 0;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .rule{border:none; border-top:1px solid var(--hair); margin:0;}
+
+  h1,h2,h3{font-family:'Fraunces', serif; color:var(--cream); margin:0; font-weight:600;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+  }
+  .dwg-no{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.65rem;
+    letter-spacing:0.08em;
+    color:var(--cream);
+    opacity:0.4;
+    text-transform:uppercase;
+  }
+  .section-head{margin-bottom:34px;}
+  .section-head h2{
+    font-size:clamp(1.5rem,3.2vw,2.05rem);
+    margin-top:8px;
+    font-style:italic;
+    line-height:1.2;
+  }
+  .section-head p{max-width:560px;}
+  p{margin:14px 0 0; opacity:0.92;}
+
+  /* TITLE BLOCK — top */
+  .title-block{
+    border-bottom:1.5px solid var(--hair);
+    padding:16px 0;
+  }
+  .title-block .wrap{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px 24px;
+  }
+  .title-block .field{font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--cream); opacity:0.65;}
+  .title-block .field b{color:var(--amber); opacity:1; font-weight:600;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    padding:88px 0 60px;
+    overflow:hidden;
+    text-align:center;
+  }
+  .hero .watermark{
+    position:absolute;
+    right:-40px;
+    top:20px;
+    width:260px;
+    opacity:0.1;
+    pointer-events:none;
+  }
+  .hero .dwg-no{margin-bottom:14px;}
+  .hero h1{
+    font-size:clamp(2.2rem, 5.6vw, 3.3rem);
+    font-style:italic;
+    max-width:660px;
+    margin:0 auto;
+    line-height:1.16;
+  }
+  .hero .sub{max-width:520px; margin:22px auto 0; font-size:1.03rem;}
+  .compass{
+    position:absolute; left:24px; top:24px; width:44px; height:44px; opacity:0.4;
+  }
+
+  /* CHECKLIST (scope of work) */
+  .checklist{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 28px;
+    margin-top:20px;
+  }
+  .checklist .item{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.85rem;
+    display:flex;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px dashed var(--hair);
+  }
+  .checklist .item::before{content:'☑'; color:var(--amber);}
+
+  /* DIMENSION LINES */
+  .dim-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:26px 34px;
+    margin-top:26px;
+  }
+  .dim{position:relative; padding-top:14px;}
+  .dim-line{position:relative; height:1px; background:var(--hair);}
+  .dim-line::before,.dim-line::after{content:''; position:absolute; top:-5px; width:1px; height:11px; background:var(--line);}
+  .dim-line::before{left:0;} .dim-line::after{right:0;}
+  .dim-labels{display:flex; justify-content:space-between; margin-top:8px; font-family:'IBM Plex Mono',monospace; font-size:0.76rem;}
+  .dim-labels .from{color:var(--cream); opacity:0.55;}
+  .dim-labels .to{color:var(--amber); font-weight:600;}
+
+  /* FOUNDATION DIAGRAM (signature) */
+  .blueprint-panel{
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--hair);
+    border-radius:2px;
+    padding:44px 36px 34px;
+    margin-top:26px;
+  }
+  .superstructure{
+    border:1.5px solid var(--amber);
+    text-align:center;
+    padding:20px 18px;
+  }
+  .superstructure .t{font-family:'Fraunces',serif; font-style:italic; font-size:1.35rem; color:var(--cream);}
+  .superstructure .s{font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); margin-top:6px;}
+  .grade-line{
+    position:relative;
+    border-top:1.5px dashed var(--hair);
+    margin:0;
+  }
+  .grade-line .lbl{
+    position:absolute; right:0; top:-19px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream); opacity:0.4;
+  }
+  .piers{display:flex; gap:14px; margin-top:0;}
+  .pier{
+    flex:1; border:1.5px solid var(--hair); border-top:none;
+    padding:18px 12px 16px; text-align:center;
+  }
+  .pier .name{font-family:'Fraunces',serif; font-weight:600; font-size:1rem; color:var(--cream);}
+  .pier .role{font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--amber); margin-top:8px;}
+  .pull{
+    font-family:'Fraunces',serif; font-style:italic; font-size:1.2rem; color:var(--cream);
+    text-align:center; max-width:560px; margin:34px auto 0; line-height:1.4; opacity:0.95;
+  }
+
+  /* SCALE / RULER */
+  .ruler{margin-top:26px; border-left:1.5px solid var(--hair); padding-left:0;}
+  .ruler .tick{
+    display:flex; align-items:baseline; gap:14px; padding:9px 0 9px 20px; position:relative;
+  }
+  .ruler .tick::before{
+    content:''; position:absolute; left:-1.5px; top:16px; width:12px; height:1.5px; background:var(--amber);
+  }
+  .ruler .tick .mark{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--amber); width:46px; flex-shrink:0;}
+  .ruler .tick .desc{font-family:'Fraunces',serif; font-size:1rem; color:var(--cream);}
+
+  /* REDLINE (existing / proposed) */
+  .redline{display:grid; grid-template-columns:1fr 1fr; gap:36px; margin-top:24px;}
+  .redline .label{font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:12px;}
+  .redline .existing .label{color:var(--cream); opacity:0.5;}
+  .redline .proposed .label{color:var(--amber);}
+  .redline ul{margin:0; padding:0; list-style:none;}
+  .redline li{padding:8px 0; border-bottom:1px dashed var(--hair); font-size:0.92rem;}
+  .redline .existing li{color:var(--cream); opacity:0.45; text-decoration:line-through; text-decoration-color:var(--rust);}
+  .redline .proposed li{color:var(--cream); border-bottom-color:var(--hair);}
+  .redline .proposed li::before{content:'+ '; color:var(--amber);}
+
+  /* ROOM SCHEDULE (table) */
+  table.schedule{width:100%; border-collapse:collapse; margin-top:22px;}
+  table.schedule th{
+    font-family:'IBM Plex Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--amber); text-align:left; padding:8px 10px; border-bottom:1.5px solid var(--hair);
+  }
+  table.schedule td{
+    padding:10px 10px; border-bottom:1px solid var(--hair); font-size:0.92rem;
+  }
+  table.schedule td.space{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--amber);}
+
+  /* PUNCH LIST / CERTIFICATE */
+  .punch-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:28px;}
+  .punch-card{border:1px solid var(--hair); padding:18px 16px;}
+  .punch-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.08em;
+    color:var(--rust); border:1px solid var(--rust); padding:2px 8px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .punch-card h3{font-size:0.98rem; font-style:italic; color:var(--cream);}
+  .punch-card ul{margin:10px 0 0; padding:0; list-style:none; font-size:0.85rem;}
+  .punch-card li{padding:4px 0; opacity:0.8;}
+  .punch-card li::before{content:'☐ '; color:var(--rust);}
+
+  .cert{
+    margin-top:30px; border:1.5px solid var(--amber); padding:26px 24px; text-align:center;
+  }
+  .cert .stamp-line{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber);}
+  .cert-grid{display:flex; flex-wrap:wrap; justify-content:center; gap:8px 18px; margin-top:16px;}
+  .cert-grid span{font-family:'IBM Plex Mono',monospace; font-size:0.8rem; color:var(--cream);}
+  .cert-grid span::before{content:'☑ '; color:var(--amber);}
+
+  /* DETAIL DRAWINGS (options) */
+  .details{margin-top:28px; display:flex; flex-direction:column; gap:0;}
+  .detail{
+    display:grid; grid-template-columns:56px 1fr; gap:20px;
+    padding:24px 0; border-top:1px solid var(--hair);
+  }
+  .detail-tag{
+    width:50px; height:50px; border:1.5px solid var(--amber); border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .detail-tag .letter{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:1.05rem; color:var(--amber); border-bottom:1px solid var(--amber); width:100%; text-align:center; padding-bottom:3px;}
+  .detail-tag .ref{font-family:'IBM Plex Mono',monospace; font-size:0.5rem; color:var(--amber); opacity:0.7; letter-spacing:0.05em;}
+  .detail h3{font-size:1.1rem; font-style:italic;}
+  .detail p{font-size:0.94rem; margin-top:8px;}
+  .detail .receive{font-family:'IBM Plex Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); margin:12px 0 6px;}
+  .detail ul{margin:0; padding-left:16px; font-size:0.88rem;}
+  .detail li{margin-bottom:4px; opacity:0.9;}
+
+  /* SITE SURVEY panel */
+  .survey{
+    background:var(--blue-alt);
+    border:1px solid var(--hair);
+    padding:38px 34px;
+    margin-top:22px;
+  }
+  .survey h3{font-style:italic; font-size:1.2rem;}
+  .survey ul{margin:16px 0; padding:0; list-style:none;}
+  .survey li{padding:6px 0; font-size:0.92rem; padding-left:20px; position:relative;}
+  .survey li::before{content:'—'; position:absolute; left:0; color:var(--amber);}
+  .survey .closing{font-style:italic; font-family:'Fraunces',serif; color:var(--cream); opacity:0.9; margin-top:16px;}
+
+  /* RFI LOG */
+  .rfi-log{margin-top:24px; border-top:1px solid var(--hair);}
+  .rfi-row{
+    display:grid; grid-template-columns:80px 1fr; gap:16px;
+    padding:16px 0; border-bottom:1px solid var(--hair);
+  }
+  .rfi-row .id{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--amber);}
+  .rfi-row .q{font-family:'Fraunces',serif; font-style:italic; font-size:1rem; color:var(--cream);}
+
+  /* CONSTRUCTION SCHEDULE (phases) */
+  .schedule-bar{
+    display:flex; flex-wrap:wrap; margin-top:30px; border-top:1.5px solid var(--hair);
+  }
+  .phase{
+    flex:1; min-width:110px; text-align:center; padding:18px 8px;
+    border-right:1px solid var(--hair); border-bottom:3px solid var(--amber);
+  }
+  .phase:last-child{border-right:none;}
+  .phase .num{font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--amber); opacity:0.8;}
+  .phase .name{font-family:'Fraunces',serif; font-weight:600; font-size:1.02rem; margin-top:6px;}
+
+  /* CLOSING */
+  .closing-section{text-align:center; padding:96px 0 60px;}
+  .closing-section .voices{
+    margin:26px auto; max-width:420px; font-family:'IBM Plex Mono',monospace; font-size:0.82rem;
+    letter-spacing:0.02em; color:var(--cream); opacity:0.75; line-height:2;
+  }
+  .stamp{
+    display:inline-block; margin:34px auto 0; padding:16px 30px;
+    border:2.5px solid var(--rust); color:var(--rust); transform:rotate(-4deg);
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:0.92rem; letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  .cta-btn{
+    display:inline-block; margin-top:30px; padding:15px 32px;
+    background:var(--amber); color:var(--blue); font-family:'IBM Plex Mono',monospace; font-weight:600;
+    font-size:0.82rem; letter-spacing:0.05em; text-decoration:none; text-transform:uppercase;
+  }
+  .final-line{margin-top:28px; font-size:0.92rem; opacity:0.75; max-width:460px; margin-left:auto; margin-right:auto;}
+  .triad-final{margin-top:32px; font-family:'Fraunces',serif; font-style:italic; font-size:1.05rem;}
+
+  /* FOOTER TITLE BLOCK */
+  .footer-block{border-top:1.5px solid var(--hair); padding:22px 0 32px;}
+  .footer-block .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 24px;}
+  .footer-block .field{font-family:'IBM Plex Mono',monospace; font-size:0.66rem; letter-spacing:0.06em; text-transform:uppercase; opacity:0.5;}
+  .footer-block .field b{color:var(--amber); opacity:1;}
+
+  @media (max-width:720px){
+    .checklist, .dim-grid, .redline, .punch-grid{grid-template-columns:1fr;}
+    .detail{grid-template-columns:44px 1fr;}
+    .piers{flex-direction:column;}
+    section{padding:48px 0;}
+    .hero{padding:60px 0 40px;}
+    .hero .watermark{display:none;}
+    .schedule-bar{flex-direction:column;}
+    .phase{border-right:none; border-bottom:1px solid var(--hair);}
+  }
+
+  @media print{
+    body{background:#fff; color:#111;}
+    :root{--cream:#111; --hair:rgba(0,0,0,0.2); --blue-alt:#f2f2f2;}
+    .stamp{color:#8a2f1a;}
+    section{break-inside:avoid; padding:30px 0;}
+    @page{margin:0.6in;}
+  }
+</style>
+</head>
+<body>
+
+<div class="title-block">
+  <div class="wrap">
+    <span class="field">Project: <b>LifeTogether Intelligence</b></span>
+    <span class="field">Client: <b>Your Church</b></span>
+    <span class="field">Scale: <b>N.T.S.</b></span>
+    <span class="field">Rev: <b>A</b></span>
+    <span class="field">Sheet: <b>1 of 1</b></span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <svg class="compass" viewBox="0 0 100 100" fill="none" stroke="var(--line)" stroke-width="1.2">
+    <circle cx="50" cy="50" r="42"/>
+    <line x1="50" y1="8" x2="50" y2="92"/>
+    <line x1="8" y1="50" x2="92" y2="50"/>
+    <text x="50" y="20" fill="var(--line)" font-size="9" font-family="IBM Plex Mono" text-anchor="middle">N</text>
+  </svg>
+  <svg class="watermark" viewBox="0 0 300 400" fill="none" stroke="var(--line)" stroke-width="1.3">
+    <polyline points="60,150 150,40 240,150"/>
+    <line x1="150" y1="40" x2="150" y2="8"/>
+    <line x1="138" y1="14" x2="162" y2="14"/>
+    <rect x="70" y="150" width="160" height="200"/>
+    <circle cx="150" cy="205" r="24"/>
+    <rect x="115" y="285" width="70" height="65"/>
+  </svg>
+  <div class="wrap">
+    <div class="dwg-no">Dwg. No. LTI–001 · Ministry Intelligence Platform</div>
+    <h1>How do we turn wisdom into a finished ministry experience?</h1>
+    <p class="sub">Good ideas are everywhere. Finished, integrated, usable ministry systems are not.</p>
+    <p class="sub">LifeTogether Intelligence is the practical know-how required to turn pastoral wisdom and Church Intelligence into resources people can use.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- SCOPE OF WORK -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Scope of Work — 25 Years in the Field</div>
+      <h2>What we've helped churches build</h2>
+    </div>
+    <div class="checklist">
+      <div class="item">Churchwide campaigns</div>
+      <div class="item">Small group curriculum</div>
+      <div class="item">Daily devotionals</div>
+      <div class="item">Video studies</div>
+      <div class="item">Sermon-based resources</div>
+      <div class="item">Leader &amp; participant guides</div>
+      <div class="item">Testimony-driven curriculum</div>
+      <div class="item">Family resources</div>
+      <div class="item">Student editions</div>
+      <div class="item">Children's editions</div>
+      <div class="item">Preschool adaptations</div>
+      <div class="item">Staff &amp; volunteer training</div>
+      <div class="item">Communication strategies</div>
+      <div class="item">Launch calendars</div>
+      <div class="item">Storytelling systems</div>
+      <div class="item">Print-ready resources</div>
+      <div class="item">Digital discipleship experiences</div>
+    </div>
+
+    <div class="section-head" style="margin-top:48px;">
+      <div class="eyebrow">Conversion Schedule</div>
+      <p>LifeTogether Intelligence makes every resource practical — moving the work from:</p>
+    </div>
+    <div class="dim-grid">
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">sermon</span><span class="to">curriculum</span></div></div>
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">idea</span><span class="to">experience</span></div></div>
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">vision</span><span class="to">pathway</span></div></div>
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">content</span><span class="to">campaign</span></div></div>
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">values</span><span class="to">culture</span></div></div>
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">teaching</span><span class="to">application</span></div></div>
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">inspiration</span><span class="to">transformation</span></div></div>
+      <div class="dim"><div class="dim-line"></div><div class="dim-labels"><span class="from">one ministry</span><span class="to">whole-church alignment</span></div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- FOUNDATION DIAGRAM -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Structural Drawing — Elevation A</div>
+      <h2>The Ministry Intelligence Formula</h2>
+    </div>
+    <div class="blueprint-panel">
+      <div class="superstructure">
+        <div class="t">Ministry Intelligence</div>
+        <div class="s">Superstructure</div>
+      </div>
+      <div class="grade-line"><span class="lbl">Grade</span></div>
+      <div class="piers">
+        <div class="pier">
+          <div class="name">Pastor Intelligence</div>
+          <div class="role">Voice · Calling · DNA</div>
+        </div>
+        <div class="pier">
+          <div class="name">Church Intelligence</div>
+          <div class="role">Scripture · Wisdom · Practice</div>
+        </div>
+        <div class="pier">
+          <div class="name">LifeTogether Intelligence</div>
+          <div class="role">Architecture · Design · Production</div>
+        </div>
+      </div>
+    </div>
+    <p class="pull">Pastor Intelligence makes it authentic. Church Intelligence makes it informed. LifeTogether Intelligence makes it usable.</p>
+  </div>
+</section>
+
+<!-- SCALE / FORMATS -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Scale Reference</div>
+      <h2>What could your Ministry Intelligence become?</h2>
+      <p>One sermon series can become much more than a collection of weekend messages.</p>
+    </div>
+    <div class="ruler">
+      <div class="tick"><span class="mark">07D</span><span class="desc">7-Day Experience</span></div>
+      <div class="tick"><span class="mark">21D</span><span class="desc">21-Day Challenge</span></div>
+      <div class="tick"><span class="mark">30D</span><span class="desc">30-Day Journey</span></div>
+      <div class="tick"><span class="mark">40D</span><span class="desc">40-Day Churchwide Campaign</span></div>
+      <div class="tick"><span class="mark">—</span><span class="desc">Daily devotional · Small group study · Membership course</span></div>
+      <div class="tick"><span class="mark">—</span><span class="desc">Discipleship pathway · Staff alignment · Volunteer training</span></div>
+      <div class="tick"><span class="mark">—</span><span class="desc">Leadership development · Generosity initiative</span></div>
+      <div class="tick"><span class="mark">—</span><span class="desc">Family guide · Student, children's &amp; preschool editions</span></div>
+      <div class="tick"><span class="mark">—</span><span class="desc">Video curriculum · Podcast series · Print-on-demand book</span></div>
+      <div class="tick"><span class="mark">∞</span><span class="desc">An on-demand digital library</span></div>
+    </div>
+    <p class="pull">Your best teaching should not disappear after one weekend. It should continue discipling people for years.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- REDLINE: EXISTING / PROPOSED -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Redline Markup</div>
+      <h2>From a passive library to a living ministry platform</h2>
+      <p>Most churches already possess hundreds of sermons and years of teaching. But these assets often remain disconnected, difficult to access, or underdeveloped.</p>
+    </div>
+    <div class="redline">
+      <div class="existing">
+        <div class="label">Existing Conditions</div>
+        <ul>
+          <li>A passive sermon archive</li>
+          <li>Scattered notes and messages</li>
+          <li>Annual Vision Sunday reminders</li>
+          <li>Disconnected ministry resources</li>
+          <li>Generic outside curriculum</li>
+          <li>Ideas without a production team</li>
+          <li>Content that depends on one pastor</li>
+          <li>Good intentions without implementation</li>
+        </ul>
+      </div>
+      <div class="proposed">
+        <div class="label">Proposed</div>
+        <ul>
+          <li>A living discipleship library</li>
+          <li>Connected ministry pathways</li>
+          <li>Customized churchwide campaigns</li>
+          <li>Aligned adult, student, children &amp; family resources</li>
+          <li>Staff and leader training systems</li>
+          <li>Repeatable campaign architecture</li>
+          <li>Print and digital delivery</li>
+          <li>Resources designed for future generations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section style="background:var(--blue-alt);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Program Statement</div>
+      <h2>Your mission should not live only on the wall</h2>
+      <p>Every church has a mission, values, a membership process, a discipleship pathway. Too often these remain on the website, in a handbook, on the lobby wall, or in one annual sermon. Mission becomes culture only when people understand it, discuss it, practice it, celebrate it, repeat it, and reproduce it.</p>
+    </div>
+    <div class="eyebrow" style="margin-bottom:6px;">LifeTogether can help turn mission, vision &amp; values into</div>
+    <div class="checklist" style="grid-template-columns:1fr;">
+      <div class="item">A Vision Sunday experience</div>
+      <div class="item">A 7-Day Vision Experience &amp; 21-Day Values Challenge</div>
+      <div class="item">A 30-Day Mission Journey &amp; 40-Day Churchwide Campaign</div>
+      <div class="item">An updated membership pathway</div>
+      <div class="item">Small group curriculum &amp; staff/volunteer training</div>
+      <div class="item">Multigenerational resources</div>
+      <div class="item">A storytelling and celebration system</div>
+      <div class="item">An annual discipleship calendar</div>
+    </div>
+    <p class="pull">Your mission should not only be stated. It should be experienced.</p>
+  </div>
+</section>
+
+<!-- ROOM SCHEDULE -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Occupancy / Room Schedule</div>
+      <h2>True whole-church alignment</h2>
+      <p>What would happen if the entire church moved through the same spiritual journey together — every space, every age?</p>
+    </div>
+    <table class="schedule">
+      <tr><th>Space</th><th>Occupant &amp; Cadence</th></tr>
+      <tr><td class="space">SANCTUARY</td><td>Adults — Sunday message</td></tr>
+      <tr><td class="space">FELLOWSHIP HALL</td><td>Small groups — midweek discussion</td></tr>
+      <tr><td class="space">YOUTH ROOM</td><td>Students — youth ministry</td></tr>
+      <tr><td class="space">CHILDREN'S WING</td><td>Kids — age-appropriate teaching</td></tr>
+      <tr><td class="space">NURSERY</td><td>Preschoolers — one simple truth</td></tr>
+      <tr><td class="space">HOME</td><td>Parents — continuing the conversation</td></tr>
+      <tr><td class="space">STAFF OFFICES</td><td>Staff &amp; volunteers — shared language</td></tr>
+    </table>
+    <p class="pull">This is more than content alignment. It is culture formation. One pastor's message. Every age and ministry. One church moving together.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PUNCH LIST + CERTIFICATE -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Inspection Report</div>
+      <h2>What's missing without all three sources</h2>
+      <p>We do not begin with a generic template. We begin with your voice — informed by the wider Church, built all the way to implementation.</p>
+    </div>
+    <div class="punch-grid">
+      <div class="punch-card">
+        <div class="punch-tag">Punch Item</div>
+        <h3>Without Pastor Intelligence</h3>
+        <ul><li>Voice &amp; theology</li><li>People &amp; stories</li><li>History &amp; culture</li><li>Ministry priorities</li></ul>
+      </div>
+      <div class="punch-card">
+        <div class="punch-tag">Punch Item</div>
+        <h3>Without Church Intelligence</h3>
+        <ul><li>Biblical breadth</li><li>Historical wisdom</li><li>Proven models</li><li>Global perspective</li></ul>
+      </div>
+      <div class="punch-card">
+        <div class="punch-tag">Punch Item</div>
+        <h3>Without LifeTogether Intelligence</h3>
+        <ul><li>Finished curriculum</li><li>An integrated campaign</li><li>A launch plan</li><li>A scalable system</li></ul>
+      </div>
+    </div>
+    <div class="cert">
+      <div class="stamp-line">Certificate of Occupancy — With All Three</div>
+      <div class="cert-grid">
+        <span>Authentic</span><span>Biblical</span><span>Informed</span>
+        <span>Practical</span><span>Proven</span><span>Customized</span>
+        <span>Scalable</span><span>Beautiful</span><span>Multigenerational</span>
+        <span>Implementation-ready</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETAIL DRAWINGS: OPTIONS -->
+<section style="background:var(--blue-alt);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Detail Drawings</div>
+      <h2>Start with one high-value opportunity</h2>
+      <p>You do not need to rebuild your entire ministry platform at once. Begin with one strategic project.</p>
+    </div>
+    <div class="details">
+      <div class="detail">
+        <div class="detail-tag"><span class="letter">A</span><span class="ref">DET.</span></div>
+        <div>
+          <h3>Pastor Intelligence Discovery</h3>
+          <p>We review your preaching library, recurring themes, anchor passages, values, and strongest ministry opportunities.</p>
+          <div class="receive">You receive</div>
+          <ul>
+            <li>Your primary message themes &amp; strongest opportunities</li>
+            <li>Potential titles and formats</li>
+            <li>A recommended roadmap &amp; one initial resource concept</li>
+          </ul>
+        </div>
+      </div>
+      <div class="detail">
+        <div class="detail-tag"><span class="letter">B</span><span class="ref">DET.</span></div>
+        <div>
+          <h3>Mission to Movement</h3>
+          <p>We help turn your mission, vision, values, and discipleship pathway into practical churchwide resources.</p>
+          <div class="receive">You receive</div>
+          <ul>
+            <li>Mission and pathway assessment</li>
+            <li>Vision Sunday strategy &amp; series concept</li>
+            <li>Small group framework &amp; annual activation roadmap</li>
+          </ul>
+        </div>
+      </div>
+      <div class="detail">
+        <div class="detail-tag"><span class="letter">C</span><span class="ref">DET.</span></div>
+        <div>
+          <h3>Sermon Series to Experience</h3>
+          <p>Choose one proven sermon series. We develop it into a full experience — 7, 21, or 30 days — plus a small group study, devotional, and multigenerational campaign.</p>
+        </div>
+      </div>
+      <div class="detail">
+        <div class="detail-tag"><span class="letter">D</span><span class="ref">DET.</span></div>
+        <div>
+          <h3>Life Message to Movement</h3>
+          <p>We help identify the central message God has formed through your life and ministry, then develop it into a book, devotional, curriculum, campaign, or platform.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SITE SURVEY -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Site Survey — The Easiest First Step</div>
+      <h2>The Ministry Intelligence Opportunity Assessment</h2>
+    </div>
+    <div class="survey">
+      <h3>Give us a representative portion of your sermon library and a conversation with your senior leadership team.</h3>
+      <p>Together, we will identify:</p>
+      <ul>
+        <li>What your strongest messages are</li>
+        <li>What your church most needs next</li>
+        <li>What resources may already be hiding in your library</li>
+        <li>What can be built quickly, and what has the greatest potential</li>
+        <li>What could become a campaign, curriculum, devotional, book, or pathway</li>
+        <li>How your church can move from inspiration to implementation</li>
+      </ul>
+      <p class="closing">You do not have to start with a blank page, or become a writer, editor, designer, publisher, or strategist. You bring the ministry God has already formed in you — we bring the process that helps multiply it.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- RFI LOG -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">RFI Log — Request for Information</div>
+      <h2>Questions worth asking before you build</h2>
+    </div>
+    <div class="rfi-log">
+      <div class="rfi-row"><div class="id">RFI–01</div><div class="q">What are the strongest messages hidden in your preaching library?</div></div>
+      <div class="rfi-row"><div class="id">RFI–02</div><div class="q">What does your church teach repeatedly but not yet resource effectively?</div></div>
+      <div class="rfi-row"><div class="id">RFI–03</div><div class="q">What part of your discipleship pathway needs greater clarity?</div></div>
+      <div class="rfi-row"><div class="id">RFI–04</div><div class="q">What mission or value needs to become a lived practice?</div></div>
+      <div class="rfi-row"><div class="id">RFI–05</div><div class="q">What could your Vision Sunday become beyond one weekend?</div></div>
+      <div class="rfi-row"><div class="id">RFI–06</div><div class="q">What message needs an adult, student, children's, and family edition?</div></div>
+      <div class="rfi-row"><div class="id">RFI–07</div><div class="q">What wisdom should survive beyond one pastor or one season?</div></div>
+      <div class="rfi-row"><div class="id">RFI–08</div><div class="q">What has God already given your church that you have not yet fully stewarded?</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSTRUCTION SCHEDULE -->
+<section style="background:var(--blue-alt);">
+  <div class="wrap">
+    <div class="section-head" style="text-align:center;">
+      <div class="eyebrow">Construction Schedule</div>
+      <h2>Your church does not need another collection of generic content</h2>
+      <p style="max-width:520px; margin-left:auto; margin-right:auto;">It needs resources faithful to Scripture, authentic to your pastor, informed by the wider Church, and designed for your people.</p>
+    </div>
+    <div class="schedule-bar">
+      <div class="phase"><div class="num">01</div><div class="name">Discover</div></div>
+      <div class="phase"><div class="num">02</div><div class="name">Develop</div></div>
+      <div class="phase"><div class="num">03</div><div class="name">Design</div></div>
+      <div class="phase"><div class="num">04</div><div class="name">Deploy</div></div>
+      <div class="phase"><div class="num">05</div><div class="name">Deliver</div></div>
+      <div class="phase"><div class="num">06</div><div class="name">Duplicate</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<div class="closing-section">
+  <div class="wrap">
+    <div class="eyebrow">LifeTogether Ministry Intelligence Platform</div>
+    <h2>What could your Ministry Intelligence become?</h2>
+    <div class="voices">
+      Your Pastor's Voice.<br>
+      The Global Church's Wisdom.<br>
+      LifeTogether's Proven Process.
+    </div>
+    <p style="max-width:420px; margin:0 auto; opacity:0.9;">Multiplied into ministry resources that disciple people for years.</p>
+    <div class="stamp">Approved for Ministry Construction</div><br>
+    <a class="cta-btn" href="mailto:hello@lifetogether.com?subject=Ministry%20Intelligence%20Opportunity%20Conversation">Schedule an Opportunity Conversation</a>
+    <p class="final-line">Bring one sermon series, one ministry challenge, one campaign idea, or one vision for your church's future. We will help you see what it could become.</p>
+    <p class="triad-final">Pastor Intelligence makes it personal. Church Intelligence makes it informed. LifeTogether Intelligence makes it practical.</p>
+  </div>
+</div>
+
+<div class="footer-block">
+  <div class="wrap">
+    <span class="field">Not artificial content — <b>actual ministry wisdom, multiplied</b></span>
+    <span class="field">Dwg. No. <b>LTI–001</b></span>
+    <span class="field">Rev <b>A</b></span>
+  </div>
+</div>
+
+</body>
+</html>

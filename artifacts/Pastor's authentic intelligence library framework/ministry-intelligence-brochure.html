@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ministry Intelligence — LifeTogether</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;0,9..144,700;1,9..144,450;1,9..144,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141F1A;
+    --ink-2:#1B2822;
+    --ink-3:#22302A;
+    --parchment:#EFE7D6;
+    --parchment-dim:#B9AF98;
+    --brass:#C9A227;
+    --brass-soft:#8F7326;
+    --sage:#7FA07A;
+    --sage-soft:#4E6B4B;
+    --ox:#9C4A44;
+    --ox-soft:#6E2F2B;
+    --rule: rgba(239,231,214,0.14);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:"Source Serif 4", Georgia, serif;
+    font-size:18px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .eyebrow{
+    font-family:"Inter", sans-serif;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--brass);
+    font-weight:600;
+  }
+
+  h1,h2,h3{
+    font-family:"Fraunces", serif;
+    font-weight:600;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  p{margin:0;}
+
+  .wrap{
+    max-width:960px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header.site{
+    padding:26px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  header.site .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .wordmark{
+    font-family:"Fraunces", serif;
+    font-weight:600;
+    font-size:19px;
+    color:var(--parchment);
+    letter-spacing:0.01em;
+  }
+  .wordmark span{color:var(--brass);}
+  .site-tag{
+    font-family:"Inter", sans-serif;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--parchment-dim);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:88px 0 40px;
+    text-align:center;
+  }
+  .hero .eyebrow{display:block; margin-bottom:22px;}
+  .hero h1{
+    font-size:clamp(38px, 6vw, 64px);
+    line-height:1.06;
+    color:var(--parchment);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--brass);
+  }
+  .hero .lede{
+    max-width:620px;
+    margin:26px auto 0;
+    font-size:19px;
+    color:var(--parchment-dim);
+  }
+
+  /* stool illustration */
+  .stool-figure{
+    margin:56px auto 8px;
+    width:min(520px, 86vw);
+  }
+  .stool-figure svg{width:100%; height:auto; display:block;}
+  .stool-caption{
+    display:flex;
+    justify-content:space-between;
+    max-width:min(520px, 86vw);
+    margin:14px auto 0;
+    font-family:"Inter", sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--parchment-dim);
+  }
+  .stool-caption span:nth-child(1){color:var(--ox);}
+  .stool-caption span:nth-child(2){color:var(--sage);}
+  .stool-caption span:nth-child(3){color:var(--brass);}
+
+  .draw-path{
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:draw 1.8s ease forwards 0.2s;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:86px 0;}
+  .section-head{
+    text-align:center;
+    max-width:640px;
+    margin:0 auto 56px;
+  }
+  .section-head h2{
+    font-size:clamp(28px, 4vw, 40px);
+    margin-top:14px;
+    color:var(--parchment);
+  }
+  .section-head p{
+    margin-top:16px;
+    color:var(--parchment-dim);
+    font-size:17px;
+  }
+
+  .divider{
+    height:1px;
+    background:var(--rule);
+    border:0;
+    margin:0;
+  }
+
+  /* ---------- REVEAL ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- LEGS ---------- */
+  .legs{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+  }
+  .leg-card{
+    background:var(--ink-2);
+    border:1px solid var(--rule);
+    border-top:3px solid var(--accent, var(--brass));
+    border-radius:2px;
+    padding:34px 26px 30px;
+  }
+  .leg-card .num{
+    font-family:"Inter", sans-serif;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--accent, var(--brass));
+    font-weight:600;
+  }
+  .leg-card .icon{
+    margin:20px 0 18px;
+    width:40px;
+    height:40px;
+  }
+  .leg-card .icon svg{width:100%; height:100%; stroke:var(--accent, var(--brass));}
+  .leg-card h3{
+    font-size:23px;
+    color:var(--parchment);
+    margin-bottom:6px;
+  }
+  .leg-card .kicker{
+    font-family:"Inter", sans-serif;
+    font-size:13px;
+    letter-spacing:0.03em;
+    color:var(--accent, var(--brass));
+    margin-bottom:16px;
+    display:block;
+  }
+  .leg-card p.copy{
+    color:var(--parchment-dim);
+    font-size:16px;
+    line-height:1.65;
+  }
+  .leg-card .bestline{
+    margin-top:20px;
+    padding-top:18px;
+    border-top:1px solid var(--rule);
+    font-style:italic;
+    font-size:15px;
+    color:var(--parchment);
+  }
+
+  .leg-card.pi{--accent:var(--ox);}
+  .leg-card.ci{--accent:var(--sage);}
+  .leg-card.lti{--accent:var(--brass);}
+
+  /* ---------- WITHOUT ---------- */
+  .without{
+    background:var(--ink-2);
+  }
+  .without-list{
+    max-width:680px;
+    margin:0 auto;
+  }
+  .without-row{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:22px;
+    align-items:baseline;
+    padding:22px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .without-row:last-child{border-bottom:none;}
+  .without-row .label{
+    font-family:"Fraunces", serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:19px;
+  }
+  .without-row.pi .label{color:var(--ox);}
+  .without-row.ci .label{color:var(--sage);}
+  .without-row.lti .label{color:var(--brass);}
+  .without-row .desc{
+    color:var(--parchment-dim);
+    font-size:16.5px;
+  }
+  .without-punch{
+    text-align:center;
+    margin-top:44px;
+    font-family:"Fraunces", serif;
+    font-style:italic;
+    font-size:22px;
+    color:var(--parchment);
+  }
+
+  /* ---------- FORMULA ---------- */
+  .formula-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:18px;
+    font-family:"Fraunces", serif;
+  }
+  .formula-chip{
+    padding:14px 22px;
+    border:1px solid var(--rule);
+    border-radius:2px;
+    font-size:17px;
+    font-weight:600;
+  }
+  .formula-chip.pi{color:var(--ox); border-color:var(--ox-soft);}
+  .formula-chip.ci{color:var(--sage); border-color:var(--sage-soft);}
+  .formula-chip.lti{color:var(--brass); border-color:var(--brass-soft);}
+  .formula-op{font-size:22px; color:var(--parchment-dim);}
+  .formula-eq{
+    font-size:20px;
+    color:var(--parchment);
+    font-style:italic;
+  }
+
+  .tags-row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top:34px;
+  }
+  .tag{
+    font-family:"Inter", sans-serif;
+    font-size:12.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--ink);
+    background:var(--parchment);
+    padding:8px 14px;
+    border-radius:20px;
+  }
+
+  /* ---------- PULLQUOTE ---------- */
+  .pullquote{
+    text-align:center;
+  }
+  .pullquote blockquote{
+    margin:0;
+    font-family:"Fraunces", serif;
+    font-size:clamp(22px, 3vw, 30px);
+    line-height:1.4;
+    font-weight:450;
+    font-style:italic;
+    color:var(--parchment);
+    max-width:760px;
+    margin:0 auto;
+  }
+  .pullquote .attrib{
+    margin-top:22px;
+    font-family:"Inter", sans-serif;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--brass);
+  }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    background:linear-gradient(180deg, var(--ink-2), var(--ink));
+    text-align:center;
+    border-top:1px solid var(--rule);
+  }
+  .cta h2{
+    font-size:clamp(30px, 5vw, 46px);
+    color:var(--parchment);
+  }
+  .cta .lede{
+    max-width:520px;
+    margin:20px auto 34px;
+    color:var(--parchment-dim);
+    font-size:17px;
+  }
+  .cta-btn{
+    display:inline-block;
+    font-family:"Inter", sans-serif;
+    font-size:14px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--ink);
+    background:var(--brass);
+    padding:16px 34px;
+    border-radius:2px;
+    text-decoration:none;
+  }
+  .cta-sub{
+    margin-top:18px;
+    font-family:"Inter", sans-serif;
+    font-size:12.5px;
+    color:var(--parchment-dim);
+  }
+
+  footer{
+    padding:34px 0 50px;
+    text-align:center;
+    font-family:"Inter", sans-serif;
+    font-size:12px;
+    color:var(--parchment-dim);
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:760px){
+    .legs{grid-template-columns:1fr;}
+    .without-row{grid-template-columns:1fr; gap:6px;}
+    section{padding:60px 0;}
+    .hero{padding:64px 0 30px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+    .draw-path{animation:none; stroke-dashoffset:0;}
+  }
+
+  /* ---------- PRINT ---------- */
+  @media print{
+    body{background:#fff; color:#1a1a1a;}
+    .cta, header.site{background:none;}
+    .leg-card{background:#fff; border-color:#ccc;}
+    .tag{background:#eee; color:#1a1a1a;}
+    .cta-btn{display:none;}
+    section{padding:36px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="wordmark">LifeTogether <span>Ministries</span></div>
+    <div class="site-tag">Ministry Intelligence</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">For the Senior Pastor</span>
+    <h1>Every church has a message<br>only <em>its</em> pastor can give.</h1>
+    <p class="lede">Your church doesn't need more generic content. It needs resources that are authentic to your voice, informed by the wisdom of the wider church, and built into tools your people can actually use.</p>
+
+    <div class="stool-figure">
+      <svg viewBox="0 0 520 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- seat -->
+        <path class="draw-path" d="M120 96 Q260 62 400 96" stroke="#EFE7D6" stroke-width="4" stroke-linecap="round"/>
+        <!-- legs -->
+        <path class="draw-path" d="M140 100 L90 300" stroke="#9C4A44" stroke-width="5" stroke-linecap="round"/>
+        <path class="draw-path" d="M260 78 L260 300" stroke="#7FA07A" stroke-width="5" stroke-linecap="round"/>
+        <path class="draw-path" d="M380 100 L430 300" stroke="#C9A227" stroke-width="5" stroke-linecap="round"/>
+        <!-- stretcher -->
+        <path class="draw-path" d="M108 210 L412 210" stroke="#EFE7D6" stroke-width="1.5" stroke-opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="stool-caption">
+      <span>Pastor Intelligence</span>
+      <span>Church Intelligence</span>
+      <span>LifeTogether Intelligence</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="legs-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Three-Legged Stool</span>
+      <h2>Take one leg away, and it doesn't wobble. It falls.</h2>
+      <p>Every campaign, curriculum, devotional, and discipleship pathway we build stands on three sources of intelligence — never one alone.</p>
+    </div>
+
+    <div class="legs">
+      <div class="leg-card pi reveal">
+        <span class="num">Leg One</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5.5C4 4.4 4.9 3.5 6 3.5H18C19.1 3.5 20 4.4 20 5.5V19.5"/><path d="M4 19.5C4 18.4 4.9 17.5 6 17.5H18C19.1 17.5 20 18.4 20 19.5"/><path d="M8 8H16M8 12H14"/></svg></div>
+        <span class="kicker">Makes it personal</span>
+        <h3>Pastor Intelligence</h3>
+        <p class="copy">Your purpose, your passion, your point of view — the burden God keeps bringing back, and the preaching library you've already built. This is what keeps a resource from sounding like anyone else's pastor.</p>
+        <p class="bestline">"Pastor Intelligence protects your voice and your church's DNA."</p>
+      </div>
+
+      <div class="leg-card ci reveal">
+        <span class="num">Leg Two</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5C9 6.5 9 17.5 12 20.5M12 3.5C15 6.5 15 17.5 12 20.5M3.8 9H20.2M3.8 15H20.2"/></svg></div>
+        <span class="kicker">Makes it wise</span>
+        <h3>Church Intelligence</h3>
+        <p class="copy">The wisdom of the wider body of Christ — Scripture, church history, and proven patterns from healthy churches around the world. This is what keeps a resource grounded instead of narrow.</p>
+        <p class="bestline">"Church Intelligence brings the wisdom of the wider church to the work of your local church."</p>
+      </div>
+
+      <div class="leg-card lti reveal">
+        <span class="num">Leg Three</span>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M4 9.5H20M9.5 9.5V20"/></svg></div>
+        <span class="kicker">Makes it usable</span>
+        <h3>LifeTogether Intelligence</h3>
+        <p class="copy">Decades of experience turning ministry wisdom into finished campaigns, curriculum, devotionals, and discipleship pathways — so the idea actually reaches your people's hands.</p>
+        <p class="bestline">"LifeTogether Intelligence turns ministry wisdom into ministry resources."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="without">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">What Happens Missing One</span>
+      <h2>Two out of three still isn't enough.</h2>
+    </div>
+    <div class="without-list reveal">
+      <div class="without-row pi">
+        <div class="label">Without Pastor Intelligence</div>
+        <div class="desc">It may be accurate — but it isn't yours. It sounds like anyone.</div>
+      </div>
+      <div class="without-row ci">
+        <div class="label">Without Church Intelligence</div>
+        <div class="desc">It may be authentic — but it's narrow. It repeats mistakes the wider church already solved.</div>
+      </div>
+      <div class="without-row lti">
+        <div class="label">Without LifeTogether Intelligence</div>
+        <div class="desc">It may be a great idea — but it never becomes a curriculum, a campaign, or a launch plan.</div>
+      </div>
+    </div>
+    <p class="without-punch reveal">Only together do they hold weight.</p>
+  </div>
+</section>
+
+<section class="formula-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Clean Formula</span>
+      <h2>One equation. Every resource we build.</h2>
+    </div>
+    <div class="formula-row reveal">
+      <div class="formula-chip pi">Pastor Intelligence</div>
+      <span class="formula-op">+</span>
+      <div class="formula-chip ci">Church Intelligence</div>
+      <span class="formula-op">+</span>
+      <div class="formula-chip lti">LifeTogether Intelligence</div>
+      <span class="formula-op">=</span>
+      <span class="formula-eq">Ministry Intelligence</span>
+    </div>
+    <div class="tags-row reveal">
+      <span class="tag">Authentic</span>
+      <span class="tag">Biblical</span>
+      <span class="tag">Strategic</span>
+      <span class="tag">Beautiful</span>
+      <span class="tag">Ready to Use</span>
+    </div>
+  </div>
+</section>
+
+<section class="pullquote-section">
+  <div class="wrap pullquote reveal">
+    <blockquote>"Artificial Intelligence starts with a prompt. Ministry Intelligence starts with a pastor."</blockquote>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <span class="eyebrow">Let's Begin</span>
+    <h2>Let's build from your pulpit.<br>Not a prompt.</h2>
+    <p class="lede">One conversation maps your purpose, your passion, and your preaching library into a first campaign built to be unmistakably yours — grounded in Scripture, and ready for your people.</p>
+    <a href="mailto:hello@lifetogetherministries.com" class="cta-btn">Start a Pastor Intelligence Conversation</a>
+    <p class="cta-sub">hello@lifetogetherministries.com &nbsp;·&nbsp; lifetogetherministries.com</p>
+  </div>
+</section>
+
+<footer>
+  LifeTogether Ministries &nbsp;·&nbsp; Ministry Intelligence
+</footer>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  els.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Whole-Church Builder — A Whole-Life Discipleship Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e1830; --navy-2:#15213f; --navy-3:#1b2847;
+    --gold:#c9a24c; --gold-light:#e0c47e;
+    --cream:#f7f3ea; --cream-dim:#cdc4aa;
+    --hair: rgba(201,162,76,.28); --border: rgba(201,162,76,.22);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--navy); color:var(--cream);
+    font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:500; line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--gold); color:var(--navy); }
+  h1,h2,h3{ font-family:'Playfair Display',serif; margin:0; font-weight:700; color:var(--cream); }
+  a{ color:var(--gold-light); }
+  .wrap{ max-width:900px; margin:0 auto; padding:0 26px; }
+  .eyebrow{ font-family:'Lato',sans-serif; letter-spacing:.26em; text-transform:uppercase; font-size:13px; color:var(--gold-light); font-weight:800; }
+  .rule{ height:1px; background:var(--hair); border:none; margin:0; }
+
+  /* ---------------- NAV ---------------- */
+  .nav{ position:sticky; top:0; z-index:50; background:rgba(14,24,48,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--hair); }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; padding:14px 26px; max-width:900px; margin:0 auto; flex-wrap:wrap; gap:12px; }
+  .nav-brand{ font-family:'Playfair Display',serif; font-size:16px; color:var(--cream); font-weight:700; text-decoration:none; }
+  .nav-links{ display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .nav-links a{ font-family:'Lato',sans-serif; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--cream-dim); font-weight:700; text-decoration:none; }
+  .nav-links a:hover{ color:var(--gold-light); }
+  .nav-cta{ font-family:'Lato',sans-serif; font-size:12px; letter-spacing:.06em; text-transform:uppercase; font-weight:800; color:var(--navy) !important; background:var(--gold); padding:9px 18px; border-radius:30px; white-space:nowrap; }
+
+  /* ---------------- HERO ---------------- */
+  .hero{ padding:60px 0 60px; text-align:center; background: radial-gradient(ellipse at 50% -10%, rgba(201,162,76,.14), transparent 55%), linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%); border-bottom:1px solid var(--hair); }
+  .hook{ font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:29px; line-height:1.42; max-width:680px; margin:0 auto 30px; color:var(--cream); }
+  .compass{ width:64px; height:64px; margin:0 auto 22px; }
+  .hero .eyebrow{ margin-bottom:18px; display:block; }
+  .vision{ max-width:640px; margin:20px auto 0; font-size:19px; color:var(--cream-dim); line-height:1.75; }
+  .hero h1{ font-size:40px; line-height:1.14; margin-top:34px; }
+  .hero h1 em{ font-style:italic; color:var(--gold-light); font-weight:700; }
+  .hero .subhead{ margin:18px auto 0; max-width:600px; font-size:20px; font-style:italic; color:var(--cream); line-height:1.55; }
+  .audience-line{ margin-top:22px; font-family:'Lato',sans-serif; font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-light); font-weight:700; }
+  .hero-cta{ margin-top:32px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary{ background:var(--gold); color:var(--navy); font-family:'Lato',sans-serif; font-weight:800; font-size:13.5px; letter-spacing:.06em; text-transform:uppercase; padding:15px 26px; border-radius:30px; text-decoration:none; display:inline-block; }
+  .btn-secondary{ background:transparent; border:1.5px solid var(--gold); color:var(--gold-light); font-family:'Lato',sans-serif; font-weight:800; font-size:13.5px; letter-spacing:.06em; text-transform:uppercase; padding:13px 24px; border-radius:30px; text-decoration:none; display:inline-block; }
+
+  /* ---------------- PHOTO PLACEHOLDER ---------------- */
+  .photo-block{ max-width:900px; margin:0 auto; padding:52px 26px; }
+  .photo-frame{ aspect-ratio:16/9; border:1px dashed var(--border); border-radius:6px; background:linear-gradient(135deg, var(--navy-2), var(--navy-3)); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
+  .photo-frame svg{ width:32px; height:32px; opacity:.6; }
+  .photo-tag{ font-family:'Lato',sans-serif; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-light); font-weight:800; }
+  .photo-caption{ text-align:center; margin:14px auto 0; font-size:16.5px; font-style:italic; color:var(--cream-dim); max-width:520px; }
+
+  /* ---------------- SECTION SHELLS ---------------- */
+  section{ padding:64px 0; }
+  .section-alt{ background:var(--navy-2); }
+  .section-head{ text-align:center; margin-bottom:42px; }
+  .section-head .eyebrow{ display:block; margin-bottom:12px; }
+  .section-head h2{ font-size:33px; }
+  .section-head .dek{ max-width:640px; margin:16px auto 0; font-size:19.5px; color:var(--cream-dim); }
+
+  /* ---------------- MODEL / TIERS ---------------- */
+  .model-grid{ display:flex; flex-wrap:wrap; gap:26px; margin-bottom:36px; }
+  .model-card{ flex:1 1 260px; }
+  .model-card h4{ font-family:'Playfair Display',serif; font-size:21px; color:var(--cream); margin-bottom:8px; font-weight:700; }
+  .model-card p{ font-size:18.5px; color:var(--cream-dim); margin:0; }
+
+  .note-box{ background:var(--navy-3); border:1px solid var(--border); border-radius:6px; padding:22px 26px; margin:0 0 36px; font-size:18px; color:var(--cream-dim); text-align:center; }
+  .note-box b{ color:var(--cream); }
+
+  .tier-strip{ display:flex; flex-wrap:wrap; gap:18px; }
+  .tier{ flex:1 1 220px; background:var(--navy-3); border:1px solid var(--border); border-radius:4px; padding:20px 22px; }
+  .tier .tier-label{ font-family:'Lato',sans-serif; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-light); font-weight:800; }
+  .tier h5{ font-family:'Playfair Display',serif; font-size:19px; color:var(--cream); margin:8px 0 8px; font-weight:700; }
+  .tier p{ font-size:16.5px; color:var(--cream-dim); margin:0; }
+
+  /* ---------------- REASONS ---------------- */
+  .reason{ padding:26px 0; border-top:1px solid var(--hair); }
+  .reason:first-child{ border-top:none; }
+  .reason-head{ display:flex; align-items:baseline; gap:16px; }
+  .reason-num{ font-family:'Playfair Display',serif; font-style:italic; font-size:24px; color:var(--gold-light); flex:0 0 auto; }
+  .reason h4{ font-size:22px; }
+  .reason p{ margin:10px 0 0; font-size:19px; color:var(--cream-dim); max-width:740px; }
+
+  /* ---------------- MINISTRY DIRECTORY ---------------- */
+  .need{ padding:40px 0; border-bottom:1px solid var(--hair); }
+  .need:last-child{ border-bottom:none; }
+  .need-head{ display:flex; align-items:baseline; gap:16px; margin-bottom:14px; }
+  .need-num{ font-family:'Playfair Display',serif; font-style:italic; font-size:19px; color:var(--gold-light); flex:0 0 auto; }
+  .need-head h3{ font-size:24px; }
+  .res-list{ margin:0; padding:0; list-style:none; }
+  .res-list li{ padding:8px 0; border-top:1px solid var(--hair); font-size:17.5px; color:var(--cream-dim); }
+  .res-list li:first-child{ border-top:none; }
+  .res-list li b{ color:var(--cream); font-weight:700; }
+  .res-list .r-num{ font-family:'Lato',sans-serif; font-size:12.5px; color:var(--gold-light); font-weight:800; margin-right:10px; }
+
+  /* ---------------- FINDER CARDS ---------------- */
+  .finder-grid{ display:flex; flex-wrap:wrap; gap:20px; margin-bottom:10px; }
+  .finder-card{ flex:1 1 250px; background:var(--navy-3); border:1px solid var(--border); border-radius:4px; padding:22px; }
+  .finder-card h5{ font-family:'Playfair Display',serif; font-size:20px; color:var(--cream); margin-bottom:8px; font-weight:700; }
+  .finder-card p{ font-size:17px; color:var(--cream-dim); margin:0; }
+  .finder-card .fc-who{ font-family:'Lato',sans-serif; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-light); font-weight:800; margin-top:12px; display:block; }
+
+  .naming-options{ margin-top:26px; padding:22px 26px; background:var(--navy-3); border-left:3px solid var(--gold); border-radius:2px; }
+  .naming-options .no-label{ font-family:'Lato',sans-serif; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-light); font-weight:800; }
+  .naming-options ul{ margin:12px 0 0; padding-left:20px; }
+  .naming-options li{ margin-bottom:10px; font-size:17.5px; color:var(--cream-dim); }
+  .naming-options li b{ color:var(--cream); }
+
+  /* ---------------- ROLE CARDS ---------------- */
+  .role-card{ padding:26px 0; border-top:1px solid var(--hair); }
+  .role-card:first-child{ border-top:none; }
+  .role-card h5{ font-family:'Playfair Display',serif; font-size:21px; color:var(--cream); font-weight:700; }
+  .role-row{ margin:10px 0 0; font-size:17.5px; color:var(--cream-dim); max-width:740px; }
+  .role-row b{ font-family:'Lato',sans-serif; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-light); font-weight:800; margin-right:8px; display:inline-block; }
+
+  /* ---------------- RECOMMENDATION BOX ---------------- */
+  .rec-box{ margin-top:22px; padding:20px 24px; background:var(--navy-3); border-left:3px solid var(--gold); border-radius:2px; }
+  .rec-box .wp-label{ font-family:'Lato',sans-serif; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-light); font-weight:800; }
+  .rec-box p{ margin:8px 0 0; color:var(--cream-dim); font-size:18px; }
+
+  /* ---------------- RESOURCE CATEGORIES (7) ---------------- */
+  .practice{ padding:26px 0; border-top:1px solid var(--hair); }
+  .practice:first-child{ border-top:none; }
+  .practice-head{ display:flex; align-items:baseline; gap:16px; }
+  .practice-num{ font-family:'Playfair Display',serif; font-style:italic; font-size:22px; color:var(--gold-light); }
+  .practice h4{ font-size:22px; }
+  .practice .p-felt{ margin:10px 0 8px; color:var(--cream-dim); font-size:17.5px; font-style:italic; max-width:740px; }
+  .practice .p-desc{ margin:0; font-size:18.5px; color:var(--cream-dim); max-width:740px; }
+
+  /* ---------------- CLOSING ---------------- */
+  .closing{ text-align:center; padding:76px 0 60px; }
+  .closing blockquote{ font-family:'Playfair Display',serif; font-style:italic; font-size:25px; line-height:1.55; max-width:680px; margin:0 auto; color:var(--cream); font-weight:600; }
+  .closing .attribution{ margin-top:18px; font-family:'Lato',sans-serif; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-light); font-weight:800; }
+
+  /* ---------------- FOOTER CTA ---------------- */
+  .footer-cta{ text-align:center; padding:76px 0 44px; background:var(--navy-2); border-top:1px solid var(--hair); }
+  .footer-cta h2{ font-size:32px; }
+  .footer-cta .dek{ max-width:580px; margin:16px auto 32px; color:var(--cream-dim); font-size:19px; }
+  .footer-bottom{ text-align:center; padding:36px 0 50px; background:var(--navy-2); }
+  .foot-links{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:18px; }
+  .foot-links a{ font-family:'Lato',sans-serif; font-size:12px; color:var(--cream-dim); text-decoration:none; letter-spacing:.05em; text-transform:uppercase; }
+  .copyright{ font-family:'Lato',sans-serif; font-size:12px; color:var(--cream-dim); opacity:.7; }
+
+  @media (max-width:640px){
+    .hero{ padding:44px 0 48px; }
+    .hook{ font-size:23px; }
+    .hero h1{ font-size:30px; }
+    .hero .subhead{ font-size:18px; }
+    .section-head h2{ font-size:26px; }
+    .need-head h3{ font-size:21px; }
+    .practice-head, .reason-head{ flex-direction:column; gap:2px; }
+    .nav-links{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#top">The Whole-Church Builder</a>
+    <div class="nav-links">
+      <a href="#ministries">Ministries</a>
+      <a href="#builder">The Builder</a>
+      <a href="#finder">The Finder</a>
+      <a href="#access">Access</a>
+    </div>
+    <a class="nav-cta" href="#assessment">Book a Call</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="hook">If a member walked out of your women's ministry and into your grief support group — would it even sound like the same church?</p>
+    <span class="eyebrow">LifeTogether Ministry Experience Library</span>
+    <p class="vision">The Whole-Church Builder is not another campaign login. It's a whole-life discipleship operating system — every ministry in your church, from the women's Bible study to the grief support group, running on the same theological foundation, the same teaching architecture, and the same design system, while each ministry keeps its own voice, its own leader, and its own pace.</p>
+
+    <svg class="compass" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="46" stroke="#c9a24c" stroke-width="1.3"/>
+      <circle cx="50" cy="50" r="3" fill="#c9a24c"/>
+      <path d="M50 12 L56 48 L50 50 L44 48 Z" fill="#e0c47e"/>
+      <path d="M50 88 L56 52 L50 50 L44 52 Z" fill="#c9a24c" opacity="0.6"/>
+      <path d="M12 50 L48 44 L50 50 L48 56 Z" fill="#c9a24c" opacity="0.4"/>
+      <path d="M88 50 L52 44 L50 50 L52 56 Z" fill="#c9a24c" opacity="0.4"/>
+    </svg>
+
+    <h1>The <em>Whole-Church</em> Builder</h1>
+    <p class="subhead">Whole church, not whole-church-at-once — unity when it matters, each ministry's own pace the rest of the time.</p>
+    <p class="audience-line">Senior Pastors · Ministry Directors · Volunteer Leaders · Congregations</p>
+
+    <div class="hero-cta">
+      <a class="btn-primary" href="#assessment">Take the Ministry Readiness Assessment</a>
+      <a class="btn-secondary" href="#builder">See How It Works</a>
+    </div>
+  </div>
+</header>
+
+<div class="photo-block">
+  <div class="photo-frame">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#e0c47e" stroke-width="1.4"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/></svg>
+    <span class="photo-tag">Photo Placeholder</span>
+  </div>
+  <p class="photo-caption">A Senior Pastor introducing a new ministry series from the platform on a Sunday morning.</p>
+</div>
+
+<!-- ================= PART ONE: HOW THE BUILDER WORKS ================= -->
+<section id="builder">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part One — The Business Model</span>
+      <h2>How the Builder Works</h2>
+      <p class="dek">One All-Access Pass unlocks all 25 ministry libraries and the full Campaign system for the whole church — then the Builder lets every leader make it theirs, at exactly the level their role calls for.</p>
+    </div>
+
+    <div class="model-grid">
+      <div class="model-card">
+        <h4>All-Access, One Login</h4>
+        <p>One church subscription unlocks all 25 ministry libraries plus the full Campaign system. Every ministry leader and small group leader logs in under the church account and pulls what's unique to their ministry through the Finder.</p>
+      </div>
+      <div class="model-card">
+        <h4>The Curriculum Builder</h4>
+        <p>Choose a length — 21-day, 30-day, 40-day, or a custom week count — and the system generates matching Master Teaching Notes, a Small Group Workbook, and a Personal Journey/Devotional automatically, in digital or print-ready format.</p>
+      </div>
+      <div class="model-card">
+        <h4>Local Voice, Master Accuracy</h4>
+        <p>The Senior Pastor's own material and church library are blended with the LifeTogether master library, so all 25 ministries teach from the same verified theology and strategy — even when 25 leaders are running 25 different studies.</p>
+      </div>
+    </div>
+
+    <div class="tier-strip" style="margin-bottom:36px;">
+      <div class="tier">
+        <span class="tier-label">Tier One</span>
+        <h5>Ready to Use</h5>
+        <p>Ready now, no changes needed.</p>
+      </div>
+      <div class="tier">
+        <span class="tier-label">Tier Two</span>
+        <h5>Lightly Customized</h5>
+        <p>Branding, leader letter, dates, local application.</p>
+      </div>
+      <div class="tier">
+        <span class="tier-label">Tier Three</span>
+        <h5>Fully Customized</h5>
+        <p>Title, teaching, stories, videos, questions, daily readings, design, pathway.</p>
+      </div>
+    </div>
+
+    <div class="note-box"><b>Three revenue lines, one library:</b> church subscription (recurring), B2B licensing through Purpose Driven Business (independent terms), and individual print-on-demand (one-off, gift-driven) — all from the same master content.</div>
+  </div>
+</section>
+
+<!-- ================= PART TWO: SEVEN REASONS PASTORS SAY YES ================= -->
+<section class="section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part Two — The Pitch</span>
+      <h2>Seven Reasons Pastors Say Yes</h2>
+      <p class="dek">The case for a church to sign up, in the order it tends to land.</p>
+    </div>
+
+    <div class="reason">
+      <div class="reason-head"><span class="reason-num">1</span><h4>It's already built.</h4></div>
+      <p>125 titles across 25 ministries, ready now — not a six-month curriculum project the staff has to build from scratch.</p>
+    </div>
+    <div class="reason">
+      <div class="reason-head"><span class="reason-num">2</span><h4>Every ministry stays doctrinally aligned.</h4></div>
+      <p>Same theological foundation across all 25 ministries, without the Senior Pastor having to personally vet every lesson.</p>
+    </div>
+    <div class="reason">
+      <div class="reason-head"><span class="reason-num">3</span><h4>Whole church, not whole-church-at-once.</h4></div>
+      <p>Everyone together for churchwide campaigns; each ministry on its own pace the rest of the time — the best of both.</p>
+    </div>
+    <div class="reason">
+      <div class="reason-head"><span class="reason-num">4</span><h4>Local voice, master accuracy.</h4></div>
+      <p>Blends the Senior Pastor's own material with a verified master library, so nothing feels off-the-shelf.</p>
+    </div>
+    <div class="reason">
+      <div class="reason-head"><span class="reason-num">5</span><h4>Three revenue lines, one library.</h4></div>
+      <p>Church subscription, a B2B bridge, and individual print-on-demand — all off the same content, not three separate builds.</p>
+    </div>
+    <div class="reason">
+      <div class="reason-head"><span class="reason-num">6</span><h4>It scales down to a single family.</h4></div>
+      <p>The Personal Journal Builder makes a $25 personalized gift as easy to produce as a full ministry launch.</p>
+    </div>
+    <div class="reason">
+      <div class="reason-head"><span class="reason-num">7</span><h4>It's a moat other churches don't have.</h4></div>
+      <p>Most churches patch curriculum together from five different publishers. Yours runs on one integrated system.</p>
+    </div>
+  </div>
+</section>
+
+<div class="photo-block">
+  <div class="photo-frame">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#e0c47e" stroke-width="1.4"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/></svg>
+    <span class="photo-tag">Photo Placeholder</span>
+  </div>
+  <p class="photo-caption">Two volunteer leaders customizing their ministry's cover and leader letter in the Builder.</p>
+</div>
+
+<!-- ================= PART THREE: THE 25 MINISTRIES ================= -->
+<section id="ministries">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part Three — The Ministry Library</span>
+      <h2>The Top 25 Church Ministries</h2>
+      <p class="dek">Adult and life-stage ministries only. Every ministry below carries the same integrated package — Master Teaching Notes, a Small Group Workbook, and a matching Personal Journey/Devotional — in 21-day, 30-day, 40-day, or custom-week formats.</p>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">01</span><h3>Women's Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">1</span><b>Chosen</b> — Discovering Your Identity in Christ</li>
+        <li><span class="r-num">2</span><b>Enough</b> — Breaking Free from Comparison and Perfectionism</li>
+        <li><span class="r-num">3</span><b>Rooted</b> — Building a Faith That Holds Under Pressure</li>
+        <li><span class="r-num">4</span><b>Sisterhood</b> — Living Life in Authentic Community</li>
+        <li><span class="r-num">5</span><b>Unhurried</b> — Finding Rest for Your Soul in a Busy Season</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">02</span><h3>Men's Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">6</span><b>Undivided</b> — Living with Integrity When No One's Watching</li>
+        <li><span class="r-num">7</span><b>Built to Lead</b> — Becoming the Man Your Family Needs</li>
+        <li><span class="r-num">8</span><b>Band of Brothers</b> — The Power of Real Male Friendship</li>
+        <li><span class="r-num">9</span><b>Strength Under Control</b> — Anger, Ambition, and the Heart of a Godly Man</li>
+        <li><span class="r-num">10</span><b>The Long Obedience</b> — Finishing Well in Faith and Family</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">03</span><h3>Marriage Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">11</span><b>One Flesh</b> — Building an Unbreakable Marriage</li>
+        <li><span class="r-num">12</span><b>Recover the Fire</b> — Reigniting Intimacy and Connection</li>
+        <li><span class="r-num">13</span><b>Fight Fair</b> — Navigating Conflict Without Losing Each Other</li>
+        <li><span class="r-num">14</span><b>Together for Good</b> — Weathering Hard Seasons as a Team</li>
+        <li><span class="r-num">15</span><b>Second Half</b> — Rediscovering Your Marriage After the Kids Leave</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">04</span><h3>Singles Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">16</span><b>Whole</b> — Finding Wholeness Before Half</li>
+        <li><span class="r-num">17</span><b>Worth the Wait</b> — A Biblical Vision for Dating and Purity</li>
+        <li><span class="r-num">18</span><b>Not Alone</b> — Community for the Single Season</li>
+        <li><span class="r-num">19</span><b>Called and Complete</b> — Purpose Beyond Relationship Status</li>
+        <li><span class="r-num">20</span><b>Ready for Someday</b> — Preparing Now for the Marriage to Come</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">05</span><h3>Young Adults Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">21</span><b>Undefined</b> — Finding Your Identity Before the World Names You</li>
+        <li><span class="r-num">22</span><b>Real World Faith</b> — Following Jesus After You Leave Home</li>
+        <li><span class="r-num">23</span><b>Adulting with Purpose</b> — Career, Money, and Calling</li>
+        <li><span class="r-num">24</span><b>Not Yet Settled</b> — Faith in the Uncertain Twenties</li>
+        <li><span class="r-num">25</span><b>Fully Known</b> — Friendship and Belonging in a Lonely Generation</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">06</span><h3>Senior Adults Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">26</span><b>Still Bearing Fruit</b> — Purpose in Every Season of Life</li>
+        <li><span class="r-num">27</span><b>Legacy</b> — Passing Down What Matters Most</li>
+        <li><span class="r-num">28</span><b>Finishing Strong</b> — Faith, Health, and Hope in Later Years</li>
+        <li><span class="r-num">29</span><b>Grandparenting on Purpose</b> — Shaping the Next Generation</li>
+        <li><span class="r-num">30</span><b>The Best Is Yet</b> — Facing Aging and Eternity with Confidence</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">07</span><h3>Parenting Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">31</span><b>Raising Faith</b> — Passing Down What You Believe</li>
+        <li><span class="r-num">32</span><b>Grace-Based Parenting</b> — Leading Without Losing Your Kids' Hearts</li>
+        <li><span class="r-num">33</span><b>The Teen Years</b> — Staying Connected When They're Pulling Away</li>
+        <li><span class="r-num">34</span><b>Screens and Souls</b> — Guiding Kids Through a Digital World</li>
+        <li><span class="r-num">35</span><b>Parenting Together</b> — Staying United When You Disagree</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">08</span><h3>Family Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">36</span><b>One Household</b> — Building a Family That Follows Jesus Together</li>
+        <li><span class="r-num">37</span><b>Family Rhythms</b> — Simple Habits That Shape a Home</li>
+        <li><span class="r-num">38</span><b>Blended and Whole</b> — Thriving as a Step-Family</li>
+        <li><span class="r-num">39</span><b>Family Table</b> — Conversations That Draw You Closer</li>
+        <li><span class="r-num">40</span><b>Generations</b> — Connecting Grandparents, Parents, and Kids in Faith</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">09</span><h3>Divorce Care &amp; Recovery Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">41</span><b>After the Vows</b> — Healing After Divorce</li>
+        <li><span class="r-num">42</span><b>Rebuilding</b> — A New Foundation for a New Season</li>
+        <li><span class="r-num">43</span><b>Co-Parenting with Grace</b> — Putting Kids First After Divorce</li>
+        <li><span class="r-num">44</span><b>Whole Again</b> — Reclaiming Your Identity Beyond Marriage</li>
+        <li><span class="r-num">45</span><b>Starting Over</b> — Hope for the Next Chapter</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">10</span><h3>Grief &amp; Loss Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">46</span><b>Even So</b> — Grieving with Hope</li>
+        <li><span class="r-num">47</span><b>The Long Way Home</b> — Walking Through Loss Without Rushing It</li>
+        <li><span class="r-num">48</span><b>When Someone You Love Is Gone</b> — Facing the First Year</li>
+        <li><span class="r-num">49</span><b>Grief Has No Timeline</b> — Permission to Not Be Okay</li>
+        <li><span class="r-num">50</span><b>Held</b> — Finding God in the Darkest Season</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">11</span><h3>Recovery Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">51</span><b>Free Indeed</b> — Breaking the Cycle of Addiction</li>
+        <li><span class="r-num">52</span><b>One Day at a Time</b> — A Biblical Path to Lasting Recovery</li>
+        <li><span class="r-num">53</span><b>Honest</b> — Facing What's Really Going On</li>
+        <li><span class="r-num">54</span><b>New Wineskins</b> — Life After Addiction</li>
+        <li><span class="r-num">55</span><b>Chains Broken</b> — Hope for the Struggle You Can't Talk About</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">12</span><h3>Financial &amp; Generosity Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">56</span><b>God Owns It All</b> — A Biblical Path to Financial Freedom</li>
+        <li><span class="r-num">57</span><b>Debt-Free Faith</b> — Breaking the Cycle of Financial Bondage</li>
+        <li><span class="r-num">58</span><b>Generous Living</b> — Discovering the Joy of Open Hands</li>
+        <li><span class="r-num">59</span><b>Margin</b> — Managing Money Without Managing Anxiety</li>
+        <li><span class="r-num">60</span><b>Legacy Giving</b> — Stewarding What You'll Leave Behind</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">13</span><h3>Care &amp; Counseling Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">61</span><b>Held Together</b> — Support for Life's Hardest Seasons</li>
+        <li><span class="r-num">62</span><b>You're Not Crazy</b> — Understanding Anxiety, Depression, and Faith</li>
+        <li><span class="r-num">63</span><b>Safe People</b> — Building a Circle That Helps You Heal</li>
+        <li><span class="r-num">64</span><b>Permission to Struggle</b> — Mental Health and the Christian Life</li>
+        <li><span class="r-num">65</span><b>Come As You Are</b> — Care Without Judgment</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">14</span><h3>Prayer Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">66</span><b>Unceasing</b> — Building a Life of Prayer</li>
+        <li><span class="r-num">67</span><b>The Prayer Catalyst</b> — 7 Days That Change How You Pray</li>
+        <li><span class="r-num">68</span><b>Bold Access</b> — Praying with Confidence</li>
+        <li><span class="r-num">69</span><b>Prayer Warriors</b> — Interceding for Your Church and City</li>
+        <li><span class="r-num">70</span><b>Silent No More</b> — Finding Your Voice in Prayer</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">15</span><h3>Small Group / Community Life Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">71</span><b>Better Together</b> — Why You Weren't Meant to Do Life Alone</li>
+        <li><span class="r-num">72</span><b>Circle Up</b> — Starting and Leading a Thriving Group</li>
+        <li><span class="r-num">73</span><b>Real Community</b> — Moving from Acquaintance to Family</li>
+        <li><span class="r-num">74</span><b>The Group That Changes You</b> — Vulnerability and Growth</li>
+        <li><span class="r-num">75</span><b>Multiply</b> — Turning Your Group into a Movement</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">16</span><h3>Discipleship &amp; Spiritual Formation Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">76</span><b>Formed</b> — Becoming Like Jesus On Purpose</li>
+        <li><span class="r-num">77</span><b>The Practices</b> — Ancient Habits for a Modern Faith</li>
+        <li><span class="r-num">78</span><b>Deep Roots</b> — Moving from Belief to Formation</li>
+        <li><span class="r-num">79</span><b>Apprentice</b> — Following Jesus the Way the First Disciples Did</li>
+        <li><span class="r-num">80</span><b>Slow Growth</b> — Spiritual Formation in an Instant World</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">17</span><h3>Evangelism &amp; Outreach Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">81</span><b>Unashamed</b> — Sharing Your Faith with Confidence</li>
+        <li><span class="r-num">82</span><b>Everyday Mission</b> — Living Sent Where You Already Are</li>
+        <li><span class="r-num">83</span><b>Bridge Builders</b> — Reaching Neighbors Who Don't Believe</li>
+        <li><span class="r-num">84</span><b>One Conversation Away</b> — The Simplicity of Sharing Jesus</li>
+        <li><span class="r-num">85</span><b>Love First</b> — Outreach That Leads with Compassion</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">18</span><h3>Missions Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">86</span><b>Sent</b> — Discovering Your Part in God's Global Mission</li>
+        <li><span class="r-num">87</span><b>The Nations</b> — Praying and Giving Toward a Global Vision</li>
+        <li><span class="r-num">88</span><b>Go and Stay</b> — Short-Term Trips That Create Long-Term Fruit</li>
+        <li><span class="r-num">89</span><b>Local and Global</b> — One Mission, Two Mission Fields</li>
+        <li><span class="r-num">90</span><b>Kingdom Without Borders</b> — Living a Sent Life</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">19</span><h3>Volunteer &amp; Serve Team Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">91</span><b>Called to Serve</b> — Discovering Your Ministry Fit</li>
+        <li><span class="r-num">92</span><b>Behind the Scenes</b> — The Theology of Faithful Serving</li>
+        <li><span class="r-num">93</span><b>Serve Team Culture</b> — Excellence Without Burnout</li>
+        <li><span class="r-num">94</span><b>Every Member a Minister</b> — Activating Your Whole Church</li>
+        <li><span class="r-num">95</span><b>Serving from Overflow</b> — Avoiding Volunteer Burnout</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">20</span><h3>Membership &amp; Assimilation Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">96</span><b>Belong Before You Believe</b> — Welcoming Every Guest Well</li>
+        <li><span class="r-num">97</span><b>Rooted Here</b> — Moving from Attender to Member</li>
+        <li><span class="r-num">98</span><b>Next Steps</b> — Finding Your Place in Church Life</li>
+        <li><span class="r-num">99</span><b>Home</b> — What It Means to Truly Belong to a Church Family</li>
+        <li><span class="r-num">100</span><b>From Visitor to Family</b> — The First 90 Days</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">21</span><h3>Leadership Development Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">101</span><b>Multiplying Leaders</b> — Developing Who's Next</li>
+        <li><span class="r-num">102</span><b>The Leader's Soul</b> — Staying Spiritually Healthy While Leading Others</li>
+        <li><span class="r-num">103</span><b>Elder and Deacon Foundations</b> — Leading with Character</li>
+        <li><span class="r-num">104</span><b>Succession</b> — Passing the Baton Well</li>
+        <li><span class="r-num">105</span><b>Lead from Overflow</b> — Avoiding Ministry Burnout</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">22</span><h3>Marketplace &amp; Workplace Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">106</span><b>Faith at Work</b> — Living Sent in the Nine-to-Five</li>
+        <li><span class="r-num">107</span><b>Kingdom Business</b> — Leading a Company with Christian Values</li>
+        <li><span class="r-num">108</span><b>Called to the Marketplace</b> — Purpose Beyond the Pulpit</li>
+        <li><span class="r-num">109</span><b>Ethics on the Clock</b> — Integrity When It Costs You</li>
+        <li><span class="r-num">110</span><b>Purpose Driven Business</b> — The 40-Day Formation Model for Leaders and Teams</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">23</span><h3>Special Needs &amp; Disability Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">111</span><b>Every Family Belongs</b> — Welcoming the Disability Community</li>
+        <li><span class="r-num">112</span><b>Uniquely Made</b> — Faith Formation for Every Ability</li>
+        <li><span class="r-num">113</span><b>Not Forgotten</b> — Support for Special Needs Parents</li>
+        <li><span class="r-num">114</span><b>Full Access</b> — Building a Church Where Everyone Fits</li>
+        <li><span class="r-num">115</span><b>Different, Not Less</b> — Seeing Disability Through God's Eyes</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">24</span><h3>Widows &amp; Widowers Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">116</span><b>After Goodbye</b> — Faith and Life After Losing a Spouse</li>
+        <li><span class="r-num">117</span><b>Still Whole</b> — Rediscovering Identity After Widowhood</li>
+        <li><span class="r-num">118</span><b>The Empty Chair</b> — Grief, Memory, and Moving Forward</li>
+        <li><span class="r-num">119</span><b>Alone but Not Lonely</b> — Community After Loss</li>
+        <li><span class="r-num">120</span><b>New Normal</b> — Rebuilding a Life You Didn't Choose</li>
+      </ol>
+    </div>
+
+    <div class="need"><div class="need-head"><span class="need-num">25</span><h3>Military, First Responders &amp; Veterans Ministry</h3></div>
+      <ol class="res-list">
+        <li><span class="r-num">121</span><b>Called to Serve, Called to Christ</b> — Faith in Uniform</li>
+        <li><span class="r-num">122</span><b>Battle Ready</b> — Facing Trauma, PTSD, and the Weight of Service</li>
+        <li><span class="r-num">123</span><b>Home Front</b> — Supporting Military and First Responder Families</li>
+        <li><span class="r-num">124</span><b>After the Uniform</b> — Finding Purpose in Civilian Life</li>
+        <li><span class="r-num">125</span><b>Brothers and Sisters in Arms</b> — Community for Those Who Serve</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PART FOUR: THE FINDER ================= -->
+<section class="section-alt" id="finder">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part Four — The Finder</span>
+      <h2>Three Doors, One Library</h2>
+      <p class="dek">Three distinct entry points into the same library, each solving a different search intent.</p>
+    </div>
+
+    <div class="finder-grid">
+      <div class="finder-card">
+        <h5>Curriculum Finder</h5>
+        <p>Browsing the full 6,200+ title master directory by ministry, felt need, theme, age, group size, teaching style, format.</p>
+        <span class="fc-who">Ministry &amp; small group leaders picking their next series</span>
+      </div>
+      <div class="finder-card">
+        <h5>Campaign Finder</h5>
+        <p>Churchwide, all-in initiatives — Catalyst Sunday, 7-Day, 21-Day, 30-Day, 40-Day formats.</p>
+        <span class="fc-who">Senior Pastor &amp; staff planning whole-church unity moments</span>
+      </div>
+      <div class="finder-card">
+        <h5>Journey Finder (Personal Devotionals)</h5>
+        <p>Individual and family daily devotional companions, self-paced.</p>
+        <span class="fc-who">Individuals, families, anyone going through material solo</span>
+      </div>
+    </div>
+
+    <div class="naming-options">
+      <span class="no-label">Still Open — Naming the Third Finder</span>
+      <ul>
+        <li><b>Journey Finder (Devotionals)</b> — clean, matches the "Curriculum Finder / Campaign Finder" rhythm.</li>
+        <li><b>The Journey Finder</b> — with "Personal Devotionals" as a permanent subhead rather than parenthetical.</li>
+        <li><b>My Journey Finder</b> — leans personal/possessive, distinguishes it clearly from the group-facing tools.</li>
+        <li><b>Daily Journey Finder</b> — foregrounds the daily-devotional use case up front.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PART FIVE: HOW ACCESS CASCADES ================= -->
+<section id="access">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part Five — Roles &amp; Permissions</span>
+      <h2>How Access Actually Cascades</h2>
+      <p class="dek">The further down the chain, the narrower the library and the lighter the customization — a small group leader isn't rewriting theology, a member isn't touching teaching notes.</p>
+    </div>
+
+    <div class="role-card">
+      <h5>Staff / Ministry Directors</h5>
+      <p class="role-row"><b>Sees</b>Full 6,200+ title library, all 25 ministries, all campaigns.</p>
+      <p class="role-row"><b>Rights</b>Fully Customized — title, teaching, stories, video, design.</p>
+      <p class="role-row"><b>Builder</b>Yes — full Builder access.</p>
+    </div>
+    <div class="role-card">
+      <h5>Volunteer Ministry Leaders</h5>
+      <p class="role-row"><b>Sees</b>Their ministry's library only — e.g., a Women's leader sees Women's titles.</p>
+      <p class="role-row"><b>Rights</b>Lightly Customized — branding, leader letter, dates, local application.</p>
+      <p class="role-row"><b>Builder</b>Local customization Builder only.</p>
+    </div>
+    <div class="role-card">
+      <h5>Small Group Leaders</h5>
+      <p class="role-row"><b>Sees</b>Only the specific series assigned or selected for their group.</p>
+      <p class="role-row"><b>Rights</b>Ready to Use, or Lightly Customized if their ministry leader enables it.</p>
+      <p class="role-row"><b>Builder</b>No — they receive, they don't build.</p>
+    </div>
+    <div class="role-card">
+      <h5>Congregation / Members</h5>
+      <p class="role-row"><b>Sees</b>Personal Journey Finder — devotionals, family journals, personal studies.</p>
+      <p class="role-row"><b>Rights</b>Personal customization: name, family names, cover photo, dedication.</p>
+      <p class="role-row"><b>Builder</b>Personal Journal Builder only.</p>
+    </div>
+  </div>
+</section>
+
+<div class="photo-block">
+  <div class="photo-frame">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#e0c47e" stroke-width="1.4"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/></svg>
+    <span class="photo-tag">Photo Placeholder</span>
+  </div>
+  <p class="photo-caption">A small group gathered around one of the 125 titles, mid-series.</p>
+</div>
+
+<!-- ================= PART SIX: THE B2B BRIDGE ================= -->
+<section class="section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part Six — Beyond the Church</span>
+      <h2>Business &amp; Nonprofit Leaders</h2>
+      <p class="dek">A real fork, worth deciding deliberately rather than defaulting into it.</p>
+    </div>
+
+    <div class="model-grid">
+      <div class="model-card">
+        <h4>Option 1 — Separate B2B License</h4>
+        <p>Purpose Driven Business (and a parallel nonprofit track) sells directly to companies and nonprofits, independent of any church relationship — its own pricing, its own sales motion, its own case studies, with Movement Mortgage as the flagship.</p>
+      </div>
+      <div class="model-card">
+        <h4>Option 2 — Church-Sponsored Bridge</h4>
+        <p>A church with an active Marketplace &amp; Workplace Ministry can gift or extend Purpose Driven Business access to business owners in their congregation as a relationship-building value-add — without merging the two licensing systems.</p>
+      </div>
+    </div>
+
+    <div class="rec-box">
+      <span class="wp-label">Recommendation</span>
+      <p>Keep Purpose Driven Business and the nonprofit track as their own license, sold on their own terms — but build the bridge as an option. It turns Marketplace Ministry into a warm lead source for the B2B product, rather than asking two very different buyers — a Small Groups Pastor and a company CEO — to go through the same checkout.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PART SEVEN: THE PRINT ONE MODEL ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part Seven — The Micro-Product</span>
+      <h2>The "Print One" Model</h2>
+      <p class="dek">A fully customized, single-unit product — separate from any subscription, and open to anyone, church-subscriber or not.</p>
+    </div>
+
+    <div class="model-grid">
+      <div class="model-card">
+        <h4>Standalone Gift</h4>
+        <p>A member — or anyone at all — builds one fully personalized journal or workbook through a simplified Canva-based Personal Journal Builder: their name, a dedication, a cover photo, maybe a translation preference. Output is print-ready, as a downloadable PDF or a ship-to-print single copy.</p>
+      </div>
+      <div class="model-card">
+        <h4>Inside an All-Access Church</h4>
+        <p>A member whose church already has the digital library pays the same $25 just for the physical, personalized print copy — a grief journal with a name on it, a marriage journal for an anniversary, a family devotional with the kids' names on the cover.</p>
+      </div>
+    </div>
+
+    <div class="note-box"><b>~$25 per unit, no subscription required</b> — priced and positioned like a personalized gift, not a curriculum purchase.</div>
+  </div>
+</section>
+
+<div class="photo-block">
+  <div class="photo-frame">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#e0c47e" stroke-width="1.4"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/></svg>
+    <span class="photo-tag">Photo Placeholder</span>
+  </div>
+  <p class="photo-caption">A family building a personalized memory journal through the Print One Builder.</p>
+</div>
+
+<!-- ================= PART EIGHT: THE SEVEN RESOURCE CATEGORIES ================= -->
+<section class="section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Part Eight — Resource Categories</span>
+      <h2>Every Ministry Gets the Same Seven</h2>
+      <p class="dek">Ordered by the felt need that hits a Senior Pastor first, not alphabetically.</p>
+    </div>
+
+    <div class="practice">
+      <div class="practice-head"><span class="practice-num">1</span><h4>Launch &amp; Lead Guide</h4></div>
+      <p class="p-felt">Felt need: "Will this ministry actually get off the ground — and survive past month three?"</p>
+      <p class="p-desc">The step-by-step for standing up this specific ministry: how to structure it, recruit a leader, set the first 90 days, and avoid the most common reasons volunteer ministries stall or quietly die.</p>
+    </div>
+    <div class="practice">
+      <div class="practice-head"><span class="practice-num">2</span><h4>Leader Training &amp; Development Course</h4></div>
+      <p class="p-felt">Felt need: "Is the person I'm about to hand this to actually equipped to lead it well?"</p>
+      <p class="p-desc">A short course (video + guide) that trains the volunteer or staff ministry leader — not just to teach content, but to shepherd people, facilitate hard conversations, and lead a group well.</p>
+    </div>
+    <div class="practice">
+      <div class="practice-head"><span class="practice-num">3</span><h4>Sermon &amp; Message Support Kit</h4></div>
+      <p class="p-felt">Felt need: "Can I connect this to what I'm already preaching, so the whole church feels the momentum, not just the group?"</p>
+      <p class="p-desc">Message outlines, illustrations, and launch-Sunday material the Senior Pastor can use to introduce or reinforce the ministry from the platform — tying the small group experience to the sermon calendar.</p>
+    </div>
+    <div class="practice">
+      <div class="practice-head"><span class="practice-num">4</span><h4>Core Campaigns &amp; Curriculum Library</h4></div>
+      <p class="p-felt">Felt need: "What are they actually going to teach, week to week?"</p>
+      <p class="p-desc">The customizable campaign/series content itself — the 125 titles already built, in 21/30/40-day or custom-week formats, at Ready to Use / Lightly / Fully Customized tiers.</p>
+    </div>
+    <div class="practice">
+      <div class="practice-head"><span class="practice-num">5</span><h4>Best-Practices Playbook &amp; Small Group Handbook</h4></div>
+      <p class="p-felt">Felt need: "Will this still be healthy — and growing — a year from now?"</p>
+      <p class="p-desc">The sustaining wisdom: how to multiply groups, keep volunteer leaders from burning out, measure ministry health, and scale without losing quality.</p>
+    </div>
+    <div class="practice">
+      <div class="practice-head"><span class="practice-num">6</span><h4>Devotional &amp; Personal Journeys</h4></div>
+      <p class="p-felt">Felt need: "Does this reach people beyond the one hour a week they're in the room?"</p>
+      <p class="p-desc">The daily, personal or family-length companion to the group series, so engagement extends into people's homes between sessions.</p>
+    </div>
+    <div class="practice">
+      <div class="practice-head"><span class="practice-num">7</span><h4>Tools, Templates &amp; Operational Toolkit</h4></div>
+      <p class="p-felt">Felt need: "Do we have the operational plumbing to actually run this without reinventing it every time?"</p>
+      <p class="p-desc">Transferable, non-content assets: sign-up forms, communication and social templates, event checklists, budget templates — the reusable back-office layer behind every ministry.</p>
+    </div>
+  </div>
+</section>
+
+<div class="closing">
+  <div class="wrap">
+    <blockquote>"This isn't a campaign login. It's your church's whole-life discipleship operating system — every ministry running on the same theological foundation, the same design system, and the same easy-to-use finder, so your people can be in step together when it matters, and in step with where they are personally the rest of the time."</blockquote>
+    <p class="attribution">The Pitch Line for the Senior Pastor</p>
+  </div>
+</div>
+
+<div class="photo-block">
+  <div class="photo-frame">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#e0c47e" stroke-width="1.4"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/></svg>
+    <span class="photo-tag">Photo Placeholder</span>
+  </div>
+  <p class="photo-caption">A Senior Pastor and a ministry director reviewing the Finder together before a new launch.</p>
+</div>
+
+<!-- ================= FOOTER: ASSESSMENT + BOOKING ================= -->
+<div class="footer-cta" id="assessment">
+  <div class="wrap">
+    <span class="eyebrow">Ready When You Are</span>
+    <h2>See If This Fits Your Church</h2>
+    <p class="dek">Start with the seven-minute Ministry Readiness Assessment — a short set of questions that shows you exactly which of your 25 ministries are strongest and which are most exposed right now.</p>
+    <div class="hero-cta">
+      <!-- TODO: replace href with the real assessment link (Typeform/etc.) -->
+      <a class="btn-primary" href="#">Take the 7-Minute Readiness Assessment →</a>
+      <!-- TODO: replace href with your real Calendly/booking link -->
+      <a class="btn-secondary" href="#">Book a 15-Minute Call →</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer-bottom">
+  <div class="wrap">
+    <div class="foot-links">
+      <a href="#ministries">Ministries</a>
+      <a href="#builder">The Builder</a>
+      <a href="#finder">The Finder</a>
+      <a href="#access">Access</a>
+      <a href="#assessment">Assessment</a>
+    </div>
+    <p class="copyright">The Whole-Church Builder — LifeTogether Ministry Experience Library</p>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The CAN Library &mdash; Clickable Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0C1D33; --panel:#11253F;
+  --line:rgba(201,169,78,.24); --hair:rgba(201,169,78,.14);
+  --gold:#C9A94E; --gold-lt:#E6CE8C;
+  --paper:#EFE9DC; --body:#D6DEE9; --muted:#90A4BD; --red:#D98A6A;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--navy);
+  background-image:radial-gradient(120% 50% at 50% 0%, #142A48 0%, #0C1D33 50%, #07121F 100%);
+  background-attachment:fixed;color:var(--body);
+  font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;line-height:1.6}
+.wrap{max-width:800px;margin:0 auto;padding:0 18px}
+h1,h2,h3,h4,h5{font-family:"Playfair Display",Georgia,serif;font-weight:500;color:var(--paper);margin:0}
+p{margin:0 0 .9em}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.label{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(9,22,38,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topin{max-width:800px;margin:0 auto;padding:.6rem 18px;display:flex;align-items:center;gap:.6rem}
+.brand{font-family:"Playfair Display",serif;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.crumb{flex:1;min-width:0;font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seg{display:flex;border:1px solid var(--hair)}
+.seg button{background:none;border:0;color:var(--muted);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .45rem}
+.seg button.on{background:var(--gold);color:#0C1D33;font-weight:600}
+.strip{max-width:800px;margin:0 auto;padding:0 18px .55rem;display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
+.strip input{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--hair);color:var(--paper);font-family:inherit;font-size:.92rem;padding:.32rem .5rem}
+
+/* hero */
+.hero{padding:32px 0 22px;text-align:center}
+.hero h1{font-size:clamp(1.9rem,8.5vw,3rem);line-height:1.02;font-weight:700}
+.hero .deck{font-style:italic;color:var(--paper);margin:.9rem auto 0;max-width:36ch;font-size:1.02rem}
+.band{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:1.4rem 0}
+.band div{flex:1 1 33%;background:var(--navy);padding:.75rem .3rem;text-align:center}
+.band b{display:block;font-family:"Playfair Display",serif;font-size:1.35rem;color:var(--gold-lt);font-weight:500;line-height:1}
+.band span{display:block;font-size:.54rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:.35rem}
+
+/* sections + rows */
+.sec{padding:26px 0;border-top:1px solid var(--line)}
+.sechead{margin:0 0 1rem}
+.sechead h2{font-size:clamp(1.3rem,5.4vw,1.85rem);line-height:1.12}
+.sechead .sub{color:var(--muted);font-style:italic;font-size:.98rem;margin:.35rem 0 0}
+.back{background:none;border:0;color:var(--gold);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;padding:.2rem 0;margin-bottom:.8rem}
+.row{display:flex;gap:.8rem;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--hair);padding:.85rem 0;color:inherit}
+.row:hover .rt{color:var(--gold-lt)}
+.rn{font-family:"Playfair Display",serif;color:var(--gold);font-size:.95rem;min-width:2.1em;line-height:1.5;letter-spacing:.03em}
+.rmain{flex:1;min-width:0}
+.rt{display:block;font-family:"Playfair Display",serif;font-size:1.04rem;color:var(--paper);line-height:1.25}
+.rs{display:block;font-size:.93rem;color:var(--muted);font-style:italic;margin-top:.16rem;line-height:1.4}
+.rmeta{display:block;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-top:.3rem}
+.arw{color:var(--gold);padding-top:.15rem}
+.tag{display:inline-block;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--hair);color:var(--muted);padding:.1rem .3rem;margin-left:.35rem;vertical-align:middle}
+.subhead{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:.98rem;margin:1.5rem 0 .3rem;border-bottom:1px solid var(--hair);padding-bottom:.25rem;letter-spacing:.04em}
+
+/* output */
+.gate{border:1px solid var(--line);background:var(--panel);padding:.6rem .8rem;margin:0 0 .9rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.gate .gl{font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);flex:1}
+.out{border:1px solid var(--hair);background:rgba(255,255,255,.02);padding:1rem 1.05rem;margin:0 0 1rem}
+.out h4{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:1.02rem;margin:1.1rem 0 .4rem}
+.out h4:first-child{margin-top:0}
+.out h5{font-size:.88rem;color:var(--paper);margin:.8rem 0 .25rem;letter-spacing:.06em;text-transform:uppercase}
+.out p{font-size:1rem}
+.out ul{margin:0 0 .8rem;padding-left:1.1rem}
+.out li{margin:0 0 .28rem;font-size:1rem}
+.out strong{color:var(--paper)}
+.out blockquote{margin:0 0 .8rem;padding-left:.85rem;border-left:2px solid var(--gold);font-style:italic;color:var(--paper)}
+.acts{display:flex;gap:.45rem;flex-wrap:wrap;margin:0 0 .9rem}
+.act{background:none;border:1px solid var(--line);color:var(--gold);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;padding:.42rem .7rem}
+.act.primary{background:var(--gold);color:#0C1D33;border-color:var(--gold);font-weight:600}
+.spin{color:var(--muted);font-style:italic;padding:1.3rem 0;text-align:center}
+.dot{display:inline-block;animation:bl 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
+.err{border:1px solid var(--red);color:var(--red);padding:.75rem .85rem;margin:0 0 .9rem;font-size:.95rem}
+.legend{font-size:.8rem;color:var(--muted);border-top:1px solid var(--hair);padding-top:.7rem;margin-top:.7rem}
+.foot{text-align:center;padding:32px 0 56px;border-top:1px solid var(--line);margin-top:22px}
+.foot p{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0}
+@media (min-width:660px){ body{font-size:19px} .band div{flex:1 1 16%} }
+@media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="topin">
+    <span class="brand">CAN</span>
+    <span class="crumb" id="crumb">Library</span>
+    <span class="seg" id="langSeg">
+      <button type="button" data-lang="faith-forward">Forward</button>
+      <button type="button" data-lang="faith-friendly">Friendly</button>
+      <button type="button" data-lang="values-based">Values</button>
+    </span>
+  </div>
+  <div class="strip">
+    <input id="q" type="search" placeholder="Search 350 journeys and tools">
+    <button class="act" id="draftBtn" type="button">Drafted only</button>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<footer class="foot"><div class="wrap"><p>The CAN Library &middot; AI recommends. The advisor approves.</p></div></footer>
+
+<script>
+var ENTRIES = /*__ENTRIES__*/;
+var CATS = /*__CATS__*/;
+var GROUPS = /*__GROUPS__*/;
+var STATS = /*__STATS__*/;
+
+var SESSIONS = [
+  {n:1, name:"Understand", q:"What is the issue, and why does it matter?", from:1, to:8},
+  {n:2, name:"Reflect", q:"What do I personally believe, and what has shaped me?", from:9, to:15},
+  {n:3, name:"Discuss", q:"What does my spouse or family believe, and where do we differ?", from:16, to:23},
+  {n:4, name:"Decide", q:"What will we do, and what conversation comes next?", from:24, to:30}
+];
+
+var LANG = "faith-forward";
+var FAMILY = "";
+var CACHE = {};
+var DAYLIST = {};
+var DRAFTONLY = false;
+var VIEW = {v:"home"};
+
+function byId(id){ for (var i=0;i<ENTRIES.length;i++){ if (ENTRIES[i].id === id) { return ENTRIES[i]; } } return null; }
+function catByK(k){ for (var i=0;i<CATS.length;i++){ if (CATS[i].k === k) { return CATS[i]; } } return null; }
+function grpByK(k){ for (var i=0;i<GROUPS.length;i++){ if (GROUPS[i].k === k) { return GROUPS[i]; } } return null; }
+
+/* ---------------- markdown ---------------- */
+function esc(t){ return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function inline(t){
+  t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  t = t.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+  return t;
+}
+function mdToHtml(src){
+  var lines = esc(src).split("\n"); var html = ""; var inList = false;
+  for (var i=0;i<lines.length;i++){
+    var t = lines[i].replace(/^\s+/,"").replace(/\s+$/,"");
+    if (t === ""){ if (inList){ html += "</ul>"; inList = false; } continue; }
+    if (t.indexOf("### ") === 0){ if (inList){ html += "</ul>"; inList=false; } html += "<h5>" + inline(t.slice(4)) + "</h5>"; continue; }
+    if (t.indexOf("## ") === 0){ if (inList){ html += "</ul>"; inList=false; } html += "<h4>" + inline(t.slice(3)) + "</h4>"; continue; }
+    if (t.indexOf("# ") === 0){ if (inList){ html += "</ul>"; inList=false; } html += "<h4>" + inline(t.slice(2)) + "</h4>"; continue; }
+    if (t.indexOf("&gt; ") === 0){ if (inList){ html += "</ul>"; inList=false; } html += "<blockquote>" + inline(t.slice(5)) + "</blockquote>"; continue; }
+    if (t.indexOf("- ") === 0 || t.indexOf("* ") === 0){ if (!inList){ html += "<ul>"; inList=true; } html += "<li>" + inline(t.slice(2)) + "</li>"; continue; }
+    var num = t.match(/^(\d+)\.\s+(.*)$/);
+    if (num){ if (!inList){ html += "<ul>"; inList=true; } html += "<li><strong>" + num[1] + ".</strong> " + inline(num[2]) + "</li>"; continue; }
+    if (inList){ html += "</ul>"; inList = false; }
+    html += "<p>" + inline(t) + "</p>";
+  }
+  if (inList){ html += "</ul>"; }
+  return html;
+}
+
+/* ---------------- prompts ---------------- */
+function langRule(){
+  if (LANG === "faith-forward"){ return "FAITH LANGUAGE: Faith-forward. Explicit Christian framing is welcome, including stewardship of what God has entrusted, and at most one short NIV verse where it genuinely fits."; }
+  if (LANG === "faith-friendly"){ return "FAITH LANGUAGE: Faith-friendly. Acknowledge that faith and values shape decisions, but quote no Scripture and use no churchy phrasing."; }
+  return "FAITH LANGUAGE: Values-based. Use no religious language of any kind. Speak in values, purpose, character, and responsibility.";
+}
+function famRule(){
+  return FAMILY ? "Write it for the " + FAMILY + " family and use that name naturally." : "No family name has been supplied, so write for a family in general and do not invent names.";
+}
+function frame(e){
+  var s = "You are the Personalization and Publishing Engine inside CAN, a family stewardship operating system used by advisors at registered investment advisory firms.\n\n";
+  s += (e.kind === "journey" ? "JOURNEY" : "TOOL") + ": " + e.t + "\n";
+  s += (e.kind === "journey" ? "SUBTITLE: " : "PURPOSE: ") + e.s + "\n";
+  s += "CATEGORY: " + e.grpName + "\n\n" + langRule() + "\n" + famRule() + "\n\n";
+  return s;
+}
+var RULES = "\nRULES\n- Every line must be specific to this title. Generic stewardship filler is a failure.\n- Never give tax, legal, or investment advice; name the specialist instead.\n- Do not discuss specific inheritance amounts with the next generation.\n- Output finished text only: no preamble and no closing offer to help.\n";
+
+function promptSessions(e){
+  var s = frame(e);
+  s += "TASK: Write the four-session map for this " + (e.kind === "journey" ? "30-day journey" : "tool") + ". CAN uses one fixed architecture: Session 1 Understand, Session 2 Reflect, Session 3 Discuss, Session 4 Decide.\n";
+  s += "Output exactly four lines and nothing else, in this pipe-delimited format:\n";
+  s += "1 | session title | two sentences describing what this session covers and what it produces\n";
+  s += "2 | session title | two sentences\n3 | session title | two sentences\n4 | session title | two sentences\n";
+  s += "The session title is specific to this subject, not the generic word Understand." + RULES;
+  return s;
+}
+function promptDays(e, ses){
+  var s = frame(e);
+  s += "TASK: Write the day titles for Session " + ses.n + " (" + ses.name + ", Days " + ses.from + " to " + ses.to + ") of this 30-day journey.\n";
+  s += "That session asks: " + ses.q + "\n";
+  s += "Output one line per day and nothing else, in this pipe-delimited format:\n";
+  s += "Day " + ses.from + " | day title | one sentence on what the reading covers\n";
+  s += "Continue through Day " + ses.to + ". Each day must move the reader forward; no two days may repeat an idea." + RULES;
+  return s;
+}
+function promptDay(e, ses, dayNo, dayTitle){
+  var s = frame(e);
+  s += "TASK: Write Day " + dayNo + " in full, titled \"" + dayTitle + "\", from Session " + ses.n + " (" + ses.name + ").\n";
+  s += "Use the CAN daily format with these headings: ## Today's Reading (a short teaching of about 150 words), ## The Principle (one sentence), ## Reflection Question, ## Personal Action, ## Conversation Prompt, ## Journal.\n";
+  s += "Under Journal give one sentence-stem the reader completes." + RULES;
+  return s;
+}
+function promptToolSession(e, ses, title){
+  var s = frame(e);
+  s += "TASK: Write Session " + ses.n + " of this four-session tool, titled \"" + title + "\".\n";
+  s += "Headings: ## Purpose, ## What the Advisor Prepares, ## What the Family Does, ## Questions, ## What This Session Produces, ## Before the Next Session.\n";
+  s += "Keep it operational enough that an advisor could run it tomorrow." + RULES;
+  return s;
+}
+
+/* ---------------- api ---------------- */
+async function callClaude(prompt){
+  var res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({model:"claude-sonnet-4-6", max_tokens:1000, messages:[{role:"user", content:prompt}]})
+  });
+  if (!res.ok){ throw new Error("Request failed (" + res.status + ")"); }
+  var data = await res.json();
+  var out = "";
+  for (var i=0;i<data.content.length;i++){ if (data.content[i].type === "text"){ out += data.content[i].text; } }
+  return out.trim();
+}
+function parsePipes(text){
+  var rows = [];
+  var lines = text.split("\n");
+  for (var i=0;i<lines.length;i++){
+    var parts = lines[i].split("|");
+    if (parts.length >= 3){
+      rows.push({k: parts[0].replace(/[^0-9]/g,""), t: parts[1].trim(), d: parts.slice(2).join("|").trim()});
+    }
+  }
+  return rows;
+}
+
+/* ---------------- views ---------------- */
+function crumbText(){
+  if (VIEW.v === "home"){ return "Library"; }
+  if (VIEW.v === "cat"){ return catByK(VIEW.cat).name; }
+  if (VIEW.v === "grp"){ return grpByK(VIEW.grp).name; }
+  var e = VIEW.id ? byId(VIEW.id) : null;
+  if (VIEW.v === "entry"){ return e.t; }
+  if (VIEW.v === "session"){ return e.t + " / Session " + VIEW.ses; }
+  if (VIEW.v === "day"){ return e.t + " / Day " + VIEW.day; }
+  return "Library";
+}
+
+function renderHome(){
+  var h = '<div class="wrap"><div class="hero"><h1>The CAN Library</h1>' +
+    '<p class="deck">Clickable edition. Every title opens to its four sessions; every journey opens to all thirty days.</p></div>';
+  h += '<div class="band">' +
+    '<div><b>' + STATS.journeys + '</b><span>Journeys</span></div>' +
+    '<div><b>' + STATS.tools + '</b><span>Tools</span></div>' +
+    '<div><b>' + STATS.cats + '</b><span>Categories</span></div>' +
+    '<div><b>' + STATS.sessions + '</b><span>Sessions</span></div>' +
+    '<div><b>' + STATS.days.toLocaleString() + '</b><span>Daily readings</span></div>' +
+    '<div><b>' + STATS.entries + '</b><span>Total entries</span></div></div>';
+  h += '<p style="text-align:center;color:var(--muted);font-size:.86rem">15 categories &times; 15 journeys = ' + STATS.journeys +
+       '. Family 50 + Advisor 50 + Enterprise 25 = ' + STATS.tools + '. Every entry carries the same four-session architecture.</p>';
+
+  h += '<div class="sec"><div class="sechead"><h2>The 225-Journey Family Stewardship Library</h2>' +
+       '<p class="sub">Fifteen categories, fifteen journeys each, thirty days apiece.</p></div>';
+  for (var i=0;i<CATS.length;i++){
+    var c = CATS[i];
+    var d = 0;
+    for (var j=0;j<c.ids.length;j++){ if (byId(c.ids[j]).src === 0){ d++; } }
+    h += '<button class="row" type="button" data-cat="' + c.k + '">' +
+      '<span class="rn">' + (c.n < 10 ? "0" : "") + c.n + '</span>' +
+      '<span class="rmain"><span class="rt">' + c.name + '</span><span class="rs">' + c.q + '</span>' +
+      '<span class="rmeta">15 journeys' + (d ? ' &middot; ' + d + ' drafted' : '') + '</span></span>' +
+      '<span class="arw">&rsaquo;</span></button>';
+  }
+  h += '</div>';
+
+  h += '<div class="sec"><div class="sechead"><h2>The 125-Tool Stewardship Ecosystem</h2>' +
+       '<p class="sub">Three users, three promises, one architecture.</p></div>';
+  for (var g=0;g<GROUPS.length;g++){
+    var gr = GROUPS[g];
+    h += '<button class="row" type="button" data-grp="' + gr.k + '">' +
+      '<span class="rn">' + gr.user.slice(0,1) + '</span>' +
+      '<span class="rmain"><span class="rt">' + gr.name + '</span><span class="rs">' + gr.promise + '</span>' +
+      '<span class="rmeta">' + gr.count + ' tools &middot; ' + gr.sections.length + ' sections</span></span>' +
+      '<span class="arw">&rsaquo;</span></button>';
+  }
+  h += '<p class="legend">Of the ' + STATS.journeys + ' journey titles, ' + STATS.supplied + ' come from your documents and ' +
+       STATS.drafted + ' are drafted here to complete categories one through ten, marked <span class="tag">draft</span>. Tap "Drafted only" above to review just those.</p>';
+  h += '</div></div>';
+  return h;
+}
+
+function entryRow(e, n){
+  return '<button class="row" type="button" data-entry="' + e.id + '">' +
+    '<span class="rn">' + (n < 10 ? "0" : "") + n + '</span>' +
+    '<span class="rmain"><span class="rt">' + e.t + (e.src === 0 ? '<span class="tag">draft</span>' : '') + '</span>' +
+    '<span class="rs">' + e.s + '</span></span>' +
+    '<span class="arw">&rsaquo;</span></button>';
+}
+
+function renderCat(k){
+  var c = catByK(k);
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">' +
+    '<button class="back" type="button" data-go="home">&lsaquo; Library</button>' +
+    '<div class="sechead"><h2>' + c.name + '</h2><p class="sub">' + c.q + '</p></div>';
+  var shown = 0;
+  for (var i=0;i<c.ids.length;i++){
+    var e = byId(c.ids[i]);
+    if (DRAFTONLY && e.src !== 0){ continue; }
+    shown++;
+    h += entryRow(e, i + 1);
+  }
+  if (!shown){ h += '<p style="color:var(--muted)">No drafted titles in this category.</p>'; }
+  return h + '</div></div>';
+}
+
+function renderGrp(k){
+  var g = grpByK(k);
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">' +
+    '<button class="back" type="button" data-go="home">&lsaquo; Library</button>' +
+    '<div class="sechead"><h2>' + g.name + '</h2><p class="sub">' + g.promise + '</p></div>';
+  var n = 0;
+  for (var s=0;s<g.sections.length;s++){
+    var sec = g.sections[s];
+    h += '<div class="subhead">' + sec.k + '. ' + sec.name + '</div>';
+    for (var i=0;i<sec.ids.length;i++){
+      n++;
+      h += entryRow(byId(sec.ids[i]), n);
+    }
+  }
+  return h + '</div></div>';
+}
+
+function renderEntry(id){
+  var e = byId(id);
+  var back = e.kind === "journey" ? 'data-go="cat:' + e.grp.slice(1) + '"' : 'data-go="grp:' + e.grp + '"';
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">' +
+    '<button class="back" type="button" ' + back + '>&lsaquo; ' + e.grpName + '</button>' +
+    '<div class="sechead"><h2>' + e.t + '</h2><p class="sub">' + e.s + '</p></div>';
+  h += '<div class="gate"><span class="gl">Four sessions &middot; ' + (e.kind === "journey" ? "30 days" : "advisor-led") + '</span>' +
+       '<span class="label">' + LANG + '</span></div>';
+
+  var key = "S:" + id;
+  if (CACHE[key]) {
+    var rows = CACHE[key];
+    for (var i=0;i<rows.length;i++){
+      var ses = SESSIONS[i];
+      h += '<button class="row" type="button" data-ses="' + id + ':' + ses.n + '">' +
+        '<span class="rn">' + ses.n + '</span>' +
+        '<span class="rmain"><span class="rt">' + rows[i].t + '</span><span class="rs">' + rows[i].d + '</span>' +
+        '<span class="rmeta">Session ' + ses.n + ' &middot; ' + ses.name +
+        (e.kind === "journey" ? ' &middot; Days ' + ses.from + '&ndash;' + ses.to : '') + '</span></span>' +
+        '<span class="arw">&rsaquo;</span></button>';
+    }
+    h += '<div class="acts" style="margin-top:1rem"><button class="act" data-gensess="' + id + '" type="button">Regenerate sessions</button></div>';
+  } else {
+    for (var j=0;j<SESSIONS.length;j++){
+      var s2 = SESSIONS[j];
+      h += '<div class="row" style="cursor:default"><span class="rn">' + s2.n + '</span>' +
+        '<span class="rmain"><span class="rt" style="color:var(--muted)">Session ' + s2.n + ' &mdash; ' + s2.name + '</span>' +
+        '<span class="rs">' + s2.q + '</span>' +
+        (e.kind === "journey" ? '<span class="rmeta">Days ' + s2.from + '&ndash;' + s2.to + '</span>' : '') +
+        '</span></div>';
+    }
+    h += '<div class="acts" style="margin-top:1rem"><button class="act primary" data-gensess="' + id + '" type="button">Open the four sessions</button></div>';
+  }
+  h += '<div id="zone"></div></div></div>';
+  return h;
+}
+
+function renderSession(id, sn){
+  var e = byId(id);
+  var ses = SESSIONS[sn - 1];
+  var rows = CACHE["S:" + id] || [];
+  var title = rows[sn-1] ? rows[sn-1].t : ("Session " + sn + " \u2014 " + ses.name);
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">' +
+    '<button class="back" type="button" data-go="entry:' + id + '">&lsaquo; ' + e.t + '</button>' +
+    '<div class="sechead"><h2>' + title + '</h2><p class="sub">Session ' + sn + ' &middot; ' + ses.name +
+    (e.kind === "journey" ? ' &middot; Days ' + ses.from + '&ndash;' + ses.to : '') + '</p></div>';
+  h += '<div id="zone">';
+  if (e.kind === "journey") {
+    var dk = "D:" + id + ":" + sn;
+    if (DAYLIST[dk]) {
+      var days = DAYLIST[dk];
+      for (var i=0;i<days.length;i++){
+        h += '<button class="row" type="button" data-day="' + id + ':' + sn + ':' + days[i].k + '">' +
+          '<span class="rn">' + days[i].k + '</span>' +
+          '<span class="rmain"><span class="rt">' + days[i].t + '</span><span class="rs">' + days[i].d + '</span></span>' +
+          '<span class="arw">&rsaquo;</span></button>';
+      }
+      h += '<div class="acts" style="margin-top:1rem"><button class="act" data-gendays="' + id + ':' + sn + '" type="button">Regenerate days</button></div>';
+    } else {
+      h += '<div class="acts"><button class="act primary" data-gendays="' + id + ':' + sn + '" type="button">Open days ' + ses.from + ' to ' + ses.to + '</button></div>';
+    }
+  } else {
+    var tk = "T:" + id + ":" + sn;
+    if (CACHE[tk]) {
+      h += '<div class="acts"><button class="act" data-gentool="' + id + ':' + sn + '" type="button">Regenerate</button></div>' +
+           '<div class="out">' + mdToHtml(CACHE[tk]) + '</div>';
+    } else {
+      h += '<div class="acts"><button class="act primary" data-gentool="' + id + ':' + sn + '" type="button">Build this session</button></div>';
+    }
+  }
+  h += '</div></div></div>';
+  return h;
+}
+
+function renderDay(id, sn, dayNo){
+  var e = byId(id);
+  var days = DAYLIST["D:" + id + ":" + sn] || [];
+  var title = "Day " + dayNo;
+  for (var i=0;i<days.length;i++){ if (days[i].k === String(dayNo)){ title = days[i].t; } }
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">' +
+    '<button class="back" type="button" data-go="ses:' + id + ':' + sn + '">&lsaquo; Session ' + sn + '</button>' +
+    '<div class="sechead"><h2>Day ' + dayNo + ' &mdash; ' + title + '</h2><p class="sub">' + e.t + '</p></div>';
+  h += '<div id="zone">';
+  var k = "Y:" + id + ":" + dayNo;
+  if (CACHE[k]) {
+    h += '<div class="acts"><button class="act" data-genday="' + id + ':' + sn + ':' + dayNo + '" type="button">Regenerate</button>' +
+         '<button class="act" data-copy="' + k + '" type="button">Copy</button></div>' +
+         '<div class="out">' + mdToHtml(CACHE[k]) + '</div>';
+  } else {
+    h += '<div class="acts"><button class="act primary" data-genday="' + id + ':' + sn + ':' + dayNo + '" type="button">Write this day</button></div>';
+  }
+  h += '</div></div></div>';
+  return h;
+}
+
+function renderSearch(term){
+  var t = term.toLowerCase();
+  var hits = [];
+  for (var i=0;i<ENTRIES.length && hits.length < 60;i++){
+    var e = ENTRIES[i];
+    if (DRAFTONLY && e.src !== 0){ continue; }
+    if ((e.t + " " + e.s).toLowerCase().indexOf(t) > -1){ hits.push(e); }
+  }
+  var h = '<div class="wrap"><div class="sec" style="border-top:0">' +
+    '<div class="sechead"><h2>' + hits.length + ' match' + (hits.length === 1 ? '' : 'es') + '</h2>' +
+    '<p class="sub">Across ' + STATS.entries + ' journeys and tools.</p></div>';
+  for (var j=0;j<hits.length;j++){
+    h += '<button class="row" type="button" data-entry="' + hits[j].id + '">' +
+      '<span class="rn">' + (hits[j].kind === "journey" ? "J" : "T") + '</span>' +
+      '<span class="rmain"><span class="rt">' + hits[j].t + (hits[j].src === 0 ? '<span class="tag">draft</span>' : '') + '</span>' +
+      '<span class="rs">' + hits[j].s + '</span><span class="rmeta">' + hits[j].grpName + '</span></span>' +
+      '<span class="arw">&rsaquo;</span></button>';
+  }
+  return h + '</div></div>';
+}
+
+function render(){
+  var h = "";
+  if (VIEW.v === "home"){ h = renderHome(); }
+  else if (VIEW.v === "search"){ h = renderSearch(VIEW.term); }
+  else if (VIEW.v === "cat"){ h = renderCat(VIEW.cat); }
+  else if (VIEW.v === "grp"){ h = renderGrp(VIEW.grp); }
+  else if (VIEW.v === "entry"){ h = renderEntry(VIEW.id); }
+  else if (VIEW.v === "session"){ h = renderSession(VIEW.id, VIEW.ses); }
+  else if (VIEW.v === "day"){ h = renderDay(VIEW.id, VIEW.ses, VIEW.day); }
+  document.getElementById("app").innerHTML = h;
+  document.getElementById("crumb").innerHTML = crumbText();
+  var segs = document.getElementById("langSeg").getElementsByTagName("button");
+  for (var i=0;i<segs.length;i++){ segs[i].className = (segs[i].getAttribute("data-lang") === LANG) ? "on" : ""; }
+  document.getElementById("draftBtn").className = DRAFTONLY ? "act primary" : "act";
+  window.scrollTo(0,0);
+}
+
+/* ---------------- generation ---------------- */
+function busy(msg){
+  var z = document.getElementById("zone");
+  if (z){ z.innerHTML = '<div class="spin">' + msg + '<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>'; }
+}
+function fail(err){
+  var z = document.getElementById("zone");
+  if (z){
+    z.innerHTML = '<div class="err">Could not reach the generation service. ' + esc(String(err.message || err)) +
+      '<br><br>This library writes its sessions and days live, so it needs to run inside the Claude app.</div>';
+  }
+}
+
+async function genSessions(id){
+  var e = byId(id);
+  busy("Opening the four sessions of " + e.t);
+  try {
+    var rows = parsePipes(await callClaude(promptSessions(e)));
+    if (rows.length < 4){ throw new Error("Unexpected format; try again."); }
+    CACHE["S:" + id] = rows.slice(0,4);
+    VIEW = {v:"entry", id:id}; render();
+  } catch (err){ fail(err); }
+}
+async function genDays(id, sn){
+  var e = byId(id); var ses = SESSIONS[sn-1];
+  busy("Writing days " + ses.from + " to " + ses.to);
+  try {
+    var rows = parsePipes(await callClaude(promptDays(e, ses)));
+    if (!rows.length){ throw new Error("Unexpected format; try again."); }
+    DAYLIST["D:" + id + ":" + sn] = rows;
+    VIEW = {v:"session", id:id, ses:sn}; render();
+  } catch (err){ fail(err); }
+}
+async function genDay(id, sn, dayNo){
+  var e = byId(id); var ses = SESSIONS[sn-1];
+  var days = DAYLIST["D:" + id + ":" + sn] || [];
+  var title = "Day " + dayNo;
+  for (var i=0;i<days.length;i++){ if (days[i].k === String(dayNo)){ title = days[i].t; } }
+  busy("Writing day " + dayNo);
+  try {
+    CACHE["Y:" + id + ":" + dayNo] = await callClaude(promptDay(e, ses, dayNo, title));
+    VIEW = {v:"day", id:id, ses:sn, day:dayNo}; render();
+  } catch (err){ fail(err); }
+}
+async function genToolSession(id, sn){
+  var e = byId(id); var ses = SESSIONS[sn-1];
+  var rows = CACHE["S:" + id] || [];
+  var title = rows[sn-1] ? rows[sn-1].t : ("Session " + sn + " " + ses.name);
+  busy("Building session " + sn);
+  try {
+    CACHE["T:" + id + ":" + sn] = await callClaude(promptToolSession(e, ses, title));
+    VIEW = {v:"session", id:id, ses:sn}; render();
+  } catch (err){ fail(err); }
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener("click", function(ev){
+  var el = ev.target.closest ? ev.target.closest("[data-go],[data-cat],[data-grp],[data-entry],[data-ses],[data-day],[data-gensess],[data-gendays],[data-genday],[data-gentool],[data-copy],[data-lang]") : null;
+  if (!el){ return; }
+
+  if (el.hasAttribute("data-lang")){ LANG = el.getAttribute("data-lang"); render(); return; }
+  if (el.hasAttribute("data-cat")){ VIEW = {v:"cat", cat:el.getAttribute("data-cat")}; render(); return; }
+  if (el.hasAttribute("data-grp")){ VIEW = {v:"grp", grp:el.getAttribute("data-grp")}; render(); return; }
+  if (el.hasAttribute("data-entry")){ VIEW = {v:"entry", id:el.getAttribute("data-entry")}; render(); return; }
+
+  if (el.hasAttribute("data-go")){
+    var g = el.getAttribute("data-go");
+    if (g === "home"){ VIEW = {v:"home"}; }
+    else if (g.indexOf("cat:") === 0){ VIEW = {v:"cat", cat:"c" + g.slice(4)}; }
+    else if (g.indexOf("grp:") === 0){ VIEW = {v:"grp", grp:g.slice(4)}; }
+    else if (g.indexOf("entry:") === 0){ VIEW = {v:"entry", id:g.slice(6)}; }
+    else if (g.indexOf("ses:") === 0){ var p = g.slice(4).split(":"); VIEW = {v:"session", id:p[0], ses:Number(p[1])}; }
+    render(); return;
+  }
+  if (el.hasAttribute("data-ses")){
+    var a = el.getAttribute("data-ses").split(":");
+    VIEW = {v:"session", id:a[0], ses:Number(a[1])}; render(); return;
+  }
+  if (el.hasAttribute("data-day")){
+    var b = el.getAttribute("data-day").split(":");
+    VIEW = {v:"day", id:b[0], ses:Number(b[1]), day:Number(b[2])}; render(); return;
+  }
+  if (el.hasAttribute("data-gensess")){ genSessions(el.getAttribute("data-gensess")); return; }
+  if (el.hasAttribute("data-gendays")){ var c = el.getAttribute("data-gendays").split(":"); genDays(c[0], Number(c[1])); return; }
+  if (el.hasAttribute("data-genday")){ var d = el.getAttribute("data-genday").split(":"); genDay(d[0], Number(d[1]), Number(d[2])); return; }
+  if (el.hasAttribute("data-gentool")){ var f = el.getAttribute("data-gentool").split(":"); genToolSession(f[0], Number(f[1])); return; }
+  if (el.hasAttribute("data-copy")){
+    var txt = CACHE[el.getAttribute("data-copy")] || "";
+    if (navigator.clipboard){ navigator.clipboard.writeText(txt); }
+    el.innerHTML = "Copied";
+    setTimeout(function(){ el.innerHTML = "Copy"; }, 1400);
+    return;
+  }
+});
+
+document.getElementById("draftBtn").addEventListener("click", function(){
+  DRAFTONLY = !DRAFTONLY;
+  if (DRAFTONLY && VIEW.v === "home"){ VIEW = {v:"search", term:""}; }
+  render();
+});
+document.getElementById("q").addEventListener("input", function(){
+  var t = this.value.replace(/^\s+|\s+$/g, "");
+  if (t.length === 0){ VIEW = {v:"home"}; }
+  else { VIEW = {v:"search", term:t}; }
+  render();
+  if (t.length){ document.getElementById("q").focus(); }
+});
+
+render();
+</script>
+</body>
+</html>

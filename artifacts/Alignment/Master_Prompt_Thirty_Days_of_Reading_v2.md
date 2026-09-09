@@ -1,0 +1,193 @@
+# Master Prompt: Thirty Days of Reading
+## Devotional companion to the Family Legacy Coaching Series
+
+Fill in the bracketed items. Everything else is fixed across all six titles.
+
+## Format note, read this first
+
+This is a devotional, not a Participant Guide. Where my standing instructions reference sessions, appendices, or scenario responses, map them as follows and flag the mapping in one line rather than asking:
+
+- Day 1 stands in for Session 1
+- The six weeks stand in for Sessions 2 through 6
+- There is no appendix and there are no scenario responses
+- QA drops scenario counts, self-check counts, and solo fork frequency, and adds the devotional checks listed at the end of this prompt
+
+## The assignment
+
+Build a thirty-day devotional companion for **[TITLE]**, in Tom Conway's voice, for an audience of financial advisors working through the [TITLE] module.
+
+Thirty readings, Monday through Friday, six weeks. Each week corresponds to one session of the curriculum. Weekends are open by design, so a missed day can be caught up without falling behind.
+
+## Sources
+
+1. The **[TITLE] video transcripts**, the primary source. Every reading is built from what Tom actually says in these.
+2. The **Training Manual** and **Workbook Legend**, for named frameworks, exact question wording, and terminology.
+3. The **Coaching Book** and **Family Book**, for expanded versions of the same stories and frameworks.
+4. The **Workshop Transcripts**, for how Tom runs an exercise in a live room.
+
+## Speaker attribution
+
+The transcripts carry no speaker labels. This is the largest risk in the product, because the whole claim is that these are Tom's words and Brett is in every one of these recordings.
+
+- Exclude any candidate phrase sitting in a contested stretch rather than guessing at it
+- Where a phrase appears in an exchange, quote the surrounding lines in the pre-build report so I can adjudicate
+- Report attribution confidence for every title and every subtitle: Tom, Tom quoting someone else, or contested
+- Watch specifically for phrases Brett says first and Tom then confirms in different words. Tom's version is the one to use, even when Brett's is shorter and better
+
+## The rule that governs everything
+
+**Nothing invented. Anywhere.**
+
+This applies to a level of detail that is easy to violate without noticing:
+
+- **Titles come from Tom's words.** Not descriptions of his ideas. His actual phrases, pulled from the transcripts. Grep the sources for distinctive language before writing a single title.
+- **Subtitles come from Tom's words.** Same rule. A subtitle is a second phrase from the same passage, not a summary you wrote.
+- **Stories are Tom's, told as he tells them.** Same details, same numbers, same outcome. Do not add color, do not sharpen the ending, do not invent a detail that makes it land better.
+- **Teaching is Tom's.** You may connect his ideas and give them shape on the page. You may not add a principle he does not hold.
+- **Questions** in the Practice and One Question sections are Tom's questions, in his phrasing, wherever they exist in the sources.
+
+If there is no sourced phrase for a title, say so and offer the scripture reference as the title instead. Do not fill the gap with your own language. A flagged gap is correct. An invented title is not.
+
+## Voice
+
+Tom writing to advisors. First person. He is a CPA with about thirty years of this work behind him, and his register is plain, direct, occasionally blunt, never sentimental. He does not perform humility and he does not oversell.
+
+He is comfortable saying hard things without softening them.
+
+**Register examples, not quotable material.** These are here to set tone. Some of them come from titles outside the current project and may not appear in the sources you have been given. Do not use them as source phrases unless you can locate them:
+
+- that is a disaster about to happen
+- that is a poor use of your life
+- it does not do God any good sitting in your donor-advised fund
+
+Brett's phrases are not Tom's. The devotional is Tom alone. Do not use Brett's language from the transcripts, including his framing questions, his summarizing lines, and his metaphors.
+
+## Structure of each week
+
+Each week opens with a divider carrying three lines and nothing else:
+
+1. Week number
+2. Session number and theme title, matching the Participant Guide exactly
+3. Session subtitle, matching the Participant Guide exactly
+
+Then Day 1 of that week begins. No other week-level material.
+
+## Structure of each reading
+
+Every entry, in this order, with no horizontal rules or dividers between sections:
+
+1. **Day number**
+2. **Title**, Tom's phrase
+3. **Subtitle**, Tom's phrase
+4. **Scripture** in bold, then the reference
+5. **Body**
+6. **Reflect**, four questions, numbered
+7. **Practice**, a written exercise with fill-in lines or a small table, drawn from Tom's actual tools where one exists
+8. **One Question to Carry**, a single question in bold, Tom's phrasing, for the advisor to take to a client this week, followed by two or three fill-in lines
+9. **The Bucket**, three or four private fill-in prompts turning the day on the advisor personally
+10. **Prayer**, one or two lines of prayer direction, italicized. Never a written-out prayer.
+
+## Body length
+
+700 to 900 words, measured from the scripture reference to the Reflect heading. Six-minute read.
+
+This is a floor, not a target. If a body lands short, the fix is more sourced material, never padding. Count every body before delivering and report the range.
+
+## How the body should work
+
+Open with Tom's material rather than with framing. Get to what he says fast.
+
+Then do the work the transcript cannot do on its own. A transcript is conversational and repetitive. The reading takes the same content and gives it shape: name the thing underneath, separate two ideas the transcript runs together, follow a claim to its consequence.
+
+Bring scripture in around two thirds through rather than at the top. Let the practical material earn it.
+
+End on a short paragraph. Often one sentence. Do not summarize what was just said.
+
+## Front matter
+
+**Title page:** [TITLE] / Thirty Days of Reading / A Companion to the Family Legacy Coaching Series
+
+**Copyright:** bracketed placeholder, including a figures disclaimer for rates and exemption amounts.
+
+**How to Use This:** five readings a week Monday through Friday, six weeks, one week per session, weekends open on purpose, a few minutes each, write the answers rather than think them.
+
+**Contents:** two blocks only, weeks and entries. Each week heads with three lines, matching the Participant Guide exactly: session number and theme title on one line, subtitle on the next. Then the five entries beneath it, each with title and subtitle. No page numbers.
+
+## Process
+
+Deliver in this order, in one pass, without stopping for approval between stages:
+
+1. **Pre-build report.** Search the transcripts for Tom's distinctive phrases and report the list. Show which phrases could serve as titles, which sessions are thin, and the attribution confidence on every candidate. Report the thirty titles and thirty subtitles with the session each came from.
+2. Contents
+3. Front matter, written out in full
+4. Day 1
+5. Weeks 1 through 6, batched five days at a time
+6. Build continuity report
+7. QA table
+
+Make the default call on any open decision, flag it in one line, and keep building. I will overrule what I disagree with after I read it.
+
+## Reporting requirements
+
+**In the pre-build report:**
+- Every title and subtitle, with the session it came from and whether it is verbatim Tom, Tom quoting someone else, or contested
+- Which sessions are thin on material, stated rather than padded around
+- Any decision taken by default, one line each
+
+**In the continuity report:**
+- Which scriptures Tom quotes directly and which are recommendations needing his approval
+- Which recommended scriptures come from existing Family Legacy by Design material and which are imported from outside it
+- Scripture overlap between the devotional and the curriculum
+- Any story reused between the devotional and the curriculum, listed
+- Every place a gap was flagged rather than filled
+- Material excluded and why
+- Permissions still outstanding
+- The QA table
+
+## Editorial rules
+
+No em-dashes. No horizontal rules between sections. No self-answering rhetorical questions. No triplet sentence stacks. No written-out prayers. No self-help language. Vary the emotional register across a week.
+
+Do not repeat a story across two entries. Do not repeat a scripture across two entries.
+
+Placeholders are bracketed and italicized, and only for client-supplied items.
+
+Writing space is underscore rules.
+
+Heading hierarchy carried by type, not whitespace.
+
+## QA, run before delivering
+
+Report the table. Fix failures rather than reporting them.
+
+| Check | Target |
+|---|---|
+| Em-dashes and en-dashes | 0 |
+| Horizontal rules between sections | 0 |
+| Entries | 30 |
+| Week dividers with three lines each | 6 |
+| Reflect, Practice, One Question, Bucket, Prayer sections | 30 each |
+| Entries with exactly 4 Reflect questions | 30 |
+| Entries with 3 or 4 Bucket prompts | 30 |
+| Entries with 2 or 3 One Question lines | 30 |
+| Prayers as italic direction | 30 |
+| Written-out prayers | 0 |
+| Scriptures headed | 30 |
+| Repeated scriptures | 0 |
+| Repeated stories within the devotional | 0 |
+| Bodies within 700 to 900 words | 30 |
+| Shortest and longest body, stated | reported |
+| Titles verbatim in source | 30 |
+| Subtitles verbatim in source | 30 |
+| Titles with no source | 0, or flagged |
+
+## Things to watch for
+
+- The temptation to write a better title than the source offers. Resist it. Tom's ordinary phrase beats your good one, because his is real.
+- The temptation to complete a story Tom leaves incomplete. Leave it incomplete.
+- Stories that already appear in the curriculum. Flag any overlap so the client can decide.
+- Sessions with thin transcript material. Say so rather than padding with invention.
+- Statistics without attribution. Cut them.
+- Quotations Tom hedges on tape. Cut them pending verification.
+- Named public figures and named family members. Flag for permission rather than using freely.
+- Current-law figures, rates, exemption amounts, and settlement numbers. Flag in place as illustrative with an as-of date.

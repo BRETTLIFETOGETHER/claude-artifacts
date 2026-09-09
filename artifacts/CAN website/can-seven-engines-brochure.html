@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Seven CAN Engines&trade; &mdash; The Technology and Product Architecture Behind the Christian Advisor Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#07121F;
+  --navy:#0C1D33;
+  --panel:#11253F;
+  --line:rgba(201,169,78,.24);
+  --hair:rgba(201,169,78,.14);
+  --gold:#C9A94E;
+  --gold-lt:#E6CE8C;
+  --paper:#EFE9DC;
+  --body:#D6DEE9;
+  --muted:#90A4BD;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--navy);
+  background-image:radial-gradient(120% 60% at 50% 0%, #142A48 0%, #0C1D33 46%, #07121F 100%);
+  background-attachment:fixed;
+  color:var(--body);
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:18px;
+  line-height:1.62;
+}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;font-weight:500;color:var(--paper);margin:0}
+p{margin:0 0 1em}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+.eyebrow{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:0 0 1.1rem}
+.label{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 .55rem}
+.gold{color:var(--gold-lt)}
+
+/* masthead */
+.mast{padding:56px 0 40px;text-align:center}
+.crest{
+  display:inline-block;font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:.5rem 0;margin-bottom:1.9rem;font-weight:600;
+}
+h1{font-size:clamp(2.7rem,14vw,5.4rem);line-height:.92;letter-spacing:-.015em;font-weight:700}
+h1 .sm{display:block;font-size:.26em;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.9rem}
+h1 .tm{font-size:.26em;vertical-align:super;letter-spacing:0;color:var(--gold)}
+.deck{font-size:clamp(1.05rem,4.4vw,1.32rem);color:var(--paper);font-style:italic;max-width:32ch;margin:1.3rem auto 0;line-height:1.4}
+.forwhom{margin:2rem auto 0;max-width:46ch;color:var(--muted);font-size:.98rem;line-height:1.55}
+
+/* thesis */
+.thesis{border-left:2px solid var(--gold);padding:.2rem 0 .2rem 1.15rem;margin:0 0 1.6rem}
+.thesis p{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-size:clamp(1.28rem,5.2vw,1.8rem);line-height:1.32;color:var(--paper);margin:0}
+
+/* the loop */
+.loop{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:1.35rem 0;margin:2.2rem 0;text-align:center;
+}
+.loop span{
+  font-family:"Playfair Display",Georgia,serif;font-size:clamp(.82rem,3.4vw,1.02rem);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--paper);white-space:nowrap;
+}
+.loop i{color:var(--gold);font-style:normal;padding:0 .5rem}
+.loop .cap{display:block;font-family:"Cormorant Garamond",serif;font-size:.64rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-top:.9rem}
+
+/* stat band */
+.band{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:1.6rem 0}
+.band div{flex:1 1 33%;background:var(--navy);padding:.95rem .4rem;text-align:center}
+.band b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:1.45rem;color:var(--gold-lt);font-weight:500;line-height:1}
+.band span{display:block;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:.42rem}
+.bandcap{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:center;margin:0 0 1.6rem}
+
+/* contents */
+.toc{margin:0;padding:0;list-style:none}
+.toc a{display:flex;align-items:baseline;gap:.55rem;text-decoration:none;padding:.52rem 0;border-bottom:1px solid var(--hair);color:var(--paper)}
+.toc a:hover .tname{color:var(--gold-lt)}
+.toc .tnum{font-size:.64rem;letter-spacing:.16em;color:var(--gold);min-width:4.6em;text-transform:uppercase;font-weight:600}
+.toc .tname{font-family:"Playfair Display",Georgia,serif;font-size:1rem}
+.toc .lead{flex:1 1 auto;border-bottom:1px dotted rgba(144,164,189,.4);transform:translateY(-.3em);min-width:14px}
+
+/* sections */
+.sec{padding:52px 0;border-top:1px solid var(--line)}
+.sechead{margin:0 0 1.9rem}
+.sechead h2{font-size:clamp(1.7rem,7vw,2.5rem);line-height:1.08;letter-spacing:-.01em}
+.sechead .sub{color:var(--muted);font-size:1.02rem;font-style:italic;margin:.6rem 0 0;max-width:46ch}
+.lede{font-size:1.08rem;color:var(--paper)}
+
+/* directory */
+.dirbar{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:.5rem;margin-bottom:.2rem}
+.toggleall{background:none;border:0;color:var(--gold);font-family:"Cormorant Garamond",serif;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:.2rem 0;font-weight:600}
+.entry{border-bottom:1px solid var(--hair)}
+.head{width:100%;display:flex;gap:.85rem;align-items:flex-start;text-align:left;background:none;border:0;cursor:pointer;padding:1.05rem 0;color:inherit;font:inherit}
+.num{font-family:"Playfair Display",Georgia,serif;font-size:1.35rem;color:var(--gold);line-height:1;padding-top:.15rem;min-width:1.5em}
+.ht{flex:1}
+.tt{display:block;font-family:"Playfair Display",Georgia,serif;font-size:1.15rem;color:var(--paper);line-height:1.26}
+.ts{display:block;font-size:.98rem;color:var(--muted);font-style:italic;margin-top:.24rem;line-height:1.45}
+.chev{color:var(--gold);font-size:1.15rem;line-height:1;padding-top:.35rem}
+.entry.open .chev{transform:rotate(45deg)}
+.bodyw{display:none;padding:0 0 1.35rem 2.4rem}
+.entry.open .bodyw{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.row{margin:0 0 .55rem;padding-left:.9rem;border-left:1px solid var(--hair);font-size:1rem;color:var(--body)}
+.row b{color:var(--gold-lt);font-weight:600;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;display:block;margin-bottom:.15rem}
+.row em{color:var(--paper)}
+
+/* owns table */
+.owns{border-top:1px solid var(--line)}
+.owns .r{padding:.85rem 0;border-bottom:1px solid var(--hair)}
+.owns .e{font-family:"Playfair Display",Georgia,serif;font-size:1.04rem;color:var(--paper)}
+.owns .q{font-size:.98rem;color:var(--body);font-style:italic;margin-top:.15rem}
+.owns .u{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-top:.35rem}
+
+/* stack */
+.stack{margin:0 0 1.6rem}
+.stack .lay{border:1px solid var(--line);background:var(--panel);padding:.95rem 1.1rem;margin:0 0 .5rem}
+.stack .lay:last-child{margin-bottom:0;border-color:var(--gold);background:#132A48}
+.stack .ln{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.stack h4{font-size:1.1rem;margin:.2rem 0 .2rem}
+.stack p{margin:0;font-size:.96rem;color:var(--muted)}
+
+/* ladder */
+.ladder{margin:0 0 1.5rem;padding:0;list-style:none;border-top:1px solid var(--hair)}
+.ladder li{display:flex;align-items:baseline;gap:.9rem;padding:.6rem 0;border-bottom:1px solid var(--hair)}
+.ladder .n{font-size:.66rem;color:var(--gold);min-width:1.6em;letter-spacing:.1em}
+.ladder .rung{font-family:"Playfair Display",Georgia,serif;font-size:clamp(.98rem,4.4vw,1.2rem);letter-spacing:.11em;text-transform:uppercase}
+.ladder .d{flex:1;text-align:right;font-size:.88rem;color:var(--muted);font-style:italic}
+.ladder li:nth-child(1) .rung{color:#5F748E}
+.ladder li:nth-child(2) .rung{color:#7A8EA6}
+.ladder li:nth-child(3) .rung{color:#96A8BE}
+.ladder li:nth-child(4) .rung{color:#B9C4D2}
+.ladder li:nth-child(5) .rung{color:var(--paper)}
+.ladder li:nth-child(6) .rung{color:var(--gold-lt);font-weight:700}
+
+/* panels */
+.panel{border:1px solid var(--line);background:var(--panel);padding:1.3rem;margin:0 0 1.3rem}
+.panel h4{font-size:1.12rem;color:var(--gold-lt);margin:0 0 .5rem}
+.panel ul{margin:0;padding-left:1.05rem}
+.panel li{margin:0 0 .28rem;font-size:1rem}
+.panel.keep{border-color:var(--gold)}
+.panel.keep h4{color:var(--gold)}
+.panel .pn{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+
+/* walkthrough */
+.walk{margin:0;padding:0;list-style:none;border-top:1px solid var(--hair)}
+.walk li{display:flex;gap:.95rem;padding:.85rem 0;border-bottom:1px solid var(--hair)}
+.walk .wn{font-family:"Playfair Display",Georgia,serif;color:var(--gold);font-size:1.1rem;min-width:1.5em;line-height:1.3}
+.walk .we{display:block;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.18rem}
+.walk .wt{font-size:1rem;color:var(--body)}
+.walk .wt em{color:var(--paper);font-style:italic}
+
+/* quote */
+.pull{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1.5rem 0;margin:1.9rem 0;text-align:center}
+.pull p{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-size:clamp(1.12rem,4.6vw,1.5rem);line-height:1.36;color:var(--paper);margin:0}
+.pull .attr{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-top:.85rem;font-style:normal}
+
+/* sample */
+.sample{border:1px solid var(--hair);padding:1.1rem 1.15rem;margin:0 0 1.3rem;background:rgba(255,255,255,.02)}
+.sample .sl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.sample p{margin:0;font-size:1rem;font-style:italic;color:var(--paper)}
+.sample p + p{margin-top:.7rem}
+.sample .before{color:var(--muted);font-style:italic}
+
+/* plain lists */
+.plain{margin:0 0 1.3rem;padding:0;list-style:none}
+.plain li{padding:.45rem 0;border-bottom:1px solid var(--hair);font-size:1rem;display:flex;gap:.8rem;align-items:baseline}
+.plain .k{color:var(--gold);font-size:.66rem;letter-spacing:.14em;min-width:2.6em;text-transform:uppercase}
+.cols{columns:1;column-gap:2rem}
+
+/* couplets */
+.couplets{border-top:1px solid var(--line);margin:2rem 0 0}
+.cp{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--hair)}
+.cp span{padding:.72rem .5rem;font-family:"Playfair Display",Georgia,serif;font-size:clamp(.8rem,3.6vw,1rem);letter-spacing:.12em;text-transform:uppercase}
+.cp .ai{color:var(--muted);text-align:right;border-right:1px solid var(--hair);padding-right:.9rem}
+.cp .hu{color:var(--paper);padding-left:.9rem}
+.cp.final .ai{color:var(--gold)}
+.cp.final .hu{color:var(--gold-lt);font-weight:700}
+
+/* close */
+.close{padding:56px 0 72px;text-align:center;border-top:1px solid var(--line)}
+.close h3{font-size:clamp(1.2rem,5.4vw,1.7rem);line-height:1.24;max-width:22ch;margin:0 auto}
+.foot{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2.4rem}
+
+@media (min-width:680px){
+  body{font-size:19px}
+  .cols{columns:2}
+  .sec{padding:66px 0}
+  .owns .r{display:grid;grid-template-columns:1.1fr 1.4fr .6fr;gap:1rem;align-items:baseline}
+  .owns .q{margin-top:0}
+  .owns .u{margin-top:0;text-align:right}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+@media print{body{background:#fff;color:#111}.bodyw{display:block !important}.toggleall,.chev{display:none}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="crest">Architecture Edition &nbsp;&middot;&nbsp; Christian Advisor Network</div>
+    <h1><span class="sm">Master Summary</span>The Seven<br>CAN Engines<span class="tm">&trade;</span></h1>
+    <p class="deck">The technology and product architecture behind the Christian Advisor Network</p>
+    <p class="forwhom">For the CEO, the board, and the product and technology leadership deciding what actually gets built &mdash; and in what order.</p>
+  </div>
+</header>
+
+<section class="sec" style="border-top:0">
+  <div class="wrap">
+    <div class="thesis">
+      <p>CAN should not be built as 125 unrelated tools or 225 disconnected journeys.</p>
+    </div>
+    <p class="lede">It should be built as a small number of powerful intelligence engines &mdash; engines that generate many different outputs depending on the advisor, the family, the firm, the situation, the relationship stage, and the next stewardship need.</p>
+    <p>Seven engines form the core operating system. Each answers one fundamental question. Together they form a single continuous loop, and every turn of that loop makes the next one better.</p>
+
+    <div class="loop">
+      <span>Know</span><i>&rarr;</i><span>Diagnose</span><i>&rarr;</i><span>Prescribe</span><i>&rarr;</i><span>Personalize</span><i>&rarr;</i><span>Engage</span><i>&rarr;</i><span>Measure</span><i>&rarr;</i><span>Scale</span><i>&#8635;</i>
+      <span class="cap">One continuous operating loop</span>
+    </div>
+
+    <p class="label">Contents</p>
+    <ul class="toc">
+      <li><a href="#engines"><span class="tnum">One</span><span class="tname">The Seven Engines</span><span class="lead"></span></a></li>
+      <li><a href="#owns"><span class="tnum">Two</span><span class="tname">What Each Engine Owns</span><span class="lead"></span></a></li>
+      <li><a href="#anderson"><span class="tnum">Three</span><span class="tname">One Family Through Seven Engines</span><span class="lead"></span></a></li>
+      <li><a href="#flow"><span class="tnum">Four</span><span class="tname">The Data Flow and the Moat</span><span class="lead"></span></a></li>
+      <li><a href="#stack"><span class="tnum">Five</span><span class="tname">The CAN Product Stack</span><span class="lead"></span></a></li>
+      <li><a href="#build"><span class="tnum">Six</span><span class="tname">What to Build First</span><span class="lead"></span></a></li>
+      <li><a href="#sixty"><span class="tnum">Seven</span><span class="tname">Sixty Seconds for a CEO</span><span class="lead"></span></a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ THE ENGINES ============ -->
+<section class="sec" id="engines">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">One</p>
+      <h2>The Seven Engines</h2>
+      <p class="sub">Each engine has one core promise, one primary user, and outputs the others depend on.</p>
+    </div>
+
+    <div class="dirbar">
+      <span class="label" style="margin:0">Engine directory</span>
+      <button class="toggleall" type="button" data-target="engineDir">Open all</button>
+    </div>
+    <div id="engineDir"></div>
+  </div>
+</section>
+
+<!-- ============ WHAT EACH OWNS ============ -->
+<section class="sec" id="owns">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">Two</p>
+      <h2>What Each Engine Owns</h2>
+      <p class="sub">Seven engines, seven questions, three primary users. No overlap, no orphaned responsibility.</p>
+    </div>
+
+    <div class="owns">
+      <div class="r">
+        <div class="e">Family Intelligence</div>
+        <div class="q">Who is this family?</div>
+        <div class="u">Advisor</div>
+      </div>
+      <div class="r">
+        <div class="e">Stewardship Prescription</div>
+        <div class="q">What do they need next?</div>
+        <div class="u">Advisor</div>
+      </div>
+      <div class="r">
+        <div class="e">Personalization &amp; Publishing</div>
+        <div class="q">How should this be customized?</div>
+        <div class="u">Family</div>
+      </div>
+      <div class="r">
+        <div class="e">Advisor Intelligence</div>
+        <div class="q">What should the advisor know and do?</div>
+        <div class="u">Advisor</div>
+      </div>
+      <div class="r">
+        <div class="e">Family Experience</div>
+        <div class="q">What should the family actually experience?</div>
+        <div class="u">Family</div>
+      </div>
+      <div class="r">
+        <div class="e">Relationship Intelligence</div>
+        <div class="q">How strong and transferable is trust?</div>
+        <div class="u">Advisor / RIA</div>
+      </div>
+      <div class="r">
+        <div class="e">Enterprise Intelligence</div>
+        <div class="q">Is the system working across the firm?</div>
+        <div class="u">CEO / RIA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ANDERSON ============ -->
+<section class="sec" id="anderson">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">Three</p>
+      <h2>One Family Through Seven Engines</h2>
+      <p class="sub">A worked example. Parents 67 and 65, three adult children, a family business, a donor-advised fund, strong faith, no family mission, no family meeting in three years.</p>
+    </div>
+
+    <ul class="walk">
+      <li><span class="wn">1</span><span class="wt"><span class="we">Family Intelligence</span>CAN discovers the structure &mdash; parents, three children, business, DAF, faith orientation, and a stated concern about entitlement. It does not merely store this. It interprets it: <em>high urgency on next-generation preparation; moderate risk in the relationship with the daughter; generosity as a low-conflict entry point; no shared family mission; one child has never met the advisor.</em></span></li>
+      <li><span class="wn">2</span><span class="wt"><span class="we">Prescription</span>CAN recommends Wisdom Before Wealth&trade; &mdash; because heir preparation is the family&rsquo;s own highest-rated concern, and because it is actionable now.</span></li>
+      <li><span class="wn">3</span><span class="wt"><span class="we">Personalization</span>CAN produces the Anderson family&rsquo;s own edition of that journey, in their faith language, naming their children, presented by their advisor and their firm.</span></li>
+      <li><span class="wn">4</span><span class="wt"><span class="we">Advisor Intelligence</span>The advisor receives five prioritized questions, two sensitivities to avoid, one relationship gap to close, and three possible next steps.</span></li>
+      <li><span class="wn">5</span><span class="wt"><span class="we">Family Experience</span>The family completes the journey and holds a facilitated family meeting.</span></li>
+      <li><span class="wn">6</span><span class="wt"><span class="we">Relationship Intelligence</span>CAN records that all three children are now engaged. The Relationship Depth Score improves.</span></li>
+      <li><span class="wn">7</span><span class="wt"><span class="we">Enterprise Intelligence</span>The CEO sees one additional high-value household that now has G2 coverage.</span></li>
+    </ul>
+
+    <div class="pull">
+      <p>That is the complete loop &mdash; and it began with a conversation, not a campaign.</p>
+      <div class="attr">The Anderson family</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DATA FLOW ============ -->
+<section class="sec" id="flow">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">Four</p>
+      <h2>The Data Flow and the Moat</h2>
+      <p class="sub">The architecture should work like a flywheel, not seven silos.</p>
+    </div>
+
+    <ul class="plain">
+      <li><span class="k">01</span><span>Every family experience creates new intelligence</span></li>
+      <li><span class="k">02</span><span>Every new piece of intelligence improves recommendations</span></li>
+      <li><span class="k">03</span><span>Every new recommendation improves personalization</span></li>
+      <li><span class="k">04</span><span>Every personalized experience creates deeper engagement</span></li>
+      <li><span class="k">05</span><span>Every engagement improves relationship data</span></li>
+      <li><span class="k">06</span><span>Every relationship strengthens enterprise intelligence</span></li>
+    </ul>
+
+    <div class="loop">
+      <span>More use</span><i>&rarr;</i><span>Better context</span><i>&rarr;</i><span>Better personalization</span><i>&rarr;</i><span>Deeper relationship</span><i>&rarr;</i><span>More value</span>
+      <span class="cap">A compounding data and experience moat</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STACK ============ -->
+<section class="sec" id="stack">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">Five</p>
+      <h2>The CAN Product Stack</h2>
+      <p class="sub">Seven engines, four layers. This is the simpler technical story.</p>
+    </div>
+
+    <div class="stack">
+      <div class="lay">
+        <div class="ln">Layer 4 &mdash; Output</div>
+        <h4>Personalization &amp; Publishing</h4>
+        <p>What the family actually holds, reads, and keeps.</p>
+      </div>
+      <div class="lay">
+        <div class="ln">Layer 3 &mdash; Experience</div>
+        <h4>Family Experience</h4>
+        <p>Journeys, meetings, workshops, decisions, follow-up.</p>
+      </div>
+      <div class="lay">
+        <div class="ln">Layer 2 &mdash; Decisioning</div>
+        <h4>Stewardship Prescription &nbsp;&middot;&nbsp; Advisor Intelligence</h4>
+        <p>What matters next, and how the advisor should lead it.</p>
+      </div>
+      <div class="lay">
+        <div class="ln">Layer 1 &mdash; Intelligence</div>
+        <h4>Family &nbsp;&middot;&nbsp; Relationship &nbsp;&middot;&nbsp; Enterprise</h4>
+        <p>The foundation. Everything above it is only as good as this.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUILD ============ -->
+<section class="sec" id="build">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">Six</p>
+      <h2>What to Build First</h2>
+      <p class="sub">The seven engines do not need to launch simultaneously.</p>
+    </div>
+
+    <div class="panel">
+      <div class="pn">Phase One &mdash; a family-facing product</div>
+      <h4>Know, prescribe, personalize, engage</h4>
+      <ul>
+        <li>Family Intelligence &mdash; profiles, assessments, relationship map</li>
+        <li>Stewardship Prescription &mdash; basic journey recommendation</li>
+        <li>Personalization &mdash; personalized journey and meeting guide</li>
+        <li>Family Experience &mdash; 30-day journey plus family meeting</li>
+      </ul>
+      <p style="margin:.8rem 0 0;color:var(--muted)">That is enough for the first family-facing product.</p>
+    </div>
+
+    <div class="panel">
+      <div class="pn">Phase Two &mdash; an advisor product</div>
+      <h4>Prepare, remember, measure</h4>
+      <ul>
+        <li>Advisor Intelligence &mdash; meeting prep, questions, follow-up, relationship reminders</li>
+        <li>Relationship Intelligence &mdash; Relationship Depth Score, G2 and G3 tracking, risk</li>
+      </ul>
+      <p style="margin:.8rem 0 0;color:var(--muted)">Now CAN becomes materially more valuable to advisors.</p>
+    </div>
+
+    <div class="panel keep">
+      <div class="pn">Phase Three &mdash; an enterprise platform</div>
+      <h4>Scale culture, capability, and relationship equity</h4>
+      <ul>
+        <li>Enterprise Intelligence &mdash; culture, advisor capability, client experience</li>
+        <li>Relationship-retention dashboards and M&amp;A integration</li>
+      </ul>
+      <p style="margin:.8rem 0 0;color:var(--gold-lt)">Now CAN is an enterprise RIA platform.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SIXTY SECONDS ============ -->
+<section class="sec" id="sixty">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">Seven</p>
+      <h2>Sixty Seconds for a CEO</h2>
+      <p class="sub">If you had one minute and no slides.</p>
+    </div>
+
+    <div class="sample">
+      <div class="sl">The explanation</div>
+      <p>&ldquo;First, CAN helps your advisors understand the whole family, not merely the portfolio. Second, it identifies the family&rsquo;s most important next stewardship conversation. Third, it creates personalized resources for that specific family. Fourth, it prepares the advisor to lead the conversation well. Fifth, it turns those resources into family experiences and action. Sixth, it measures whether trust is spreading across generations. And seventh, it gives leadership visibility into whether that model is actually scaling across the firm.&rdquo;</p>
+    </div>
+
+    <p>That is what makes CAN more than content.</p>
+
+    <div class="thesis">
+      <p>A relationship intelligence and family stewardship operating system for RIAs.</p>
+    </div>
+
+    <div class="couplets">
+      <div class="cp"><span class="ai">AI gathers</span><span class="hu">Humans listen</span></div>
+      <div class="cp"><span class="ai">AI organizes</span><span class="hu">Humans discern</span></div>
+      <div class="cp"><span class="ai">AI personalizes</span><span class="hu">Humans relate</span></div>
+      <div class="cp"><span class="ai">AI measures</span><span class="hu">Humans build trust</span></div>
+      <div class="cp final"><span class="ai">AI creates capacity</span><span class="hu">Relationship creates value</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="close">
+  <div class="wrap">
+    <h3>Seven engines. One loop. One relationship at a time.</h3>
+    <div class="foot">The Seven CAN Engines&trade; &nbsp;&middot;&nbsp; Christian Advisor Network</div>
+  </div>
+</footer>
+
+<script>
+var ENGINES = [
+  {
+    n: "1",
+    t: "Family Intelligence Engine\u2122",
+    s: "Know the family before you advise the family.",
+    d: [
+      "<b>The gap it fills</b>Advisor technology knows accounts, assets, performance, beneficiaries, risk tolerance, and financial goals. It usually knows far less about family relationships, spouses, children, grandchildren, values, faith, generosity, family history, succession concerns, tensions, future leadership, and what the wealth is actually meant to accomplish.",
+      "<b>What it is</b>A living, multidimensional family profile \u2014 the master context layer for everything CAN generates. It evolves every time an assessment is completed, a meeting occurs, a child joins the process, a transition happens, a journey finishes, or an advisor adds something relevant.",
+      "<b>Eight data areas</b>Family structure. Life stage. Family roles. Values and faith, including the desired faith language level. Family concerns. Family aspirations. The existing professional team. Stewardship history.",
+      "<b>Outputs</b>Family Stewardship Profile\u2122, Family Relationship Map\u2122, Family Stewardship Scorecard\u2122, Family Priority Map\u2122, Family Opportunity Summary\u2122, Life Transition Alerts\u2122, Family Discovery Brief\u2122.",
+      "<b>The critical distinction</b><em>The engine does not merely store what it learns. It interprets it \u2014 into urgency, risk, opportunity, gap, and advisor relationship exposure.</em>"
+    ]
+  },
+  {
+    n: "2",
+    t: "Stewardship Prescription Engine\u2122",
+    s: "Recommend the right conversation at the right time.",
+    d: [
+      "<b>The problem it solves</b>A large journey library creates enormous possibility \u2014 and overwhelming complexity. The family should never browse hundreds of options, and the advisor should rarely have to search manually.",
+      "<b>The question it answers</b><em>Given what we know about this family, what is the most useful next experience?</em>",
+      "<b>Five filters</b>What matters most? What is most urgent? What is most actionable? What is relationally appropriate \u2014 does sufficient trust exist for this conversation? What creates the greatest next-step value?",
+      "<b>Seven prescription types</b>Journey. Conversation. Meeting. Assessment. Specialist. Content. Action.",
+      "<b>Output format</b>Primary recommendation, why, who participates, desired outcome, advisor role, recommended follow-on \u2014 with a confidence level of high, moderate, or more information needed.",
+      "<b>The governing rule</b><em>AI recommends. The advisor approves. The human knows context the system may not, and AI should recommend rather than pretend certainty.</em>"
+    ]
+  },
+  {
+    n: "3",
+    t: "Personalization &amp; Publishing Engine\u2122",
+    s: "Make every resource feel like it was created for this family.",
+    d: [
+      "<b>Why it matters</b>Generic content is becoming abundant. Personal relevance becomes the differentiator.",
+      "<b>What gets personalized</b>Identity \u2014 family name, advisor, firm, photographs, members. Language \u2014 faith-forward, faith-friendly, values-based. Life stage. Family situation. Content selection \u2014 readings, stories, Scripture, videos, questions, specialists. Tone \u2014 reflective, practical, executive, conversational, faith-centered.",
+      "<b>Ten outputs</b>Personalized 30-Day Journey, Couple Discussion Guide, Family Meeting Guide, Next-Generation Guide, Family Journal, Legacy Letter Workbook, Family Story Book, Annual Family Impact Report, Family Stewardship Portfolio, Advisor Follow-Up Summary.",
+      "<b>Co-branding architecture</b>Prepared especially for the family. Presented by their advisor. From their firm. Powered by the Christian Advisor Network. <em>CAN remains infrastructure. The advisor remains the relationship hero.</em>",
+      "<b>Publishing formats</b>Digital journey, interactive portal, PDF, print-ready workbook, hardcover journal, family legacy book, meeting packet, annual report, email series, video companion."
+    ]
+  },
+  {
+    n: "4",
+    t: "Advisor Intelligence Engine\u2122",
+    s: "Help the advisor remember more, prepare better, and relate more deeply.",
+    d: [
+      "<b>The human limit</b>Even a talented advisor cannot personally remember every detail across one or two hundred family relationships. This engine can \u2014 and it turns family data into relationship preparation.",
+      "<b>Before every meeting</b>The Family Stewardship Intelligence Brief\u2122 answers eight questions: who is attending, what matters right now, what did they tell us last time, who is missing, what should I ask, what should I listen for, what should I avoid, and what could come next.",
+      "<b>Other outputs</b>Advisor Conversation Prompt Generator\u2122, Family Opportunity Finder\u2122, Follow-Up Draft Generator\u2122, Relationship Risk Alerts\u2122, Next Best Action\u2122, Family Meeting Preparation Brief\u2122, Advisor Annual Planning Calendar\u2122.",
+      "<b>Relationship memory</b><em>Last year he said his greatest fear was that selling the company would remove his sense of purpose.</em> That context creates a very different conversation.",
+      "<b>The point</b>The client should not experience &ldquo;look what our software generated.&rdquo; The client should experience <em>&ldquo;my advisor remembers what matters to us.&rdquo;</em>"
+    ]
+  },
+  {
+    n: "5",
+    t: "Family Experience Engine\u2122",
+    s: "Turn insight into conversation, and conversation into action.",
+    d: [
+      "<b>Why it exists</b>Assessment without action has limited value. Content without conversation has limited value. This layer converts what CAN knows into experiences people actually participate in.",
+      "<b>Nine experience types</b>30-day journey. Couple experience. Family meeting. Family workshop. Next-generation experience. Grandparent experience. Generosity experience. Legacy experience. Annual stewardship review.",
+      "<b>Standard architecture</b>Prepare. Reflect. Share. Discuss. Decide. Act. Follow up.",
+      "<b>Worked example \u2014 Generous Together\u2122</b>Giving interests assessment, short teaching video, personal reflection, family cause map, family meeting, giving decision, follow-up impact conversation. <em>Generosity stops being content and becomes an experience.</em>",
+      "<b>Advisor role</b>Not lecturer. Facilitator, guide, question asker, connector, accountability partner."
+    ]
+  },
+  {
+    n: "6",
+    t: "Relationship Intelligence Engine\u2122",
+    s: "Measure what traditional AUM reporting cannot see.",
+    d: [
+      "<b>The core concept</b>Relationship Equity\u2122 \u2014 the strength of the trust network connecting family members, advisors, the firm, and future decision-makers. Relationships create the durability behind the numbers most dashboards already report.",
+      "<b>Eight dimensions</b>Primary client trust. Spouse trust. G2 relationship. G3 relationship. Team depth. Family knowledge. Experience engagement. Continuity \u2014 would the family remain if the primary advisor retired?",
+      "<b>Seven metrics</b>Relationship Depth Score\u2122, Multigenerational Coverage Score\u2122, Spouse Engagement Score\u2122, Next-Generation Engagement Score\u2122, Advisor Concentration Risk\u2122, Relationship Retention Risk\u2122, Acquisition Relationship Risk\u2122.",
+      "<b>Example risk alert</b>$22M household. Client 68, advisor 63. Spouse engagement high, G2 engagement one of three, no secondary advisor, succession discussion incomplete. <em>Classification: high.</em> Recommended actions: introduce a secondary advisor, engage the remaining children, complete Wisdom Before Wealth\u2122, schedule a family meeting."
+    ]
+  },
+  {
+    n: "7",
+    t: "Enterprise Intelligence Engine\u2122",
+    s: "Help leadership scale what previously existed only in great advisors' heads.",
+    d: [
+      "<b>What it is</b>The aggregation layer across families, advisors, offices, teams, acquisitions, and client segments \u2014 built to answer one question: <em>are we actually delivering the stewardship experience we claim to provide?</em>",
+      "<b>Seven leadership domains</b>Culture. Advisor capability. Client experience. Multigenerational relationships. Relationship risk. AI capacity \u2014 and whether it is being reinvested in relationships. M&amp;A integration.",
+      "<b>Six executive dashboards</b>Culture Health\u2122. Advisor Stewardship\u2122. Client Experience\u2122. Great Relationship Transfer\u2122. M&amp;A Relationship Integration\u2122. Relationship Equity\u2122.",
+      "<b>What the CEO finally sees</b>Not just AUM and production, but where relationship equity is concentrated, where it is thin, and where significant assets sit on a single relationship."
+    ]
+  }
+];
+
+function buildDirectory(containerId, items) {
+  var el = document.getElementById(containerId);
+  if (!el) { return; }
+  var html = "";
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    var rows = "";
+    for (var j = 0; j < it.d.length; j++) {
+      rows += '<p class="row">' + it.d[j] + '</p>';
+    }
+    html += '<article class="entry">' +
+              '<button class="head" type="button" aria-expanded="false">' +
+                '<span class="num">' + it.n + '</span>' +
+                '<span class="ht"><span class="tt">' + it.t + '</span>' +
+                '<span class="ts">' + it.s + '</span></span>' +
+                '<span class="chev" aria-hidden="true">+</span>' +
+              '</button>' +
+              '<div class="bodyw">' + rows + '</div>' +
+            '</article>';
+  }
+  el.innerHTML = html;
+}
+
+buildDirectory("engineDir", ENGINES);
+
+document.addEventListener("click", function (e) {
+  var head = e.target.closest ? e.target.closest(".head") : null;
+  if (head) {
+    var entry = head.parentNode;
+    var isOpen = entry.className.indexOf("open") > -1;
+    entry.className = isOpen ? "entry" : "entry open";
+    head.setAttribute("aria-expanded", isOpen ? "false" : "true");
+    return;
+  }
+  var btn = e.target.closest ? e.target.closest(".toggleall") : null;
+  if (btn) {
+    var wrapEl = document.getElementById(btn.getAttribute("data-target"));
+    if (!wrapEl) { return; }
+    var opening = btn.innerHTML.indexOf("Open") > -1;
+    var entries = wrapEl.getElementsByClassName("entry");
+    for (var k = 0; k < entries.length; k++) {
+      entries[k].className = opening ? "entry open" : "entry";
+      var h = entries[k].getElementsByClassName("head")[0];
+      if (h) { h.setAttribute("aria-expanded", opening ? "true" : "false"); }
+    }
+    btn.innerHTML = opening ? "Close all" : "Open all";
+  }
+});
+</script>
+</body>
+</html>

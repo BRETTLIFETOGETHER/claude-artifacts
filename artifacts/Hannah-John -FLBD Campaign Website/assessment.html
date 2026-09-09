@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Well Are We Doing? — The Family Legacy Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.amast{padding:clamp(64px,8vw,110px) 0;text-align:center}
+.amast .lede{margin:22px auto 0;text-align:center;color:#D7E1D2}
+.q{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-1);
+  padding:clamp(22px,3vw,32px);display:grid;grid-template-columns:56px 1fr;gap:18px;align-items:start}
+.q+.q{margin-top:16px}
+@media(max-width:640px){.q{grid-template-columns:1fr;gap:10px}}
+.q .qn{font-family:var(--ff-h);font-weight:600;font-size:15px;color:#8FBE3F}
+.q .stmt{font-family:var(--ff-h);font-weight:600;font-size:clamp(15.5px,1.8vw,18px);color:var(--ink);line-height:1.5}
+.scale{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+.scale .lab{font-weight:600;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.scale button{width:38px;height:38px;border-radius:99px;border:1.5px solid #D5DEC8;background:#fff;
+  cursor:pointer;font-family:var(--ff-b);font-weight:600;font-size:13px;color:#7C877E;transition:all .15s var(--ease)}
+.scale button:hover{border-color:#8FBE3F;transform:translateY(-1px)}
+.scale button.sel{background:var(--gradbtn);border-color:transparent;color:#fff;box-shadow:0 10px 22px -10px rgba(60,140,70,.55)}
+.tally{margin-top:36px;text-align:center}
+.result{margin-top:22px;display:none}
+.result.show{display:block}
+.rescard{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh-2);
+  padding:clamp(30px,4.5vw,52px);display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,4vw,48px);align-items:center;max-width:900px;margin:0 auto}
+@media(max-width:760px){.rescard{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.rescard .score{position:relative;display:grid;place-items:center}
+.rescard .score .pc{position:absolute;text-align:center}
+.rescard .score .pc b{font-family:var(--ff-h);font-weight:700;font-size:34px;color:var(--ink);display:block;line-height:1}
+.rescard .score .pc span{font-size:9px;font-weight:600;letter-spacing:.16em;color:#57833B;text-transform:uppercase}
+.rescard .tag2{font-weight:600;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#57833B}
+.rescard h3{font-size:clamp(22px,2.8vw,30px);margin-top:8px}
+.rescard .expl{margin-top:12px;font-size:14.5px;line-height:1.8}
+.recpanel{margin-top:22px;border-radius:16px;padding:20px 24px;background:linear-gradient(138deg,#123B2C,#3E7C3B 75%,#8FBE3F 135%);color:#EAF2E0;display:grid;gap:6px}
+.recpanel b{color:#fff;font-family:var(--ff-h);font-weight:600;font-size:16px}
+.recpanel p{font-size:13px;color:#DDE9CF}
+.unfin{margin-top:14px;font-size:13px;color:#A6653C;display:none;font-weight:500}
+</style>
+</head>
+<body>
+
+<header class="dark amast">
+  <div class="wrap narrow">
+    <span class="pill dark rv in"><i></i>The Family Legacy Assessment</span>
+    <h1 class="rv in" style="margin-top:20px">How Well Are We <span class="au">Doing?</span></h1>
+    <p class="lede rv in d1" style="max-width:56ch">Ten statements, in the spirit of the questions Tom has set before families for thirty years. Read each aloud if you can. Answer as a household, honestly. The only one keeping score is you.</p>
+  </div>
+</header>
+
+<section class="sec lightbg">
+  <div class="wrap narrow">
+    <div id="qs"></div>
+    <div class="tally rv">
+      <button class="btn grad" id="tallybtn">Count The Rings <span class="ar">→</span></button>
+      <div class="unfin" id="unfin">Every ring counts — a few statements are still unanswered above.</div>
+    </div>
+    <div class="result" id="result">
+      <div class="rescard">
+        <div class="score" id="scorewrap"></div>
+        <div>
+          <span class="tag2" id="rtag"></span>
+          <h3 id="rhead"></h3>
+          <p class="expl" id="rexpl"></p>
+          <div class="recpanel">
+            <b id="recname"></b>
+            <p id="recwhy"></p>
+            <div style="margin-top:10px"><a class="btn cream sm" id="reclink" href="#">Open It <span class="ar">→</span></a></div>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center;margin-top:26px;font-style:italic;color:var(--mute);font-size:14px">No score is a verdict. Every family is one honest season from a different number.</p>
+    </div>
+  </div>
+</section>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var STMTS=[
+    "We could each say, in one sentence, what our family hopes to hand down.",
+    "Our family talks about all five areas of legacy \u2014 not only the financial one.",
+    "Our estate and financial plans match what we say matters most.",
+    "The wealth we\u2019re passing on is more likely to bless our heirs than burden them.",
+    "Our children and grandchildren know the stories behind what we have.",
+    "We hold family meetings \u2014 and people actually want to come.",
+    "The next generation is being prepared as stewards, not just recipients.",
+    "We have written down, somewhere, the God-stories our family must not lose.",
+    "Faith and generosity are visible rhythms in our home, not occasional events.",
+    "Someone in our family has begun a legacy letter \u2014 or knows where to start."
+  ];
+  var qs2=document.getElementById('qs');
+  qs2.innerHTML=STMTS.map(function(s,i){
+    var btns=''; for(var v=1;v<=5;v++) btns+='<button data-q="'+i+'" data-v="'+v+'">'+v+'</button>';
+    return '<div class="q rv"><span class="qn">'+(i<9?'0':'')+(i+1)+'.</span>'
+      +'<div><div class="stmt">'+s+'</div>'
+      +'<div class="scale"><span class="lab">Not Yet</span>'+btns+'<span class="lab">Truly Us</span></div></div></div>';
+  }).join('');
+
+  var answers={};
+  qs2.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-q]'); if(!b) return;
+    var q=b.dataset.q;
+    answers[q]=+b.dataset.v;
+    b.parentElement.querySelectorAll('button').forEach(function(x){ x.classList.toggle('sel', +x.dataset.v<=answers[q]); });
+  });
+
+  function ringScore(n){
+    var pct=n/50, R=[16,26,36,45,52], per=1/R.length;
+    var svg='<svg viewBox="0 0 114 114" width="170" height="170" fill="none">';
+    R.forEach(function(r,i){
+      var f=Math.max(0,Math.min(1,(pct-i*per)/per)), circ=2*Math.PI*r;
+      svg+='<circle cx="57" cy="57" r="'+r+'" stroke="#EAEFDF" stroke-width="'+(4.6-i*0.65)+'"/>';
+      if(f>0) svg+='<circle cx="57" cy="57" r="'+r+'" stroke="'+(i%2?'#2E8B6A':'#8FBE3F')+'" stroke-width="'+(4.6-i*0.65)+'" stroke-linecap="round" stroke-dasharray="'+(circ*f)+' '+circ+'" transform="rotate(-90 57 57)"/>';
+    });
+    return svg+'</svg><div class="pc"><b>'+n+'</b><span>of 50</span></div>';
+  }
+
+  document.getElementById('tallybtn').addEventListener('click',function(){
+    var done=Object.keys(answers).length;
+    document.getElementById('unfin').style.display= done<STMTS.length ? 'block':'none';
+    if(done<STMTS.length) return;
+    var total=0; Object.keys(answers).forEach(function(k){ total+=answers[k]; });
+    document.getElementById('scorewrap').innerHTML=ringScore(total);
+    var tag,head,expl,rec,why,link;
+    if(total>=40){
+      tag='Rings Wide And Even'; head='This household is living by design.';
+      expl='The conversations most families postpone are already rhythms in yours. The question now isn\u2019t repair \u2014 it\u2019s multiplication: turning what you practice into what you pass on, deliberately.';
+      rec='Legacy Living \u00B7 40 days'; why='The capstone journey \u2014 from stewarding a legacy to commissioning the next generation of its keepers.';
+      link='campaign.html?id=legacy-living';
+    } else if(total>=25){
+      tag='Growth, With Gaps'; head='Strong roots \u2014 and some seasons the rings remember.';
+      expl='There\u2019s real health here, alongside conversations that keep getting rescheduled. Most families live in this range; the difference between drifting and designing is usually one honest season.';
+      rec='Family Legacy \u00B7 40 days'; why='The flagship walk through all five areas \u2014 clarity, alignment, and communication, one morning at a time.';
+      link='campaign.html?id=family-legacy';
+    } else {
+      tag='The Honest Starting Line'; head='By default \u2014 for now.';
+      expl='Nothing here is a verdict; it\u2019s a map of where intention hasn\u2019t reached yet. Every family that now scores high once sat exactly where you are. The first step is smaller than you think: one page, one question, tonight.';
+      rec='Begin With Day One \u00B7 Free'; why='Four minutes tomorrow morning, one question at tomorrow\u2019s dinner. That\u2019s the whole first step.';
+      link='reader.html?id=family-legacy&day=1';
+    }
+    document.getElementById('rtag').textContent=tag;
+    document.getElementById('rhead').textContent=head;
+    document.getElementById('rexpl').textContent=expl;
+    document.getElementById('recname').textContent=rec;
+    document.getElementById('recwhy').textContent=why;
+    document.getElementById('reclink').href=link;
+    var res=document.getElementById('result');
+    res.classList.add('show');
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  FLobserve();
+})();
+</script>
+</body>
+</html>

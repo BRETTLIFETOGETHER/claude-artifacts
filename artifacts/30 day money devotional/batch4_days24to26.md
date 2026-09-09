@@ -1,0 +1,175 @@
+**THE PURPOSE QUESTION · What Is God Growing Through My Financial Life? (Week 4)**
+**Day 24 — Investing as Stewardship: Wise Growth in the Right Order**
+
+THE QUESTION IS NOT ONLY WHAT YOUR INVESTMENTS ARE EARNING. IT IS WHAT THEY ARE FUNDING, AND WHETHER YOU HAVE EVER ASKED.
+
+**Luke 16:11 (NIV):** "So if you have not been trustworthy in handling worldly wealth, who will trust you with true riches?"
+**1 Corinthians 4:2 (NIV):** "Now it is required that those who have been given a trust must prove faithful."
+
+**The Advisor Who Funds Churches Instead of Portfolios**
+
+An advisor connected to our work made a decision early in his career that surprised almost everyone around him. Coming out of college, he was headed toward a conventional path in banking or financial advising, until the books he was reading, many of them Ron's and Larry Burkett's, pointed him somewhere else entirely. He went to work in a nonprofit financial ministry instead, and he has spent his career there, speaking in churches most weekends of the year about stewardship. The model his ministry runs is simple and quietly brilliant. People open savings accounts, retirement accounts, and giving funds with the ministry, earning a fair return on their money, and that pooled capital becomes loans to churches for building and expansion projects. Over the years, it has helped fund more than a thousand of them.
+
+He will tell you that this is far more exciting to him than helping build up someone's net worth for its own sake. He described one church in the Atlanta area that had financed its first building, then looked at a piece of unused land and asked how it could be a better steward of it. What they built was a set of small homes and a secure environment to rescue women out of trafficking and walk them through a multi-year path toward recovery. And here is the part he wanted people to hear. If ordinary believers had not placed their savings and their investments where they could be put to work for the kingdom, that project would never have happened. The investing was not separate from the ministry. The investing was the ministry. His own conviction is the one that anchors this whole day. God owns everything, so we manage everything for God, including the part we call our portfolio.
+
+**Investing Is Stewardship, Not a Separate World**
+
+Most Christians who take their faith seriously have made peace with the idea that their giving belongs to God. The tithe, the offering, the number on the year-end giving statement, that portion is understood to be directed toward his purposes. But a young advisor in our network described the moment he realized he had quietly walled off the rest. He had always thought carefully about what his giving accomplished for the kingdom, the ten percent, and had given almost no thought to what the other ninety percent was doing, the money in his investment accounts. His only questions there had been the usual ones. What is the return? How is the risk? Is it diversified? Legitimate questions, all of them. But incomplete, because if God owns it all, then the ninety percent is just as much his as the ten.
+
+That is the heart of investing as stewardship. Jesus asked plainly whether someone who has not been trustworthy with worldly wealth can be trusted with true riches. Scripture says it is required that a steward prove faithful, and the word required is not soft. It applies to every dollar under your management, not merely the fraction you route to church. Your investment portfolio is not a secular annex operating under different rules than the rest of your financial life. It is part of the same trust, subject to the same owner, and the question of faithfulness reaches all the way into it. This does not make investing a grim religious duty. It makes it what everything in this journey has been pointing toward, one more arena where a steward manages what belongs to God on purpose rather than by default.
+
+**Wise Growth in the Right Order**
+
+There is a reason the subtitle of this day speaks of the right order, because growth pursued out of order does more harm than good. Investing is genuinely good. Scripture commends the multiplying of what has been entrusted, and the servant who put his talents to work was the one the master praised. But investing has a place in a sequence, and skipping ahead in that sequence is one of the most common financial mistakes I have watched people make. There is little sense in chasing investment returns while high-interest consumer debt is draining you faster than any portfolio could grow, and little wisdom in reaching for growth before a basic reserve is in place to keep an ordinary emergency from forcing you to sell at the worst possible moment.
+
+The order that has served people well for decades is simple. First the foundational steps, spending less than you earn, eliminating consumer debt, and building a reserve. Then, on that foundation, the wise long-term growth of what remains. This is not a rule invented to slow you down. It is a sequence designed to protect you, because investing done on a shaky foundation is fragile, and investing done on a solid one can compound quietly for decades. Wise growth is patient and ordered. It does not chase the exciting thing out of turn. It builds the base first, and then lets time do the work that no clever move ever could.
+
+**What Are You Rooting For?**
+
+Once the foundation is in place and money is genuinely being invested, a further question opens up that most people have never thought to ask. Not only what is my money earning, but what is it funding? An investor named Robin John made an observation I have found hard to shake. When you own a piece of something, you begin to root for it to succeed. The investment creates a stake. You check on it, you hope it does well, you quietly want the thing to prosper. And that means your portfolio is never emotionally neutral. It is a set of things you are, in a small way, cheering for. The question worth sitting with is whether you would be comfortable putting your name on all of them in the daylight.
+
+This is simply Jesus's principle about treasure applied to investing. Where your treasure is, there your heart will be also, and that is as true of the money in a retirement account as of the money in an offering plate. Most people who have never examined their holdings through this lens are not funding things they object to on purpose. They are funding them without awareness, which is a different and far more fixable problem. The first step of faith-driven investing is not a wholesale restructuring of your portfolio overnight. It is simply awareness, looking honestly at what your money is actually advancing and deciding whether it aligns with what you say you believe. You may find it fits perfectly. You may find gaps. Either way, looking is more faithful than the comfortable vagueness of never asking.
+
+**Growth Aimed at the Kingdom**
+
+Put all of this together and investing stops being a purely private pursuit of return and becomes another way of advancing what God cares about. That is what the advisor whose ministry funds churches has spent his life demonstrating. Ordinary believers placed their savings and investments where they could be put to work, and women were rescued from trafficking as a result. The return still mattered. But the return was no longer the whole point. The money was multiplying and building the kingdom at the same time. That is investing as stewardship in its fullest form, growth that is wise in its order, aware of what it funds, and aimed, like everything else in a steward's life, at the purposes of the one who owns it all. When your heart genuinely starts from his ownership, even investing becomes an act of trust, the patient multiplying of what the Master entrusted, for his glory rather than merely for its own sake.
+
+**Think About It**
+
+Have you quietly directed only your giving toward God's purposes while treating your investments as a separate, secular category governed only by return and risk? What would it change to see the whole of it, not just the tithe, as belonging to God?
+
+Investing has a right order, with the foundational steps coming before the pursuit of growth. Looking at your own financial life, are you trying to grow investments while consumer debt or the absence of a reserve is undermining the foundation? What would putting the sequence back in order look like?
+
+**Exercise**
+
+Take one concrete step toward stewardship in your investing. If you have any holdings, a retirement account or a brokerage account, identify the three largest positions and, for each, write down what that company or fund primarily does and whether it aligns with what you believe. You are not restructuring anything this week. You are simply looking, closing the gap between the part of your financial life you examine with intention and the part you have managed by default. If you have not yet reached the investing stage because the foundation is not in place, name instead the one foundational step, debt or reserve, that has to come first, and begin it.
+
+**Declaration**
+
+Everything I have is the Lord's, including what is invested in my name. I will grow it wisely and in the right order, with awareness of what it funds and intention about what it advances.
+
+**Next Steps**
+
+Option A. This week, look honestly at what your investments are funding, not in broad terms but specifically. If you discover a gap between what your portfolio advances and what you value, treat it as the beginning of a longer conversation with your spouse, a trusted advisor, and God, rather than something to fix in a panic.
+
+Option B. If you are not yet investing because the foundation is not built, take one step this week toward the sequence that makes wise growth possible: attack the highest-interest debt, or begin the reserve. Growth in the right order starts with the base.
+
+**Closing Prayer**
+
+Father, thank You that nothing I manage falls outside Your ownership, not my giving, not my spending, and not the accounts I have quietly treated as my own. Forgive me for the times I have asked only what my money would earn without ever asking what it would fund or whom it would serve. Give me the wisdom to grow what You have entrusted in the right order, building the foundation before reaching for return, and the honesty to look clearly at what my investments actually advance. Teach me to see even my portfolio as a place of stewardship, multiplied not for its own sake but for Your kingdom and Your glory. In Jesus' name, amen.
+
+---
+
+**THE PURPOSE QUESTION · What Is God Growing Through My Financial Life? (Week 4)**
+**Day 25 — The Yes-Ready Life: Prepared for God's Next Ask**
+
+GOD OFTEN PREPARES PEOPLE BEFORE HE ASKS THEM. THE YES-READY LIFE IS ONE ARRANGED, IN ADVANCE, TO BE ABLE TO SAY YES.
+
+**2 Corinthians 9:8 (NIV):** "And God is able to bless you abundantly, so that in all things at all times, having all that you need, you will abound in every good work."
+**Ephesians 2:10 (NIV):** "For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do."
+
+**The Man Who Kept Saying Yes**
+
+A man connected to our work, now married nearly fifty years, has spent his life repeatedly reordering it around what he believed God was asking. He came to faith as a young athlete in college, and almost immediately the direction of his life began to change. He left one path for another, trained for ministry, and he and his wife came to believe God was calling them to serve college students, which meant more training and another move. Years later, settled in a small Indiana city, he sensed another ask. His community needed a Christian radio station, and he threw himself into raising the money to start one. In under fifteen months, he helped raise more than half a million dollars, and the station went on the air.
+
+What strikes me about a life like that is not any single decision but the pattern underneath all of them. Again and again, when he sensed God asking, he was in a position to say yes. He was not paralyzed by obligations too heavy to move, not so locked into one arrangement that a new call was impossible. His life had a kind of readiness built into it, a willingness and a freedom that let him respond when the ask came. That is what this day is about. Not a single act of generosity, but a whole life quietly arranged so that yes is actually possible when God asks.
+
+**A Life Arranged to Say Yes**
+
+Yesterday we saw that margin exists not for comfort but for capacity. Today takes that one step further and asks what kind of life gets built when capacity becomes the goal. I call it the yes-ready life, a life deliberately arranged, in advance, so that when God invites you into something, you are free to accept. It is the opposite of a life so committed, so leveraged, so tightly optimized around your own plans that there is no room left for his. Paul describes the God who makes this possible. He is able to bless you abundantly, so that in all things at all times, having all that you need, you will abound in every good work. Notice the purpose clause at the end. The blessing and the sufficiency are not the destination. They are the equipping. God supplies what you need so that you will abound in good works, which means the resources that pass through your hands are meant, at least in part, to leave you ready to say yes.
+
+This reframes everything a steward builds. The margin, the freedom from debt, the reserve, the contentment that keeps wants from consuming every dollar, none of it is finally about your own security. It is about availability. A yes-ready life holds its plans loosely enough that a new call does not feel like a catastrophe, keeps enough room that a real need can be met, and stays free enough that God's invitation can be accepted rather than declined for lack of capacity. That kind of life does not happen by accident. It is arranged, on purpose, by a steward who wants to be ready.
+
+**Prepared in Advance**
+
+There is a beautiful phrase in Ephesians that deepens this. We are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do. Sit with that. The good works were prepared ahead of time. God has things for you to do that he arranged before you arrived at them. And if he prepares the works in advance, it makes sense that he also prepares the worker in advance, shaping a life, over years of ordinary stewardship, into one that can actually step into what he has ready. The readiness is not separate from the calling. It is part of how the calling gets answered.
+
+This is why the whole of this journey has been quietly building toward this day. Every habit we have worked through, spending less than you earn, staying free of debt, building margin, giving on purpose, settling the question of ownership, has been forming exactly the kind of life that can say yes. The man who kept responding to God's asks did not manufacture his readiness in the moment each call came. It had been built into him over decades of walking with God and holding his own plans loosely. When the ask came, he was already the kind of person who could move. That is what preparation in advance looks like, not knowing exactly what God will ask, but arranging your life so that whatever it is, you are free to say yes.
+
+**Don't Miss the Ask**
+
+There is a quieter, harder truth on the other side of this, and it is worth naming plainly. A life that is not arranged to say yes will, sooner or later, have to say no to God, not out of rebellion but out of sheer inability. The invitation comes, and the heart wants to respond, but the life cannot. Every dollar is committed. The debt is too heavy. The plans are too fixed. The margin does not exist. And so a genuine call from God goes unanswered, not because the person did not love him, but because they had built a life with no room in it for him to move. I have watched this happen to sincere believers, and it is one of the quiet tragedies of a financial life optimized entirely around self.
+
+The good news is that it is avoidable, and avoiding it is largely what stewardship is for. You do not need to know what God will ask of you next in order to get ready for it. You only need to keep building the kind of life that can respond, holding your resources with an open hand, keeping margin available, staying free of the weights that would pin you in place. Then, when the ask comes, and in a life walked with God it eventually does, you are not scrambling or grieving your inability. You are ready. The yes is already possible, because you arranged your life, in advance, to make it so.
+
+**Think About It**
+
+Think about your life as it is currently arranged. If God asked you tomorrow to do something generous or costly or unplanned, could you say yes? Or is your life so committed and leveraged that a real ask would be impossible to answer? What is most in the way?
+
+The works are described as prepared in advance, which suggests the worker is shaped in advance too. Looking back, how has God used ordinary seasons of stewardship to make you more ready to respond to him? Where do you sense he may be preparing you now?
+
+**Exercise**
+
+Do one honest piece of forward-looking work. Write down what it would take for your life to be more yes-ready than it is today, the specific things, a debt reduced, margin built, a plan held more loosely, that would free you to respond if God asked. Then choose one of them and take a first step this week. You are not trying to predict the ask. You are arranging your life, on purpose, so that whatever God prepares in advance, you are prepared to accept.
+
+**Declaration**
+
+I do not want to build a life so full of my own plans that I cannot say yes to God's. I will arrange my financial life for readiness, holding it with an open hand, so that when he asks, I am free to respond.
+
+**Next Steps**
+
+Option A. Identify the single biggest obstacle to your being able to say yes to an unplanned call from God, a debt, a lack of margin, an over-committed plan, and take one concrete step this week to begin reducing it.
+
+Option B. Spend ten minutes asking God, honestly, what he might be preparing you for, and what in your financial life would need to change to be ready. Write down whatever comes, and hold it before him with open hands.
+
+**Closing Prayer**
+
+Father, You are able to supply all that I need so that I can abound in every good work, and You have prepared good works in advance for me to walk into. Forgive me for the times I have arranged my life so tightly around my own plans that there was no room left for Yours. Teach me to build a yes-ready life, free enough and open enough that when You ask, I can respond without scrambling or grieving what I cannot do. Use even the ordinary work of stewardship to prepare me for what You have ready. And when the ask comes, let me be the kind of person who can say yes. In Jesus' name, amen.
+
+---
+
+**THE GENEROSITY QUESTION · Why Does Giving Change Everything? (Week 4)**
+**Day 26 — God Gave First: The Gospel Makes Generosity Logical**
+
+GENEROSITY IS NOT AN ACHIEVEMENT YOU WORK UP TO. IT IS A RESPONSE TO A GOD WHO GAVE FIRST.
+
+**John 3:16 (NIV):** "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."
+**2 Corinthians 8:9 (NIV):** "For you know the grace of our Lord Jesus Christ, that though he was rich, yet for your sake he became poor, so that you through his poverty might become rich."
+
+**Generosity Is Not a Later Topic**
+
+When people hear the word generosity, they usually think of giving, and often they think of it as something you get to later, once the more urgent financial work is done. Take care of your own needs, build your security, arrive at a comfortable margin, and then, from that settled place, become generous. I understand why people order it that way, but it gets the whole thing backward. Generosity is not a later topic in the Christian life, and it is not a graduate-level achievement reserved for those who have finally arranged enough security. It is a heart response, and it becomes almost natural the moment you truly grasp that God has already given you everything you have.
+
+That is why this final question, why giving changes everything, sits where it does. It is not an appendix to the financial life. It is closer to the center of it, because generosity is one of the clearest ways God reshapes what we love, what we trust, and what we hold onto. And the reason a Christian can be generous at all, in any season, is not that they have accumulated enough to spare some. It is that they are responding to a God who gave first, extravagantly, before they had done anything to deserve it.
+
+**The Logic of the Gospel**
+
+Here is what makes generosity not just admirable but logical for a follower of Jesus. The entire gospel is a story of giving. God so loved the world that he gave. He did not lend. He did not sell. He gave, and what he gave was not surplus he could easily spare but his own Son, the most costly gift imaginable. Paul puts the same truth in explicitly financial language. Though Christ was rich, for your sake he became poor, so that you through his poverty might become rich. The whole movement of the gospel is a downward, self-emptying generosity, God giving his best so that people who could never repay him might be made rich in the only way that lasts.
+
+Once you see that, generosity stops being a burden and starts being a logic. You give because you have received. You are open-handed because God was open-handed with you first. This is why generosity driven by guilt never works and never lasts. Guilt-driven giving is just anxiety in a religious costume, an attempt to earn or to quiet a nagging conscience. Gospel-driven giving flows from gratitude, from a heart that has understood it was on the receiving end of an infinite gift and now cannot help but pass some of it on. You are not giving to get God to love you. You are giving because he already has, completely, and generosity is simply what that realization looks like when it reaches your hands.
+
+**Generosity Changes the Giver**
+
+There is something that happens when you give that happens almost nowhere else, and it happens to the giver more than to the recipient. Generosity changes you. It changes how you respond to your own life. It creates room in your heart where there used to be a clenched fist. It loosens the grip of fear and quietly dismantles one of the most persistent lies a person can believe, that you are safe only when you are holding on tightly to what you have. Every act of open-handed giving directly contradicts that lie, and over time the contradiction reshapes you. You discover, a little more each time, that your security never actually depended on the thing you released.
+
+This is why giving changes everything, and not just your bank balance. It retrains your trust. Money makes its strongest claim on the human heart through the whisper that says security comes from accumulation, from more, from holding tighter. Generosity is the most direct way to break that claim, because you cannot simultaneously clutch and release. When you give, especially when it costs you something, you are declaring in the most concrete way available that God, not money, is your security, and the heart slowly comes to believe what the hands have been practicing. The giver ends up freer, lighter, and less afraid than the person who kept everything, which is exactly what Jesus meant when he said it is more blessed to give than to receive.
+
+**First, Not Leftover**
+
+There is one more thing the gospel teaches about generosity, and it sets up everything the rest of this week will explore. God did not give from his leftovers. He gave first, and he gave his best. That pattern is meant to shape ours. Generosity that waits until the end, that gives only what happens to survive after everything else has been funded, has quietly reversed the gospel logic, treating God's work as the last claim on our resources rather than the first response of a grateful heart. The generosity Scripture describes moves in the other direction. It gives first, on purpose, as an act of worship and trust, before the other claims have a chance to absorb everything.
+
+You do not have to become wealthy before you can live this way. The gospel logic works at every income level, because it was never about the size of the gift. It was about the direction of the heart. A person of modest means who gives first, out of gratitude, has understood something a wealthy person giving reluctantly from surplus has missed entirely. The question is not how much you have to give. The question is whether you have grasped how much you have been given, because once that lands, generosity is no longer something you have to work up the will to do. It becomes the most logical response in the world to a God who gave first.
+
+**Think About It**
+
+Have you thought of generosity as something you get to once your own security is handled, rather than as a response to what God has already given you? How would your giving change if you saw it as the natural overflow of gratitude rather than an achievement to reach?
+
+The gospel is described here as the logic that makes generosity make sense: you give because you have received. When you give, is gratitude actually the engine, or is it more often guilt or obligation? What would it look like this week to give from a genuine sense of what you have been given?
+
+**Exercise**
+
+Before you give anything this week, spend ten minutes on the receiving side of the ledger. Write down, honestly and specifically, what you have received that you did not earn, materially, relationally, and spiritually, beginning with the gift the gospel describes. Let the list get long enough to move you. Then, out of that gratitude rather than any guilt, choose one act of giving this week that is a genuine response to what you have received. Notice that generosity flowing from gratitude feels completely different from generosity squeezed out by obligation.
+
+**Declaration**
+
+I give because God gave first. My generosity is not an achievement I am working toward but a response to grace I have already received. I will hold what I have been given with an open hand.
+
+**Next Steps**
+
+Option A. Make one gift this week that flows directly from gratitude rather than obligation. Before you give it, name what you are grateful for, and let the giving be worship rather than duty.
+
+Option B. Examine the order of your giving. Is it the first thing you fund or the last? Take one step this week toward moving it toward the front, so that your generosity reflects the God who gave first rather than the leftovers of a spent month.
+
+**Closing Prayer**
+
+Father, You so loved the world that You gave Your only Son, and though Christ was rich, He became poor for my sake so that I could become rich in the only way that lasts. I confess that I have often treated generosity as something to reach once I felt secure, rather than as the natural response to everything You have already given me. Teach me the logic of the gospel, that I give because I have received, freely and beyond deserving. Loosen the grip of fear that tells me I am safe only when I hold on tightly, and let my open hands slowly retrain my heart to trust You rather than what I can store. Make me generous the way You are generous, giving first, giving gladly, out of gratitude. In Jesus' name, amen.

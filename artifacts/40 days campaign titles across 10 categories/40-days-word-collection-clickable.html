@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 Days — The Word Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0B1526;
+    --navy-panel:#101D33;
+    --navy-line:rgba(201,162,75,0.18);
+    --gold:#C9A24B;
+    --gold-bright:#E4C271;
+    --gold-dim:#8B7332;
+    --ivory:#F3EEE2;
+    --slate:#8D96A8;
+    --slate-dim:#5C6579;
+    --max-w:1180px;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+  body{
+    margin:0; background:var(--navy-deep); color:var(--ivory);
+    font-family:'Cormorant Garamond', serif; font-size:19px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; text-decoration:none; }
+  h1,h2,h3,h4{ font-family:'Playfair Display', serif; margin:0; font-weight:700; }
+  button{ font-family:inherit; cursor:pointer; }
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--gold-bright); outline-offset:3px;
+  }
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:10;
+    background:rgba(11,21,38,0.92); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--navy-line);
+    padding:1rem 1.5rem;
+  }
+  .topbar-inner{
+    max-width:var(--max-w); margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  }
+  .brand{
+    font-family:'Playfair Display', serif; font-size:1.05rem; color:var(--gold-bright);
+    letter-spacing:0.02em;
+  }
+  .brand em{ font-style:italic; color:var(--ivory); font-weight:400; }
+  .back-link{
+    font-size:0.92rem; color:var(--slate); border:1px solid var(--navy-line);
+    padding:0.4rem 0.9rem; border-radius:2px; transition:color .15s, border-color .15s;
+  }
+  .back-link:hover{ color:var(--gold-bright); border-color:var(--gold-dim); }
+  .search-wrap{ position:relative; }
+  .search-input{
+    background:var(--navy-panel); border:1px solid var(--navy-line); color:var(--ivory);
+    font-family:'Cormorant Garamond', serif; font-size:1rem; font-style:italic;
+    padding:0.5rem 1rem; border-radius:2px; width:240px; max-width:60vw;
+  }
+  .search-input::placeholder{ color:var(--slate-dim); }
+
+  /* ---------- Masthead (home) ---------- */
+  .masthead{
+    max-width:var(--max-w); margin:0 auto; padding:3.5rem 1.5rem 2rem; text-align:center;
+  }
+  .eyebrow{
+    font-style:italic; letter-spacing:0.26em; text-transform:uppercase; font-size:0.8rem;
+    color:var(--gold); margin-bottom:1rem;
+  }
+  .masthead h1{ font-size:clamp(2rem, 4.4vw, 3.4rem); }
+  .masthead h1 em{ color:var(--gold-bright); font-style:italic; }
+  .masthead p{ color:var(--slate); font-style:italic; max-width:640px; margin:1.1rem auto 0; }
+  .stat-row{ display:flex; justify-content:center; gap:2.6rem; margin-top:2.2rem; flex-wrap:wrap; }
+  .stat-num{ font-family:'Playfair Display', serif; font-size:1.7rem; color:var(--gold-bright); display:block; }
+  .stat-label{ font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--slate); }
+
+  /* ---------- Group nav chips ---------- */
+  .group-nav{
+    max-width:var(--max-w); margin:0 auto; padding:0 1.5rem 1.5rem;
+    display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center;
+  }
+  .group-nav a{
+    font-size:0.86rem; color:var(--slate); border:1px solid var(--navy-line);
+    padding:0.32rem 0.85rem; border-radius:2px; transition:color .15s, border-color .15s;
+  }
+  .group-nav a:hover{ color:var(--gold-bright); border-color:var(--gold-dim); }
+
+  /* ---------- Group sections + word grid ---------- */
+  main{ max-width:var(--max-w); margin:0 auto; padding:1rem 1.5rem 5rem; }
+  .group-section{ padding-top:2.6rem; border-top:1px solid var(--navy-line); }
+  .group-section:first-child{ border-top:none; }
+  .group-head{ display:flex; align-items:baseline; gap:0.9rem; margin-bottom:1.3rem; }
+  .group-num{
+    font-family:'Playfair Display', serif; font-size:1.6rem; color:transparent;
+    -webkit-text-stroke:1px var(--gold);
+  }
+  .group-head h2{ font-size:1.25rem; color:var(--ivory); }
+  .group-count{ color:var(--slate-dim); font-style:italic; font-size:0.9rem; }
+
+  .word-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:0.7rem;
+  }
+  .word-tile{
+    display:block; border:1px solid var(--navy-line); border-radius:2px;
+    padding:0.75rem 0.95rem; background:var(--navy-panel);
+    transition:border-color .15s, background .15s;
+  }
+  .word-tile:hover{ border-color:var(--gold-dim); background:#152541; }
+  .word-tile .of{ font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--slate-dim); }
+  .word-tile .w{ font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--gold-bright); }
+
+  .no-results{ text-align:center; color:var(--slate); font-style:italic; padding:3rem 0; }
+
+  /* ---------- Detail view ---------- */
+  .detail-head{ padding:2.4rem 0 1.6rem; border-bottom:1px solid var(--navy-line); }
+  .detail-head .of{ font-size:0.78rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); }
+  .detail-head h1{ font-size:clamp(2rem, 4.6vw, 3rem); margin-top:0.4rem; color:var(--ivory); }
+  .detail-head h1 em{ color:var(--gold-bright); font-style:italic; }
+  .detail-head .sub{ color:var(--slate); font-style:italic; margin-top:0.6rem; font-size:1.1rem; }
+
+  .section-block{ padding:2.4rem 0; border-bottom:1px solid var(--navy-line); }
+  .section-block h2{ font-size:1.35rem; color:var(--ivory); margin-bottom:0.3rem; }
+  .section-block .section-note{ color:var(--slate); font-style:italic; font-size:0.95rem; margin-bottom:1.4rem; }
+
+  /* series rail */
+  .series-rail{ display:flex; flex-direction:column; gap:0; }
+  .series-item{
+    display:flex; align-items:baseline; gap:1rem; padding:0.9rem 0;
+    border-top:1px solid var(--navy-line); cursor:pointer; background:none; border-left:none; border-right:none; border-bottom:none;
+    text-align:left; width:100%; color:var(--ivory);
+  }
+  .series-item:first-child{ border-top:none; }
+  .series-roman{
+    font-family:'Playfair Display', serif; font-size:1.1rem; color:transparent;
+    -webkit-text-stroke:1px var(--gold-dim); width:2.2rem; flex-shrink:0;
+  }
+  .series-item:hover .series-roman{ -webkit-text-stroke:1px var(--gold-bright); }
+  .series-title{ font-size:1.15rem; color:var(--gold-bright); font-family:'Playfair Display', serif; }
+  .series-item:hover .series-title{ color:var(--gold); text-decoration:underline; text-decoration-color:var(--gold-dim); }
+
+  /* phase / devotionals */
+  .phase-block{ margin-bottom:1.6rem; }
+  .phase-block:last-child{ margin-bottom:0; }
+  .phase-toggle{
+    width:100%; display:flex; align-items:center; gap:0.9rem;
+    background:var(--navy-panel); border:1px solid var(--navy-line); border-radius:2px;
+    padding:0.7rem 1rem; color:var(--ivory); font-size:1rem;
+  }
+  .phase-toggle .pr{
+    font-family:'Playfair Display', serif; color:transparent; -webkit-text-stroke:1px var(--gold);
+    font-size:1.1rem;
+  }
+  .phase-toggle .pt{ font-family:'Playfair Display', serif; color:var(--gold-bright); flex:1; text-align:left; }
+  .phase-toggle .pc{ font-size:0.85rem; color:var(--slate-dim); font-style:italic; }
+  .phase-toggle .caret{ color:var(--gold-dim); transition:transform .15s; }
+  .phase-toggle[aria-expanded="true"] .caret{ transform:rotate(90deg); }
+  .phase-days{ display:none; padding:0.9rem 0.2rem 0.2rem; }
+  .phase-days.open{ display:block; }
+  .day-row{
+    display:flex; align-items:baseline; gap:1rem; padding:0.55rem 0.8rem;
+    border-top:1px solid var(--navy-line);
+  }
+  .day-row:first-child{ border-top:none; }
+  .day-num{ font-size:0.85rem; color:var(--gold-dim); flex-shrink:0; width:4.6rem; }
+  .day-title{ font-size:1.02rem; }
+
+  /* kit */
+  .kit-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:0.7rem; }
+  .kit-card{
+    border:1px solid var(--navy-line); border-radius:2px; padding:0.9rem 1rem;
+    background:var(--navy-panel); text-align:left; color:var(--ivory);
+  }
+  .kit-card .kt{ font-family:'Playfair Display', serif; color:var(--gold-bright); font-size:1.02rem; }
+  .kit-card .kd{
+    display:none; font-size:0.92rem; color:var(--slate); margin-top:0.5rem; line-height:1.45;
+  }
+  .kit-card.open .kd{ display:block; }
+  .kit-card .kc{ font-size:0.78rem; color:var(--gold-dim); margin-top:0.4rem; }
+
+  footer{
+    max-width:var(--max-w); margin:0 auto; padding:3rem 1.5rem 4rem; text-align:center;
+    color:var(--slate-dim); font-style:italic; font-size:0.92rem;
+  }
+
+  @media (max-width: 640px){
+    .word-grid{ grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); }
+    .kit-grid{ grid-template-columns:1fr; }
+    .search-input{ width:170px; }
+  }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner" id="topbarInner"></div></div>
+<div id="app"></div>
+<footer>LifeTogether Ministries — 40 Days, the single-word collection.</footer>
+
+<script>
+(function(){
+
+  var GROUPS = [
+    "Core Virtues",
+    "Spiritual Disciplines",
+    "Emotional & Inner Life",
+    "Kingdom, Calling & Authority",
+    "Mission & Community",
+    "Growth & Transformation",
+    "Nature & Biblical Symbols",
+    "Time & Liturgical Seasons",
+    "Mind, Character & Identity",
+    "Relationship & Family"
+  ];
+
+  var GROUP_WORDS = [
+    ["Faith","Hope","Love","Grace","Mercy","Joy","Peace","Patience","Kindness","Goodness","Faithfulness","Gentleness","Humility","Integrity","Wisdom","Courage","Diligence","Purity","Honesty","Righteousness","Justice","Compassion","Generosity","Contentment","Gratitude"],
+    ["Prayer","Fasting","Worship","Obedience","Surrender","Devotion","Meditation","Solitude","Silence","Stillness","Discipline","Repentance","Sanctification","Formation","Discipleship","Abiding","Reverence","Awe","Wonder","Praise","Thanksgiving","Consecration","Intercession","Confession","Watchfulness"],
+    ["Confidence","Resilience","Rest","Healing","Wholeness","Recovery","Freedom","Identity","Belonging","Security","Assurance","Clarity","Stability","Balance","Focus","Calm","Comfort","Encouragement","Endurance","Perseverance","Steadfastness","Boldness","Tenderness","Vulnerability","Empathy"],
+    ["Purpose","Calling","Vision","Leadership","Authority","Influence","Impact","Momentum","Multiplication","Legacy","Stewardship","Sovereignty","Kingdom","Dominion","Inheritance","Covenant","Promise","Providence","Glory","Majesty","Holiness","Sanctuary","Presence","Anointing","Commissioning"],
+    ["Mission","Service","Hospitality","Advocacy","Outreach","Evangelism","Witness","Testimony","Fellowship","Unity","Community","Reconciliation","Forgiveness","Friendship","Loyalty","Sacrifice","Charity","Benevolence","Neighboring","Kinship","Solidarity","Brotherhood","Sisterhood","Mentorship","Partnership"],
+    ["Growth","Transformation","Renewal","Restoration","Redemption","Regeneration","Rebirth","Awakening","Breakthrough","Deliverance","Victory","Overcoming","Emergence","Maturity","Cultivation","Development","Progress","Refinement","Renovation","Rejuvenation","Elevation","Ascension","Rising","Blooming","Metamorphosis"],
+    ["Light","Salt","Fire","Water","Bread","Vine","Branch","Root","Seed","Harvest","Soil","Fruit","Rock","Foundation","Anchor","Refuge","Fortress","Shield","Armor","Crown","Throne","Wilderness","Mountain","Valley","River"],
+    ["Sabbath","Advent","Lent","Epiphany","Pentecost","Passion","Resurrection","Nativity","Jubilee","Season","Solstice","Beginnings","Endings","Transition","Threshold","Waiting","Anticipation","Preparation","Arrival","Journey","Pilgrimage","Homecoming","Return","Dawn","Horizon"],
+    ["Character","Excellence","Insight","Discernment","Understanding","Knowledge","Truth","Perception","Awareness","Mindfulness","Intentionality","Commitment","Dedication","Consistency","Reliability","Trustworthiness","Accountability","Responsibility","Ownership","Initiative","Resolve","Determination","Tenacity","Grit","Ambition"],
+    ["Marriage","Parenting","Fatherhood","Motherhood","Teamwork","Collaboration","Connection","Intimacy","Trust","Openness","Nurture","Warmth","Affection","Blessing","Honor","Respect","Boundaries","Communication","Companionship","Reunion","Grandparenting","Adoption","Rootedness","Generations","Provision"]
+  ];
+
+  var ROMANS = ["I","II","III","IV","V"];
+
+  var PHASE_TITLES = ["Discovering","Practicing","Under Pressure","In Community","A Life Of"];
+
+  var PHASE_DAYS = [
+    ["What Is {W}?","Where {W} Begins","The God of {W}","{W} in Scripture","Naming What's Missing","An Invitation to {W}","The First Step Toward {W}","Starting Where You Are"],
+    ["A Daily Rhythm of {W}","Small Steps, Real Change","{W} as a Habit","When It Feels Hard","Consistency Over Intensity","{W} in the Ordinary Day","Building the Practice","A Week In — Checking Your Progress"],
+    ["When {W} Is Tested","The Obstacles You'll Face","{W} in the Hard Season","Doubt and {W}","Halfway — Where Are You Now?","Choosing {W} Anyway","What Pressure Reveals","Strength for the Struggle"],
+    ["{W} You Can't Do Alone","Who's Walking With You","{W} in Your Family","{W} in Your Church","Encouraging Others Toward {W}","Iron Sharpens Iron","The Body, Not Just the Believer","Belonging and {W}"],
+    ["What's Changed","{W} as Identity, Not Event","Passing It On","The Next 40 Days","A Legacy of {W}","Looking Back to Move Forward","The Commitment That Remains","A Life Marked by {W}"]
+  ];
+
+  var KIT_TEMPLATES = [
+    {label:"Sermon Series", desc:"A five-message pulpit series built from the 40 Days of {W} arc — one message per phase of the campaign."},
+    {label:"Small Group Guide", desc:"Adult small group discussion guide, mapped session-by-session to the five-part 40 Days of {W} series."},
+    {label:"Student Edition", desc:"40 Days of {W} adapted for middle and high school students — same arc, youth-level language and questions."},
+    {label:"Children's Edition", desc:"A simplified 40 Days of {W} track for kids' ministry, with take-home activity pages for parents."},
+    {label:"Moms & Women's Edition", desc:"40 Days of {W} shaped for women's ministry and moms' groups, with space for shared reflection."},
+    {label:"Leader Training Guide", desc:"Everything a small group or campaign leader needs to launch and lead 40 Days of {W} well."},
+    {label:"Daily Devotional Booklet", desc:"All 40 devotionals from the campaign, collected into a single printable or digital booklet."},
+    {label:"Promo & Launch Assets", desc:"Bulletin inserts, slide graphics, and social assets to launch 40 Days of {W} churchwide."}
+  ];
+
+  function fill(tpl, word){ return tpl.split("{W}").join(word); }
+
+  function seriesFor(word){
+    var out = [];
+    for (var i=0;i<PHASE_TITLES.length;i++){
+      var t = PHASE_TITLES[i];
+      var title;
+      if (t === "Discovering") title = "Discovering " + word;
+      else if (t === "Practicing") title = "Practicing " + word;
+      else if (t === "Under Pressure") title = word + " Under Pressure";
+      else if (t === "In Community") title = word + " in Community";
+      else title = "A Life of " + word;
+      out.push(title);
+    }
+    return out;
+  }
+
+  function allGroupIndexFor(word){
+    for (var g=0; g<GROUP_WORDS.length; g++){
+      for (var i=0;i<GROUP_WORDS[g].length;i++){
+        if (GROUP_WORDS[g][i] === word) return g;
+      }
+    }
+    return -1;
+  }
+
+  function totalWords(){
+    var n = 0;
+    for (var g=0; g<GROUP_WORDS.length; g++) n += GROUP_WORDS[g].length;
+    return n;
+  }
+
+  /* ---------------- rendering: topbar ---------------- */
+
+  function renderTopbar(route){
+    var el = document.getElementById("topbarInner");
+    if (route.name === "home"){
+      el.innerHTML =
+        '<div class="brand">40 Days <em>— The Word Collection</em></div>' +
+        '<div class="search-wrap"><input class="search-input" id="searchBox" type="text" placeholder="Find a word…" autocomplete="off"></div>';
+      var box = document.getElementById("searchBox");
+      box.addEventListener("input", function(){ filterWords(box.value); });
+    } else {
+      el.innerHTML =
+        '<a class="back-link" href="#/">← All 250 Campaigns</a>' +
+        '<div class="brand">40 Days of <em>' + route.word + '</em></div>';
+    }
+  }
+
+  /* ---------------- rendering: home ---------------- */
+
+  function renderHome(){
+    var html = [];
+    html.push('<div class="masthead">');
+    html.push('<div class="eyebrow">LifeTogether Ministries</div>');
+    html.push('<h1>The Single-Word <em>40 Days</em> Collection</h1>');
+    html.push('<p>Two hundred fifty one-word campaigns — each with a five-part series, forty daily devotional titles, and a full church kit. Click any word to open it.</p>');
+    html.push('<div class="stat-row">');
+    html.push('<div><span class="stat-num">250</span><span class="stat-label">Campaigns</span></div>');
+    html.push('<div><span class="stat-num">1,250</span><span class="stat-label">Series Sessions</span></div>');
+    html.push('<div><span class="stat-num">10,000</span><span class="stat-label">Devotional Titles</span></div>');
+    html.push('<div><span class="stat-num">8</span><span class="stat-label">Kit Pieces Each</span></div>');
+    html.push('</div></div>');
+
+    html.push('<div class="group-nav">');
+    for (var g=0; g<GROUPS.length; g++){
+      html.push('<a href="#group-' + g + '">' + GROUPS[g] + '</a>');
+    }
+    html.push('</div>');
+
+    html.push('<main id="wordMain">');
+    for (var gi=0; gi<GROUPS.length; gi++){
+      html.push('<div class="group-section" id="group-' + gi + '" data-group="' + gi + '">');
+      html.push('<div class="group-head"><span class="group-num">' + (gi+1) + '</span><h2>' + GROUPS[gi] + '</h2><span class="group-count">(' + GROUP_WORDS[gi].length + ')</span></div>');
+      html.push('<div class="word-grid">');
+      for (var wi=0; wi<GROUP_WORDS[gi].length; wi++){
+        var w = GROUP_WORDS[gi][wi];
+        html.push('<a class="word-tile" data-word="' + w.toLowerCase() + '" href="#/campaign/' + encodeURIComponent(w) + '"><span class="of">40 Days of</span><br><span class="w">' + w + '</span></a>');
+      }
+      html.push('</div></div>');
+    }
+    html.push('<div class="no-results" id="noResults" style="display:none;">No campaigns match your search.</div>');
+    html.push('</main>');
+
+    document.getElementById("app").innerHTML = html.join("");
+  }
+
+  function filterWords(q){
+    q = (q || "").toLowerCase().trim();
+    var tiles = document.querySelectorAll(".word-tile");
+    var visibleCount = 0;
+    for (var i=0;i<tiles.length;i++){
+      var match = tiles[i].getAttribute("data-word").indexOf(q) !== -1;
+      tiles[i].style.display = match ? "" : "none";
+      if (match) visibleCount++;
+    }
+    var sections = document.querySelectorAll(".group-section");
+    for (var s=0; s<sections.length; s++){
+      var vis = sections[s].querySelectorAll('.word-tile:not([style*="display: none"])').length;
+      sections[s].style.display = vis > 0 ? "" : "none";
+    }
+    document.getElementById("noResults").style.display = visibleCount === 0 ? "" : "none";
+  }
+
+  /* ---------------- rendering: detail ---------------- */
+
+  function renderDetail(word){
+    var gi = allGroupIndexFor(word);
+    var groupName = gi >= 0 ? GROUPS[gi] : "";
+    var series = seriesFor(word);
+    var html = [];
+
+    html.push('<div style="max-width:var(--max-w); margin:0 auto; padding:0 1.5rem;">');
+    html.push('<div class="detail-head">');
+    html.push('<div class="of">' + groupName + '</div>');
+    html.push('<h1>40 Days of <em>' + word + '</em></h1>');
+    html.push('<div class="sub">A 40-day journey into ' + word + ' — five sessions, forty devotionals, and a full campaign kit.</div>');
+    html.push('</div>');
+
+    html.push('<div class="section-block">');
+    html.push('<h2>The Series</h2>');
+    html.push('<div class="section-note">Five sessions carry the campaign from introduction to commissioning. Click a session to jump to its eight days below.</div>');
+    html.push('<div class="series-rail">');
+    for (var i=0;i<series.length;i++){
+      html.push('<button class="series-item" data-phase="' + i + '"><span class="series-roman">' + ROMANS[i] + '</span><span class="series-title">' + series[i] + '</span></button>');
+    }
+    html.push('</div></div>');
+
+    html.push('<div class="section-block">');
+    html.push('<h2>The 40 Devotionals</h2>');
+    html.push('<div class="section-note">Grouped into the five sessions above. Click a session bar to open its eight daily titles.</div>');
+    for (var p=0; p<5; p++){
+      var startDay = p*8 + 1;
+      var endDay = p*8 + 8;
+      html.push('<div class="phase-block" id="phase-' + p + '">');
+      html.push('<button class="phase-toggle" data-phase="' + p + '" aria-expanded="false">');
+      html.push('<span class="pr">' + ROMANS[p] + '</span>');
+      html.push('<span class="pt">' + series[p] + '</span>');
+      html.push('<span class="pc">Days ' + startDay + '–' + endDay + '</span>');
+      html.push('<span class="caret">›</span>');
+      html.push('</button>');
+      html.push('<div class="phase-days" id="phase-days-' + p + '">');
+      for (var d=0; d<8; d++){
+        var dayNum = p*8 + d + 1;
+        var title = fill(PHASE_DAYS[p][d], word);
+        var dayLabel = dayNum < 10 ? "Day 0" + dayNum : "Day " + dayNum;
+        html.push('<div class="day-row"><span class="day-num">' + dayLabel + '</span><span class="day-title">' + title + '</span></div>');
+      }
+      html.push('</div></div>');
+    }
+    html.push('</div>');
+
+    html.push('<div class="section-block" style="border-bottom:none;">');
+    html.push('<h2>The Campaign Kit</h2>');
+    html.push('<div class="section-note">Every 40 Days of ' + word + ' campaign ships with these eight pieces. Click a card to read what\'s included.</div>');
+    html.push('<div class="kit-grid">');
+    for (var k=0; k<KIT_TEMPLATES.length; k++){
+      var kit = KIT_TEMPLATES[k];
+      html.push('<button class="kit-card" data-kit="' + k + '"><div class="kt">' + kit.label + '</div><div class="kd">' + fill(kit.desc, word) + '</div><div class="kc">Click to ' + '<span class="kit-verb">expand</span>' + '</div></button>');
+    }
+    html.push('</div></div>');
+
+    html.push('</div>');
+
+    document.getElementById("app").innerHTML = html.join("");
+
+    /* wire up interactivity */
+    var seriesButtons = document.querySelectorAll(".series-item");
+    for (var si=0; si<seriesButtons.length; si++){
+      seriesButtons[si].addEventListener("click", function(){
+        var ph = this.getAttribute("data-phase");
+        openPhase(ph);
+        var target = document.getElementById("phase-" + ph);
+        if (target) target.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+    }
+
+    var phaseButtons = document.querySelectorAll(".phase-toggle");
+    for (var pi=0; pi<phaseButtons.length; pi++){
+      phaseButtons[pi].addEventListener("click", function(){
+        var ph = this.getAttribute("data-phase");
+        var isOpen = this.getAttribute("aria-expanded") === "true";
+        openPhase(ph, !isOpen);
+      });
+    }
+
+    var kitCards = document.querySelectorAll(".kit-card");
+    for (var ki=0; ki<kitCards.length; ki++){
+      kitCards[ki].addEventListener("click", function(){
+        this.classList.toggle("open");
+        var verb = this.querySelector(".kit-verb");
+        if (verb) verb.textContent = this.classList.contains("open") ? "collapse" : "expand";
+      });
+    }
+  }
+
+  function openPhase(index, forceState){
+    var btn = document.querySelector('.phase-toggle[data-phase="' + index + '"]');
+    var panel = document.getElementById("phase-days-" + index);
+    if (!btn || !panel) return;
+    var shouldOpen = (forceState === undefined) ? true : forceState;
+    btn.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+    if (shouldOpen) panel.classList.add("open"); else panel.classList.remove("open");
+  }
+
+  /* ---------------- routing ---------------- */
+
+  function parseHash(){
+    var h = window.location.hash || "#/";
+    var m = h.match(/^#\/campaign\/(.+)$/);
+    if (m) return { name:"detail", word: decodeURIComponent(m[1]) };
+    return { name:"home" };
+  }
+
+  function render(){
+    var route = parseHash();
+    renderTopbar(route);
+    if (route.name === "detail"){
+      renderDetail(route.word);
+    } else {
+      renderHome();
+    }
+    window.scrollTo(0,0);
+  }
+
+  window.addEventListener("hashchange", render);
+  render();
+
+})();
+</script>
+</body>
+</html>

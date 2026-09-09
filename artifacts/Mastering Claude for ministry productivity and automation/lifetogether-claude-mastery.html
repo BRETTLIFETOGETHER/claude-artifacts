@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeTogether · Becoming an Expert Claude User</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --vellum:#EFE9DC;
+    --vellum-raised:#F7F2E7;
+    --ink:#20251F;
+    --ink-soft:#5C5749;
+    --pine:#243B30;
+    --pine-deep:#1B2C24;
+    --gilt:#A77C39;
+    --gilt-bright:#C19A53;
+    --rubric:#9C3A2C;
+    --rule:rgba(32,37,31,0.14);
+    --rule-strong:rgba(32,37,31,0.28);
+    --measure:42rem;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    margin:0;
+    background:var(--vellum);
+    color:var(--ink);
+    font-family:'Spectral',Georgia,serif;
+    font-size:18px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  /* subtle paper grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:radial-gradient(rgba(32,37,31,0.025) 1px,transparent 1px);
+    background-size:3px 3px;
+  }
+
+  a{color:var(--ink);text-decoration:none;background-image:linear-gradient(var(--gilt),var(--gilt));background-size:100% 1px;background-position:0 1.08em;background-repeat:no-repeat;transition:background-size .25s ease,color .2s ease}
+  a:hover{color:var(--rubric);background-image:linear-gradient(var(--rubric),var(--rubric));background-size:100% 2px}
+  a:focus-visible{outline:2px solid var(--gilt);outline-offset:3px;border-radius:2px}
+
+  .eyebrow{font-family:'Archivo',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gilt)}
+
+  /* ---------- shell ---------- */
+  .shell{position:relative;z-index:1;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:236px minmax(0,1fr);gap:0}
+  @media(max-width:880px){.shell{grid-template-columns:1fr}}
+
+  /* ---------- contents rail ---------- */
+  .contents{position:sticky;top:0;align-self:start;height:100vh;padding:2.4rem 1.5rem 2rem 2rem;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:1.4rem;overflow-y:auto}
+  .contents .mark{font-family:'Fraunces',serif;font-weight:900;font-size:1.15rem;letter-spacing:-.01em;line-height:1.05}
+  .contents .mark b{color:var(--gilt);font-weight:900}
+  .toc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.15rem}
+  .toc a{font-family:'Archivo',sans-serif;font-size:.82rem;line-height:1.3;letter-spacing:.01em;color:var(--ink-soft);background:none;padding:.32rem .5rem .32rem .55rem;border-left:2px solid transparent;display:flex;gap:.55rem;border-radius:0 4px 4px 0}
+  .toc a .num{font-variant-numeric:tabular-nums;color:var(--gilt);min-width:1.6rem;font-weight:600}
+  .toc a:hover{color:var(--ink);background:rgba(167,124,57,.08)}
+  .toc a.active{color:var(--pine);border-left-color:var(--gilt);background:rgba(167,124,57,.1);font-weight:600}
+  .toc-toggle{display:none}
+
+  @media(max-width:880px){
+    .contents{position:sticky;top:0;height:auto;width:100%;flex-direction:column;gap:.8rem;padding:1rem 1.25rem;background:var(--pine);border-right:none;z-index:20;box-shadow:0 2px 14px rgba(0,0,0,.18)}
+    .contents .mark{color:var(--vellum)}
+    .contents .mark b{color:var(--gilt-bright)}
+    .toc{display:none;max-height:60vh;overflow-y:auto;padding-top:.4rem;border-top:1px solid rgba(255,255,255,.16)}
+    .contents.open .toc{display:flex}
+    .toc a{color:rgba(247,242,231,.78)}
+    .toc a:hover{color:#fff;background:rgba(255,255,255,.08)}
+    .toc a.active{color:#fff;background:rgba(255,255,255,.12);border-left-color:var(--gilt-bright)}
+    .toc-toggle{display:flex;align-items:center;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gilt-bright);background:none;border:none;padding:.2rem 0;cursor:pointer;width:100%}
+  }
+
+  /* ---------- main ---------- */
+  main{padding:0 clamp(1.25rem,5vw,4.5rem) 5rem;min-width:0}
+  section{padding-top:3.4rem;scroll-margin-top:1.5rem}
+  .wrap{max-width:var(--measure)}
+  p,ul,ol,table,pre,.card,.callout,.linklist,.cal,.steps,.checklist{max-width:var(--measure)}
+
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1.08;letter-spacing:-.018em;margin:.5rem 0 .2rem}
+  h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.28rem;line-height:1.2;margin:2rem 0 .5rem;color:var(--pine)}
+  h4{font-family:'Archivo',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.02em;margin:1.4rem 0 .4rem}
+  .sec-head{display:flex;align-items:baseline;gap:1rem;border-bottom:1px solid var(--rule-strong);padding-bottom:.8rem;margin-bottom:.4rem}
+  .sec-head .rn{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(1.3rem,2.6vw,1.8rem);color:var(--gilt);line-height:1;letter-spacing:.02em}
+  p{margin:.7rem 0}
+  strong{font-weight:600}
+  em{font-style:italic}
+  ul,ol{padding-left:1.2rem;margin:.7rem 0}
+  li{margin:.35rem 0}
+  code{font-family:'Archivo',ui-monospace,monospace;font-size:.86em;background:rgba(167,124,57,.12);padding:.08em .35em;border-radius:3px;color:#6b4f23}
+
+  /* ---------- HERO / title page ---------- */
+  .hero{padding:clamp(3rem,9vw,6.5rem) 0 2.6rem;border-bottom:2px solid var(--ink);position:relative;max-width:none}
+  .hero .kicker{display:flex;align-items:center;gap:.8rem;margin-bottom:2rem}
+  .hero .kicker .line{height:1px;background:var(--gilt);flex:1;max-width:90px}
+  .hero .wordmark{font-family:'Fraunces',serif;font-weight:900;font-size:.95rem;letter-spacing:.02em}
+  .hero .wordmark b{color:var(--gilt)}
+  .hero h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.6rem,8vw,5.2rem);line-height:.98;letter-spacing:-.03em;margin:0;max-width:14ch}
+  .hero h1 em{font-style:italic;font-weight:500;color:var(--pine)}
+  .hero .sub{font-size:clamp(1.05rem,2.2vw,1.32rem);color:var(--ink-soft);max-width:34rem;margin:1.6rem 0 0;font-style:italic}
+  .hero .meta{font-family:'Archivo',sans-serif;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gilt);margin-top:2.4rem;display:flex;flex-wrap:wrap;gap:.6rem 1.4rem}
+  .hero .seal{position:absolute;top:clamp(2.5rem,8vw,5rem);right:0;width:clamp(74px,12vw,118px);height:clamp(74px,12vw,118px);border:1px solid var(--gilt);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Fraunces',serif;color:var(--gilt)}
+  .hero .seal span{font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;line-height:1}
+  .hero .seal small{position:absolute;bottom:11px;font-family:'Archivo',sans-serif;font-size:.5rem;letter-spacing:.18em;text-transform:uppercase}
+  @media(max-width:520px){.hero .seal{display:none}}
+
+  /* ---------- orientation w/ drop cap ---------- */
+  .orient{padding-top:2.6rem}
+  .dropcap::first-letter{font-family:'Fraunces',serif;font-weight:900;float:left;font-size:4.2rem;line-height:.78;padding:.16em .12em 0 0;color:var(--rubric)}
+
+  /* ---------- callouts ---------- */
+  .callout{border-left:3px solid var(--gilt);background:var(--vellum-raised);padding:1rem 1.25rem;margin:1.4rem 0;border-radius:0 6px 6px 0}
+  .callout.rubric{border-left-color:var(--rubric)}
+  .callout .lab{font-family:'Archivo',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--rubric);display:block;margin-bottom:.3rem}
+  .callout.gilt .lab{color:var(--gilt)}
+  .callout p{margin:.3rem 0}
+
+  /* ---------- skill tiers ---------- */
+  .tier{background:var(--vellum-raised);border:1px solid var(--rule);border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0}
+  .tier .th{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--rule);padding-bottom:.5rem;margin-bottom:.4rem}
+  .tier .th h3{margin:0;color:var(--ink)}
+  .tier .th .when{font-family:'Archivo',sans-serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gilt)}
+  .tier ol{counter-reset:none}
+  .tier li::marker{color:var(--gilt);font-family:'Archivo',sans-serif;font-weight:700}
+
+  /* ---------- resources / links ---------- */
+  .linkgroup{margin:1.6rem 0}
+  .linkgroup>.eyebrow{display:block;margin-bottom:.7rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule)}
+  .linklist{list-style:none;padding:0;margin:0;counter-reset:res}
+  .res{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1rem;padding:.95rem 0;border-bottom:1px solid var(--rule)}
+  .res .rno{counter-increment:res;font-family:'Fraunces',serif;font-weight:900;font-size:1.05rem;color:var(--gilt);grid-row:1/3;font-variant-numeric:tabular-nums;padding-top:.1rem}
+  .res .rno::before{content:counter(res,decimal-leading-zero)}
+  .res .rt{font-family:'Archivo',sans-serif;font-weight:600;font-size:1rem;line-height:1.3}
+  .res .rd{color:var(--ink-soft);font-size:.95rem;margin:.15rem 0 .4rem}
+  .res .chip{display:inline-flex;align-items:center;gap:.4rem;font-family:'Archivo',sans-serif;font-size:.76rem;letter-spacing:.02em;color:var(--pine);background:rgba(36,59,48,.07);border:1px solid rgba(36,59,48,.18);padding:.22rem .6rem;border-radius:999px;background-image:none}
+  .res .chip:hover{color:#fff;background:var(--rubric);border-color:var(--rubric)}
+  .res .chip::after{content:"↗";font-size:.8em;opacity:.7}
+  .res .chips{display:flex;flex-wrap:wrap;gap:.4rem}
+
+  /* ---------- the calendar (signature) ---------- */
+  .almanac{border:1.5px solid var(--ink);border-radius:10px;overflow:hidden;margin:1.6rem 0;max-width:none;background:var(--vellum-raised)}
+  .almanac .bar{background:var(--pine);color:var(--vellum);padding:.7rem 1.1rem;display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  .almanac .bar h3{margin:0;color:var(--vellum);font-size:1.05rem}
+  .almanac .bar .legend{font-family:'Archivo',sans-serif;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:.9rem;color:rgba(247,242,231,.8)}
+  .almanac .bar .legend i{font-style:normal;display:inline-flex;align-items:center;gap:.35rem}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.v{background:var(--rubric)}
+  .dot.r{background:var(--gilt-bright)}
+  .week{border-top:1px solid var(--rule)}
+  .week .wk-head{font-family:'Archivo',sans-serif;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pine);padding:.7rem 1.1rem .2rem;display:flex;align-items:center;gap:.7rem}
+  .week .wk-head .wn{font-family:'Fraunces',serif;font-weight:900;font-size:1.05rem;color:var(--gilt)}
+  .days{display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem;padding:.6rem 1.1rem 1.1rem}
+  @media(max-width:760px){.days{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:420px){.days{grid-template-columns:1fr}}
+  .day{background:var(--vellum);border:1px solid var(--rule);border-radius:7px;padding:.6rem .65rem;display:flex;flex-direction:column;gap:.3rem;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+  .day:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(32,37,31,.1);border-color:var(--gilt)}
+  .day .dn{font-family:'Archivo',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gilt)}
+  .day .dx{font-size:.82rem;line-height:1.32;color:var(--ink)}
+  .day.verify{border-color:var(--rubric);background:linear-gradient(0deg,rgba(156,58,44,.06),rgba(156,58,44,.06)),var(--vellum)}
+  .day.verify .dn{color:var(--rubric)}
+  .day.rest{background:repeating-linear-gradient(135deg,var(--vellum),var(--vellum) 7px,rgba(167,124,57,.06) 7px,rgba(167,124,57,.06) 14px)}
+  .day.rest .dn{color:var(--ink-soft)}
+
+  /* ---------- pre / templates ---------- */
+  pre{background:var(--pine-deep);color:#E7E0CF;font-family:'Archivo',ui-monospace,monospace;font-size:.82rem;line-height:1.6;padding:1.1rem 1.2rem;border-radius:8px;overflow-x:auto;border:1px solid rgba(0,0,0,.3);margin:1rem 0;tab-size:2}
+  pre .tag{color:var(--gilt-bright)}
+  pre .ph{color:#D98C7A}
+  pre .cm{color:#8aa595}
+  .tmpl{margin:1.4rem 0}
+  .tmpl>h4{color:var(--pine);font-size:1rem;border-left:3px solid var(--gilt);padding-left:.6rem}
+
+  /* ---------- folder tree ---------- */
+  pre.tree{background:var(--vellum-raised);color:var(--ink);border:1px solid var(--rule-strong)}
+  pre.tree .dir{color:var(--pine);font-weight:700}
+  pre.tree .cm{color:var(--gilt);}
+
+  /* ---------- table / rubric ---------- */
+  .tablewrap{overflow-x:auto;margin:1.2rem 0;max-width:var(--measure)}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:540px}
+  th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  thead th{font-family:'Archivo',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pine);border-bottom:1.5px solid var(--rule-strong)}
+  tbody th{font-family:'Archivo',sans-serif;font-weight:600;color:var(--ink);white-space:nowrap}
+  tbody tr:hover{background:rgba(167,124,57,.06)}
+
+  /* ---------- checklist ---------- */
+  .checklist{list-style:none;padding:0;margin:1rem 0}
+  .checklist li{position:relative;padding:.4rem 0 .4rem 2rem;border-bottom:1px dashed var(--rule)}
+  .checklist li::before{content:"";position:absolute;left:0;top:.55rem;width:1.05rem;height:1.05rem;border:1.5px solid var(--gilt);border-radius:3px}
+  .checklist li:first-child::after,.checklist li::after{}
+
+  /* ---------- automate columns ---------- */
+  .cols{display:grid;grid-template-columns:1fr;gap:1rem;margin:1.2rem 0;max-width:var(--measure)}
+  .col{border:1px solid var(--rule);border-radius:8px;padding:1rem 1.2rem;background:var(--vellum-raised)}
+  .col.safe{border-top:4px solid var(--pine)}
+  .col.gate{border-top:4px solid var(--gilt)}
+  .col.never{border-top:4px solid var(--rubric)}
+  .col h4{margin-top:0;color:var(--ink)}
+  .col.never h4{color:var(--rubric)}
+
+  /* ---------- steps ---------- */
+  .steps{list-style:none;padding:0;counter-reset:step;margin:1rem 0}
+  .steps li{counter-increment:step;position:relative;padding:.55rem 0 .55rem 2.6rem;border-bottom:1px solid var(--rule)}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:.5rem;width:1.7rem;height:1.7rem;background:var(--pine);color:var(--vellum);font-family:'Fraunces',serif;font-weight:900;font-size:.85rem;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+  /* ---------- closing ---------- */
+  .closing{margin-top:3.6rem;background:var(--pine);color:var(--vellum);border-radius:12px;padding:clamp(1.6rem,4vw,2.6rem);max-width:none}
+  .closing h2{color:var(--vellum)}
+  .closing .eyebrow{color:var(--gilt-bright)}
+  .closing a{color:var(--gilt-bright);background-image:linear-gradient(var(--gilt-bright),var(--gilt-bright))}
+  .closing ol{counter-reset:c;list-style:none;padding:0}
+  .closing ol li{counter-increment:c;position:relative;padding:.6rem 0 .6rem 2.4rem;border-bottom:1px solid rgba(255,255,255,.14)}
+  .closing ol li::before{content:counter(c);position:absolute;left:0;top:.55rem;font-family:'Fraunces',serif;font-weight:900;color:var(--gilt-bright)}
+  .closing p{color:rgba(247,242,231,.9)}
+
+  footer{max-width:var(--measure);margin-top:2.4rem;padding-top:1.4rem;border-top:1px solid var(--rule);font-family:'Archivo',sans-serif;font-size:.76rem;letter-spacing:.04em;color:var(--ink-soft)}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.day{transition:none}}
+
+  @media print{
+    .contents{display:none}.shell{display:block}main{padding:0}
+    .day:hover{transform:none;box-shadow:none}pre{background:#f4f1e7;color:#000;border:1px solid #999}
+    a{color:#000;background:none}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- CONTENTS RAIL -->
+  <nav class="contents" id="contents" aria-label="Contents">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents <span aria-hidden="true">☰</span></button>
+    <div class="mark">Life<b>Together</b><br>Field Manual</div>
+    <ul class="toc" id="toc">
+      <li><a href="#orient"><span class="num">—</span>How to use this</a></li>
+      <li><a href="#skills"><span class="num">I</span>Skills to master</a></li>
+      <li><a href="#resources"><span class="num">II</span>Resources &amp; links</a></li>
+      <li><a href="#plan"><span class="num">III</span>The 30-day plan</a></li>
+      <li><a href="#practice"><span class="num">IV</span>Practice exercises</a></li>
+      <li><a href="#templates"><span class="num">V</span>Prompt templates</a></li>
+      <li><a href="#mistakes"><span class="num">VI</span>Mistakes to avoid</a></li>
+      <li><a href="#progress"><span class="num">VII</span>Measuring progress</a></li>
+      <li><a href="#automation"><span class="num">VIII</span>Automation roadmap</a></li>
+      <li><a href="#systems"><span class="num">IX</span>Repeatable systems</a></li>
+      <li><a href="#judgment"><span class="num">X</span>Automate vs. protect</a></li>
+      <li><a href="#next"><span class="num">→</span>Next three steps</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <header class="hero">
+      <div class="seal"><span>40</span><small>Days</small></div>
+      <div class="kicker"><span class="line"></span><span class="wordmark">Life<b>Together</b> · A Working Field Manual</span></div>
+      <h1>Becoming an <em>Expert</em> Claude User</h1>
+      <p class="sub">Built around your actual work — the 40-day campaign architecture, the blueprint library, Purpose Driven Business, the multi-audience content ladder, and your mobile-first, react-and-refine style.</p>
+      <div class="meta"><span>30-Day On-Ramp</span><span>10 Chapters</span><span>Reusable Templates</span><span>Automation Roadmap</span></div>
+    </header>
+
+    <!-- ORIENTATION -->
+    <section id="orient" class="orient reveal">
+      <div class="wrap">
+        <span class="eyebrow">How to use this</span>
+        <p class="dropcap">This is a 30-day on-ramp followed by a long-term habit system. Don't try to absorb it all at once. Work the 30-day plan, keep the prompt templates and checklists open while you work, and treat the skill map, the progress rubric, and the automate-vs-protect chapter as the things you revisit every few weeks to check your growth.</p>
+        <div class="callout rubric">
+          <span class="lab">Read this first</span>
+          <p>The single highest-value skill on this entire list is <strong>verification</strong> — specifically, catching fabricated Scripture references and misattributed quotes before they reach a congregation. It's first in the skill map and has its own checklist. Everything else makes you faster; this keeps you trustworthy.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- I. SKILLS -->
+    <section id="skills" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">I</span><h2>The Claude skills to master</h2></div>
+        <p>Three tiers. You already operate above beginner level on several, so use this to find your gaps rather than starting from zero.</p>
+
+        <div class="tier">
+          <div class="th"><h3>Foundation</h3><span class="when">Weeks 1–2</span></div>
+          <ol>
+            <li><strong>Verification &amp; theological QC.</strong> Knowing where Claude is reliable (rephrasing, structuring, drafting, summarizing) versus where it confidently invents things (exact Bible citations, quotes attributed to real people, statistics, historical claims). Your non-negotiable core skill.</li>
+            <li><strong>Clear-instruction prompting.</strong> Naming task, audience, deliverable, length, and format in the first line. Your one-line shorthand is already a version of this — the goal is to make it consistent and teachable to Hannah.</li>
+            <li><strong>Role + context framing.</strong> Telling Claude who it writes as (a Purpose Driven campaign writer, a youth pastor, a donor-relations director) and who it writes for (your "Stretched Provider," your 14-year-old freshman centerpoint).</li>
+            <li><strong>React-and-refine discipline.</strong> You prefer straw-man drafts over open-ended prompts. The skill is doing it <em>systematically</em>: ask for a draft, then steer with specific edits rather than starting over.</li>
+          </ol>
+        </div>
+
+        <div class="tier">
+          <div class="th"><h3>Intermediate</h3><span class="when">Weeks 3–4</span></div>
+          <ol start="5">
+            <li><strong>Examples-driven prompting.</strong> Pasting 2–3 examples of your ideal output so Claude matches your house style — the fastest way to lock in the LifeTogether voice.</li>
+            <li><strong>Structured prompting with tags.</strong> Wrapping inputs in labeled sections so Claude knows what each block is. A big quality jump for repeatable work.</li>
+            <li><strong>Projects &amp; saved context.</strong> Using Claude Projects to hold your brand voice, theological guardrails, and character sheets so you stop re-pasting them every chat.</li>
+            <li><strong>Prompt chaining.</strong> Splitting a big job into steps (outline → draft → critique → revise) instead of one giant prompt. Each step does one thing well.</li>
+          </ol>
+        </div>
+
+        <div class="tier">
+          <div class="th"><h3>Advanced / Scale</h3><span class="when">Ongoing</span></div>
+          <ol start="9">
+            <li><strong>Template &amp; library design.</strong> Turning your best prompts into reusable, parameterized templates — the natural evolution of your master template and shorthand format.</li>
+            <li><strong>Skills &amp; Artifacts.</strong> Using Claude's Skills (named, reusable instruction sets) and Artifacts (finished files, not just chat text) so Claude outputs deliverables, not paragraphs you reformat.</li>
+            <li><strong>Self-critique loops.</strong> Prompting Claude to grade its own draft against a rubric (doctrinal accuracy, pastoral tone, brand fit) before you ever read it.</li>
+            <li><strong>Automation orchestration.</strong> Wiring Claude into Keyboard Maestro, Stream Deck, and a disciplined file system so a campaign goes from idea to organized draft with minimal manual shuffling.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- II. RESOURCES -->
+    <section id="resources" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">II</span><h2>Ranked resources</h2></div>
+        <p>Current as of mid-2026 and ranked by value-for-time for your specific goals. Every link is live and opens in a new tab. Start at the top.</p>
+
+        <div class="linkgroup">
+          <span class="eyebrow">Free, authoritative — start here</span>
+          <ul class="linklist">
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Anthropic's Prompt Engineering documentation</div>
+              <div class="rd">The official, current source of truth. Read "Be clear and direct," "Use examples," "Chain prompts," and "Use XML tags."</div>
+              <div class="chips"><a class="chip" href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener">docs.claude.com</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Anthropic's Interactive Prompt Engineering Tutorial</div>
+              <div class="rd">A 9-chapter, hands-on course with exercises and an answer key. The best structured way to build fundamentals.</div>
+              <div class="chips"><a class="chip" href="https://github.com/anthropics/prompt-eng-interactive-tutorial" target="_blank" rel="noopener">github.com</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Anthropic Academy — "Learn with Claude"</div>
+              <div class="rd">Free courses and guides, including prompt engineering and building with Claude.</div>
+              <div class="chips"><a class="chip" href="https://www.anthropic.com/learn" target="_blank" rel="noopener">anthropic.com/learn</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Prompting best practices (latest models)</div>
+              <div class="rd">Anthropic's own best-practices page covering structuring, examples, and thinking.</div>
+              <div class="chips"><a class="chip" href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">docs.claude.com</a></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="linkgroup">
+          <span class="eyebrow">Ongoing learning — subscribe to two, not ten</span>
+          <ul class="linklist">
+            <li class="res"><span class="rno"></span>
+              <div class="rt">One Useful Thing — Ethan Mollick</div>
+              <div class="rd">Widely considered the best free newsletter for <em>applying</em> AI to real knowledge work. Practical, judgment-focused, not hype. The one I'd pick first for you.</div>
+              <div class="chips"><a class="chip" href="https://www.oneusefulthing.org" target="_blank" rel="noopener">oneusefulthing.org</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">The Batch — Andrew Ng / DeepLearning.AI</div>
+              <div class="rd">Weekly, authoritative overview with a teacher's clarity. Stay current without drowning.</div>
+              <div class="chips"><a class="chip" href="https://www.deeplearning.ai/the-batch/" target="_blank" rel="noopener">deeplearning.ai/the-batch</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">A daily tactical feed — pick one</div>
+              <div class="rd">For copy-paste prompts and short workflow ideas. Treat as "skim with coffee," not homework. If you subscribe to more than three newsletters total, you'll stop reading them.</div>
+              <div class="chips"><a class="chip" href="https://www.theneurondaily.com" target="_blank" rel="noopener">The Neuron</a><a class="chip" href="https://www.superhuman.ai" target="_blank" rel="noopener">Superhuman AI</a></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="linkgroup">
+          <span class="eyebrow">Books</span>
+          <ul class="linklist">
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Co-Intelligence: Living and Working with AI — Ethan Mollick</div>
+              <div class="rd">The best single book on the <em>mindset</em> of working with AI as a collaborator. Less about prompts, more about how to think. (Verify the current edition; the field dates fast.)</div>
+              <div class="chips"><a class="chip" href="https://www.oneusefulthing.org" target="_blank" rel="noopener">author's site</a></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="linkgroup">
+          <span class="eyebrow">Automation tooling (for chapters VIII–IX)</span>
+          <ul class="linklist">
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Keyboard Maestro + its forum</div>
+              <div class="rd">The macro engine itself, plus the best place for working examples and troubleshooting.</div>
+              <div class="chips"><a class="chip" href="https://www.keyboardmaestro.com" target="_blank" rel="noopener">keyboardmaestro.com</a><a class="chip" href="https://forum.keyboardmaestro.com" target="_blank" rel="noopener">forum</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Asian Efficiency — Keyboard Maestro guide</div>
+              <div class="rd">A solid, current overview of what KM is good at and how to start, including how AI can now write macro XML for you.</div>
+              <div class="chips"><a class="chip" href="https://www.asianefficiency.com/technology/keyboard-maestro/" target="_blank" rel="noopener">asianefficiency.com</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Sayz Lim — Integrating an AI API into Keyboard Maestro</div>
+              <div class="rd">A concrete, replicable pattern for calling an AI model from a KM macro via Apple Shortcuts. The same approach works with Claude's API.</div>
+              <div class="chips"><a class="chip" href="https://sayzlim.net/chatgpt-keyboard-maestro/" target="_blank" rel="noopener">sayzlim.net</a></div>
+            </li>
+            <li class="res"><span class="rno"></span>
+              <div class="rt">Thomas Frank — macOS shortcut &amp; macro library</div>
+              <div class="rd">A real-world example of a full macro/automation stack, useful for ideas you can adapt.</div>
+              <div class="chips"><a class="chip" href="https://thomasjfrank.com/my-macos-shortcut-macro-library-raycast-keyboard-maestro-and-more/" target="_blank" rel="noopener">thomasjfrank.com</a></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <span class="lab" style="color:var(--gilt)">A caution on resources</span>
+          <p>Be skeptical of "100 magic prompts" content and anything promising effortless scale. The good material teaches <em>judgment</em> — when to use AI, how to verify it. The weak material sells you templates. You'll get more from Mollick's reasoning than from a thousand pre-written prompts.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- III. PLAN / CALENDAR -->
+    <section id="plan" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">III</span><h2>Your 30-day plan</h2></div>
+        <p>About 30–45 minutes a day, mobile-friendly, and built so every exercise produces something you could actually use. Adjust pace freely. Days marked in <strong style="color:var(--rubric)">red are verification drills</strong> — the most important days of the month.</p>
+      </div>
+
+      <div class="almanac">
+        <div class="bar">
+          <h3>The formation calendar</h3>
+          <div class="legend">
+            <i><span class="dot v"></span>Verification drill</i>
+            <i><span class="dot r"></span>Rest / review</i>
+          </div>
+        </div>
+
+        <div class="week">
+          <div class="wk-head"><span class="wn">01</span>Foundations + verification habits</div>
+          <div class="days">
+            <div class="day"><span class="dn">Day 1</span><span class="dx">Read "Be clear and direct." Rewrite 3 recent prompts to name task + audience + deliverable + length.</span></div>
+            <div class="day"><span class="dn">Day 2</span><span class="dx">Read "Use examples." Use a finished LifeTogether piece as a few-shot example to generate a matching one.</span></div>
+            <div class="day verify"><span class="dn">Day 3 · Verify</span><span class="dx">Generate a devotional citing 3 verses. Check every reference against a real Bible. Log every error.</span></div>
+            <div class="day"><span class="dn">Day 4</span><span class="dx">Interactive tutorial, chapters 1–3.</span></div>
+            <div class="day"><span class="dn">Day 5</span><span class="dx">Build a straw-man workflow on purpose: rough draft, then 3 rounds of specific edits.</span></div>
+            <div class="day rest"><span class="dn">Weekend</span><span class="dx">Subscribe to One Useful Thing + one tactical feed. Read the latest issue.</span></div>
+          </div>
+        </div>
+
+        <div class="week">
+          <div class="wk-head"><span class="wn">02</span>Roles, audience &amp; your house voice</div>
+          <div class="days">
+            <div class="day"><span class="dn">Day 8</span><span class="dx">Write a one-paragraph LifeTogether voice brief. You'll reuse this constantly.</span></div>
+            <div class="day"><span class="dn">Day 9</span><span class="dx">Interactive tutorial, chapters 4–6 (roles, formatting, step-by-step).</span></div>
+            <div class="day"><span class="dn">Day 10</span><span class="dx">Turn the "Stretched Provider" sheet into a context block; draft an email to that person.</span></div>
+            <div class="day"><span class="dn">Day 11</span><span class="dx">Repeat for the 14-year-old freshman centerpoint. Watch how audience reframes everything.</span></div>
+            <div class="day verify"><span class="dn">Day 12 · Verify</span><span class="dx">Ask for a paragraph "in the spirit of Rick Warren." Confirm it invents no direct quote; rewrite any as paraphrase.</span></div>
+            <div class="day rest"><span class="dn">Weekend</span><span class="dx">Skim the week's newsletters. Save one idea to try.</span></div>
+          </div>
+        </div>
+
+        <div class="week">
+          <div class="wk-head"><span class="wn">03</span>Structure, Projects &amp; chaining</div>
+          <div class="days">
+            <div class="day"><span class="dn">Day 15</span><span class="dx">Set up a "LifeTogether Campaigns" Project. Load voice brief, guardrails, one character sheet.</span></div>
+            <div class="day"><span class="dn">Day 16</span><span class="dx">Learn XML-style tags. Rebuild your master template with labeled blocks.</span></div>
+            <div class="day"><span class="dn">Day 17</span><span class="dx">Practice chaining: outline arc → draft week 1 → critique → revise.</span></div>
+            <div class="day"><span class="dn">Day 18</span><span class="dx">Interactive tutorial, chapters 7–9 + advanced appendix.</span></div>
+            <div class="day"><span class="dn">Day 19</span><span class="dx">Formalize your shorthand into a one-page input spec Hannah could run.</span></div>
+            <div class="day rest"><span class="dn">Weekend</span><span class="dx">Generate 3 blueprints from shorthand, then QC them. Track error types.</span></div>
+          </div>
+        </div>
+
+        <div class="week">
+          <div class="wk-head"><span class="wn">04</span>Scale, self-critique &amp; first automation</div>
+          <div class="days">
+            <div class="day"><span class="dn">Day 22</span><span class="dx">Write a self-critique prompt; grade a real draft before you read it.</span></div>
+            <div class="day"><span class="dn">Day 23</span><span class="dx">Turn your 3 best prompts into parameterized templates; save them for mobile pasting.</span></div>
+            <div class="day"><span class="dn">Day 24</span><span class="dx">Build your folder structure and naming convention. Migrate one campaign in.</span></div>
+            <div class="day"><span class="dn">Day 25</span><span class="dx">Build your first Keyboard Maestro macro — start trivially simple. Win small, then expand.</span></div>
+            <div class="day"><span class="dn">Day 26</span><span class="dx">Wire one macro to a Stream Deck button (or plan to, if no hardware yet).</span></div>
+            <div class="day verify"><span class="dn">Day 27 · Capstone</span><span class="dx">Run one idea end-to-end through the pipeline. Time it. Note where it dragged.</span></div>
+          </div>
+        </div>
+
+        <div class="week">
+          <div class="wk-head"><span class="wn">—</span>Close the loop</div>
+          <div class="days">
+            <div class="day rest"><span class="dn">Day 30</span><span class="dx">Score yourself on the progress rubric. Pick the 2 weakest areas as next month's focus.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IV. PRACTICE -->
+    <section id="practice" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">IV</span><h2>Practice exercises</h2></div>
+        <p>Use these as drills with realistic LifeTogether examples. They escalate in difficulty.</p>
+        <ol>
+          <li><strong>Voice match.</strong> Give one of your devotional days as an example, then ask for a new one on a different theme. Goal: a reader can't tell which you wrote.</li>
+          <li><strong>Audience ladder.</strong> Take one concept (e.g., stewardship) and write it three ways — wonder for kids, identity/honesty for teens, freedom/stewardship for adults — keeping your content-ladder logic.</li>
+          <li><strong>Shorthand stress-test.</strong> Feed five shorthand inputs, generate five blueprints, then audit: did the template hold? Where did Claude drift? Fix the template, not just the outputs.</li>
+          <li><strong>The Stretched Provider letter.</strong> Draft a campaign email <em>to</em> that character, then a donor update <em>about</em> serving people like them. Notice how the same audience reframes as recipient vs. subject.</li>
+          <li><strong>Misquote hunt.</strong> Ask for a teaching outline with five Scripture references and one Rick Warren-style insight. Find every error: wrong verse numbers, paraphrases sold as quotes, invented attributions.</li>
+          <li><strong>Brochure rescue.</strong> Take rough bullets for the next title-catalog brochure; have Claude shape them into your dark-luxury editorial style, then critique its own choices.</li>
+          <li><strong>Purpose Driven Business pitch.</strong> Draft a one-page case-study summary for a C12 / Convene audience, then have Claude red-team it from a skeptical CFO's view.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- V. TEMPLATES -->
+    <section id="templates" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">V</span><h2>Reusable prompt templates</h2></div>
+        <p>Parameterized — replace the <code>[BRACKETS]</code>. Keep them where you can paste quickly. Each ends by inviting your steer, and each content template carries the <strong>[VERIFY]</strong> instruction. That second habit is what keeps scale safe.</p>
+
+        <div class="tmpl">
+          <h4>Template A — Master campaign blueprint (your core engine)</h4>
+<pre><span class="cm">You are a campaign writer in the Purpose Driven / Rick Warren tradition,
+writing for LifeTogether.</span>
+
+<span class="tag">&lt;voice&gt;</span>
+<span class="ph">[PASTE YOUR LIFETOGETHER VOICE BRIEF]</span>
+<span class="tag">&lt;/voice&gt;</span>
+
+<span class="tag">&lt;audience&gt;</span>
+<span class="ph">[PASTE THE RELEVANT CHARACTER SHEET — Stretched Provider, freshman, etc.]</span>
+<span class="tag">&lt;/audience&gt;</span>
+
+<span class="tag">&lt;doctrine&gt;</span>
+Stay within historic, broadly evangelical orthodoxy. Do NOT invent Bible
+references — only cite verses you are confident are correct, and flag any
+you are unsure about with [VERIFY]. Never attribute a direct quote to a
+real person; paraphrase ideas instead.
+<span class="tag">&lt;/doctrine&gt;</span>
+
+<span class="tag">&lt;task&gt;</span>
+Draft a 40-day campaign blueprint on the theme: <span class="ph">[THEME]</span>.
+Include: a one-line big idea, a 6-week arc, weekly focus statements, and
+3 sample daily devotional titles per week.
+Format: <span class="ph">[FORMAT]</span>. Length: <span class="ph">[LENGTH]</span>.
+<span class="tag">&lt;/task&gt;</span>
+
+Give me a straw-man draft I can react to. Keep it tight; I'll steer from here.</pre>
+        </div>
+
+        <div class="tmpl">
+          <h4>Template B — One-line shorthand expander</h4>
+<pre>Using the LifeTogether blueprint template and voice already in this project,
+expand each shorthand line below into a full blueprint. Flag any [VERIFY]
+Scripture and any place you had to guess at intent.
+
+Shorthand:
+<span class="ph">[PASTE YOUR ONE-LINE SHORTHAND LINES]</span></pre>
+        </div>
+
+        <div class="tmpl">
+          <h4>Template C — Audience-ladder rewrite</h4>
+<pre>Take this concept: <span class="ph">[CONCEPT]</span>.
+Write three versions following our content ladder:
+- Kids edition: wonder
+- Teen edition: identity/honesty (centerpoint: 14-yr-old freshman)
+- Adult edition: freedom/stewardship (centerpoint: Stretched Provider)
+Keep the through-line identical so a family experiences one unified idea.
+Draft first; I'll refine.</pre>
+        </div>
+
+        <div class="tmpl">
+          <h4>Template D — Self-critique / QC pass</h4>
+<pre>Grade the draft below A–F on each: (1) doctrinal accuracy, (2) pastoral
+sensitivity, (3) LifeTogether brand/voice fit, (4) clarity for <span class="ph">[AUDIENCE]</span>.
+Then list the specific fixes. Separately, list every Scripture reference and
+mark each as VERIFIED-LOOKS-RIGHT or NEEDS-HUMAN-CHECK. Do not rewrite yet.
+
+Draft:
+<span class="ph">[PASTE DRAFT]</span></pre>
+        </div>
+
+        <div class="tmpl">
+          <h4>Template E — Communications (email / social / donor)</h4>
+<pre>Audience: <span class="ph">[WHO]</span>. Channel: <span class="ph">[email / Instagram / donor letter]</span>.
+Goal: <span class="ph">[the one action or feeling you want]</span>.
+Tone: <span class="ph">[warm, pastoral, urgent-but-not-pushy...]</span>.
+Constraints: <span class="ph">[length, must-include, must-avoid]</span>.
+Draft 2 versions with different strategies (e.g., story-led vs. direct-ask).
+I'll pick and refine.</pre>
+        </div>
+
+        <div class="tmpl">
+          <h4>Template F — Rough idea to polished outline</h4>
+<pre>Here are my rough, unstructured notes. Don't add new theology or claims —
+organize and sharpen what's here. Produce a clean outline, flag gaps where
+I need to add content, and mark anything that needs a source.
+
+Notes:
+<span class="ph">[BRAIN DUMP]</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- VI. MISTAKES -->
+    <section id="mistakes" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">VI</span><h2>Common mistakes to avoid</h2></div>
+        <ul>
+          <li><strong>Trusting Scripture citations.</strong> Claude produces wrong verse numbers and presents paraphrases as direct quotes with total confidence. Check every reference, every time. The #1 risk in your field.</li>
+          <li><strong>Letting it invent quotes from real people.</strong> A fabricated Rick Warren quote is a credibility and legal hazard. Paraphrase ideas; never present invented words as someone's quotation.</li>
+          <li><strong>Mega-prompts.</strong> Cramming outline + draft + edit + format into one prompt produces mush. Chain instead.</li>
+          <li><strong>Re-prompting instead of steering.</strong> When a draft is 70% right, fix it with specific edits — don't start over.</li>
+          <li><strong>Skipping the voice example.</strong> Describing your voice is weaker than <em>showing</em> one example. Always paste a sample.</li>
+          <li><strong>Scaling before the template is solid.</strong> Don't batch 50 blueprints off a template you haven't QC'd on 3. Errors multiply.</li>
+          <li><strong>Automating judgment.</strong> Automate the <em>mechanical</em> steps. Never automate the <em>pastoral</em> or <em>doctrinal</em> decision points.</li>
+          <li><strong>No paper trail.</strong> If you don't save the prompt that produced a great output, you can't reproduce or improve it. Capture prompts, not just outputs.</li>
+          <li><strong>Over-polishing in chat.</strong> For finished documents, have Claude produce an Artifact/file rather than reformatting chat text by hand.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- VII. PROGRESS -->
+    <section id="progress" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">VII</span><h2>Measuring your progress</h2></div>
+        <p>Score yourself 1–5 on each every few weeks. "Expert" is roughly 4+ across the board.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Skill</th><th>1 — Novice</th><th>3 — Competent</th><th>5 — Expert</th></tr></thead>
+            <tbody>
+              <tr><th>Verification</th><td>Trusts outputs</td><td>Spot-checks Scripture</td><td>Catches every fabricated cite/quote reflexively</td></tr>
+              <tr><th>Prompt clarity</th><td>Vague asks</td><td>Names task + audience</td><td>Consistent, teachable spec others can reuse</td></tr>
+              <tr><th>Voice control</th><td>Generic AI tone</td><td>Sometimes on-brand</td><td>Reliably indistinguishable from your hand</td></tr>
+              <tr><th>Chaining</th><td>One big prompt</td><td>Splits some steps</td><td>Designs clean multi-step pipelines</td></tr>
+              <tr><th>Templates</th><td>Re-types each time</td><td>A few saved prompts</td><td>Parameterized library Hannah can run</td></tr>
+              <tr><th>Self-critique</th><td>Reads raw output</td><td>Occasionally asks for review</td><td>Drafts auto-graded before you read them</td></tr>
+              <tr><th>Automation</th><td>All manual</td><td>A macro or two</td><td>Idea → organized draft, minimal manual work</td></tr>
+              <tr><th>Judgment</th><td>Over/under-uses AI</td><td>Knows rough limits</td><td>Knows exactly what to automate vs. protect</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Three milestones to aim for</h4>
+        <ol>
+          <li><strong>Reproducibility.</strong> You can hand a template to Hannah and she gets near-identical quality.</li>
+          <li><strong>Throughput with safety.</strong> You can produce a batch of blueprints <em>and</em> your QC catches errors before they ship.</li>
+          <li><strong>One-touch start.</strong> A single button sets up a new campaign with voice, audience, and guardrails pre-loaded.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- VIII. AUTOMATION -->
+    <section id="automation" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">VIII</span><h2>Automation roadmap</h2></div>
+        <div class="callout gilt">
+          <span class="lab">The mindset</span>
+          <p>Automate the plumbing, never the pastoring. Macros should move text, files, and prompts around so your human attention is spent only on judgment — theology, tone, and the actual ideas.</p>
+        </div>
+
+        <h3>Stage 0 — Text snippets (this week)</h3>
+        <p>Before any macros, put your voice brief, character sheets, and templates into a text expander (the built-in one on Mac/iOS, or an app). Typing <code>;voice</code> pastes your voice brief. This alone removes most repetitive friction and works on mobile.</p>
+
+        <h3>Stage 1 — Simple Keyboard Maestro macros</h3>
+        <ul>
+          <li><strong>"New Campaign":</strong> opens your campaign folder template, your Claude project, and pastes your master blueprint template — all from one hotkey.</li>
+          <li><strong>"Paste Voice Brief":</strong> a hotkey that types your voice brief into any field.</li>
+          <li><strong>"Paste QC Prompt":</strong> drops Template D so you can grade any draft instantly.</li>
+        </ul>
+        <div class="callout">
+          <span class="lab" style="color:var(--gilt)">Shortcut</span>
+          <p>You can ask Claude to <em>write the Keyboard Maestro macro XML</em> for you in plain English, then import it — the KM community does this routinely now. Always review imported macros before trusting them.</p>
+        </div>
+
+        <h3>Stage 2 — Stream Deck buttons (physical, glanceable)</h3>
+        <p>Use the <strong>KMLink</strong> plugin so a Stream Deck button triggers any KM macro. A practical layout:</p>
+        <ul>
+          <li>Button 1 — New Campaign setup</li>
+          <li>Button 2 — Paste Voice Brief</li>
+          <li>Button 3 — Paste Blueprint Template</li>
+          <li>Button 4 — Paste QC / Self-Critique prompt</li>
+          <li>Button 5 — Paste Audience-Ladder prompt</li>
+          <li>Button 6 — "File this output" (Stage 3)</li>
+          <li>A folder button toggling "Donor / Comms" vs. "Campaign" prompts</li>
+        </ul>
+
+        <h3>Stage 3 — File-and-organize automation</h3>
+        <p>A macro that takes a finished Artifact, names it by your convention, and drops it in the right folder. This is where you reclaim the most time.</p>
+
+        <h3>Stage 4 — API-level automation (optional, more technical)</h3>
+        <p>Following the Sayz Lim pattern, a KM macro can send your clipboard to Claude's API via Apple Shortcuts and return the result — select rough notes, hit a hotkey, get a cleaned-up draft back in place. There's also a Keyboard Maestro MCP server that lets Claude itself trigger and manage your macros conversationally. Treat Stage 4 as a "once Stages 1–3 are humming" project, and review everything it produces; giving an AI access to run macros warrants caution.</p>
+
+        <div class="callout">
+          <span class="lab" style="color:var(--gilt)">Hardware note</span>
+          <p>Keyboard Maestro and Stream Deck are Mac/desktop tools. Since you work primarily on mobile, lean on text expanders and Claude Projects on mobile, and treat the Mac as your "studio" for heavier batch sessions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- IX. SYSTEMS -->
+    <section id="systems" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">IX</span><h2>Repeatable systems</h2></div>
+        <p>Where you stop doing one-off work and start running pipelines.</p>
+
+        <h3>Folder structure &amp; naming conventions</h3>
+<pre class="tree"><span class="dir">LifeTogether/</span>
+├── <span class="dir">00_Brand/</span>                  <span class="cm">voice brief, style guide, logos, guardrails</span>
+├── <span class="dir">01_Character-Sheets/</span>       <span class="cm">Stretched Provider, Freshman, etc.</span>
+├── <span class="dir">02_Prompt-Library/</span>         <span class="cm">your templates, versioned</span>
+├── <span class="dir">03_Campaigns/</span>
+│   └── <span class="dir">[CampaignName]/</span>
+│       ├── <span class="dir">0_Brief/</span>
+│       ├── <span class="dir">1_Blueprint/</span>
+│       ├── <span class="dir">2_Drafts/</span>
+│       ├── <span class="dir">3_QC/</span>
+│       ├── <span class="dir">4_Final/</span>
+│       └── <span class="dir">5_Assets/</span>          <span class="cm">brochure, emails, social, donor</span>
+├── <span class="dir">04_PurposeDrivenBusiness/</span>
+└── <span class="dir">99_Templates/</span>              <span class="cm">blank campaign folder to copy</span></pre>
+        <p><strong>Naming convention:</strong> <code>YYYY-MM-DD_Project_Asset_Audience_vNN</code><br>
+        e.g., <code>2026-07-01_StewardshipCampaign_Devotional_Teen_v03</code>. Consistent names make automation and search trivial, and let you sort by date, project, or version at a glance.</p>
+
+        <h3>Prompt library discipline</h3>
+        <p>Version your prompts like code. When a template improves, save it as <code>v04</code> and note what changed and why. Your best outputs become tomorrow's examples — keep a <code>Gold/</code> folder of exemplary results to paste as few-shot samples.</p>
+
+        <h3>A content production pipeline</h3>
+        <p>For any resource — campaign, brochure, email series, teaching series, donor update:</p>
+        <ol class="steps">
+          <li><strong>Brief</strong> — capture idea + audience + goal (Template F).</li>
+          <li><strong>Blueprint / outline</strong> — generate structure (Template A or E).</li>
+          <li><strong>Draft</strong> — generate content, react-and-refine.</li>
+          <li><strong>Self-critique</strong> — Claude grades against the rubric (Template D).</li>
+          <li><strong>Human review</strong> — you or Hannah: theology, tone, Scripture check, brand.</li>
+          <li><strong>Finalize</strong> — Claude produces the clean Artifact/file.</li>
+          <li><strong>File &amp; template-ize</strong> — name it, store it, and if it's excellent, copy the winning prompt into your library.</li>
+        </ol>
+
+        <h3>Quality-control checklist</h3>
+        <ul class="checklist">
+          <li>Every Scripture reference independently verified against a real Bible</li>
+          <li>No invented direct quotes attributed to Rick Warren or any real person</li>
+          <li>Doctrine within your stated guardrails</li>
+          <li>Pastoral tone appropriate (especially grief, money stress, sin, suffering)</li>
+          <li>Brand voice matches the LifeTogether brief</li>
+          <li>Audience fit confirmed (right register for kids/teens/adults)</li>
+          <li>Facts, stats, names, dates checked</li>
+          <li>No accidental AI tells (generic filler, "As an AI," em-dash overload)</li>
+          <li>A human read the whole thing, not just skimmed</li>
+        </ul>
+
+        <h3>Batching responsibly</h3>
+        <ul>
+          <li><strong>QC the template on 3 before running 30.</strong> Template errors multiply across a batch.</li>
+          <li><strong>Batch the generation, never the review.</strong> Generate 20 blueprints at once; never publish 20 without 20 human reads.</li>
+          <li><strong>Sample-audit large batches:</strong> review 100%, but track error <em>rates</em> so you know which templates are reliable.</li>
+          <li><strong>Keep a "drift log":</strong> note where Claude wanders off-template, then tighten the template.</li>
+        </ul>
+
+        <h3>Turning outputs into future templates</h3>
+        <p>After each project, ask: <em>what here is reusable?</em> Promote winning prompts to your library (versioned), winning outputs to your <code>Gold/</code> examples, and recurring fixes into the template itself so you never make the same correction twice. This is the compounding loop — every campaign makes the next one faster.</p>
+      </div>
+    </section>
+
+    <!-- X. JUDGMENT -->
+    <section id="judgment" class="reveal">
+      <div class="wrap">
+        <div class="sec-head"><span class="rn">X</span><h2>Automate vs. protect</h2></div>
+        <p>A clear line to hold:</p>
+        <div class="cols">
+          <div class="col safe">
+            <h4>Safe to automate — mechanical</h4>
+            <ul>
+              <li>Pasting voice briefs, character sheets, templates</li>
+              <li>Setting up campaign folders and naming files</li>
+              <li>First-draft generation and outlining</li>
+              <li>Reformatting and producing finished file Artifacts</li>
+              <li>Summarizing your own notes and transcripts</li>
+              <li>Generating <em>options</em> to choose from (titles, subject lines, social variants)</li>
+            </ul>
+          </div>
+          <div class="col gate">
+            <h4>Automate with a mandatory human gate</h4>
+            <ul>
+              <li>Anything quoting Scripture (verify before it ships)</li>
+              <li>Donor communications and fundraising appeals</li>
+              <li>Anything attributed to a real person</li>
+              <li>Public-facing campaign copy and brochures</li>
+              <li>Teaching content others will treat as authoritative</li>
+            </ul>
+          </div>
+          <div class="col never">
+            <h4>Never automate — human only</h4>
+            <ul>
+              <li><strong>Pastoral care and crisis response</strong> — grief, suffering, conflict, confession, anyone in distress. Don't let a macro draft a reply to someone in pain.</li>
+              <li><strong>Final theological judgment</strong> — what your ministry actually affirms and teaches.</li>
+              <li><strong>Personal, relational messages</strong> — the ones whose value is that <em>you</em> wrote them.</li>
+              <li><strong>Decisions about people</strong> — hiring, discipline, membership, leadership.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout rubric">
+          <span class="lab">Where review matters most</span>
+          <p>In order: (1) Scripture accuracy, (2) pastoral sensitivity, (3) doctrinal soundness, (4) attribution of quotes/claims, (5) brand voice. If you only have time to check one thing, check the Bible references. If you have time for two, add: does this sound like it loves the reader?</p>
+        </div>
+        <p>The deeper principle for a ministry: AI can scale your <em>output</em>, but it must never scale your <em>judgment</em> or stand in for <em>presence</em>. Use it to clear the mechanical work off your plate so you and Hannah have more attention for the parts only humans should do — discernment, care, and the relationships your content exists to serve.</p>
+      </div>
+    </section>
+
+    <!-- CLOSING -->
+    <section id="next" class="reveal">
+      <div class="closing">
+        <span class="eyebrow">Your immediate next three steps</span>
+        <h2>Start here</h2>
+        <ol>
+          <li><strong>Today.</strong> Write your one-paragraph LifeTogether voice brief and run the Day-3 verification drill so you feel the fabrication risk firsthand.</li>
+          <li><strong>This week.</strong> Set up the "LifeTogether Campaigns" Project with voice + guardrails + one character sheet, and save the templates where you can paste them on mobile.</li>
+          <li><strong>This month.</strong> Work the 30-day plan, then score yourself on the rubric and pick two areas to deepen.</li>
+        </ol>
+        <p>You already operate well above beginner level — your shorthand format, character sheets, and content ladder are real systems thinking. The jump to "expert" is mostly three things: ruthless verification habits, turning your good instincts into <em>documented, repeatable</em> templates Hannah can run, and building the plumbing so scale stays safe.</p>
+      </div>
+      <footer>LifeTogether · A Working Field Manual for Claude — built around the 40-day campaign architecture, the blueprint library, and the multi-audience content ladder.</footer>
+    </section>
+  </main>
+</div>
+
+<script>
+  // mobile contents toggle
+  var toggle=document.getElementById('tocToggle'),contents=document.getElementById('contents');
+  if(toggle){toggle.addEventListener('click',function(){var open=contents.classList.toggle('open');toggle.setAttribute('aria-expanded',open);});}
+  document.querySelectorAll('#toc a').forEach(function(a){a.addEventListener('click',function(){contents.classList.remove('open');if(toggle)toggle.setAttribute('aria-expanded','false');});});
+
+  // scroll reveal
+  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var revs=document.querySelectorAll('.reveal');
+  if(!reduce && 'IntersectionObserver' in window){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{threshold:.08});
+    revs.forEach(function(el){ro.observe(el);});
+  } else { revs.forEach(function(el){el.classList.add('in');}); }
+
+  // active TOC highlight
+  var links=Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var map={};links.forEach(function(l){var id=l.getAttribute('href').slice(1);var s=document.getElementById(id);if(s)map[id]=l;});
+  var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.remove('active');});var l=map[e.target.id];if(l)l.classList.add('active');}});},{rootMargin:'-20% 0px -70% 0px'});
+  Object.keys(map).forEach(function(id){so.observe(document.getElementById(id));});
+</script>
+</body>
+</html>

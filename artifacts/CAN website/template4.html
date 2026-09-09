@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The CAN Platform&trade;</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0C1D33;--panel:#11253F;--line:rgba(201,169,78,.24);--hair:rgba(201,169,78,.14);
+ --gold:#C9A94E;--gold-lt:#E6CE8C;--paper:#EFE9DC;--body:#D6DEE9;--muted:#90A4BD;--red:#D98A6A;--green:#8FBF9F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--navy);background-image:radial-gradient(120% 50% at 50% 0%,#142A48 0%,#0C1D33 50%,#07121F 100%);
+ background-attachment:fixed;color:var(--body);font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;line-height:1.6}
+.wrap{max-width:800px;margin:0 auto;padding:0 18px}
+h1,h2,h3,h4,h5{font-family:"Playfair Display",Georgia,serif;font-weight:500;color:var(--paper);margin:0}
+p{margin:0 0 .9em}
+button{font:inherit;cursor:pointer}
+a{color:var(--gold-lt)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.top{position:sticky;top:0;z-index:20;background:rgba(9,22,38,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topin{max-width:800px;margin:0 auto;padding:.5rem 18px;display:flex;align-items:center;gap:.55rem}
+.brand{font-family:"Playfair Display",serif;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.crumb{flex:1;min-width:0;font-size:.76rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seg{display:flex;border:1px solid var(--hair)}
+.seg button{background:none;border:0;color:var(--muted);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;padding:.26rem .4rem}
+.seg button.on{background:var(--gold);color:#0C1D33;font-weight:600}
+.tabs{max-width:800px;margin:0 auto;padding:0 18px;display:flex;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+ font-family:"Playfair Display",serif;font-size:.83rem;padding:.45rem .6rem;white-space:nowrap}
+.tabs button.on{color:var(--gold-lt);border-bottom-color:var(--gold)}
+.tabs button i{font-style:normal;font-size:.55rem;color:var(--gold);margin-right:.22rem}
+.subnav{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 1rem}
+.subnav button{background:none;border:1px solid var(--hair);color:var(--muted);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;padding:.32rem .55rem}
+.subnav button.on{border-color:var(--gold);color:var(--gold-lt);background:rgba(201,169,78,.09)}
+.sec{padding:22px 0}
+.sechead{margin:0 0 .9rem}
+.sechead h2{font-size:clamp(1.25rem,5.2vw,1.8rem);line-height:1.12}
+.sechead .sub{color:var(--muted);font-style:italic;font-size:.95rem;margin:.3rem 0 0}
+.eng{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.45rem}
+.back{background:none;border:0;color:var(--gold);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;padding:.2rem 0;margin-bottom:.7rem}
+.subhead{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:.96rem;margin:1.3rem 0 .35rem;border-bottom:1px solid var(--hair);padding-bottom:.22rem}
+.band{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 1rem}
+.band div{flex:1 1 33%;background:var(--navy);padding:.65rem .3rem;text-align:center}
+.band b{display:block;font-family:"Playfair Display",serif;font-size:1.25rem;color:var(--gold-lt);font-weight:500;line-height:1}
+.band span{display:block;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
+.row{display:flex;gap:.75rem;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--hair);padding:.75rem 0;color:inherit}
+.row:hover .rt{color:var(--gold-lt)}
+.rn{font-family:"Playfair Display",serif;color:var(--gold);font-size:.9rem;min-width:2.1em;line-height:1.5}
+.rmain{flex:1;min-width:0}
+.rt{display:block;font-family:"Playfair Display",serif;font-size:1rem;color:var(--paper);line-height:1.25}
+.rs{display:block;font-size:.9rem;color:var(--muted);font-style:italic;margin-top:.14rem;line-height:1.4}
+.rmeta{display:block;font-size:.53rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:.26rem}
+.arw{color:var(--gold);padding-top:.15rem}
+.tag{display:inline-block;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--hair);color:var(--muted);padding:.06rem .26rem;margin-left:.3rem;vertical-align:middle}
+.panel{border:1px solid var(--line);background:var(--panel);padding:.95rem 1rem;margin:0 0 .95rem}
+.panel h4{font-size:1.02rem;color:var(--gold-lt);margin:0 0 .4rem}
+.panel ul{margin:0;padding-left:1.05rem}
+.panel li{margin:0 0 .22rem;font-size:.96rem}
+.gate{border:1px solid var(--line);background:var(--panel);padding:.5rem .7rem;margin:0 0 .85rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.gate .gl{font-size:.53rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);flex:1}
+.out{border:1px solid var(--hair);background:rgba(255,255,255,.02);padding:.95rem 1rem;margin:0 0 .95rem}
+.out h4{font-family:"Playfair Display",serif;color:var(--gold-lt);font-size:1rem;margin:1rem 0 .35rem}
+.out h4:first-child{margin-top:0}
+.out h5{font-size:.86rem;color:var(--paper);margin:.75rem 0 .22rem;letter-spacing:.05em;text-transform:uppercase}
+.out ul{margin:0 0 .75rem;padding-left:1.1rem}
+.out li{margin:0 0 .24rem}
+.out strong{color:var(--paper)}
+.out blockquote{margin:0 0 .75rem;padding-left:.8rem;border-left:2px solid var(--gold);font-style:italic;color:var(--paper)}
+.acts{display:flex;gap:.42rem;flex-wrap:wrap;margin:0 0 .85rem}
+.act{background:none;border:1px solid var(--line);color:var(--gold);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;padding:.4rem .66rem}
+.act.primary{background:var(--gold);color:#0C1D33;border-color:var(--gold);font-weight:600}
+.spin{color:var(--muted);font-style:italic;padding:1.1rem 0;text-align:center}
+.dot{display:inline-block;animation:bl 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
+.err{border:1px solid var(--red);color:var(--red);padding:.65rem .8rem;margin:0 0 .85rem;font-size:.93rem}
+.fld{margin:0 0 .75rem}
+.fld label{display:block;font-size:.57rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
+.fld input,.fld select,.fld textarea{width:100%;background:var(--panel);border:1px solid var(--hair);color:var(--paper);font-family:inherit;font-size:1rem;padding:.48rem .58rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.grid3{display:grid;grid-template-columns:1.4fr .6fr 1fr;gap:.42rem;align-items:end}
+.kid{border-bottom:1px solid var(--hair);padding:.6rem 0}
+.rm{background:none;border:0;color:var(--red);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem;margin:0 0 .85rem}
+.chip{border:1px solid var(--hair);color:var(--muted);font-size:.78rem;padding:.24rem .48rem;background:none}
+.chip.on{border-color:var(--gold);color:var(--gold-lt);background:rgba(201,169,78,.09)}
+.rel{border-top:1px solid var(--hair);margin:0 0 1rem}
+.relrow{display:flex;align-items:center;gap:.65rem;padding:.5rem 0;border-bottom:1px solid var(--hair)}
+.relname{flex:1;min-width:0;font-size:.96rem;color:var(--paper);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.relname i{color:var(--muted);font-style:normal;font-size:.8rem}
+.pips{display:flex;gap:3px}
+.pip{width:10px;height:10px;border:1px solid var(--hair)}
+.pip.on{background:var(--gold);border-color:var(--gold)}
+.relstage{font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:5.4em;text-align:right}
+.pill{display:inline-block;font-size:.56rem;letter-spacing:.15em;text-transform:uppercase;padding:.18rem .45rem;border:1px solid currentColor}
+.r-HIGH{color:var(--red)}.r-ELEVATED{color:var(--gold)}.r-MODERATE{color:var(--gold-lt)}.r-LOW{color:var(--green)}
+.mrow{border-bottom:1px solid var(--hair);padding:.7rem 0}
+.mtop{display:flex;gap:.55rem;align-items:baseline}
+.mname{flex:1;font-family:"Playfair Display",serif;font-size:.98rem;color:var(--paper)}
+.mq{font-size:.9rem;color:var(--muted);font-style:italic;margin:.08rem 0 .4rem}
+.sl{display:flex;align-items:center;gap:.45rem;margin:.22rem 0}
+.sl span{font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:4.4em}
+.sl input{flex:1;accent-color:var(--gold)}
+.sl b{font-family:"Playfair Display",serif;color:var(--gold-lt);min-width:1.2em;text-align:right;font-weight:500}
+.verdict{display:inline-block;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;padding:.14rem .42rem;border:1px solid currentColor}
+.v-act{color:var(--red)}.v-prep{color:var(--gold)}.v-watch{color:var(--muted)}.v-hold{color:var(--green)}
+.ev{border-bottom:1px solid var(--hair);padding:.65rem 0;display:flex;gap:.7rem;align-items:flex-start}
+.evd{font-family:"Playfair Display",serif;color:var(--gold);font-size:.78rem;min-width:5.2em;line-height:1.35}
+.evm{flex:1;min-width:0}
+.evt{font-family:"Playfair Display",serif;font-size:.98rem;color:var(--paper)}
+.evs{display:block;font-size:.86rem;color:var(--muted);font-style:italic}
+.loop{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1rem 0;margin:1.2rem 0;text-align:center}
+.loop span{font-family:"Playfair Display",serif;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--paper);white-space:nowrap}
+.loop i{color:var(--gold);font-style:normal;padding:0 .35rem}
+.foot{text-align:center;padding:28px 0 52px;border-top:1px solid var(--line);margin-top:18px}
+.foot p{font-size:.57rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0}
+@media (min-width:660px){body{font-size:19px}.band div{flex:1 1 16%}}
+@media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="topin">
+    <span class="brand">CAN</span>
+    <span class="crumb" id="crumb">Home</span>
+    <span class="seg" id="langSeg">
+      <button type="button" data-lang="faith-forward">Fwd</button>
+      <button type="button" data-lang="faith-friendly">Frnd</button>
+      <button type="button" data-lang="values-based">Val</button>
+    </span>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+<div id="app"></div>
+<footer class="foot"><div class="wrap"><p>The CAN Platform &middot; AI recommends. The advisor approves.</p></div></footer>
+
+<script>
+var JOURNEYS = /*__JOURNEYS__*/;
+var CATS = /*__CATS__*/;
+var TOOLS125 = /*__TOOLS125__*/;
+var GROUPS = /*__GROUPS__*/;
+var TEMPLATES = /*__TEMPLATES__*/;
+var INSTRUMENTS = /*__INSTRUMENTS__*/;
+var ROLES = /*__ROLES__*/;
+var ASSESSMENTS = /*__ASSESSMENTS__*/;
+var MATTERS = /*__MATTERS__*/;
+var RHYTHM = /*__RHYTHM__*/;
+var CATLIST = /*__CATLIST__*/;
+var ENGINES = /*__ENGINES__*/;
+var STATS = /*__STATS__*/;
+
+var STAGES = ["Unknown","Identified","Introduced","Connected","Engaged","Trusted"];
+var SESSIONS = [
+ {n:1,name:"Understand",q:"What is the issue, and why does it matter?",from:1,to:8},
+ {n:2,name:"Reflect",q:"What do I personally believe, and what has shaped me?",from:9,to:15},
+ {n:3,name:"Discuss",q:"What does my family believe, and where do we differ?",from:16,to:23},
+ {n:4,name:"Decide",q:"What will we do, and what conversation comes next?",from:24,to:30}];
+var CONCERNS = ["Entitlement","Communication","Inheritance readiness","Succession","Family conflict","Generosity","Business transition","Aging","Surviving spouse","Lack of purpose"];
+var ASPIRATIONS = ["Unity","Impact","Generosity","Business continuity","Next-generation preparation","Faith transfer","Story preservation","Legacy"];
+var TEAM = ["CPA","Estate attorney","Insurance advisor","Trustee","Family office","Pastor","Coach","Counselor","Philanthropy advisor","Business advisor"];
+
+var PROFILE = {
+ familyName:"Anderson", g1a:"John", g1aAge:67, g1aStage:5, g1b:"Susan", g1bAge:65, g1bStage:4,
+ netWorth:"$22M estimated family net worth",
+ business:"Family manufacturing business; eldest son expected to enter leadership",
+ daf:true, faithNote:"Strong Christian faith orientation; long-time church members",
+ faithLanguage:"faith-forward", tone:"reflective",
+ children:[{name:"Michael",age:38,stage:3,note:"Expected business successor"},
+           {name:"Lauren",age:35,stage:1,note:"Disconnected from family financial discussions"},
+           {name:"David",age:31,stage:2,note:"Spouse cautious about inherited wealth"}],
+ grandkids:4, g3Stage:0,
+ concerns:["Entitlement","Inheritance readiness","Succession","Communication"],
+ aspirations:["Unity","Next-generation preparation","Faith transfer","Generosity"],
+ team:["CPA","Estate attorney","Pastor"],
+ journeys:0, assessments:1, lastMeetingYears:3, stories:0,
+ advisor:"Dana Whitfield", advisorAge:63, firm:"Smith Wealth Partners",
+ secondaryAdvisor:false, successionComplete:false };
+
+var ROLE = "r1", SCORES = {}, ASSESS = {}, CUSTOM = [], EVENTS = [], NOTES = {};
+var CACHE = {}, DAYLIST = {};
+var VIEW = {tab:"home", sub:"", id:null, ses:0, day:0};
+var TB = {tid:"x1", who:"", length:"standard"};
+var IV = {iid:null, who:""};
+var PERSON = "";
+var NEWEV = {title:"", date:"", time:"18:00", mins:90, type:"meeting", link:"", who:""};
+
+function byId(id){ for (var i=0;i<JOURNEYS.length;i++){ if (JOURNEYS[i].id === id){ return JOURNEYS[i]; } } return null; }
+function toolById(id){ for (var i=0;i<TOOLS125.length;i++){ if (TOOLS125[i].id === id){ return TOOLS125[i]; } } return null; }
+function catByK(k){ for (var i=0;i<CATS.length;i++){ if (CATS[i].k === k){ return CATS[i]; } } return null; }
+function grpByK(k){ for (var i=0;i<GROUPS.length;i++){ if (GROUPS[i].k === k){ return GROUPS[i]; } } return null; }
+function tplById(id){ for (var i=0;i<TEMPLATES.length;i++){ if (TEMPLATES[i].id === id){ return TEMPLATES[i]; } } return null; }
+function ivById(id){ for (var i=0;i<INSTRUMENTS.length;i++){ if (INSTRUMENTS[i].id === id){ return INSTRUMENTS[i]; } } return null; }
+function roleById(id){ for (var i=0;i<ROLES.length;i++){ if (ROLES[i].id === id){ return ROLES[i]; } } return ROLES[0]; }
+function matById(id){ for (var i=0;i<MATTERS.length;i++){ if (MATTERS[i].id === id){ return MATTERS[i]; } } return null; }
+
+function people(){
+  var p = PROFILE, out = [p.g1a, p.g1b];
+  for (var i=0;i<p.children.length;i++){ out.push(p.children[i].name); }
+  if (Number(p.grandkids) > 0){ out.push("Grandchildren"); }
+  out.push(p.advisor + " (professional)");
+  return out;
+}
+function ivSubjects(ins){
+  var p = PROFILE, out = [], i;
+  if (ins.aud === "couple"){ out.push(p.g1a + " and " + p.g1b); }
+  else if (ins.aud === "g1both"){ out.push(p.g1a); out.push(p.g1b); }
+  else if (ins.aud === "children"){ for (i=0;i<p.children.length;i++){ out.push(p.children[i].name); } }
+  else if (ins.aud === "childrenGroup"){
+    var n = []; for (i=0;i<p.children.length;i++){ n.push(p.children[i].name); }
+    out.push(n.join(", ") + " together");
+  } else if (ins.aud === "g3"){ out.push("The " + p.grandkids + " grandchildren"); }
+  else if (ins.aud === "inlaws"){ for (i=0;i<p.children.length;i++){ out.push("Spouse of " + p.children[i].name); } }
+  else { out.push("The whole " + p.familyName + " family"); }
+  if (!out.length){ out.push("The " + p.familyName + " family"); }
+  return out;
+}
+function score(id){ return SCORES[id] || {m:3, r:3}; }
+function verdict(id){
+  var s = score(id), gap = Number(s.m) - Number(s.r);
+  if (gap >= 2){ return {k:"act", t:"Act now"}; }
+  if (gap === 1){ return {k:"prep", t:"Prepare"}; }
+  if (gap === 0){ return {k:"watch", t:"Watch"}; }
+  return {k:"hold", t:"Maintain"};
+}
+function rankedMatters(){
+  var a = MATTERS.slice();
+  a.sort(function(x,y){
+    var sx = score(x.id), sy = score(y.id);
+    return ((Number(sy.m)-Number(sy.r))*10 + Number(sy.m)) - ((Number(sx.m)-Number(sx.r))*10 + Number(sx.m));
+  });
+  return a;
+}
+function computeMetrics(){
+  var g2 = PROFILE.children.map(function(c){ return Number(c.stage); });
+  var st = [Number(PROFILE.g1aStage), Number(PROFILE.g1bStage)].concat(g2);
+  if (Number(PROFILE.grandkids) > 0){ st.push(Number(PROFILE.g3Stage)); }
+  var sum = 0; for (var i=0;i<st.length;i++){ sum += st[i]; }
+  var depth = st.length ? Math.round((sum/(st.length*5))*100) : 0;
+  var known = g2.filter(function(s){ return s >= 3; }).length;
+  var g2cov = g2.length ? Math.round((known/g2.length)*100) : 0;
+  var g3cov = Number(PROFILE.grandkids) > 0 ? (Number(PROFILE.g3Stage) >= 3 ? 100 : 0) : 0;
+  var d = [], pts = 0;
+  if (Number(PROFILE.g1aAge) >= 65){ pts++; d.push("Primary client is " + PROFILE.g1aAge); }
+  if (Number(PROFILE.advisorAge) >= 60){ pts++; d.push("Lead advisor is " + PROFILE.advisorAge + " with no stated succession"); }
+  if (!PROFILE.secondaryAdvisor){ pts++; d.push("No secondary advisor relationship in the household"); }
+  if (g2cov < 50){ pts += 2; d.push("Only " + known + " of " + g2.length + " adult children at connected or better"); }
+  if (Number(PROFILE.g1bStage) < 3){ pts++; d.push("Spouse relationship is below connected"); }
+  if (Number(PROFILE.lastMeetingYears) >= 2){ pts++; d.push("No family meeting in " + PROFILE.lastMeetingYears + " years"); }
+  if (!PROFILE.successionComplete){ pts++; d.push("Succession discussion incomplete"); }
+  if (Number(PROFILE.grandkids) > 0 && Number(PROFILE.g3Stage) < 2){ pts++; d.push("No G3 engagement"); }
+  var risk = pts >= 6 ? "HIGH" : (pts >= 4 ? "ELEVATED" : (pts >= 2 ? "MODERATE" : "LOW"));
+  return {depth:depth, g2cov:g2cov, g3cov:g3cov, known:known, total:g2.length, risk:risk, drivers:d};
+}
+
+/* ================= prompts ================= */
+function langRule(){
+  if (PROFILE.faithLanguage === "faith-forward"){ return "FAITH LANGUAGE: Faith-forward. Explicit Christian framing is welcome, and at most one short NIV verse where it genuinely fits."; }
+  if (PROFILE.faithLanguage === "faith-friendly"){ return "FAITH LANGUAGE: Faith-friendly. Acknowledge that faith and values shape decisions, but quote no Scripture."; }
+  return "FAITH LANGUAGE: Values-based. Use no religious language. Speak in values, purpose, character, and responsibility.";
+}
+function profileText(){
+  var p = PROFILE, s = "FAMILY PROFILE\nFamily: The " + p.familyName + " family\n";
+  s += "Generation 1: " + p.g1a + " (" + p.g1aAge + ", " + STAGES[p.g1aStage] + ") and " + p.g1b + " (" + p.g1bAge + ", " + STAGES[p.g1bStage] + ")\nAdult children:\n";
+  for (var i=0;i<p.children.length;i++){
+    var c = p.children[i];
+    s += "  - " + c.name + ", " + c.age + ", " + STAGES[c.stage] + (c.note ? ". " + c.note : "") + "\n";
+  }
+  s += "Grandchildren: " + p.grandkids + (Number(p.grandkids)>0 ? " (" + STAGES[p.g3Stage] + ")" : "") + "\n";
+  s += "Wealth: " + p.netWorth + "\nBusiness: " + (p.business || "None stated") + "\n";
+  s += "Charitable vehicle: " + (p.daf ? "Donor-advised fund in place" : "None stated") + "\nFaith: " + (p.faithNote || "Not stated") + "\n";
+  s += "Stated concerns: " + p.concerns.join(", ") + "\nStated aspirations: " + p.aspirations.join(", ") + "\n";
+  s += "Professional team: " + p.team.join(", ") + "\n";
+  s += "History: " + p.journeys + " journeys, " + p.assessments + " assessments, last family meeting " + p.lastMeetingYears + " years ago, " + p.stories + " stories captured\n";
+  s += "Advisor: " + p.advisor + " (" + p.advisorAge + "), " + p.firm + ". Secondary advisor: " + (p.secondaryAdvisor ? "yes" : "none") + ". Succession discussion: " + (p.successionComplete ? "complete" : "incomplete") + "\n";
+  return s;
+}
+function metricsText(){
+  var m = computeMetrics();
+  return "\nCOMPUTED METRICS (system-calculated, use these exact figures)\nRelationship Depth Score: " + m.depth +
+    " of 100\nNext-Generation Coverage: " + m.g2cov + "% (" + m.known + " of " + m.total + ")\nG3 coverage: " + m.g3cov +
+    "%\nRisk classification: " + m.risk + "\nRisk drivers: " + m.drivers.join("; ") + "\n";
+}
+function roleText(){
+  var r = roleById(ROLE);
+  return "\nWHO IS USING THIS: " + r.name + ". Accountable for: " + r.promise + " Recurring themes: " + r.themes.join("; ") +
+    ".\nWrite from this professional's seat. Stay in their lane, and name the other professional when a question belongs to someone else.\n";
+}
+var RULES = "\nRULES\n- Use only the facts given; where something is unknown, say what to ask rather than inventing it.\n- Name real family members. Generic content is a failure.\n- Never give tax, legal, or investment advice; name the specialist instead.\n- Do not discuss specific inheritance amounts with the next generation.\n- Finished text only: no preamble, no closing offer to help.\n- Markdown with ## headings and - bullets. Under 450 words.\n";
+function head(){
+  return "You are an engine inside CAN, a family stewardship operating system used by the professionals who serve wealthy families.\n\n" +
+    profileText() + roleText() + "\n" + langRule() + "\nTONE: " + PROFILE.tone + ".\n";
+}
+function libText(){
+  var s = "";
+  for (var i=0;i<CATLIST.length;i++){ s += CATLIST[i].name + ": " + CATLIST[i].titles.join("; ") + "\n"; }
+  return s;
+}
+function P_discovery(){ return head() + metricsText() + "\nTASK: Produce the Family Discovery Brief. Headings: ## What We Know, ## What This Suggests, ## What We Do Not Yet Know (the specific questions to ask next)." + RULES; }
+function P_priority(){ return head() + metricsText() + "\nTASK: Produce the Family Priority Map. Headings: ## High Urgency, ## Moderate Risk, ## Opportunity, ## Gap, ## Advisor Relationship Risk. One short paragraph each, naming family members." + RULES; }
+function P_prescribe(){
+  return head() + metricsText() + "\nTHE 225-JOURNEY LIBRARY (choose only from these exact titles)\n" + libText() +
+   "\nTASK: Recommend the top three journeys for this family, in priority order. Output exactly three pipe-delimited lines and nothing else:\n1 | exact title | one sentence on why this family, now\n2 | ...\n3 | ...\nTitles must match the library exactly." + RULES;
+}
+function P_nba(){ return head() + metricsText() + "\nTASK: Name the single highest-value action within seven days. Headings: ## The Action, ## Why This One First, ## Exactly How, ## What Success Looks Like in 30 Days. Be decisive." + RULES; }
+function P_matter(m){
+  var s = score(m.id), v = verdict(m.id);
+  return head() + "\nCATEGORY: " + m.name + "\nTHE REAL QUESTION: " + m.q + "\nCOMMON SIGNALS: " + m.signals.join("; ") +
+   "\nTHIS FAMILY RATED IT: matters " + s.m + "/5, ready " + s.r + "/5. System verdict: " + v.t + ".\n" +
+   "\nTHE 225-JOURNEY LIBRARY (recommend only from these exact titles)\n" + libText() +
+   "\nTASK: Help them discern the next step. Headings: ## Five Questions to Sit With, ## What Their Answers Will Reveal, ## The Next Step (who does it, by when), ## Recommended Journey (one exact library title and why), ## Who Else Should Be in the Room." + RULES;
+}
+function P_template(t){
+  var s = head() + "\nTASK: Produce " + t.name + ". " + t.ins + "\n";
+  if (TB.who){ s += "CUSTOMIZE FOR: " + TB.who + ".\n"; }
+  s += "LENGTH: " + (TB.length === "brief" ? "brief, one screen" : (TB.length === "full" ? "full, to the word limit" : "standard")) + ".\n";
+  return s + RULES;
+}
+function P_roleAgenda(){
+  var r = roleById(ROLE);
+  return head() + "\nTASK: Build this professional's working set for this family. Headings: ## Your Ten Questions (numbered, from the " + r.name +
+   " seat), ## Your Meeting Agenda (five items with timings for ninety minutes), ## What Belongs to Someone Else (each naming the profession), ## What You Bring That Nobody Else Does." + RULES;
+}
+function P_brief(){ return head() + metricsText() + "\nTASK: Produce the pre-meeting Family Stewardship Intelligence Brief. Headings: ## Who Is Attending, ## What Matters Right Now, ## What They Told Us Last Time, ## Who Is Missing, ## What I Should Ask, ## What I Should Listen For, ## What I Should Avoid, ## What Could Come Next. Where history is not captured, say so plainly." + RULES; }
+function P_followup(){ return head() + "\nTASK: Draft the 48-hour follow-up message to the parents: priorities, decisions to confirm, outstanding questions, assigned actions with owners, one warm personal line. Under 200 words, with one clearly marked blank for the professional's own sentence." + RULES; }
+function P_interview(ins){
+  var s = head() + "\nINSTRUMENT: " + ins.name + "\nSUBJECT: " + IV.who + "\nPURPOSE: " + ins.purpose + "\n";
+  s += "\nTASK: Write this ten-question legacy interview for the named subject.\nHeadings: ## Before You Begin (consent, recording, and the promise that nothing said becomes sales intelligence, three lines), ## The Ten Questions (numbered 1 to 10, ordered so the conversation deepens), ## What to Listen For (stories, convictions, family language, defining moments, wounds and turning points, lessons, hopes and fears, blessings, unfinished conversations), ## The Closing (" + ins.closing + ").\n";
+  s += "Questions must be built from this family's real situation. Ask nothing a general questionnaire could ask.\n";
+  if (ins.name.indexOf("Patriarch") > -1 || ins.name.indexOf("Matriarch") > -1){ s += "Write this without reinforcing stereotypes about men, women, or who leads a family. The role is elder memory, not authority.\n"; }
+  if (ins.aud === "children" || ins.aud === "g3"){ s += "Never raise amounts, allocations, or what the subject may receive.\n"; }
+  return s + RULES;
+}
+function P_ivSummary(ins, notes){
+  return head() + "\nINSTRUMENT: " + ins.name + "\nSUBJECT: " + IV.who + "\n\nINTERVIEW NOTES CAPTURED BY THE PROFESSIONAL\n" + notes +
+   "\n\nTASK: Turn these into the private Family Legacy Intelligence Summary. Headings: ## Stories Worth Preserving, ## Convictions and Family Language, ## Defining Moments, ## Hopes and Fears, ## Unfinished Conversations, ## What This Changes (which journey, which conversation, which specialist, and what not to raise yet).\nUse only what the notes and profile contain. This summary is private and is never sent to the family." + RULES;
+}
+function assessText(){
+  var s = "", any = false, ppl = people(), i, j;
+  for (i=0;i<ppl.length;i++){
+    var line = [];
+    for (j=0;j<ASSESSMENTS.length;j++){
+      var v = ASSESS[ppl[i] + "::" + ASSESSMENTS[j].id];
+      if (v && v.replace(/\s/g,"")){ line.push(ASSESSMENTS[j].name + ": " + v); }
+    }
+    for (j=0;j<CUSTOM.length;j++){ if (CUSTOM[j].person === ppl[i] && CUSTOM[j].result){ line.push(CUSTOM[j].name + ": " + CUSTOM[j].result); } }
+    if (line.length){ any = true; s += "  - " + ppl[i] + " => " + line.join(" | ") + "\n"; }
+  }
+  return any ? s : "";
+}
+function P_room(){
+  return head() + "\nSELF-REPORTED PROFILE RESULTS ENTERED BY THE FAMILY\n" + assessText() +
+   "\nTASK: Turn these into practical guidance for running the family's conversations. Headings: ## How Each Person Is Likely to Show Up, ## Where Friction Will Appear, ## How to Run the Family Meeting Differently, ## Who Needs the Material in Advance, ## What Not to Read Into This.\nThese are self-reported preference instruments, not clinical assessments. Use them to shape how the conversation is run, never to explain or label a person. Say so plainly in the last section." + RULES;
+}
+function P_sessions(e){
+  return head() + "\nJOURNEY: " + e.t + "\nSUBTITLE: " + e.s +
+   "\n\nTASK: Write the four-session map. Fixed architecture: 1 Understand, 2 Reflect, 3 Discuss, 4 Decide.\nOutput exactly four pipe-delimited lines and nothing else:\n1 | session title | two sentences on what it covers and produces\n2 | ...\n3 | ...\n4 | ...\nSession titles must be specific to this journey and this family." + RULES;
+}
+function P_days(e, ses){
+  return head() + "\nJOURNEY: " + e.t + "\nSUBTITLE: " + e.s + "\n\nTASK: Write day titles for Session " + ses.n + " (" + ses.name +
+   ", Days " + ses.from + " to " + ses.to + "). That session asks: " + ses.q +
+   "\nOutput one pipe-delimited line per day and nothing else:\nDay " + ses.from + " | day title | one sentence on the reading\nContinue through Day " + ses.to + ". No two days may repeat an idea." + RULES;
+}
+function P_day(e, ses, n, title){
+  return head() + "\nJOURNEY: " + e.t + "\n\nTASK: Write Day " + n + " in full, titled \"" + title + "\", from Session " + ses.n + " (" + ses.name +
+   ").\nHeadings: ## Today's Reading (about 150 words), ## The Principle, ## Reflection Question, ## Personal Action, ## Conversation Prompt, ## Journal (one sentence-stem)." + RULES;
+}
+function P_comms(ev){
+  return head() + "\nEVENT: " + ev.title + "\nWHEN: " + ev.date + " at " + ev.time + " for " + ev.mins + " minutes\nFORMAT: " + ev.type +
+   (ev.link ? "\nLINK: " + ev.link : "") + "\nATTENDEES: " + (ev.who || "the family") +
+   "\n\nTASK: Write the communications set. Headings: ## The Invitation (an email under 150 words, warm enough that a disengaged adult child would still come), ## The Agenda (four items with timings), ## Reminder at Two Weeks, ## Reminder at Three Days, ## The Follow-Up the Next Day. Each reminder under 60 words." + RULES;
+}
+function P_depth(){ return head() + metricsText() + "\nTASK: Interpret the computed metrics. Headings: ## What the Numbers Say, ## Where the Trust Is Concentrated, ## What Would Happen If the Primary Advisor Retired Tomorrow, ## The Three Moves That Change the Score. Use the supplied numbers exactly." + RULES; }
+function P_firm(){ return head() + metricsText() + "\nTASK: Write a short enterprise note for the firm's CEO. Headings: ## This Household Today, ## What Changes If the Recommended Journey Completes, ## The Same Pattern Across the Book (reason by proportion only, and state clearly that firm-wide figures are illustrative until real data is connected), ## What Leadership Should Track Monthly." + RULES; }
+
+/* ================= api + md ================= */
+async function callClaude(prompt){
+  var res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({model:"claude-sonnet-4-6", max_tokens:1000, messages:[{role:"user", content:prompt}]})
+  });
+  if (!res.ok){ throw new Error("Request failed (" + res.status + ")"); }
+  var d = await res.json(), out = "";
+  for (var i=0;i<d.content.length;i++){ if (d.content[i].type === "text"){ out += d.content[i].text; } }
+  return out.trim();
+}
+function parsePipes(t){
+  var rows = [], lines = t.split("\n");
+  for (var i=0;i<lines.length;i++){
+    var p = lines[i].split("|");
+    if (p.length >= 3){ rows.push({k:p[0].replace(/[^0-9]/g,""), t:p[1].trim(), d:p.slice(2).join("|").trim()}); }
+  }
+  return rows;
+}
+function esc(t){ return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function inline(t){
+  t = t.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+  return t.replace(/(^|[^*])\*([^*]+)\*/g,"$1<em>$2</em>");
+}
+function mdToHtml(src){
+  var lines = esc(src).split("\n"), html = "", inL = false;
+  for (var i=0;i<lines.length;i++){
+    var t = lines[i].replace(/^\s+|\s+$/g,"");
+    if (t === ""){ if (inL){ html += "</ul>"; inL = false; } continue; }
+    if (t.indexOf("### ") === 0){ if (inL){ html += "</ul>"; inL=false; } html += "<h5>" + inline(t.slice(4)) + "</h5>"; continue; }
+    if (t.indexOf("## ") === 0){ if (inL){ html += "</ul>"; inL=false; } html += "<h4>" + inline(t.slice(3)) + "</h4>"; continue; }
+    if (t.indexOf("&gt; ") === 0){ if (inL){ html += "</ul>"; inL=false; } html += "<blockquote>" + inline(t.slice(5)) + "</blockquote>"; continue; }
+    if (t.indexOf("- ") === 0 || t.indexOf("* ") === 0){ if (!inL){ html += "<ul>"; inL=true; } html += "<li>" + inline(t.slice(2)) + "</li>"; continue; }
+    var n = t.match(/^(\d+)\.\s+(.*)$/);
+    if (n){ if (!inL){ html += "<ul>"; inL=true; } html += "<li><strong>" + n[1] + ".</strong> " + inline(n[2]) + "</li>"; continue; }
+    if (inL){ html += "</ul>"; inL = false; }
+    html += "<p>" + inline(t) + "</p>";
+  }
+  if (inL){ html += "</ul>"; }
+  return html;
+}
+function norm(s){ return String(s).toLowerCase().replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").replace(/^\s+|\s+$/g,""); }
+function findJourney(title){
+  var t = norm(title), i;
+  for (i=0;i<JOURNEYS.length;i++){ if (norm(JOURNEYS[i].t) === t){ return JOURNEYS[i]; } }
+  for (i=0;i<JOURNEYS.length;i++){ if (t.indexOf(norm(JOURNEYS[i].t)) > -1 || norm(JOURNEYS[i].t).indexOf(t) > -1){ return JOURNEYS[i]; } }
+  return null;
+}
+function genBlock(key, lbl, action){
+  if (CACHE[key]){
+    return '<div class="acts"><button class="act" data-gen="' + action + '" type="button">Regenerate</button>' +
+      '<button class="act" data-copy="' + key + '" type="button">Copy</button></div><div class="out">' + mdToHtml(CACHE[key]) + '</div>';
+  }
+  return '<div class="acts"><button class="act primary" data-gen="' + action + '" type="button">' + lbl + '</button></div>';
+}
+
+/* ================= storage ================= */
+async function save(){
+  try {
+    if (typeof window.storage !== "undefined" && window.storage){
+      await window.storage.set("can:profile", JSON.stringify(PROFILE));
+      await window.storage.set("can:platform", JSON.stringify({role:ROLE, scores:SCORES, assess:ASSESS, custom:CUSTOM, events:EVENTS}));
+    }
+  } catch (e){}
+}
+async function load(){
+  try {
+    if (typeof window.storage !== "undefined" && window.storage){
+      var a = await window.storage.get("can:profile");
+      if (a && a.value){ var p = JSON.parse(a.value); for (var k in p){ if (Object.prototype.hasOwnProperty.call(p,k)){ PROFILE[k] = p[k]; } } }
+    }
+  } catch (e){}
+  try {
+    if (typeof window.storage !== "undefined" && window.storage){
+      var b = await window.storage.get("can:platform");
+      if (b && b.value){ var s = JSON.parse(b.value);
+        ROLE = s.role || ROLE; SCORES = s.scores || {}; ASSESS = s.assess || {}; CUSTOM = s.custom || []; EVENTS = s.events || []; }
+    }
+  } catch (e){}
+}
+
+/* ================= shared ui ================= */
+function subnav(items){
+  var h = '<div class="subnav">';
+  for (var i=0;i<items.length;i++){
+    h += '<button type="button" data-sub="' + items[i][0] + '"' + (VIEW.sub === items[i][0] ? ' class="on"' : '') + '>' + items[i][1] + '</button>';
+  }
+  return h + '</div>';
+}
+function engHead(k, title, sub){
+  var e = null;
+  for (var i=0;i<ENGINES.length;i++){ if (ENGINES[i].k === k){ e = ENGINES[i]; } }
+  return '<div class="sechead"><div class="eng">Engine ' + e.n + ' &middot; ' + e.name + '</div>' +
+    '<h2>' + title + '</h2><p class="sub">' + sub + '</p></div>';
+}
+function bandHtml(){
+  var m = computeMetrics();
+  return '<div class="band">' +
+    '<div><b>' + m.depth + '</b><span>Depth score</span></div>' +
+    '<div><b>' + m.g2cov + '%</b><span>G2 coverage</span></div>' +
+    '<div><b>' + m.g3cov + '%</b><span>G3 coverage</span></div>' +
+    '<div><b>' + PROFILE.journeys + '</b><span>Journeys done</span></div>' +
+    '<div><b>' + PROFILE.lastMeetingYears + '</b><span>Yrs since meeting</span></div>' +
+    '<div><b><span class="pill r-' + m.risk + '">' + m.risk + '</span></b><span>Retention risk</span></div></div>';
+}
+function pips(stage){
+  var h = '<span class="pips">';
+  for (var i=1;i<=5;i++){ h += '<span class="pip' + (Number(stage) >= i ? ' on' : '') + '"></span>'; }
+  return h + '</span>';
+}
+function relRow(n, role, stage){
+  return '<div class="relrow"><span class="relname">' + n + ' <i>' + role + '</i></span>' + pips(stage) + '<span class="relstage">' + STAGES[stage] + '</span></div>';
+}
+function stageSel(v, attrs){
+  var h = '<select ' + attrs + '>';
+  for (var i=0;i<STAGES.length;i++){ h += '<option value="' + i + '"' + (Number(v) === i ? ' selected' : '') + '>' + i + ' ' + STAGES[i] + '</option>'; }
+  return h + '</select>';
+}
+function chipRow(list, sel, grp){
+  var h = '<div class="chips">';
+  for (var i=0;i<list.length;i++){
+    h += '<button class="chip' + (sel.indexOf(list[i]) > -1 ? ' on' : '') + '" type="button" data-chip="' + grp + '" data-val="' + list[i] + '">' + list[i] + '</button>';
+  }
+  return h + '</div>';
+}
+
+/* ================= HOME ================= */
+function renderHome(){
+  var r = roleById(ROLE), m = computeMetrics();
+  var h = '<div class="wrap"><div class="sec">' +
+    '<div class="sechead"><div class="eng">The CAN Platform</div><h2>The ' + PROFILE.familyName + ' family</h2>' +
+    '<p class="sub">Served by ' + r.name + ' at ' + PROFILE.firm + '. One profile drives all seven engines.</p></div>';
+  h += bandHtml();
+  h += '<div class="loop"><span>Know</span><i>&rarr;</i><span>Prescribe</span><i>&rarr;</i><span>Personalize</span><i>&rarr;</i><span>Prepare</span><i>&rarr;</i><span>Experience</span><i>&rarr;</i><span>Measure</span><i>&rarr;</i><span>Scale</span><i>&#8635;</i></div>';
+  h += '<div class="band">' +
+    '<div><b>' + STATS.journeys + '</b><span>Journeys</span></div>' +
+    '<div><b>' + STATS.tools125 + '</b><span>Tools</span></div>' +
+    '<div><b>' + STATS.templates + '</b><span>Templates</span></div>' +
+    '<div><b>' + STATS.questions + '</b><span>Interview questions</span></div>' +
+    '<div><b>' + STATS.roles + '</b><span>Professional seats</span></div>' +
+    '<div><b>' + STATS.days.toLocaleString() + '</b><span>Daily readings</span></div></div>';
+  h += '<div class="subhead">The seven engines</div>';
+  for (var i=1;i<ENGINES.length;i++){
+    var e = ENGINES[i];
+    h += '<button class="row" type="button" data-tab="' + e.k + '">' +
+      '<span class="rn">' + e.n + '</span><span class="rmain"><span class="rt">' + e.name + '</span>' +
+      '<span class="rs">' + e.promise + '</span></span><span class="arw">&rsaquo;</span></button>';
+  }
+  h += '<div class="subhead">Your seat</div>';
+  h += '<div class="panel"><h4>' + r.name + '</h4><p style="margin:0 0 .4rem">' + r.promise + '</p><ul>';
+  for (var t=0;t<r.themes.length;t++){ h += '<li>' + r.themes[t] + '</li>'; }
+  h += '</ul></div><div class="fld"><label>Change seat</label><select id="roleSel">';
+  for (var j=0;j<ROLES.length;j++){ h += '<option value="' + ROLES[j].id + '"' + (ROLES[j].id === ROLE ? ' selected' : '') + '>' + ROLES[j].n + '. ' + ROLES[j].name + '</option>'; }
+  h += '</select></div>';
+  return h + '</div></div>';
+}
+
+/* ================= KNOW (E1) ================= */
+function renderKnow(){
+  if (!VIEW.sub){ VIEW.sub = "profile"; }
+  var h = '<div class="wrap"><div class="sec">' + engHead("know", "Know the family", "The master context layer. Everything else reads from this.") +
+    subnav([["profile","Profile"],["map","Relationships"],["assess","Assessments"],["interviews","Interviews"]]);
+  if (VIEW.sub === "profile"){ h += profileForm(); }
+  else if (VIEW.sub === "map"){ h += knowMap(); }
+  else if (VIEW.sub === "assess"){ h += knowAssess(); }
+  else { h += (IV.iid ? knowInterview(IV.iid) : knowInterviews()); }
+  return h + '</div></div>';
+}
+function profileForm(){
+  var p = PROFILE;
+  var h = '<div class="fld"><label>Family name</label><input data-f="familyName" value="' + esc(p.familyName) + '"></div>';
+  h += '<div class="grid3"><div class="fld" style="margin:0"><label>Name</label><input data-f="g1a" value="' + esc(p.g1a) + '"></div>' +
+    '<div class="fld" style="margin:0"><label>Age</label><input data-f="g1aAge" value="' + p.g1aAge + '"></div>' +
+    '<div class="fld" style="margin:0"><label>Stage</label>' + stageSel(p.g1aStage,'data-f="g1aStage"') + '</div></div>';
+  h += '<div class="grid3" style="margin-top:.45rem"><div class="fld" style="margin:0"><label>Name</label><input data-f="g1b" value="' + esc(p.g1b) + '"></div>' +
+    '<div class="fld" style="margin:0"><label>Age</label><input data-f="g1bAge" value="' + p.g1bAge + '"></div>' +
+    '<div class="fld" style="margin:0"><label>Stage</label>' + stageSel(p.g1bStage,'data-f="g1bStage"') + '</div></div>';
+  h += '<div class="subhead">Adult children</div>';
+  for (var i=0;i<p.children.length;i++){
+    var c = p.children[i];
+    h += '<div class="kid"><div class="grid3">' +
+      '<div class="fld" style="margin:0"><label>Name</label><input data-kid="' + i + '" data-k="name" value="' + esc(c.name) + '"></div>' +
+      '<div class="fld" style="margin:0"><label>Age</label><input data-kid="' + i + '" data-k="age" value="' + c.age + '"></div>' +
+      '<div class="fld" style="margin:0"><label>Stage</label>' + stageSel(c.stage,'data-kid="' + i + '" data-k="stage"') + '</div></div>' +
+      '<div class="fld" style="margin:.4rem 0 .28rem"><label>Note</label><input data-kid="' + i + '" data-k="note" value="' + esc(c.note) + '"></div>' +
+      '<button class="rm" type="button" data-rmkid="' + i + '">Remove</button></div>';
+  }
+  h += '<button class="act" type="button" data-addkid="1" style="margin-top:.55rem">Add a child</button>';
+  h += '<div class="grid2" style="margin-top:.9rem"><div class="fld"><label>Grandchildren</label><input data-f="grandkids" value="' + p.grandkids + '"></div>' +
+    '<div class="fld"><label>G3 stage</label>' + stageSel(p.g3Stage,'data-f="g3Stage"') + '</div></div>';
+  h += '<div class="fld"><label>Wealth</label><input data-f="netWorth" value="' + esc(p.netWorth) + '"></div>';
+  h += '<div class="fld"><label>Business</label><input data-f="business" value="' + esc(p.business) + '"></div>';
+  h += '<div class="fld"><label>Faith orientation</label><input data-f="faithNote" value="' + esc(p.faithNote) + '"></div>';
+  h += '<div class="fld"><label>Tone</label><select data-f="tone">' +
+    ["reflective","practical","executive","conversational","faith-centered"].map(function(t){
+      return '<option value="' + t + '"' + (p.tone === t ? ' selected' : '') + '>' + t + '</option>'; }).join("") + '</select></div>';
+  h += '<div class="subhead">Stated concerns</div>' + chipRow(CONCERNS, p.concerns, "concerns");
+  h += '<div class="subhead">Stated aspirations</div>' + chipRow(ASPIRATIONS, p.aspirations, "aspirations");
+  h += '<div class="subhead">Professional team</div>' + chipRow(TEAM, p.team, "team");
+  h += '<div class="subhead">History and firm</div><div class="grid2">' +
+    '<div class="fld"><label>Journeys completed</label><input data-f="journeys" value="' + p.journeys + '"></div>' +
+    '<div class="fld"><label>Assessments</label><input data-f="assessments" value="' + p.assessments + '"></div></div><div class="grid2">' +
+    '<div class="fld"><label>Years since family meeting</label><input data-f="lastMeetingYears" value="' + p.lastMeetingYears + '"></div>' +
+    '<div class="fld"><label>Stories captured</label><input data-f="stories" value="' + p.stories + '"></div></div><div class="grid2">' +
+    '<div class="fld"><label>You</label><input data-f="advisor" value="' + esc(p.advisor) + '"></div>' +
+    '<div class="fld"><label>Your age</label><input data-f="advisorAge" value="' + p.advisorAge + '"></div></div>' +
+    '<div class="fld"><label>Firm</label><input data-f="firm" value="' + esc(p.firm) + '"></div><div class="grid2">' +
+    '<div class="fld"><label>Secondary advisor</label><select data-f="secondaryAdvisor"><option value="yes"' + (p.secondaryAdvisor?' selected':'') + '>Yes</option><option value="no"' + (!p.secondaryAdvisor?' selected':'') + '>No</option></select></div>' +
+    '<div class="fld"><label>Succession discussion</label><select data-f="successionComplete"><option value="yes"' + (p.successionComplete?' selected':'') + '>Complete</option><option value="no"' + (!p.successionComplete?' selected':'') + '>Incomplete</option></select></div></div>';
+  return h;
+}
+function knowMap(){
+  var p = PROFILE, h = '<div class="rel">';
+  h += relRow(p.g1a,"G1",p.g1aStage) + relRow(p.g1b,"G1 spouse",p.g1bStage);
+  for (var i=0;i<p.children.length;i++){ h += relRow(p.children[i].name,"G2, age " + p.children[i].age, p.children[i].stage); }
+  if (Number(p.grandkids) > 0){ h += relRow(p.grandkids + " grandchildren","G3",p.g3Stage); }
+  h += '</div><div id="zone">';
+  h += '<div class="subhead">Discovery brief</div>' + genBlock("disc","Build the discovery brief","disc");
+  h += '<div class="subhead">Priority map</div>' + genBlock("prio","Build the priority map","prio");
+  return h + '</div>';
+}
+function knowAssess(){
+  var ppl = people();
+  if (ppl.indexOf(PERSON) === -1){ PERSON = ppl[0]; }
+  var h = '<div class="fld"><label>Person</label><select id="perSel">';
+  for (var i=0;i<ppl.length;i++){ h += '<option value="' + ppl[i] + '"' + (ppl[i] === PERSON ? ' selected' : '') + '>' + ppl[i] + '</option>'; }
+  h += '</select></div>';
+  for (var j=0;j<ASSESSMENTS.length;j++){
+    var a = ASSESSMENTS[j], key = PERSON + "::" + a.id, val = ASSESS[key] || "";
+    h += '<div class="fld"><label>' + a.name + '</label><input data-as="' + key + '" value="' + esc(val) + '" placeholder="' + a.hint + '">' +
+      '<div style="font-size:.83rem;color:var(--muted);margin-top:.18rem">' + a.desc +
+      (val ? '' : ' &middot; <a href="' + a.url + '" target="_blank" rel="noopener">take it</a>') + '</div></div>';
+  }
+  h += '<div class="subhead">New or other</div>';
+  for (var k=0;k<CUSTOM.length;k++){
+    if (CUSTOM[k].person !== PERSON){ continue; }
+    h += '<div class="kid"><div class="grid2">' +
+      '<div class="fld" style="margin:0"><label>Assessment</label><input data-cu="' + k + ':name" value="' + esc(CUSTOM[k].name) + '"></div>' +
+      '<div class="fld" style="margin:0"><label>Result</label><input data-cu="' + k + ':result" value="' + esc(CUSTOM[k].result) + '"></div></div>' +
+      '<button class="rm" type="button" data-rmcu="' + k + '">Remove</button></div>';
+  }
+  h += '<div class="acts" style="margin-top:.55rem"><button class="act" data-addcu="1" type="button">Add another assessment</button></div>';
+  h += '<div class="subhead">Read the room</div><div id="zone">';
+  h += assessText() ? genBlock("room","Turn these into meeting guidance","room")
+    : '<p style="color:var(--muted)">Enter at least one result, for anyone, and this will translate the whole set into how to run the family conversation.</p>';
+  return h + '</div>';
+}
+function knowInterviews(){
+  var h = '<div class="panel"><h4>The rule that governs all of them</h4><p style="margin:0">Nothing said in these conversations is treated as sales intelligence. Notes stay in this session only.</p></div>';
+  for (var i=0;i<INSTRUMENTS.length;i++){
+    var ins = INSTRUMENTS[i];
+    h += '<button class="row" type="button" data-iv="' + ins.id + '">' +
+      '<span class="rn">' + (ins.n < 10 ? "0" : "") + ins.n + '</span>' +
+      '<span class="rmain"><span class="rt">' + ins.name + (ins.src === 0 ? '<span class="tag">added</span>' : '') + '</span>' +
+      '<span class="rs">' + ins.purpose + '</span><span class="rmeta">10 questions</span></span><span class="arw">&rsaquo;</span></button>';
+  }
+  return h;
+}
+function knowInterview(iid){
+  var ins = ivById(iid), subs = ivSubjects(ins);
+  if (subs.indexOf(IV.who) === -1){ IV.who = subs[0]; }
+  var qk = "Q:" + iid + ":" + IV.who, mk = "M:" + iid + ":" + IV.who, nk = iid + ":" + IV.who;
+  var h = '<button class="back" type="button" data-ivback="1">&lsaquo; All interviews</button>' +
+    '<div class="sechead"><h2>' + ins.name + '</h2><p class="sub">' + ins.purpose + '</p></div>' +
+    '<div class="fld"><label>Subject</label><select id="ivWho">';
+  for (var i=0;i<subs.length;i++){ h += '<option value="' + subs[i] + '"' + (subs[i] === IV.who ? ' selected' : '') + '>' + subs[i] + '</option>'; }
+  h += '</select></div><div class="gate"><span class="gl">Private &middot; not sales intelligence</span><span class="label">' + PROFILE.faithLanguage + '</span></div>';
+  h += '<div id="zone">' + genBlock(qk, "Write the ten questions", "iq") + '</div>';
+  if (CACHE[qk]){
+    h += '<div class="subhead">After the conversation</div><div class="fld"><label>What they said</label>' +
+      '<textarea data-notes="' + nk + '" rows="5" placeholder="Paste the transcript or type what stood out.">' + esc(NOTES[nk] || "") + '</textarea></div>';
+    h += CACHE[mk]
+      ? '<div class="acts"><button class="act" data-gen="isum" type="button">Rebuild summary</button><button class="act" data-copy="' + mk + '" type="button">Copy</button></div><div class="out">' + mdToHtml(CACHE[mk]) + '</div>'
+      : '<div class="acts"><button class="act primary" data-gen="isum" type="button">Build the private summary</button></div>';
+  }
+  return h;
+}
+
+/* ================= PRESCRIBE (E2) ================= */
+function renderPrescribe(){
+  if (!VIEW.sub){ VIEW.sub = "next"; }
+  var h = '<div class="wrap"><div class="sec">' + engHead("prescribe", "What matters next", "The family never browses 225. The system chooses, the professional approves.") +
+    subnav([["next","Next step"],["matters","What matters"]]);
+  if (VIEW.sub === "next"){
+    h += '<div class="gate"><span class="gl">AI recommends &middot; advisor approves</span><span class="label">' + PROFILE.faithLanguage + '</span></div><div id="zone">';
+    h += '<div class="subhead">Prescribed journeys</div>';
+    if (CACHE.presc){
+      for (var r=0;r<CACHE.presc.length;r++){
+        var e = findJourney(CACHE.presc[r].t);
+        h += '<button class="row" type="button"' + (e ? ' data-entry="' + e.id + '"' : '') + '>' +
+          '<span class="rn">' + (r+1) + '</span><span class="rmain"><span class="rt">' + CACHE.presc[r].t + '</span>' +
+          '<span class="rs">' + CACHE.presc[r].d + '</span>' +
+          (e ? '<span class="rmeta">' + e.grpName + ' &middot; open the 4 sessions</span>' : '<span class="rmeta">Not matched to the library</span>') +
+          '</span><span class="arw">&rsaquo;</span></button>';
+      }
+      h += '<div class="acts" style="margin-top:.7rem"><button class="act" data-gen="presc" type="button">Re-prescribe</button></div>';
+    } else {
+      h += '<p style="color:var(--muted)">CAN reads the profile and the metrics, then chooses from all ' + STATS.journeys + ' journeys.</p>' +
+        '<div class="acts"><button class="act primary" data-gen="presc" type="button">Prescribe the next journey</button></div>';
+    }
+    h += '<div class="subhead">Next best action</div>' + genBlock("nba","Name the next action","nba") + '</div>';
+  } else if (VIEW.id){ h += matterView(VIEW.id); }
+  else {
+    var ranked = rankedMatters();
+    h += '<p style="color:var(--muted);font-style:italic">Rate each twice. The order is arithmetic: how much it matters minus how ready they are.</p>';
+    for (var i=0;i<ranked.length;i++){
+      var m = ranked[i], s = score(m.id), v = verdict(m.id);
+      h += '<div class="mrow"><div class="mtop"><span class="mname">' + m.name + '</span><span class="verdict v-' + v.k + '">' + v.t + '</span></div>' +
+        '<div class="mq">' + m.q + '</div>' +
+        '<div class="sl"><span>Matters</span><input type="range" min="1" max="5" value="' + s.m + '" data-sc="' + m.id + ':m"><b>' + s.m + '</b></div>' +
+        '<div class="sl"><span>Ready</span><input type="range" min="1" max="5" value="' + s.r + '" data-sc="' + m.id + ':r"><b>' + s.r + '</b></div>' +
+        '<div class="acts" style="margin:.45rem 0 0"><button class="act" data-matter="' + m.id + '" type="button">Discern this</button></div></div>';
+    }
+  }
+  return h + '</div></div>';
+}
+function matterView(id){
+  var m = matById(id), s = score(id), v = verdict(id);
+  var h = '<button class="back" type="button" data-matback="1">&lsaquo; All categories</button>' +
+    '<div class="sechead"><h2>' + m.name + '</h2><p class="sub">' + m.q + '</p></div>' +
+    '<div class="band"><div><b>' + s.m + '</b><span>Matters</span></div><div><b>' + s.r + '</b><span>Ready</span></div>' +
+    '<div><b><span class="verdict v-' + v.k + '">' + v.t + '</span></b><span>Verdict</span></div></div>';
+  h += '<div class="panel"><h4>What this usually looks like</h4><ul>';
+  for (var i=0;i<m.signals.length;i++){ h += '<li>' + m.signals[i] + '</li>'; }
+  h += '</ul></div><div id="zone">' + genBlock("mat:" + id, "Discern the next step", "matter:" + id) + '</div>';
+  return h;
+}
+
+/* ================= PERSONALIZE (E3) ================= */
+function renderPersonalize(){
+  var tpl = tplById(TB.tid);
+  var h = '<div class="wrap"><div class="sec">' + engHead("personalize", "The family toolbox", STATS.templates + " templates, customized before they are generated.");
+  h += '<div class="fld"><label>Template</label><select id="tplSel">';
+  for (var i=0;i<TEMPLATES.length;i++){ h += '<option value="' + TEMPLATES[i].id + '"' + (TEMPLATES[i].id === TB.tid ? ' selected' : '') + '>' + TEMPLATES[i].n + '. ' + TEMPLATES[i].name + '</option>'; }
+  h += '</select></div><p style="color:var(--muted);font-style:italic">' + tpl.purpose + '</p>';
+  var opts = [];
+  for (var w=0;w<tpl.who.length;w++){
+    if (tpl.who[w] === "Each adult child"){ for (var c=0;c<PROFILE.children.length;c++){ opts.push(PROFILE.children[c].name + " (adult child)"); } }
+    else if (tpl.who[w] === "Couple"){ opts.push(PROFILE.g1a + " and " + PROFILE.g1b + " (couple)"); }
+    else { opts.push(tpl.who[w]); }
+  }
+  if (opts.indexOf(TB.who) === -1){ TB.who = opts[0]; }
+  h += '<div class="grid2"><div class="fld"><label>Customize for</label><select id="whoSel">';
+  for (var o=0;o<opts.length;o++){ h += '<option value="' + opts[o] + '"' + (opts[o] === TB.who ? ' selected' : '') + '>' + opts[o] + '</option>'; }
+  h += '</select></div><div class="fld"><label>Length</label><select id="lenSel">' +
+    ["brief","standard","full"].map(function(l){ return '<option value="' + l + '"' + (TB.length === l ? ' selected' : '') + '>' + l + '</option>'; }).join("") + '</select></div></div>';
+  h += '<div class="gate"><span class="gl">AI recommends &middot; advisor approves</span><span class="label">' + PROFILE.faithLanguage + ' &middot; ' + PROFILE.tone + '</span></div>';
+  h += '<div id="zone">' + genBlock("X:" + TB.tid + ":" + TB.who + ":" + TB.length, "Build it for this family", "tpl") + '</div>';
+  return h + '</div></div>';
+}
+
+/* ================= PREPARE (E4) ================= */
+function renderPrepare(){
+  var r = roleById(ROLE);
+  var h = '<div class="wrap"><div class="sec">' + engHead("prepare", "Before the meeting", "Never walk into a significant family meeting unprepared.");
+  h += '<div class="panel"><h4>' + r.name + '</h4><p style="margin:0">' + r.promise + '</p></div><div id="zone">';
+  h += '<div class="subhead">Your questions and agenda</div>' + genBlock("agenda:" + ROLE, "Build my working set", "agenda");
+  h += '<div class="subhead">Meeting intelligence brief</div>' + genBlock("brief", "Build the brief", "brief");
+  h += '<div class="subhead">The 48-hour follow-up</div>' + genBlock("follow", "Draft the follow-up", "follow");
+  return h + '</div></div></div>';
+}
+
+/* ================= EXPERIENCE (E5) ================= */
+function renderExperience(){
+  if (!VIEW.sub){ VIEW.sub = "journeys"; }
+  var h = '<div class="wrap"><div class="sec">' + engHead("experience", "Journeys and the calendar", "Turn insight into conversation, and conversation into a date on the calendar.") +
+    subnav([["journeys","Journeys"],["calendar","Calendar"]]);
+  if (VIEW.sub === "calendar"){ h += calendarView(); }
+  else if (VIEW.day){ h += dayView(); }
+  else if (VIEW.ses){ h += sessionView(); }
+  else if (VIEW.id){ h += entryView(); }
+  else {
+    for (var i=0;i<CATS.length;i++){
+      var c = CATS[i];
+      h += '<button class="row" type="button" data-cat="' + c.k + '">' +
+        '<span class="rn">' + (c.n < 10 ? "0" : "") + c.n + '</span>' +
+        '<span class="rmain"><span class="rt">' + c.name + '</span><span class="rs">' + c.q + '</span>' +
+        '<span class="rmeta">15 journeys</span></span><span class="arw">&rsaquo;</span></button>';
+    }
+  }
+  return h + '</div></div>';
+}
+function catView(k){
+  var c = catByK(k);
+  var h = '<button class="back" type="button" data-expback="cat">&lsaquo; All categories</button>' +
+    '<div class="sechead"><h2>' + c.name + '</h2><p class="sub">' + c.q + '</p></div>';
+  for (var i=0;i<c.ids.length;i++){
+    var e = byId(c.ids[i]);
+    h += '<button class="row" type="button" data-entry="' + e.id + '">' +
+      '<span class="rn">' + (i+1 < 10 ? "0" : "") + (i+1) + '</span>' +
+      '<span class="rmain"><span class="rt">' + e.t + (e.src === 0 ? '<span class="tag">draft</span>' : '') + '</span>' +
+      '<span class="rs">' + e.s + '</span></span><span class="arw">&rsaquo;</span></button>';
+  }
+  return h;
+}
+function entryView(){
+  var e = byId(VIEW.id);
+  if (VIEW.cat && !VIEW.id){ return catView(VIEW.cat); }
+  var h = '<button class="back" type="button" data-expback="entry">&lsaquo; ' + e.grpName + '</button>' +
+    '<div class="sechead"><h2>' + e.t + '</h2><p class="sub">' + e.s + '</p></div>' +
+    '<div class="gate"><span class="gl">Four sessions &middot; thirty days</span><span class="label">' + PROFILE.faithLanguage + '</span></div>';
+  var rows = CACHE["S:" + VIEW.id];
+  if (rows){
+    for (var i=0;i<rows.length;i++){
+      var s = SESSIONS[i];
+      h += '<button class="row" type="button" data-ses="' + s.n + '">' +
+        '<span class="rn">' + s.n + '</span><span class="rmain"><span class="rt">' + rows[i].t + '</span>' +
+        '<span class="rs">' + rows[i].d + '</span><span class="rmeta">Session ' + s.n + ' &middot; ' + s.name + ' &middot; Days ' + s.from + '&ndash;' + s.to + '</span></span>' +
+        '<span class="arw">&rsaquo;</span></button>';
+    }
+    h += '<div class="acts" style="margin-top:.9rem"><button class="act" data-gen="sess" type="button">Regenerate sessions</button></div>';
+  } else {
+    for (var j=0;j<SESSIONS.length;j++){
+      var s2 = SESSIONS[j];
+      h += '<div class="row" style="cursor:default"><span class="rn">' + s2.n + '</span><span class="rmain">' +
+        '<span class="rt" style="color:var(--muted)">Session ' + s2.n + ' &mdash; ' + s2.name + '</span>' +
+        '<span class="rs">' + s2.q + '</span><span class="rmeta">Days ' + s2.from + '&ndash;' + s2.to + '</span></span></div>';
+    }
+    h += '<div class="acts" style="margin-top:.9rem"><button class="act primary" data-gen="sess" type="button">Open the four sessions</button></div>';
+  }
+  return h + '<div id="zone"></div>';
+}
+function sessionView(){
+  var e = byId(VIEW.id), ses = SESSIONS[VIEW.ses-1], rows = CACHE["S:" + VIEW.id] || [];
+  var title = rows[VIEW.ses-1] ? rows[VIEW.ses-1].t : ("Session " + VIEW.ses + " \u2014 " + ses.name);
+  var h = '<button class="back" type="button" data-expback="ses">&lsaquo; ' + e.t + '</button>' +
+    '<div class="sechead"><h2>' + title + '</h2><p class="sub">Session ' + VIEW.ses + ' &middot; ' + ses.name + ' &middot; Days ' + ses.from + '&ndash;' + ses.to + '</p></div><div id="zone">';
+  var days = DAYLIST["D:" + VIEW.id + ":" + VIEW.ses];
+  if (days){
+    for (var i=0;i<days.length;i++){
+      h += '<button class="row" type="button" data-day="' + days[i].k + '">' +
+        '<span class="rn">' + days[i].k + '</span><span class="rmain"><span class="rt">' + days[i].t + '</span>' +
+        '<span class="rs">' + days[i].d + '</span></span><span class="arw">&rsaquo;</span></button>';
+    }
+    h += '<div class="acts" style="margin-top:.9rem"><button class="act" data-gen="days" type="button">Regenerate days</button></div>';
+  } else {
+    h += '<div class="acts"><button class="act primary" data-gen="days" type="button">Open days ' + ses.from + ' to ' + ses.to + '</button></div>';
+  }
+  return h + '</div>';
+}
+function dayView(){
+  var e = byId(VIEW.id), days = DAYLIST["D:" + VIEW.id + ":" + VIEW.ses] || [], title = "Day " + VIEW.day;
+  for (var i=0;i<days.length;i++){ if (days[i].k === String(VIEW.day)){ title = days[i].t; } }
+  return '<button class="back" type="button" data-expback="day">&lsaquo; Session ' + VIEW.ses + '</button>' +
+    '<div class="sechead"><h2>Day ' + VIEW.day + ' &mdash; ' + title + '</h2><p class="sub">' + e.t + '</p></div><div id="zone">' +
+    genBlock("Y:" + VIEW.id + ":" + VIEW.day, "Write this day", "day") + '</div>';
+}
+function calendarView(){
+  var h = "";
+  if (!EVENTS.length){
+    h += '<div class="panel"><h4>Start with the annual rhythm</h4><ul>';
+    for (var r=0;r<RHYTHM.length;r++){ h += '<li>' + RHYTHM[r][0] + ' &mdash; ' + RHYTHM[r][3] + '</li>'; }
+    h += '</ul></div><div class="acts"><button class="act primary" data-seed="1" type="button">Load the annual rhythm</button></div>';
+  }
+  h += '<div class="subhead">Add an event</div>';
+  h += '<div class="fld"><label>Title</label><input data-ne="title" value="' + esc(NEWEV.title) + '" placeholder="' + PROFILE.familyName + ' family meeting"></div>' +
+    '<div class="grid3"><div class="fld" style="margin:0"><label>Date</label><input data-ne="date" type="date" value="' + NEWEV.date + '"></div>' +
+    '<div class="fld" style="margin:0"><label>Time</label><input data-ne="time" type="time" value="' + NEWEV.time + '"></div>' +
+    '<div class="fld" style="margin:0"><label>Minutes</label><input data-ne="mins" value="' + NEWEV.mins + '"></div></div>' +
+    '<div class="grid2" style="margin-top:.5rem"><div class="fld"><label>Format</label><select data-ne="type">' +
+    ["meeting","zoom","call","review","reminder"].map(function(t){ return '<option value="' + t + '"' + (NEWEV.type === t ? ' selected' : '') + '>' + t + '</option>'; }).join("") +
+    '</select></div><div class="fld"><label>Zoom or location</label><input data-ne="link" value="' + esc(NEWEV.link) + '" placeholder="https://zoom.us/j/..."></div></div>' +
+    '<div class="fld"><label>Attendees</label><input data-ne="who" value="' + esc(NEWEV.who) + '" placeholder="' + people().slice(0,4).join(", ") + '"></div>' +
+    '<div class="acts"><button class="act primary" data-addev="1" type="button">Add to the calendar</button>' +
+    (EVENTS.length ? '<button class="act" data-ics="1" type="button">Export .ics</button>' : '') + '</div>';
+  if (EVENTS.length){
+    h += '<div class="subhead">Scheduled</div>';
+    var sorted = EVENTS.slice().sort(function(a,b){ return (a.date + a.time) < (b.date + b.time) ? -1 : 1; });
+    for (var i=0;i<sorted.length;i++){
+      var e = sorted[i], ix = EVENTS.indexOf(e);
+      h += '<div class="ev"><span class="evd">' + (e.date || "unscheduled") + '<br>' + (e.time || "") + '</span><span class="evm">' +
+        '<span class="evt">' + e.title + '</span><span class="evs">' + e.type + ' &middot; ' + e.mins + ' min' + (e.who ? ' &middot; ' + e.who : '') + '</span>' +
+        (e.link ? '<span class="evs">' + e.link + '</span>' : '') +
+        '<div class="acts" style="margin:.35rem 0 0"><button class="act" data-comms="' + ix + '" type="button">Emails &amp; agenda</button>' +
+        '<button class="rm" data-rmev="' + ix + '" type="button">Remove</button></div>' +
+        (CACHE["ev:" + ix] ? '<div class="out">' + mdToHtml(CACHE["ev:" + ix]) + '</div>' : '') + '</span></div>';
+    }
+  }
+  return h;
+}
+
+/* ================= MEASURE (E6) ================= */
+function renderMeasure(){
+  var m = computeMetrics(), p = PROFILE;
+  var h = '<div class="wrap"><div class="sec">' + engHead("measure", "Relationship intelligence", "Measure what traditional AUM reporting cannot see.");
+  h += bandHtml() + '<div class="rel">';
+  h += relRow(p.g1a,"G1",p.g1aStage) + relRow(p.g1b,"G1 spouse",p.g1bStage);
+  for (var i=0;i<p.children.length;i++){ h += relRow(p.children[i].name,"G2",p.children[i].stage); }
+  if (Number(p.grandkids) > 0){ h += relRow(p.grandkids + " grandchildren","G3",p.g3Stage); }
+  h += '</div><div class="panel"><h4>Retention risk: ' + m.risk + '</h4><ul>';
+  for (var d=0;d<m.drivers.length;d++){ h += '<li>' + m.drivers[d] + '</li>'; }
+  if (!m.drivers.length){ h += '<li>No risk drivers firing on the current profile.</li>'; }
+  h += '</ul></div><div id="zone"><div class="subhead">Relationship depth report</div>' + genBlock("depth","Interpret the numbers","depth") + '</div>';
+  return h + '</div></div>';
+}
+
+/* ================= FIRM (E7) ================= */
+function renderFirm(){
+  if (!VIEW.sub){ VIEW.sub = "rollup"; }
+  var h = '<div class="wrap"><div class="sec">' + engHead("firm", "Enterprise intelligence", "What one household changes at the firm level.") +
+    subnav([["rollup","Rollup"],["tools","The 125 tools"]]);
+  if (VIEW.sub === "rollup"){
+    h += '<div id="zone">' + genBlock("firm","Write the CEO note","firm") + '</div>';
+  } else if (VIEW.id && toolById(VIEW.id)){
+    var t = toolById(VIEW.id);
+    h += '<button class="back" type="button" data-firmback="1">&lsaquo; ' + t.grpName + '</button>' +
+      '<div class="sechead"><h2>' + t.t + '</h2><p class="sub">' + t.s + '</p></div>' +
+      '<div class="panel"><h4>Where it lives</h4><p style="margin:0">' + t.grpName + '. In the platform this is delivered through the engines above rather than as a separate document.</p></div>';
+  } else if (VIEW.grp){
+    var g = grpByK(VIEW.grp), n = 0;
+    h += '<button class="back" type="button" data-firmback="1">&lsaquo; All tools</button>' +
+      '<div class="sechead"><h2>' + g.name + '</h2><p class="sub">' + g.promise + '</p></div>';
+    for (var s=0;s<g.sections.length;s++){
+      h += '<div class="subhead">' + g.sections[s].k + '. ' + g.sections[s].name + '</div>';
+      for (var i=0;i<g.sections[s].ids.length;i++){
+        n++;
+        var tt = toolById(g.sections[s].ids[i]);
+        h += '<button class="row" type="button" data-tool="' + tt.id + '">' +
+          '<span class="rn">' + (n < 10 ? "0" : "") + n + '</span><span class="rmain"><span class="rt">' + tt.t + '</span>' +
+          '<span class="rs">' + tt.s + '</span></span><span class="arw">&rsaquo;</span></button>';
+      }
+    }
+  } else {
+    for (var gi=0;gi<GROUPS.length;gi++){
+      var gr = GROUPS[gi];
+      h += '<button class="row" type="button" data-grp="' + gr.k + '">' +
+        '<span class="rn">' + gr.user.slice(0,1) + '</span><span class="rmain"><span class="rt">' + gr.name + '</span>' +
+        '<span class="rs">' + gr.promise + '</span><span class="rmeta">' + gr.count + ' tools</span></span><span class="arw">&rsaquo;</span></button>';
+    }
+  }
+  return h + '</div></div>';
+}
+
+/* ================= render ================= */
+function crumbText(){
+  var e = null;
+  for (var i=0;i<ENGINES.length;i++){ if (ENGINES[i].k === VIEW.tab){ e = ENGINES[i]; } }
+  var base = e ? (e.k === "home" ? "The " + PROFILE.familyName + " family" : "Engine " + e.n + " &middot; " + e.name) : "CAN";
+  if (VIEW.tab === "experience" && VIEW.id){ base += " &middot; " + byId(VIEW.id).t; }
+  return base;
+}
+function render(){
+  var h = "";
+  if (VIEW.tab === "home"){ h = renderHome(); }
+  else if (VIEW.tab === "know"){ h = renderKnow(); }
+  else if (VIEW.tab === "prescribe"){ h = renderPrescribe(); }
+  else if (VIEW.tab === "personalize"){ h = renderPersonalize(); }
+  else if (VIEW.tab === "prepare"){ h = renderPrepare(); }
+  else if (VIEW.tab === "experience"){ h = renderExperience(); }
+  else if (VIEW.tab === "measure"){ h = renderMeasure(); }
+  else { h = renderFirm(); }
+  document.getElementById("app").innerHTML = h;
+  document.getElementById("crumb").innerHTML = crumbText();
+  var tb = document.getElementById("tabs").getElementsByTagName("button");
+  for (var i=0;i<tb.length;i++){ tb[i].className = (tb[i].getAttribute("data-tab") === VIEW.tab) ? "on" : ""; }
+  var sg = document.getElementById("langSeg").getElementsByTagName("button");
+  for (var j=0;j<sg.length;j++){ sg[j].className = (sg[j].getAttribute("data-lang") === PROFILE.faithLanguage) ? "on" : ""; }
+  window.scrollTo(0,0);
+}
+function buildTabs(){
+  var h = "";
+  for (var i=0;i<ENGINES.length;i++){
+    var e = ENGINES[i];
+    h += '<button type="button" data-tab="' + e.k + '">' + (e.k === "home" ? "" : '<i>' + e.n + '</i>') + e.tab + '</button>';
+  }
+  document.getElementById("tabs").innerHTML = h;
+}
+
+/* ================= ics ================= */
+function pad(n){ return (n < 10 ? "0" : "") + n; }
+function icsStamp(date, time, add){
+  var p = date.split("-"), t = (time || "09:00").split(":");
+  var d = new Date(Number(p[0]), Number(p[1])-1, Number(p[2]), Number(t[0]), Number(t[1]));
+  if (add){ d = new Date(d.getTime() + add*60000); }
+  return d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00";
+}
+function downloadIcs(){
+  var s = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//CAN//Family Calendar//EN\r\n";
+  for (var i=0;i<EVENTS.length;i++){
+    var e = EVENTS[i];
+    if (!e.date){ continue; }
+    s += "BEGIN:VEVENT\r\nUID:can-" + i + "-" + e.date + "@can\r\nDTSTART:" + icsStamp(e.date,e.time,0) +
+      "\r\nDTEND:" + icsStamp(e.date,e.time,Number(e.mins)||60) + "\r\nSUMMARY:" + e.title.replace(/[,;]/g," ") + "\r\n";
+    s += "DESCRIPTION:" + (e.type + (e.who ? " with " + e.who : "") + (e.link ? " " + e.link : "")).replace(/[,;]/g," ") + "\r\n";
+    if (e.link){ s += "LOCATION:" + e.link.replace(/[,;]/g," ") + "\r\n"; }
+    s += "BEGIN:VALARM\r\nTRIGGER:-P3D\r\nACTION:DISPLAY\r\nDESCRIPTION:Reminder\r\nEND:VALARM\r\nEND:VEVENT\r\n";
+  }
+  s += "END:VCALENDAR\r\n";
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([s], {type:"text/calendar"}));
+  a.download = PROFILE.familyName + "-family-calendar.ics";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+/* ================= generation ================= */
+function busy(msg){
+  var z = document.getElementById("zone") || document.getElementById("app");
+  if (z){ z.innerHTML = '<div class="spin">' + msg + '<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>'; }
+}
+function fail(err){
+  var z = document.getElementById("zone") || document.getElementById("app");
+  if (z){ z.innerHTML = '<div class="err">Could not reach the generation service. ' + esc(String(err.message || err)) +
+    '<br><br>The platform writes live, so it needs to run inside the Claude app.</div>'; }
+}
+async function run(action){
+  var a = action.split(":"), i;
+  try {
+    if (a[0] === "disc"){ busy("Building the discovery brief"); CACHE.disc = await callClaude(P_discovery()); }
+    else if (a[0] === "prio"){ busy("Building the priority map"); CACHE.prio = await callClaude(P_priority()); }
+    else if (a[0] === "presc"){
+      busy("Reading the profile against all " + STATS.journeys + " journeys");
+      var rows = parsePipes(await callClaude(P_prescribe()));
+      if (!rows.length){ throw new Error("Unexpected format; try again."); }
+      CACHE.presc = rows.slice(0,3);
+    }
+    else if (a[0] === "nba"){ busy("Naming the next action"); CACHE.nba = await callClaude(P_nba()); }
+    else if (a[0] === "matter"){ var m = matById(a[1]); busy("Discerning " + m.name); CACHE["mat:" + a[1]] = await callClaude(P_matter(m)); VIEW.id = a[1]; }
+    else if (a[0] === "tpl"){ var t = tplById(TB.tid); busy("Building " + t.name + " for " + TB.who); CACHE["X:" + TB.tid + ":" + TB.who + ":" + TB.length] = await callClaude(P_template(t)); }
+    else if (a[0] === "agenda"){ busy("Building the " + roleById(ROLE).name + " working set"); CACHE["agenda:" + ROLE] = await callClaude(P_roleAgenda()); }
+    else if (a[0] === "brief"){ busy("Building the meeting brief"); CACHE.brief = await callClaude(P_brief()); }
+    else if (a[0] === "follow"){ busy("Drafting the follow-up"); CACHE.follow = await callClaude(P_followup()); }
+    else if (a[0] === "room"){ busy("Reading the room"); CACHE.room = await callClaude(P_room()); }
+    else if (a[0] === "depth"){ busy("Interpreting the metrics"); CACHE.depth = await callClaude(P_depth()); }
+    else if (a[0] === "firm"){ busy("Writing the CEO note"); CACHE.firm = await callClaude(P_firm()); }
+    else if (a[0] === "iq"){ busy("Writing the ten questions for " + IV.who); CACHE["Q:" + IV.iid + ":" + IV.who] = await callClaude(P_interview(ivById(IV.iid))); }
+    else if (a[0] === "isum"){
+      var nk = IV.iid + ":" + IV.who, notes = NOTES[nk] || "";
+      if (notes.replace(/\s/g,"").length < 20){ throw new Error("Add a few notes from the conversation first."); }
+      busy("Building the private summary");
+      CACHE["M:" + IV.iid + ":" + IV.who] = await callClaude(P_ivSummary(ivById(IV.iid), notes));
+    }
+    else if (a[0] === "sess"){
+      var e = byId(VIEW.id); busy("Opening the four sessions of " + e.t);
+      var sr = parsePipes(await callClaude(P_sessions(e)));
+      if (sr.length < 4){ throw new Error("Unexpected format; try again."); }
+      CACHE["S:" + VIEW.id] = sr.slice(0,4);
+    }
+    else if (a[0] === "days"){
+      var e2 = byId(VIEW.id), ses = SESSIONS[VIEW.ses-1];
+      busy("Writing days " + ses.from + " to " + ses.to);
+      var dr = parsePipes(await callClaude(P_days(e2, ses)));
+      if (!dr.length){ throw new Error("Unexpected format; try again."); }
+      DAYLIST["D:" + VIEW.id + ":" + VIEW.ses] = dr;
+    }
+    else if (a[0] === "day"){
+      var e3 = byId(VIEW.id), ses3 = SESSIONS[VIEW.ses-1], days = DAYLIST["D:" + VIEW.id + ":" + VIEW.ses] || [], title = "Day " + VIEW.day;
+      for (i=0;i<days.length;i++){ if (days[i].k === String(VIEW.day)){ title = days[i].t; } }
+      busy("Writing day " + VIEW.day);
+      CACHE["Y:" + VIEW.id + ":" + VIEW.day] = await callClaude(P_day(e3, ses3, VIEW.day, title));
+    }
+    else if (a[0] === "ev"){ busy("Writing the invitation, agenda, and reminders"); CACHE["ev:" + a[1]] = await callClaude(P_comms(EVENTS[Number(a[1])])); }
+    render();
+  } catch (err){ fail(err); }
+}
+
+/* ================= events ================= */
+document.addEventListener("click", function(evt){
+  var el = evt.target.closest ? evt.target.closest("[data-tab],[data-lang],[data-sub],[data-gen],[data-copy],[data-chip],[data-addkid],[data-rmkid],[data-addcu],[data-rmcu],[data-iv],[data-ivback],[data-matter],[data-matback],[data-cat],[data-entry],[data-ses],[data-day],[data-expback],[data-grp],[data-tool],[data-firmback],[data-seed],[data-addev],[data-rmev],[data-comms],[data-ics]") : null;
+  if (!el){ return; }
+  if (el.hasAttribute("data-tab")){ VIEW = {tab:el.getAttribute("data-tab"), sub:"", id:null, ses:0, day:0}; IV.iid = null; save(); render(); return; }
+  if (el.hasAttribute("data-lang")){ PROFILE.faithLanguage = el.getAttribute("data-lang"); save(); render(); return; }
+  if (el.hasAttribute("data-sub")){ VIEW.sub = el.getAttribute("data-sub"); VIEW.id = null; VIEW.ses = 0; VIEW.day = 0; VIEW.cat = null; VIEW.grp = null; IV.iid = null; render(); return; }
+  if (el.hasAttribute("data-iv")){ IV.iid = el.getAttribute("data-iv"); IV.who = ""; render(); return; }
+  if (el.hasAttribute("data-ivback")){ IV.iid = null; render(); return; }
+  if (el.hasAttribute("data-matter")){ VIEW.id = el.getAttribute("data-matter"); VIEW.sub = "matters"; render(); return; }
+  if (el.hasAttribute("data-matback")){ VIEW.id = null; render(); return; }
+  if (el.hasAttribute("data-cat")){ VIEW.cat = el.getAttribute("data-cat"); VIEW.id = null; VIEW.ses = 0; VIEW.day = 0; render(); return; }
+  if (el.hasAttribute("data-entry")){ VIEW = {tab:"experience", sub:"journeys", id:el.getAttribute("data-entry"), ses:0, day:0, cat:VIEW.cat}; render(); return; }
+  if (el.hasAttribute("data-ses")){ VIEW.ses = Number(el.getAttribute("data-ses")); VIEW.day = 0; render(); return; }
+  if (el.hasAttribute("data-day")){ VIEW.day = Number(el.getAttribute("data-day")); render(); return; }
+  if (el.hasAttribute("data-expback")){
+    var w = el.getAttribute("data-expback");
+    if (w === "day"){ VIEW.day = 0; } else if (w === "ses"){ VIEW.ses = 0; } else if (w === "entry"){ VIEW.id = null; } else { VIEW.cat = null; }
+    render(); return;
+  }
+  if (el.hasAttribute("data-grp")){ VIEW.grp = el.getAttribute("data-grp"); VIEW.id = null; render(); return; }
+  if (el.hasAttribute("data-tool")){ VIEW.id = el.getAttribute("data-tool"); render(); return; }
+  if (el.hasAttribute("data-firmback")){ if (VIEW.id){ VIEW.id = null; } else { VIEW.grp = null; } render(); return; }
+  if (el.hasAttribute("data-gen")){ run(el.getAttribute("data-gen")); return; }
+  if (el.hasAttribute("data-comms")){ run("ev:" + el.getAttribute("data-comms")); return; }
+  if (el.hasAttribute("data-ics")){ downloadIcs(); return; }
+  if (el.hasAttribute("data-seed")){
+    var base = new Date(); base.setMonth(base.getMonth() + 1);
+    for (var r=0;r<RHYTHM.length;r++){
+      var d = new Date(base.getTime()); d.setMonth(d.getMonth() + r*2);
+      EVENTS.push({title:PROFILE.familyName + " " + RHYTHM[r][0], type:RHYTHM[r][1], mins:RHYTHM[r][2],
+        date:d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()), time:"18:00", link:"", who:""});
+    }
+    save(); render(); return;
+  }
+  if (el.hasAttribute("data-addev")){
+    if (!NEWEV.title){ return; }
+    EVENTS.push({title:NEWEV.title, date:NEWEV.date, time:NEWEV.time, mins:NEWEV.mins, type:NEWEV.type, link:NEWEV.link, who:NEWEV.who});
+    NEWEV = {title:"", date:"", time:"18:00", mins:90, type:"meeting", link:"", who:""};
+    save(); render(); return;
+  }
+  if (el.hasAttribute("data-rmev")){ EVENTS.splice(Number(el.getAttribute("data-rmev")),1); save(); render(); return; }
+  if (el.hasAttribute("data-chip")){
+    var grp = el.getAttribute("data-chip"), val = el.getAttribute("data-val"), arr = PROFILE[grp], ix = arr.indexOf(val);
+    if (ix > -1){ arr.splice(ix,1); } else { arr.push(val); }
+    save(); render(); return;
+  }
+  if (el.hasAttribute("data-addkid")){ PROFILE.children.push({name:"New child", age:30, stage:0, note:""}); save(); render(); return; }
+  if (el.hasAttribute("data-rmkid")){ PROFILE.children.splice(Number(el.getAttribute("data-rmkid")),1); save(); render(); return; }
+  if (el.hasAttribute("data-addcu")){ CUSTOM.push({person:PERSON, name:"", result:""}); save(); render(); return; }
+  if (el.hasAttribute("data-rmcu")){ CUSTOM.splice(Number(el.getAttribute("data-rmcu")),1); save(); render(); return; }
+  if (el.hasAttribute("data-copy")){
+    var txt = CACHE[el.getAttribute("data-copy")] || "";
+    if (navigator.clipboard){ navigator.clipboard.writeText(txt); }
+    el.innerHTML = "Copied"; setTimeout(function(){ el.innerHTML = "Copy"; }, 1400); return;
+  }
+});
+function apply(el){
+  if (!el.hasAttribute){ return false; }
+  if (el.hasAttribute("data-notes")){ NOTES[el.getAttribute("data-notes")] = el.value; return true; }
+  if (el.hasAttribute("data-f")){
+    var f = el.getAttribute("data-f"), v = el.value;
+    PROFILE[f] = (f === "daf" || f === "secondaryAdvisor" || f === "successionComplete") ? (v === "yes") : v;
+    save(); return true;
+  }
+  if (el.hasAttribute("data-kid")){ PROFILE.children[Number(el.getAttribute("data-kid"))][el.getAttribute("data-k")] = el.value; save(); return true; }
+  if (el.hasAttribute("data-as")){ ASSESS[el.getAttribute("data-as")] = el.value; save(); return true; }
+  if (el.hasAttribute("data-ne")){ NEWEV[el.getAttribute("data-ne")] = el.value; return true; }
+  if (el.hasAttribute("data-cu")){ var p = el.getAttribute("data-cu").split(":"); CUSTOM[Number(p[0])][p[1]] = el.value; save(); return true; }
+  if (el.hasAttribute("data-sc")){
+    var q = el.getAttribute("data-sc").split(":");
+    if (!SCORES[q[0]]){ SCORES[q[0]] = {m:3, r:3}; }
+    SCORES[q[0]][q[1]] = Number(el.value);
+    var b = el.parentNode.getElementsByTagName("b")[0];
+    if (b){ b.innerHTML = el.value; }
+    var vd = el.parentNode.parentNode.getElementsByClassName("verdict")[0];
+    if (vd){ var v = verdict(q[0]); vd.className = "verdict v-" + v.k; vd.innerHTML = v.t; }
+    save(); return true;
+  }
+  return false;
+}
+document.addEventListener("input", function(evt){ apply(evt.target); });
+document.addEventListener("change", function(evt){
+  var el = evt.target;
+  if (el.id === "roleSel"){ ROLE = el.value; save(); render(); return; }
+  if (el.id === "tplSel"){ TB.tid = el.value; TB.who = ""; render(); return; }
+  if (el.id === "whoSel"){ TB.who = el.value; render(); return; }
+  if (el.id === "lenSel"){ TB.length = el.value; render(); return; }
+  if (el.id === "perSel"){ PERSON = el.value; render(); return; }
+  if (el.id === "ivWho"){ IV.who = el.value; render(); return; }
+  if (apply(el) && el.tagName === "SELECT" && !el.hasAttribute("data-ne")){ render(); }
+});
+
+(async function(){ buildTabs(); await load(); render(); })();
+</script>
+</body>
+</html>

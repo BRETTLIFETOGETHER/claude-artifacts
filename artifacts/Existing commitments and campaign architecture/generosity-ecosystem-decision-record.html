@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Engine, Many Doors — The Generosity Ecosystem Decision Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;0,900;1,500;1,600&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#080e16; --navy:#0b1726; --navy-2:#0e1d30; --panel:#132439; --panel-2:#16293f;
+  --gold:#c9a35c; --gold-bright:#e3c186; --cream:#ece7d8; --muted:#8b94a5; --muted-dim:#5f6a7c;
+  --ivory:#f4efe3; --line:rgba(255,255,255,.08); --line-gold:rgba(201,163,92,.22); --maxw:1280px;
+  --display:'Playfair Display',serif; --body:'Spectral',serif; --ui:'Archivo',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--cream);font-family:var(--body);font-size:17px;line-height:1.68;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+.wide{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+/* header */
+header{position:sticky;top:0;z-index:50;height:78px;display:flex;align-items:center;background:rgba(11,23,38,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line-gold)}
+header .wide{width:100%;display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:var(--display);font-weight:800;font-size:22px;color:var(--cream);letter-spacing:.01em;display:flex;align-items:baseline;gap:7px;text-decoration:none}
+.brand em{font-style:italic;font-weight:500;color:var(--gold-bright)}
+.brand .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block;transform:translateY(-2px)}
+.hdr-label{font-family:var(--ui);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+/* hero */
+.hero{position:relative;padding:84px 0 66px;background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 78% -10%, rgba(201,163,92,.12), transparent 55%);pointer-events:none}
+.eyebrow{font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(40px,5.4vw,68px);line-height:1.04;color:var(--ivory);max-width:820px}
+.hero h1 .g{color:var(--gold-bright)}
+.stand{margin-top:26px;max-width:720px;font-size:19px;line-height:1.7;color:var(--cream)}
+.stand em{font-style:italic;color:var(--gold-bright)}
+.hero-note{margin-top:30px;max-width:720px;padding:18px 0 0;border-top:1px solid var(--line-gold);font-size:15.5px;color:var(--muted);line-height:1.7}
+.hero-note strong{color:var(--cream);font-weight:600}
+
+/* contents */
+.contents{background:var(--navy-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line-gold);padding:34px 0}
+.contents .label{font-family:var(--ui);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.toc{display:grid;grid-template-columns:repeat(3,1fr);gap:2px 34px;list-style:none}
+.toc li{border-bottom:1px solid var(--line)}
+.toc a{display:flex;align-items:baseline;gap:12px;padding:9px 2px;text-decoration:none;color:var(--cream);font-size:15px}
+.toc a:hover{color:var(--gold-bright)}
+.toc .n{font-family:var(--ui);font-size:10.5px;font-weight:600;letter-spacing:.08em;color:var(--gold);min-width:22px}
+
+/* sections */
+section{position:relative;padding:66px 0 58px;border-bottom:1px solid var(--line)}
+section.alt{background:var(--navy-2)}
+.secnum{position:absolute;top:34px;right:22px;font-family:var(--display);font-weight:900;font-size:110px;line-height:1;color:rgba(236,231,216,.045);pointer-events:none;user-select:none}
+.sechead{margin-bottom:28px}
+.sechead .rule{width:44px;height:2px;background:var(--gold);margin:14px 0 16px}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(27px,3.4vw,38px);line-height:1.12;color:var(--ivory);max-width:760px}
+h2 .g{color:var(--gold-bright)}
+h3{font-family:var(--display);font-weight:700;font-size:21px;color:var(--ivory);margin:30px 0 10px}
+p{margin:0 0 16px;max-width:760px}
+p:last-child{margin-bottom:0}
+strong{color:var(--ivory);font-weight:600}
+.mut{color:var(--muted)}
+
+/* status tags */
+.tag{display:inline-block;font-family:var(--ui);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;padding:4px 9px 3px;border:1px solid var(--line-gold);border-radius:3px;color:var(--gold);vertical-align:middle;margin-left:8px;white-space:nowrap}
+.tag.funded{color:var(--gold-bright);border-color:rgba(227,193,134,.45)}
+.tag.built{color:var(--cream);border-color:var(--line)}
+.tag.open{color:var(--gold-bright);border-style:dashed;border-color:rgba(227,193,134,.5)}
+.tag.killed{color:var(--muted-dim);border-color:var(--line)}
+
+/* pull quote */
+.pull{font-family:var(--display);font-style:italic;font-weight:500;font-size:22px;line-height:1.5;color:var(--ivory);background:rgba(201,163,92,.06);border-left:2px solid var(--gold);padding:22px 26px;margin:28px 0;max-width:760px}
+
+/* directory entries */
+.dir{margin-top:8px;max-width:800px}
+.entry{display:flex;gap:20px;padding:20px 0;border-top:1px solid var(--line)}
+.entry:last-child{border-bottom:1px solid var(--line)}
+.entry .num{font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--gold);padding-top:6px;min-width:26px}
+.entry .body{flex:1}
+.entry .name{font-family:var(--display);font-weight:700;font-size:19px;color:var(--ivory);line-height:1.3}
+.entry .desc{margin-top:5px;font-size:15.5px;line-height:1.62;color:var(--cream)}
+.entry .desc .mut{color:var(--muted)}
+
+/* panel grid (the doors) */
+.panelgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-gold);border:1px solid var(--line-gold);margin-top:30px}
+.panel{background:var(--panel);padding:30px 28px 28px}
+.panel .p-eyebrow{font-family:var(--ui);font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.panel h4{font-family:var(--display);font-weight:800;font-size:23px;color:var(--ivory);line-height:1.15;margin-bottom:12px}
+.panel p{font-size:15px;line-height:1.62;margin-bottom:12px}
+.panel .facts{list-style:none;margin-top:14px;border-top:1px solid var(--line)}
+.panel .facts li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;line-height:1.55;display:flex;gap:10px}
+.panel .facts .k{font-family:var(--ui);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);min-width:86px;padding-top:3px}
+.panel .facts .v{color:var(--cream);flex:1}
+
+/* stages strip */
+.stages{display:flex;flex-wrap:wrap;gap:1px;background:var(--line-gold);border:1px solid var(--line-gold);margin:26px 0;max-width:800px}
+.stage{flex:1 1 0;min-width:110px;background:var(--panel);padding:16px 12px;text-align:center}
+.stage .sn{font-family:var(--ui);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.stage .st{font-family:var(--display);font-weight:700;font-size:17px;color:var(--gold-bright);margin-top:4px}
+
+/* checklist / actions */
+.acts{list-style:none;max-width:800px;margin-top:8px}
+.acts li{display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--line)}
+.acts li:last-child{border-bottom:1px solid var(--line)}
+.acts .an{font-family:var(--display);font-weight:800;font-size:26px;line-height:1;color:rgba(201,163,92,.55);min-width:34px;padding-top:2px}
+.acts .at{flex:1;font-size:16px;line-height:1.62}
+.acts .at strong{display:block;font-family:var(--display);font-size:18.5px;font-weight:700;color:var(--ivory);margin-bottom:4px}
+
+/* closing */
+.close{background:linear-gradient(180deg,var(--navy-2) 0%,var(--navy) 100%);padding:80px 0 90px;border-bottom:none}
+.close h2{font-size:clamp(30px,4vw,46px)}
+.close .stand{margin-top:22px}
+footer{padding:34px 0 44px;background:var(--ink)}
+footer .wide{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px}
+footer .f1{font-family:var(--display);font-weight:700;font-size:16px;color:var(--cream)}
+footer .f1 em{font-style:italic;font-weight:500;color:var(--gold-bright)}
+footer .f2{font-family:var(--ui);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-dim)}
+
+@media (max-width:760px){
+  .toc{grid-template-columns:1fr}
+  .panelgrid{grid-template-columns:1fr}
+  .secnum{font-size:74px;top:26px;right:14px}
+  .hero{padding:64px 0 52px}
+  section{padding:54px 0 48px}
+  .stage{min-width:31%}
+  .entry{gap:14px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wide">
+    <a class="brand" href="#top">Life<em>together</em><span class="dot"></span></a>
+    <div class="hdr-label">Strategic Decision Record</div>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">The Generosity Ecosystem &middot; August 2026</div>
+    <h1>One Engine,<br><span class="g">Many Doors.</span></h1>
+    <p class="stand">The answer to the master prompt. LifeTogether does not build one master consumer brand for generosity, stewardship, obedience, and legacy. It builds <em>one transformation engine</em> — the spine, the assessment, the campaign system, the library — and runs it through partner-owned front doors.</p>
+    <div class="hero-note"><strong>What this document is.</strong> The strategic decisions, made — before large amounts of content get generated. Roughly two-thirds of the master prompt's open questions were already decided, funded, or built when it was written. This record honors those commitments, makes the calls that are genuinely open, and flags the three places where the prompt conflicts with earlier direction.</div>
+  </div>
+</div>
+
+<div class="contents">
+  <div class="wrap">
+    <div class="label">Contents</div>
+    <ul class="toc">
+      <li><a href="#s01"><span class="n">01</span>The Ruling</a></li>
+      <li><a href="#s02"><span class="n">02</span>The Spine</a></li>
+      <li><a href="#s03"><span class="n">03</span>The Flagships</a></li>
+      <li><a href="#s04"><span class="n">04</span>The Four Doors</a></li>
+      <li><a href="#s05"><span class="n">05</span>Campaign Lengths</a></li>
+      <li><a href="#s06"><span class="n">06</span>The Six-Session Library</a></li>
+      <li><a href="#s07"><span class="n">07</span>The Assessment</a></li>
+      <li><a href="#s08"><span class="n">08</span>The Story Engine</a></li>
+      <li><a href="#s09"><span class="n">09</span>The Platform</a></li>
+      <li><a href="#s10"><span class="n">10</span>The Business Model</a></li>
+      <li><a href="#s11"><span class="n">11</span>Naming Rulings</a></li>
+      <li><a href="#s12"><span class="n">12</span>What Not to Build</a></li>
+      <li><a href="#s13"><span class="n">13</span>The Next Ninety Days</a></li>
+      <li><a href="#s14"><span class="n">14</span>Three Years Out</a></li>
+      <li><a href="#s15"><span class="n">15</span>The Open Decision</a></li>
+    </ul>
+  </div>
+</div>
+
+<section id="s01">
+  <div class="secnum">01</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Executive Recommendation</div>
+      <div class="rule"></div>
+      <h2>The Ruling: <span class="g">one engine, partner-owned doors.</span></h2>
+    </div>
+    <p>The master prompt's central question — one movement, separate products, stages in one pathway, or a family of brands — is answered by the client structure itself, and it is a strength, not a constraint. LifeTogether cannot build one master consumer brand, because the three strongest properties belong to three different relationships: the obedience flagship belongs to The Signatry, who own the book outright under the proposal already on the table; <em>Generous Living</em> and the financial wisdom line sit in Ron's lane by the August decision to stay there and give Ron more and better; and Family Legacy is a 50/50 relationship with Tom Conway.</p>
+    <p>What LifeTogether owns outright is the thing underneath all of them: the transformation spine, the assessment architecture, the campaign engine, the Toolbox, and the Collective library. That is exactly the rights position already written into the Signatry proposal — they own the book; LifeTogether retains the curriculum, campaign, and assessment frameworks in perpetuity.</p>
+    <div class="pull">The movement is real. It just doesn't wear one logo. It wears theirs — and the engine underneath every door is ours.</div>
+  </div>
+</section>
+
+<section id="s02" class="alt">
+  <div class="secnum">02</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">The Core Framework</div>
+      <div class="rule"></div>
+      <h2>The Spine: <span class="g">six stages, already funded.</span> <span class="tag funded">Decided</span></h2>
+    </div>
+    <p>The prompt asks for one memorable framework comparable to the five purposes. It already exists, and the risk now is diluting it by inventing a fifth. The six stages are the Purpose Driven equivalent: they are built into the 24-statement assessment, the personal and family profiles, the forty-day map, and the six-session curriculum — and the board money is behind them.</p>
+    <div class="stages">
+      <div class="stage"><div class="sn">Stage 1</div><div class="st">Hearing</div></div>
+      <div class="stage"><div class="sn">Stage 2</div><div class="st">Trusting</div></div>
+      <div class="stage"><div class="sn">Stage 3</div><div class="st">Surrendered</div></div>
+      <div class="stage"><div class="sn">Stage 4</div><div class="st">Generous</div></div>
+      <div class="stage"><div class="sn">Stage 5</div><div class="st">Courageous</div></div>
+      <div class="stage"><div class="sn">Stage 6</div><div class="st">Legacy</div></div>
+    </div>
+    <p>Obedience is upstream of generosity — the position affirmed on the Dale call: it is deliberately not a generosity book; generosity flows out of it. The other frameworks do not compete with the spine; they nest inside it. The twelve generosity modules are the library inside the Generous stage and the generosity lane. The six H's belong exclusively to 40 Days of Financial Wisdom in Ron's lane. FLI's six dimensions govern the advisor door. The prompt's Section 13 question — is the deepest idea actually obedience? — was settled in August. Yes, and it is funded.</p>
+  </div>
+</section>
+
+<section id="s03">
+  <div class="secnum">03</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">The Flagship Products</div>
+      <div class="rule"></div>
+      <h2>Two flagships. <span class="g">Not a third.</span></h2>
+    </div>
+    <div class="dir">
+      <div class="entry">
+        <div class="num">A</div>
+        <div class="body">
+          <div class="name">Irrational Obedience <span class="tag funded">Commissioned — verbal, not yet papered</span></div>
+          <div class="desc">The ecosystem flagship: a 40-day formation experience in the Purpose Driven shape — a book that is also the engine underneath one, by your own framing. Delivery before Thanksgiving. The church version is the campaign edition, 40 Days of Irrational Obedience. <span class="mut">The book carries Steve's title; the Living family carries the series.</span></div>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="num">B</div>
+        <div class="body">
+          <div class="name">40 Days of Generosity <span class="tag built">Built</span></div>
+          <div class="desc">The churchwide generosity flagship — daily reader written through Day 14 with the full forty-day map assigned, six small-group sessions with leader scripts, the weekend sermon series, the campaign handbook, the newsletter sequence, the children's and 10-day and 21-day editions, and the two-phase capital campaign edition with the asset track.</div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:24px">The prompt's Section 4 option list — chapter book, journeys, platform hybrids — is answered by what is commissioned and what is written. Creating a third flagship would compete with both.</p>
+  </div>
+</section>
+
+<section id="s04" class="alt">
+  <div class="secnum">04</div>
+  <div class="wide">
+    <div class="wrap" style="padding:0">
+      <div class="sechead">
+        <div class="eyebrow">Lanes, Editions &amp; Ownership</div>
+        <div class="rule"></div>
+        <h2>The Four Doors — <span class="g">and who owns each one.</span></h2>
+      </div>
+      <p>Every door runs the same engine. What changes is the owner, the audience, the stakes, and the instruments — never the theology. The family legacy edition ships first in every rollout, six to nine weeks or four to six months ahead of churchwide, per standing policy: influential families experience the transformation first and become its champions.</p>
+    </div>
+    <div class="panelgrid">
+      <div class="panel">
+        <div class="p-eyebrow">Door One &middot; High-Capacity &amp; Legacy Families</div>
+        <h4>The Signatry Door</h4>
+        <p>Irrational Obedience, the Living series, The Living Pledge, the Collective, and the Gathering. The forty families on film are the decaying asset and the real ask.</p>
+        <ul class="facts">
+          <li><span class="k">Relationship</span><span class="v">Active engagement — verbal yes from Dale; not yet a signed commission</span></li>
+          <li><span class="k">Ownership</span><span class="v">They own the book outright; LifeTogether retains curriculum, campaign &amp; assessment frameworks in perpetuity</span></li>
+          <li><span class="k">Economics</span><span class="v">Project fee now; platform at no fee, co-branded, on revenue participation</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="p-eyebrow">Door Two &middot; The Local Church</div>
+        <h4>The Church Door</h4>
+        <p>LifeTogether-owned. 40 Days of Generosity, the campaign edition of Irrational Obedience, the platform subscription, and the Founding 100. The covenant governs everything: nobody is asked for anything.</p>
+        <ul class="facts">
+          <li><span class="k">Relationship</span><span class="v">Owned distribution — 25 years, 500+ church relationships</span></li>
+          <li><span class="k">Ownership</span><span class="v">LifeTogether outright</span></li>
+          <li><span class="k">Economics</span><span class="v">Subscription spine, per-copy print, custom builds; diagnostics free forever</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="p-eyebrow">Door Three &middot; Advisors &amp; Family Offices</div>
+        <h4>The Advisor Door</h4>
+        <p>Family Legacy Intelligence and Family Legacy By Design — two doors into one system: a church runs it as a ministry, an advisor runs it as a practice. The first ministry of its kind to ultra-high-net-worth families.</p>
+        <ul class="facts">
+          <li><span class="k">Relationship</span><span class="v">Tom Conway — 50/50 verbal agreement, co-founder positioning agreed, not yet papered</span></li>
+          <li><span class="k">Status</span><span class="v">Developing; operating-system consolidation is the open decision (Section 15)</span></li>
+          <li><span class="k">Economics</span><span class="v">Advisor and firm licensing, kept off the church price list</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="p-eyebrow">Door Four &middot; Financial Discipleship</div>
+        <h4>The Ron Blue / RBI Door</h4>
+        <p>Financial Wisdom Ministry, <em>God Owns It All</em>, <em>Generous Living</em>, and 40 Days of Financial Wisdom on the six H's. The August decision stands: stay in Ron's lane and give Ron more and better.</p>
+        <ul class="facts">
+          <li><span class="k">Relationship</span><span class="v">Active working relationship; "Ron and Brett" branding affirmed verbally</span></li>
+          <li><span class="k">Status</span><span class="v">Active — with the Generous Living rights question still open (Section 13)</span></li>
+          <li><span class="k">Economics</span><span class="v">~50% product split across lanes; subscriptions are the key, not one-off products</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s05">
+  <div class="secnum">05</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Campaign Architecture</div>
+      <div class="rule"></div>
+      <h2>Campaign lengths: <span class="g">each has one job.</span> <span class="tag">Decided</span></h2>
+    </div>
+    <div class="dir">
+      <div class="entry"><div class="num">10</div><div class="body"><div class="name">The 10-Day Challenge</div><div class="desc">The on-ramp. One action per day, under 100 words, built for text and app delivery. Day 10's sentence is the invitation into the next edition.</div></div></div>
+      <div class="entry"><div class="num">21</div><div class="body"><div class="name">The 21-Day Journey</div><div class="desc">The lean journey — one story, one Scripture, one practice, one question per day, deliberately lighter than the forty.</div></div></div>
+      <div class="entry"><div class="num">30</div><div class="body"><div class="name">The 30-Day Experience</div><div class="desc">Exists only where a partner needs it: the twelve modules folded into five sessions. Never compress Enough, Fear, or Joy.</div></div></div>
+      <div class="entry"><div class="num">40</div><div class="body"><div class="name">The 40-Day Campaign</div><div class="desc">The campaign — the only thing that turns all six spokes of a church in the same six weeks. A temporary movement architecture, not a content product.</div></div></div>
+    </div>
+    <p style="margin-top:24px"><strong>One standing conflict to respect:</strong> the 21- and 30-day formats are deliberately out of the Signatry pitch. Forty days only, by your own instruction. The shorter editions live on the church and consumer side.</p>
+  </div>
+</section>
+
+<section id="s06" class="alt">
+  <div class="secnum">06</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">The Curriculum Library</div>
+      <div class="rule"></div>
+      <h2>The Six-Session Library: <span class="g">five slots, mostly filled.</span></h2>
+    </div>
+    <p>The discipline the prompt asks for is already the design: all five run on the same spine, so they read as a library rather than as competing versions of one curriculum.</p>
+    <div class="dir">
+      <div class="entry"><div class="num">01</div><div class="body"><div class="name">The Obedience Decision <span class="tag funded">In Tier One</span></div><div class="desc">The Irrational Obedience group edition — six sessions matched to the six stages, inside the commissioned Signatry build.</div></div></div>
+      <div class="entry"><div class="num">02</div><div class="body"><div class="name">Generosity <span class="tag built">Built</span></div><div class="desc">Who Owns It? &middot; Enough &middot; Open Hands &middot; What Do You See? &middot; Together &middot; The Return — participant guides, leader scripts, and the group covenant, calibrated for any income level.</div></div></div>
+      <div class="entry"><div class="num">03</div><div class="body"><div class="name">Financial Wisdom <span class="tag">RBI Lane</span></div><div class="desc">The six-H curriculum inside Financial Wisdom Ministry — Honor, Heart, Health, Habits, Hope, Harvest.</div></div></div>
+      <div class="entry"><div class="num">04</div><div class="body"><div class="name">Family Legacy <span class="tag built">Built</span></div><div class="desc">"What Will Live On?" — the whole-family legacy campaign inside FLI: Remember the Story through Choose What We Will Pass Forward.</div></div></div>
+      <div class="entry"><div class="num">05</div><div class="body"><div class="name">The Pledge Cohort <span class="tag open">To Build</span></div><div class="desc">The legacy-family cohort around The Living Pledge — invitation-only, never announced from a platform, advisors in the room.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="s07">
+  <div class="secnum">07</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Assessment Architecture</div>
+      <div class="rule"></div>
+      <h2>One instrument. <span class="g">Two depths.</span> <span class="tag">Settled</span></h2>
+    </div>
+    <p>Twenty-four statements across six stages for everyone — six to eight minutes, so the teenager and the skeptical spouse both finish. The extended instrument for legacy families and advisor cohorts is six stages by seven statements, buying reliability without breaking the routing. Individual results roll up into one family profile that names where the generations disagree, and the advisor questionnaire runs on the visible-to-the-family rule: written as though the family is in the room, correctable, with confidential matters kept out of the system entirely.</p>
+    <p>Formation language throughout, never diagnostic language: <em>already true of you</em> and <em>still being asked of you</em>. Recommendations run both ways, strengths first. And your own guardrail governs the whole thing: don't let the score become the goal.</p>
+  </div>
+</section>
+
+<section id="s08" class="alt">
+  <div class="secnum">08</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Stories &amp; Testimony</div>
+      <div class="rule"></div>
+      <h2>The Story Engine: <span class="g">resolved by design.</span></h2>
+    </div>
+    <p>The best design decision in the whole build answers the prompt's Section 10: the daily readings run entirely on Scripture and documented public history — David's offering, Gideon, Monmouth, LeTourneau, the widow's mite — so no permissions and no story bank are required. Contemporary testimony lives in local slots each church fills with its own people, which is where testimony belongs anyway. The One Hundred Questions instrument serves the legacy-family rooms.</p>
+    <div class="pull">The one decaying asset is the forty families on film — and that is already the closing ask to The Signatry: if we get nothing else on this list, get us this.</div>
+  </div>
+</section>
+
+<section id="s09">
+  <div class="secnum">09</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Personalization &amp; Technology</div>
+      <div class="rule"></div>
+      <h2>The Platform: <span class="g">the profile is the moat.</span></h2>
+    </div>
+    <p>The profile-to-recommendation-to-journey-to-toolbox loop is live in the prototype. The defensibility question in the prompt's Section 17 has an answer on record: the moat is not the library — anyone can build a library. The moat is the profile: what the system knows about a person and a family before it produces anything, assembled from the assessment, the written questionnaires, and the reflections a reader leaves inside the devotionals themselves. Answer one question on one day and the next day is chosen a little better.</p>
+    <p>The platform goes to The Signatry at no fee, co-branded, built and operated at LifeTogether's own cost and risk, on revenue participation. Commercially this is the most significant page in the proposal — and the one that has already vanished once in a restructure. It stays.</p>
+  </div>
+</section>
+
+<section id="s10" class="alt">
+  <div class="secnum">10</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Economics</div>
+      <div class="rule"></div>
+      <h2>The Business Model: <span class="g">prove the funded motion first.</span></h2>
+    </div>
+    <p>The simplest model to prove first is not hypothetical — it is the funded partner engagement plus the Founding 100. Participation is written as three enforceable instruments — an author royalty on the book, a per-church license on the campaign, a revenue share on the platform — never as points, because a nonprofit has no equity and the IP retention is the equity equivalent in publishing.</p>
+    <p>Ministry and commerce stay separated the way the price list already separates them: diagnostics free forever as the funnel, the church subscription as the only compounding spine, print as the per-copy line that makes campaigns profitable, custom builds by tier, and big-ticket partner engagements sold by conversation. Philanthropic capital funds creation and initial distribution; revenue sustains what philanthropy launched. For church-facing products, economic design protects ministry trust — the covenant is a business rule, not just a spiritual one.</p>
+  </div>
+</section>
+
+<section id="s11">
+  <div class="secnum">11</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Naming Architecture</div>
+      <div class="rule"></div>
+      <h2>Naming Rulings: <span class="g">survive, merge, subordinate, kill.</span></h2>
+    </div>
+    <div class="dir">
+      <div class="entry"><div class="num">01</div><div class="body"><div class="name">Irrational Obedience <span class="tag funded">The Book</span></div><div class="desc">The flagship title — Steve's word, and the whack-in-the-side-of-the-head title. Irrational generosity concedes the giving makes no sense; irrational obedience describes what the disciples literally did.</div></div></div>
+      <div class="entry"><div class="num">02</div><div class="body"><div class="name">The Living Family <span class="tag">The Series</span></div><div class="desc">Living Obedience &middot; Lifestyle Obedience &middot; Living Obedience Together &middot; The Living Pledge &middot; Living Legacy &middot; Living Leadership. Flagship title and imprint name are routinely different; the line extends where "Irrational" dies at volume two.</div></div></div>
+      <div class="entry"><div class="num">03</div><div class="body"><div class="name">Saying Yes to God <span class="tag">Subtitle Language</span></div><div class="desc">Survives inside the settled subtitle — <em>Saying yes to God with your life, your family, your business and your wealth — long before the math makes sense.</em> Not a title.</div></div></div>
+      <div class="entry"><div class="num">04</div><div class="body"><div class="name">The Living Pledge <span class="tag open">Capstone — One Condition</span></div><div class="desc">The Signatry's own name made literal: they ask the world to receive the last check, and have never asked anyone to sign first. Not a giving commitment — a commitment to live faith, generosity, and legacy while the generations are still together. Condition: the Al Mueller provenance conversation happens before it goes near Signatry paper.</div></div></div>
+      <div class="entry"><div class="num">05</div><div class="body"><div class="name">Visionary Generosity <span class="tag">The One Generosity Book</span></div><div class="desc">Absorbs Revolutionary, Radical, and Exponential by the August consolidation ruling — the 18-chapter spine holding all seven multipliers. Revolutionary and visionary are The Signatry's own site language; theirs, not ours to claim.</div></div></div>
+      <div class="entry"><div class="num">06</div><div class="body"><div class="name">Generous Living <span class="tag open">Hold — Rights Unconfirmed</span></div><div class="desc">Ron's lane. The authorship and rights question is live and unresolved; it does not appear as a campaign book until it is settled with Ron directly.</div></div></div>
+      <div class="entry"><div class="num">07</div><div class="body"><div class="name">Journey of Generosity / JOG <span class="tag open">Licensed Use Only</span></div><div class="desc">Generous Giving's signature program name. Documented third-party permission exists — with a non-resale condition, which is exactly where a paid church campaign collides. The April Chapman counsel call comes before anything carries the name.</div></div></div>
+      <div class="entry"><div class="num">08</div><div class="body"><div class="name">Confidence to Give <span class="tag">Subordinated</span></div><div class="desc">A real insight — the barrier among high-capacity families is confidence, not generosity — but a module inside The Living Pledge journey, not a brand.</div></div></div>
+      <div class="entry"><div class="num">09</div><div class="body"><div class="name">Purpose-Driven Giving <span class="tag">Parked</span></div><div class="desc">A Rick Warren conversation, not a product. Stays parked.</div></div></div>
+      <div class="entry"><div class="num">10</div><div class="body"><div class="name">Open Hands <span class="tag built">In Use</span></div><div class="desc">Week three of the campaign arc. Already earning its keep.</div></div></div>
+      <div class="entry"><div class="num">11</div><div class="body"><div class="name">Unwavering Obedience / Stewardship <span class="tag killed">Killed</span></div><div class="desc">Dies at volume two; the Living family already owns the extension logic.</div></div></div>
+      <div class="entry"><div class="num">12</div><div class="body"><div class="name">Crazy Generosity <span class="tag killed">Killed</span></div><div class="desc">Concedes the giving makes no sense, and stays dead.</div></div></div>
+      <div class="entry"><div class="num">13</div><div class="body"><div class="name">Good and Faithful / Well Done <span class="tag killed">Resolved</span></div><div class="desc">Settled when goodandfaithful.com was declined in favor of staying in Ron's lane.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="s12" class="alt">
+  <div class="secnum">12</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Portfolio Discipline</div>
+      <div class="rule"></div>
+      <h2>What <span class="g">Not</span> to Build.</h2>
+    </div>
+    <div class="dir">
+      <div class="entry"><div class="num">01</div><div class="body"><div class="name">A new master consumer brand</div><div class="desc">The ownership structure forbids it, and the engine strategy makes it unnecessary.</div></div></div>
+      <div class="entry"><div class="num">02</div><div class="body"><div class="name">A fifth framework</div><div class="desc">Four exist — the six stages, the twelve modules, the six H's, the six FLI dimensions. The work is mapping, not inventing.</div></div></div>
+      <div class="entry"><div class="num">03</div><div class="body"><div class="name">A second generosity book beside Visionary Generosity</div><div class="desc">The consolidation ruling stands; overlapping titles dilute the argument.</div></div></div>
+      <div class="entry"><div class="num">04</div><div class="body"><div class="name">Confidence to Give as a standalone</div><div class="desc">A module, not a brand.</div></div></div>
+      <div class="entry"><div class="num">05</div><div class="body"><div class="name">The native app</div><div class="desc">Already ruled: email and SMS first, then their existing church app, then a PWA. Build the app when retention says so, not when a pastor asks.</div></div></div>
+      <div class="entry"><div class="num">06</div><div class="body"><div class="name">White-label engine licensing</div><div class="desc">Not until the direct business is proven — a distraction with a large number attached.</div></div></div>
+      <div class="entry"><div class="num">07</div><div class="body"><div class="name">One fused "ecosystem" artifact</div><div class="desc">No document that merges Signatry, RBI, and FLBD intellectual property into one piece. The lanes stay distinct because the ownership is distinct.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="s13">
+  <div class="secnum">13</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">Immediate Sequence</div>
+      <div class="rule"></div>
+      <h2>The Next <span class="g">Ninety Days.</span></h2>
+    </div>
+    <ul class="acts">
+      <li><div class="an">1</div><div class="at"><strong>Deliver Signatry Tier One before Thanksgiving.</strong> Funded work beats every hypothetical MVP in the master prompt. The forty families remain the one ask that cannot be bought, substituted, or done later.</div></li>
+      <li><div class="an">2</div><div class="at"><strong>Have the April Chapman call.</strong> The counsel-first email is drafted. Nothing carries the JOG name until the licensing conversation has happened — the real exposure is relational, and she is the first-choice foreword.</div></li>
+      <li><div class="an">3</div><div class="at"><strong>Settle the Generous Living rights question with Ron.</strong> A live conflict on whose title it is sits in the record. Confirm authorship and rights before it appears anywhere as a campaign book.</div></li>
+      <li><div class="an">4</div><div class="at"><strong>Talk to Al Mueller before The Living Pledge reaches Signatry paper.</strong> The pledge predates this engagement and was developed with Excellence in Giving. Naming the prior collaborators now costs nothing; discovering them later costs trust.</div></li>
+      <li><div class="an">5</div><div class="at"><strong>Make the operating-system consolidation call.</strong> The one genuinely open architecture decision — Section 15.</div></li>
+    </ul>
+  </div>
+</section>
+
+<section id="s14" class="alt">
+  <div class="secnum">14</div>
+  <div class="wrap">
+    <div class="sechead">
+      <div class="eyebrow">The Horizon</div>
+      <div class="rule"></div>
+      <h2>Three Years Out: <span class="g">the wheel turns.</span></h2>
+    </div>
+    <p>One engine, five platforms — with the Collective, the register of families who signed, as the only asset in the whole system that appreciates. The Signatry door proves the legacy-family motion. The Founding 100 proves the church motion. One denomination proves the network motion. And the pledge becomes the thing The Signatry's own name has always implied: they have asked the world to receive the last check, and never asked anyone to sign first.</p>
+    <p>Measured honestly, and separately: spiritual outcomes — surrender, family communication, generations at one table — apart from financial metrics. Scale never proves transformation; a year of evidence is worth more than every opinion in this document.</p>
+  </div>
+</section>
+
+<section id="s15" class="close">
+  <div class="wrap">
+    <div class="eyebrow">The One Open Decision</div>
+    <div class="rule" style="width:44px;height:2px;background:var(--gold);margin:14px 0 16px"></div>
+    <h2>Which operating system <span class="g">wears the umbrella?</span> <span class="tag open">Awaiting Your Call</span></h2>
+    <p class="stand">Three advisor-facing operating systems now run in parallel — Family Legacy Intelligence, CAN Enterprise, and the publishing platform. The recommendation on record is consolidation to one engine with audience-facing doors, most naturally under Family Legacy Ministry as the umbrella. Nothing in the record settles it. It is the next architecture call worth making — and the only one this entire prompt genuinely opens.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wide">
+    <div class="f1">Life<em>together</em> Ministries</div>
+    <div class="f2">Strategic Decision Record &middot; One Engine, Many Doors &middot; August 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>

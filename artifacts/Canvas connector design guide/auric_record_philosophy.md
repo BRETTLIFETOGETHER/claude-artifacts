@@ -1,0 +1,13 @@
+# Auric Record
+
+**A movement of patient gold on deep ground.**
+
+Auric Record treats the picture plane as an instrument of quiet documentation. Its ground is always deep — a navy so dark it approaches the condition of night — and upon that ground it permits only two voices: fine gold line and whispered ivory text. Meaning is never illustrated; it is accumulated. A single mark says little, but hundreds of near-identical marks, laid down with monastic patience, become a ledger of time itself. The viewer should sense that every stroke was placed by a hand at the absolute top of its field, that the surface was labored over for countless hours, and that nothing — not one interval, not one weight — arrived by accident.
+
+Space in this movement is generous to the point of reverence. Compositions breathe asymmetrically: the recorded field gathers off-center, dense with concentric repetition, while vast passages of dark ground are left untouched so the accumulation can be felt as an event rather than a decoration. Scale contrast is the engine of drama — one great gathering of marks, one small one, and the long silent distance between them. The eye is asked to travel that distance and to understand it as the true subject.
+
+Color is a discipline, not a palette. The gold is calibrated like an instrument: most lines burn low, a few burn bright, and a single continuous stroke may be permitted full brilliance so that the eye can follow it the way a reader follows a sentence. Ivory appears only where language is essential, and even then it behaves as a material — letterspaced, measured, engraved rather than typeset. Texture is nearly subliminal: the faint tooth of paper, the barely perceptible tremor in a drawn circle that proves a hand, not a machine, kept the line alive.
+
+Rhythm comes from systematic observation. Tick marks, hairline rules, small index numerals — the apparatus of an imaginary discipline — surround the work like the margins of a survey plate, suggesting that something ephemeral has been measured with the reverence usually reserved for observable phenomena. These devices must remain almost invisible, clinical and small, so the work reads first as art and only afterward as evidence. This restraint is itself a display of mastery: the confidence to mark quietly.
+
+The finished object must feel meticulously crafted, museum-worthy, the product of deep expertise and painstaking attention — a plate from a book that does not exist, printed once, kept under glass. Every alignment refined through countless passes. Every element contained, nothing crowded, nothing touching what it should not touch. If a viewer suspects for even a moment that the work was easy, the movement has failed.

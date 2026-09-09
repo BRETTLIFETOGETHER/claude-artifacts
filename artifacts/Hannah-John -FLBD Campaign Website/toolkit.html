@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Family Legacy Toolkit — The Family Legacy Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.tmast{padding:clamp(64px,8vw,108px) 0;text-align:center}
+.tmast .lede{margin:22px auto 0;text-align:center;color:#D7E1D2}
+/* tool nav strip */
+.tstrip{position:sticky;top:64px;z-index:60;background:rgba(250,250,242,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.tstrip .in2{max-width:1290px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  padding:12px clamp(18px,4vw,44px)}
+.tstrip a{font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#4A5A4C;
+  border:1.5px solid #D8E0CC;background:#fff;border-radius:999px;padding:8px 14px;text-decoration:none;transition:all .16s}
+.tstrip a:hover{border-color:#8FBE3F;color:#2F5E36;transform:translateY(-1px)}
+.tstrip .fam{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tstrip .fam label{font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.tstrip .fam input{border:1.5px solid #D8E0CC;background:#fff;border-radius:999px;padding:8px 14px;
+  font-family:var(--ff-b);font-size:12.5px;color:var(--ink);width:150px;outline:none}
+.tstrip .fam input:focus{border-color:#8FBE3F}
+@media(max-width:860px){.tstrip .fam{display:none}}
+/* tool shell */
+.tool{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,3.6vw,48px);align-items:start}
+@media(max-width:980px){.tool{grid-template-columns:1fr}}
+.tin{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh-1);
+  padding:clamp(22px,3vw,32px)}
+.tin .fld{margin-top:16px}
+.tin .fld:first-child{margin-top:0}
+.tin label{display:block;font-weight:600;font-size:12px;color:#39463E;margin-bottom:7px}
+.tin label em{font-style:italic;font-weight:500;color:#7C877E}
+.tin input[type=text],.tin input[type=date],.tin textarea,.tin select{width:100%;border:1.5px solid #DCE3D0;background:#FDFDF9;
+  border-radius:12px;padding:12px 14px;font-family:var(--ff-b);font-size:13.5px;color:var(--ink);outline:none;transition:border-color .16s}
+.tin textarea{min-height:74px;resize:vertical;line-height:1.6}
+.tin input:focus,.tin textarea:focus,.tin select:focus{border-color:#8FBE3F;background:#fff}
+.tin .starter{font-size:11.5px;font-style:italic;color:#8A6A24;margin:-3px 0 7px}
+.trow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.trow2{grid-template-columns:1fr}}
+/* value chips */
+.vchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.vchips button{border:1.5px solid #D8E0CC;background:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;
+  font-family:var(--ff-b);font-weight:600;font-size:12px;color:#4A5A4C;transition:all .15s var(--ease)}
+.vchips button:hover{border-color:#8FBE3F;transform:translateY(-1px)}
+.vchips button.sel{background:var(--gradbtn);border-color:transparent;color:#fff}
+.vchips button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.vaddrow{display:flex;gap:8px;margin-top:10px}
+.vaddrow input{flex:1}
+.vblock{margin-top:18px;border:1.5px dashed #D8E0C4;border-radius:16px;padding:16px 18px}
+.vblock b{display:flex;align-items:center;justify-content:space-between;font-family:var(--ff-h);font-weight:600;font-size:15px;color:#2F5E36}
+.vblock b button{border:0;background:none;color:#B06A3C;font-weight:600;font-size:11px;cursor:pointer}
+/* heirs */
+.heir{margin-top:18px;border:1.5px dashed #D8E0C4;border-radius:16px;padding:16px 18px}
+.heir .hh{display:flex;gap:10px;align-items:center}
+.heir .hh input{flex:1}
+.heir .hh button{border:0;background:none;color:#B06A3C;font-weight:600;font-size:11px;cursor:pointer;white-space:nowrap}
+/* agenda movement picker */
+.mvpick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.mvpick{grid-template-columns:1fr}}
+.mvpick button{text-align:left;border:1.5px solid #D8E0CC;background:#fff;border-radius:12px;padding:11px 14px;cursor:pointer;
+  font-family:var(--ff-b);transition:all .15s var(--ease)}
+.mvpick button b{display:block;font-weight:600;font-size:12.5px;color:var(--ink)}
+.mvpick button span{font-size:10.5px;color:#7C877E;font-style:italic}
+.mvpick button:hover{border-color:#8FBE3F;transform:translateY(-1px)}
+.mvpick button.sel{background:linear-gradient(126deg,#174F3B,#3E7C3B)}
+.mvpick button.sel b{color:#fff}.mvpick button.sel span{color:#CFE49F}
+/* rhythm checks */
+.rchecks label{display:flex;gap:10px;align-items:flex-start;font-weight:500;font-size:13px;color:#4A5A4C;
+  margin:0 0 9px;cursor:pointer}
+.rchecks input{width:16px;height:16px;margin-top:2px;accent-color:#3E7C3B}
+/* actions + save badge */
+.tacts{display:flex;gap:12px;align-items:center;margin-top:20px;flex-wrap:wrap}
+.saved{font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#57833B;
+  opacity:0;transition:opacity .3s}
+.saved.show{opacity:1}
+/* the printed card */
+.pcard{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh-2);
+  padding:clamp(26px,3.4vw,40px);position:relative;overflow:hidden}
+.pcard::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:var(--grad)}
+.pcard .ph{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.pcard .ph .tk{font-weight:600;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#8A6A24}
+.pcard h3.pt{font-size:clamp(20px,2.4vw,26px);margin:2px 0 2px}
+.pcard .pdate{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:14px}
+.pcard .pbody{font-size:14px;line-height:1.85;color:#39463E}
+.pcard .pbody .blank{color:#B9C4AC;font-style:italic}
+.pcard .sec2{margin-top:16px}
+.pcard .sec2 b{display:block;font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#57833B;margin-bottom:4px}
+.pcard .sig{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.pcard .sig span{border-top:1.5px solid #D8E0C4;padding-top:6px;font-size:10px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.pcard .vrow{margin-top:14px;border-left:3px solid #8FBE3F;padding-left:14px}
+.pcard .vrow b{font-family:var(--ff-h);font-weight:600;font-size:15.5px;color:var(--ink)}
+.pcard .vrow p{margin:3px 0 0;font-size:12.8px}
+.pcard .vrow p i{font-style:normal;font-weight:600;color:#57833B}
+.pcard .ag{margin-top:12px;display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:start}
+.pcard .ag .at{font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8A6A24;padding-top:2px}
+.pcard .ag p{margin:0;font-size:13.2px}
+.pcard .ag ol{margin:4px 0 0;padding-left:18px;font-size:13.2px;display:grid;gap:4px}
+.pcard .scrq{font-style:italic;color:#4A452C;background:var(--lemon);border:1px solid #EAE7C2;
+  border-radius:12px;padding:12px 16px;font-size:13px;margin-top:6px}
+/* four cards band */
+.kits{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(16px,2.4vw,26px)}
+@media(max-width:860px){.kits{grid-template-columns:1fr}}
+.kit{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(22px,3vw,30px);box-shadow:var(--sh-1)}
+.kit .kh{display:flex;gap:12px;align-items:center}
+.kit .kh .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(126deg,#174F3B,#3E7C3B)}
+.kit .kh b{font-family:var(--ff-h);font-weight:600;font-size:17px;color:var(--ink)}
+.kit ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:7px}
+.kit li{position:relative;padding-left:22px;font-size:12.8px;color:#4A5A4C}
+.kit li::before{content:'';position:absolute;left:0;top:5px;width:12px;height:12px;border-radius:50%;
+  background:linear-gradient(120deg,#8FBE3F,#2FA26B)}
+.kit .go{display:inline-block;margin-top:14px;font-weight:600;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:#3E7C3B;text-decoration:none}
+.kit .go:hover{color:#2F5E36}
+/* print */
+@media print{
+  body.printing *{visibility:hidden}
+  body.printing .pcard.printme, body.printing .pcard.printme *{visibility:visible}
+  body.printing .pcard.printme{position:absolute;left:0;top:0;width:100%;box-shadow:none;border:0;border-radius:0}
+  body.printing .pcard.printme::before{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="dark tmast">
+  <div class="wrap narrow">
+    <span class="pill dark rv in"><i></i>The Family Legacy Toolkit</span>
+    <h1 class="rv in" style="margin-top:20px">The Instruments Of An<br><span class="au">Intentional Family.</span></h1>
+    <p class="lede rv in d1" style="max-width:58ch">Ten tools for the work between the readings — values, mission, letters, heirs, meetings, and giving. Six are alive on this page: fill them at the table, and they save quietly in this browser and print clean enough to frame. The other four wait as designed kits.</p>
+    <div class="rv in d2" style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn grad" href="#values">Begin With The Values Worksheet <span class="ar">→</span></a>
+      <a class="btn linegreen" href="intelligence.html" style="border-color:#3E6B4E;color:#DCEBC5">The Advisor Wing <span class="ar">→</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="tstrip"><div class="in2" id="tstrip"></div></div>
+
+<!-- ═══ 01 · VALUES ═══ -->
+<section class="sec lightbg" id="values">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="pill light"><i></i>Instrument 01 · From Session Two Of The Flagship</span>
+      <h2>The Family Values <span class="au">Worksheet.</span></h2>
+      <p class="lede">Choose the five values your family wants to be known for — then make each one visible. A value that never shows up in behavior is a slogan; this page asks the four questions that turn words into practice.</p>
+    </div>
+    <div class="tool">
+      <div class="tin rv">
+        <div class="fld"><label>Choose up to five values <em>— tap, or add your own</em></label>
+          <div class="vchips" id="vchips"></div>
+          <div class="vaddrow"><input type="text" id="vadd" placeholder="Add a value of your own…"><button type="button" class="btn linegreen sm" id="vaddbtn">Add</button></div>
+        </div>
+        <div id="vblocks"></div>
+        <div class="tacts"><button type="button" class="btn grad sm" onclick="printCard('values')">Print The Family Card <span class="ar">→</span></button><span class="saved" id="sv-values">Saved in this browser ✓</span></div>
+      </div>
+      <div class="pcard rv d1" id="pc-values"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 02 · MISSION ═══ -->
+<section class="sec" id="mission">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="pill light"><i></i>Instrument 02 · From Session Four Of The Flagship</span>
+      <h2>The Spiritual Legacy <span class="au">Statement.</span></h2>
+      <p class="lede">Five guided blanks become one statement your family can read aloud, sign, and revisit every year. Rough is fine — a drafted sentence at the table beats a perfect one that never gets written.</p>
+    </div>
+    <div class="tool">
+      <div class="tin rv" id="mfields"></div>
+      <div class="pcard rv d1" id="pc-mission"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 03 · LETTER ═══ -->
+<section class="sec" id="letter" style="background:#FDFDF7">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="pill light"><i></i>Instrument 03 · From Days Seventeen &amp; Twenty</span>
+      <h2>The Legacy Letter <span class="au">Composer.</span></h2>
+      <p class="lede">What is spoken can be treasured; what is written can be inherited. Six prompts walk you through the letter — begin with the first line and let the rest take the time it takes. You do not need to say everything. Begin with what matters most.</p>
+    </div>
+    <div class="tool">
+      <div class="tin rv" id="lfields"></div>
+      <div class="pcard rv d1" id="pc-letter"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 04 · HEIRS ═══ -->
+<section class="sec" id="heirs">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="pill light"><i></i>Instrument 04 · From Session Three Of The Flagship</span>
+      <h2>The Heir Readiness <span class="au">Worksheet.</span></h2>
+      <p class="lede">For each member of the next generation, prayerfully consider eight dimensions of readiness. There are no scores on this page, on purpose. <em>This is not a judgment exercise. It is a preparation exercise.</em></p>
+    </div>
+    <div class="tool">
+      <div class="tin rv">
+        <div id="heirwrap"></div>
+        <div class="tacts" style="margin-top:14px"><button type="button" class="btn linegreen sm" id="addheir">+ Add A Family Member</button></div>
+        <div class="tacts"><button type="button" class="btn grad sm" onclick="printCard('heirs')">Print The Worksheet <span class="ar">→</span></button><span class="saved" id="sv-heirs">Saved in this browser ✓</span></div>
+      </div>
+      <div class="pcard rv d1" id="pc-heirs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 05 · AGENDA ═══ -->
+<section class="sec" id="agenda" style="background:#FDFDF7">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="pill light"><i></i>Instrument 05 · Built On The Six-Session Frame</span>
+      <h2>The Family Meeting <span class="au">Agenda.</span></h2>
+      <p class="lede">Pick the movement your next gathering should live in, and the agenda composes itself — an opening question, a Scripture for the table, the conversation, one step, and a blessing to close. Question sets are composed in the framework's voice; shuffle until one fits your family.</p>
+    </div>
+    <div class="tool">
+      <div class="tin rv">
+        <div class="fld"><label>What is this meeting for?</label><div class="mvpick" id="mvpick"></div></div>
+        <div class="trow2 fld">
+          <div><label>Date</label><input type="date" id="agdate"></div>
+          <div><label>Led by</label><input type="text" id="agled" placeholder="Who opens the evening"></div>
+        </div>
+        <div class="fld"><label>Our additions <em>— anything this family should not skip</em></label><textarea id="agnotes" placeholder="A story to tell, a decision to make, a person to call…"></textarea></div>
+        <div class="fld"><label>Next gathering</label><input type="date" id="agnext"></div>
+        <div class="tacts">
+          <button type="button" class="btn linegreen sm" id="agshuffle">Shuffle The Questions</button>
+          <button type="button" class="btn grad sm" onclick="printCard('agenda')">Print The Agenda <span class="ar">→</span></button>
+          <span class="saved" id="sv-agenda">Saved in this browser ✓</span>
+        </div>
+      </div>
+      <div class="pcard rv d1" id="pc-agenda"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 06 · GIVING ═══ -->
+<section class="sec" id="giving">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="pill light"><i></i>Instrument 06 · From Day Nineteen &amp; The Generosity Domain</span>
+      <h2>The Family Giving <span class="au">Plan.</span></h2>
+      <p class="lede">Generosity taught is easily forgotten; generosity practiced together becomes part of a family's name. Name the purpose, choose the priorities, decide how the youngest participates, and set the rhythm.</p>
+    </div>
+    <div class="tool">
+      <div class="tin rv" id="gfields"></div>
+      <div class="pcard rv d1" id="pc-giving"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ THE FOUR KITS ═══ -->
+<section class="sec" style="background:#FDFDF7">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <span class="pill light"><i></i>Also In The Toolkit</span>
+      <h2>Four Kits, <span class="au">Designed &amp; Waiting.</span></h2>
+      <p class="lede">The rest of the ten-tool library — each one specified, each one connected to the part of the system that powers it.</p>
+    </div>
+    <div class="kits">
+      <div class="kit rv" id="convo">
+        <div class="kh"><span class="ic" data-kic="story"></span><b>Family Legacy Conversation Guide</b></div>
+        <ul><li>Conversation cards for the table</li><li>Parent and grandparent prompts</li><li>Adult child questions</li><li>Family meeting agenda</li><li>Facilitation notes and follow-up worksheet</li></ul>
+        <a class="go" href="intelligence.html#interviews">The forty questions live in the Intelligence toolkit →</a>
+      </div>
+      <div class="kit rv d1" id="estate">
+        <div class="kh"><span class="ic" data-kic="doc"></span><b>Estate Planning as Love Checklist</b></div>
+        <ul><li>The warm, non-technical checklist</li><li>Family communication guide</li><li>Pre-attorney worksheet</li><li>"What my family needs to know" document</li><li>Charitable giving prompts and legacy letter companion</li></ul>
+        <a class="go" href="#letter">Begin the companion letter above →</a>
+      </div>
+      <div class="kit rv d2" id="succession">
+        <div class="kh"><span class="ic" data-kic="bridge"></span><b>Business Owner Succession Snapshot</b></div>
+        <ul><li>Business Owner Stewardship Review</li><li>Succession by Design</li><li>Before You Sell · After the Exit</li><li>Generosity Before the Exit</li><li>The Family Enterprise Covenant</li></ul>
+        <a class="go" href="campaigns.html#library100">Walk the Succession &amp; Governance domain →</a>
+      </div>
+      <div class="kit rv d3" id="steward">
+        <div class="kh"><span class="ic" data-kic="calendar"></span><b>Annual Stewardship Review</b></div>
+        <ul><li>The yearly conversation beyond performance</li><li>Stewardship scorecard and giving review</li><li>Family readiness and estate purpose review</li><li>Spouse and adult-child engagement prompts</li><li>Annual planning worksheet</li></ul>
+        <a class="go" href="intelligence.html">The advisor's annual rhythm — the Intelligence wing →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CLOSE ═══ -->
+<section class="dark sec">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="wrap" style="text-align:center">
+    <span class="pill dark rv"><i></i>One System</span>
+    <h2 class="rv" style="color:#fff;margin-top:16px">The Tools Serve <span class="au">The Walk.</span></h2>
+    <p class="lede rv d1" style="margin:18px auto 0;text-align:center;color:#C9DCC4;max-width:56ch">Every campaign in the library draws on these instruments at the right moment — the assessment tells you where to begin, and the readings tell you when to reach for each one.</p>
+    <div class="rv d2" style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn grad" href="assessment.html">Find Your Starting Point <span class="ar">→</span></a>
+      <a class="btn cream" href="campaigns.html">Browse The Hundred Campaigns <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<script src="data.js"></script>
+<script src="intel.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  /* ---------- shared state + persistence ---------- */
+  var S={};
+  function load(k,d){ try{ var v=FLstore.get('flt:'+k); return v?JSON.parse(v):d; }catch(e){ return d; } }
+  function save(k){
+    try{ FLstore.set('flt:'+k, JSON.stringify(S[k])); }catch(e){}
+    var b=document.getElementById('sv-'+k);
+    if(b){ b.classList.add('show'); clearTimeout(b._t); b._t=setTimeout(function(){b.classList.remove('show');},1600); }
+  }
+  var deb={};
+  function dsave(k){ clearTimeout(deb[k]); deb[k]=setTimeout(function(){save(k);},450); }
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function orBlank(s,ph){ return s?esc(s):'<span class="blank">'+ph+'</span>'; }
+  function famName(){ return (S.family||'').trim(); }
+  function famTitle(word){ var f=famName(); return (f?('The '+esc(f)+' Family '):'Our Family ')+word; }
+  function today(){ var d=new Date(); return d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}); }
+  window.printCard=function(k){
+    var el=document.getElementById('pc-'+k); if(!el) return;
+    document.querySelectorAll('.pcard').forEach(function(x){x.classList.remove('printme');});
+    el.classList.add('printme'); document.body.classList.add('printing');
+    setTimeout(function(){ window.print(); },40);
+  };
+  addEventListener('afterprint',function(){ document.body.classList.remove('printing'); });
+
+  /* ---------- tool strip ---------- */
+  S.family=load('family','');
+  document.getElementById('tstrip').innerHTML=
+    Object.keys(FLTOOLS).map(function(k){var t=FLTOOLS[k];return '<a href="#'+t.id+'">'+t.t.split(' ').slice(0,2).join(' ')+'</a>';}).join('')
+    +'<span class="fam"><label>Family name</label><input type="text" id="famin" value="'+esc(S.family)+'" placeholder="e.g. Conway"></span>';
+  document.getElementById('famin').addEventListener('input',function(){ S.family=this.value; dsave('family'); renderAll(); });
+
+  /* ═══════════ 01 · VALUES ═══════════ */
+  var VSUG=["Faith","Generosity","Gratitude","Honesty","Integrity","Humility","Hospitality","Perseverance","Service","Unity","Wisdom","Stewardship","Responsibility","Forgiveness","Courage","Contentment","Compassion","Respect","Love","Joy"];
+  S.values=load('values',{sel:[],data:{}});
+  function chipRow(){
+    var all=VSUG.slice();
+    S.values.sel.forEach(function(v){ if(all.indexOf(v)<0) all.push(v); });
+    document.getElementById('vchips').innerHTML=all.map(function(v){
+      var on=S.values.sel.indexOf(v)>-1;
+      var dis=!on && S.values.sel.length>=5;
+      return '<button type="button" data-v="'+esc(v)+'"'+(on?' class="sel"':'')+(dis?' disabled':'')+'>'+esc(v)+'</button>';
+    }).join('');
+  }
+  var VQ=[["Meaning","What does this value mean in our family?"],["Practice","How do we currently practice it?"],["Visible","What behavior would make it more visible?"],["Threat","What could undermine it?"]];
+  function vBlocks(){
+    document.getElementById('vblocks').innerHTML=S.values.sel.map(function(v){
+      var d=S.values.data[v]||{};
+      return '<div class="vblock"><b>'+esc(v)+'<button type="button" data-rm="'+esc(v)+'">Remove</button></b>'
+        +VQ.map(function(q,i){ return '<div class="fld"><label>'+q[1]+'</label><textarea data-vv="'+esc(v)+'" data-qi="'+i+'">'+esc(d[i]||'')+'</textarea></div>'; }).join('')
+        +'</div>';
+    }).join('') || '<p style="margin-top:16px;font-size:13px;font-style:italic;color:var(--mute)">Choose your first value above to begin.</p>';
+  }
+  function vCard(){
+    document.getElementById('pc-values').innerHTML=
+      '<div class="ph"><span class="tk">The Family Values Card</span></div>'
+      +'<h3 class="pt">'+famTitle('Values')+'</h3><div class="pdate">Drafted '+today()+'</div>'
+      +'<div class="pbody">'+(S.values.sel.length?S.values.sel.map(function(v){
+        var d=S.values.data[v]||{};
+        return '<div class="vrow"><b>'+esc(v)+'</b>'
+          +'<p>'+orBlank(d[0],'What it means to us…')+'</p>'
+          +'<p><i>Seen in:</i> '+orBlank(d[2]||d[1],'the behavior that proves it…')+'</p></div>';
+      }).join(''):'<span class="blank">Five values, chosen together, will appear here.</span>')+'</div>'
+      +'<div class="sig"><span>Signed at our table</span><span>Date</span></div>';
+  }
+  document.getElementById('vchips').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-v]'); if(!b||b.disabled) return;
+    var v=b.dataset.v, i=S.values.sel.indexOf(v);
+    if(i>-1) S.values.sel.splice(i,1); else if(S.values.sel.length<5) S.values.sel.push(v);
+    chipRow(); vBlocks(); vCard(); save('values');
+  });
+  document.getElementById('vaddbtn').addEventListener('click',function(){
+    var v=document.getElementById('vadd').value.trim(); if(!v) return;
+    if(S.values.sel.indexOf(v)<0 && S.values.sel.length<5) S.values.sel.push(v);
+    document.getElementById('vadd').value='';
+    chipRow(); vBlocks(); vCard(); save('values');
+  });
+  document.getElementById('vblocks').addEventListener('input',function(e){
+    var t=e.target.closest('textarea[data-vv]'); if(!t) return;
+    (S.values.data[t.dataset.vv]=S.values.data[t.dataset.vv]||{})[t.dataset.qi]=t.value;
+    vCard(); dsave('values');
+  });
+  document.getElementById('vblocks').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-rm]'); if(!b) return;
+    S.values.sel=S.values.sel.filter(function(x){return x!==b.dataset.rm;});
+    chipRow(); vBlocks(); vCard(); save('values');
+  });
+
+  /* ═══════════ 02 · MISSION ═══════════ */
+  var MQ=[
+   "We believe God has entrusted our family with…",
+   "We are most grateful for…",
+   "We want our family to be known for…",
+   "We will seek to use our time, abilities, relationships, resources, and influence to…",
+   "We pray that future generations will…"];
+  S.mission=load('mission',{a:['','','','','']});
+  document.getElementById('mfields').innerHTML=MQ.map(function(q,i){
+    return '<div class="fld"><label>'+q+'</label><textarea data-mi="'+i+'">'+esc(S.mission.a[i])+'</textarea></div>';
+  }).join('')+'<div class="tacts"><button type="button" class="btn grad sm" onclick="printCard(\'mission\')">Print The Statement <span class="ar">→</span></button><span class="saved" id="sv-mission">Saved in this browser ✓</span></div>';
+  function mCard(){
+    var a=S.mission.a;
+    var joins=[' ',' ',' ',' ',''];
+    var body=MQ.map(function(q,i){
+      return esc(q.replace('…',''))+' '+orBlank(a[i],'…')+'.';
+    }).join(' ');
+    document.getElementById('pc-mission').innerHTML=
+      '<div class="ph"><span class="tk">The Spiritual Legacy Statement</span></div>'
+      +'<h3 class="pt">'+famTitle('Spiritual Legacy Statement')+'</h3><div class="pdate">Drafted '+today()+'</div>'
+      +'<div class="pbody" style="font-size:15px">'+body+'</div>'
+      +'<div class="sig"><span>Read aloud &amp; signed</span><span>Reviewed each year on</span></div>';
+  }
+  document.getElementById('mfields').addEventListener('input',function(e){
+    var t=e.target.closest('textarea[data-mi]'); if(!t) return;
+    S.mission.a[+t.dataset.mi]=t.value; mCard(); dsave('mission');
+  });
+
+  /* ═══════════ 03 · LETTER ═══════════ */
+  var LP=[
+   ["Open With What Matters Most","More than anything else, we want you to know…"],
+   ["The Faith We Received","The people and experiences that most shaped our faith are…"],
+   ["A Story We Must Not Lose","One story of God's faithfulness you should carry is…"],
+   ["The Wisdom We Want To Hand You","What we know now that we wish we had understood earlier is…"],
+   ["Our Blessing Over You","What we see in you, and what we pray over you, is…"],
+   ["The Legacy We Hope Continues","We pray that future generations will…"]];
+  S.letter=load('letter',{to:'',from:'',p:['','','','','','']});
+  document.getElementById('lfields').innerHTML=
+    '<div class="trow2"><div class="fld"><label>To</label><input type="text" data-lh="to" value="'+esc(S.letter.to)+'" placeholder="Our children and grandchildren"></div>'
+    +'<div class="fld"><label>From</label><input type="text" data-lh="from" value="'+esc(S.letter.from)+'" placeholder="Mom &amp; Dad"></div></div>'
+    +LP.map(function(p,i){
+      return '<div class="fld"><label>'+(i+1)+'. '+p[0]+'</label><div class="starter">Begin: "'+p[1]+'"</div><textarea data-li="'+i+'">'+esc(S.letter.p[i])+'</textarea></div>';
+    }).join('')
+    +'<div class="tacts"><button type="button" class="btn grad sm" onclick="printCard(\'letter\')">Print The Letter <span class="ar">→</span></button><span class="saved" id="sv-letter">Saved in this browser ✓</span></div>';
+  function lCard(){
+    var L=S.letter;
+    document.getElementById('pc-letter').innerHTML=
+      '<div class="ph"><span class="tk">A Legacy Letter</span></div>'
+      +'<h3 class="pt">To '+orBlank(L.to,'our family')+'</h3><div class="pdate">'+today()+'</div>'
+      +'<div class="pbody">'+LP.map(function(p,i){
+          return L.p[i]?'<p style="margin:0 0 12px">'+esc(L.p[i])+'</p>':'';
+        }).join('')
+      +(L.p.some(function(x){return x;})?'':'<span class="blank">Your letter gathers here as you write — one prompt at a time.</span>')
+      +'</div>'
+      +'<div class="sig"><span>With all our love — '+orBlank(L.from,'signed')+'</span><span>To be opened…</span></div>';
+  }
+  document.getElementById('lfields').addEventListener('input',function(e){
+    var h=e.target.closest('[data-lh]'); if(h){ S.letter[h.dataset.lh]=h.value; lCard(); dsave('letter'); return; }
+    var t=e.target.closest('textarea[data-li]'); if(!t) return;
+    S.letter.p[+t.dataset.li]=t.value; lCard(); dsave('letter');
+  });
+
+  /* ═══════════ 04 · HEIRS ═══════════ */
+  var HF=["Strengths","Spiritual maturity","Financial competence","Relational readiness","Leadership potential","Current needs","The appropriate next responsibility","Support or mentoring needed"];
+  S.heirs=load('heirs',{list:[{name:'',f:{}}]});
+  function heirUI(){
+    document.getElementById('heirwrap').innerHTML=S.heirs.list.map(function(h,i){
+      return '<div class="heir"><div class="hh"><input type="text" data-hn="'+i+'" value="'+esc(h.name)+'" placeholder="Name">'+(S.heirs.list.length>1?'<button type="button" data-hrm="'+i+'">Remove</button>':'')+'</div>'
+        +HF.map(function(f,j){ return '<div class="fld"><label>'+f+'</label><textarea data-hi="'+i+'" data-hf="'+j+'" style="min-height:54px">'+esc(h.f[j]||'')+'</textarea></div>'; }).join('')
+        +'</div>';
+    }).join('');
+  }
+  function heirCard(){
+    document.getElementById('pc-heirs').innerHTML=
+      '<div class="ph"><span class="tk">The Heir Readiness Worksheet</span></div>'
+      +'<h3 class="pt">'+famTitle('Next Generation')+'</h3>'
+      +'<div class="pdate">Prayerfully considered · '+today()+'</div>'
+      +'<div class="pbody">'+S.heirs.list.map(function(h){
+        var any=Object.keys(h.f).some(function(k){return h.f[k];});
+        return '<div class="sec2"><b>'+orBlank(h.name,'A family member')+'</b>'
+          +(any?HF.map(function(f,j){ return h.f[j]?'<p style="margin:2px 0 6px;font-size:13px"><i style="font-style:normal;font-weight:600;color:#57833B">'+f+':</i> '+esc(h.f[j])+'</p>':''; }).join(''):'<p class="blank" style="font-size:13px">Eight dimensions, considered gently.</p>')
+          +'</div>';
+      }).join('')+'</div>'
+      +'<p style="margin-top:18px;font-size:11.5px;font-style:italic;color:#8A6A24">This is not a judgment exercise. It is a preparation exercise.</p>';
+  }
+  document.getElementById('heirwrap').addEventListener('input',function(e){
+    var n=e.target.closest('[data-hn]'); if(n){ S.heirs.list[+n.dataset.hn].name=n.value; heirCard(); dsave('heirs'); return; }
+    var t=e.target.closest('textarea[data-hi]'); if(!t) return;
+    S.heirs.list[+t.dataset.hi].f[t.dataset.hf]=t.value; heirCard(); dsave('heirs');
+  });
+  document.getElementById('heirwrap').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-hrm]'); if(!b) return;
+    S.heirs.list.splice(+b.dataset.hrm,1); heirUI(); heirCard(); save('heirs');
+  });
+  document.getElementById('addheir').addEventListener('click',function(){
+    S.heirs.list.push({name:'',f:{}}); heirUI(); heirCard(); save('heirs');
+  });
+
+  /* ═══════════ 05 · AGENDA ═══════════ */
+  S.agenda=load('agenda',{mv:0,v:0,date:'',led:'',next:'',notes:''});
+  document.getElementById('mvpick').innerHTML=FLI.frame6.map(function(f,i){
+    return '<button type="button" data-mv="'+i+'"><b>'+(i+1)+'. '+f.t+'</b><span>"'+f.q+'"</span></button>';
+  }).join('');
+  function agSel(){
+    document.querySelectorAll('#mvpick button').forEach(function(b){ b.classList.toggle('sel',+b.dataset.mv===S.agenda.mv); });
+    document.getElementById('agdate').value=S.agenda.date;
+    document.getElementById('agled').value=S.agenda.led;
+    document.getElementById('agnext').value=S.agenda.next;
+    document.getElementById('agnotes').value=S.agenda.notes;
+  }
+  function fmtDate(v){ if(!v) return ''; var d=new Date(v+'T12:00:00'); return d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}); }
+  function agCard(){
+    var A=S.agenda, F=FLI.frame6[A.mv], M=FLmeet[A.mv], vv=FLmeetV[A.mv], v=A.v%3;
+    document.getElementById('pc-agenda').innerHTML=
+      '<div class="ph"><span class="tk">The Family Meeting</span></div>'
+      +'<h3 class="pt">'+famTitle('Table')+' · '+esc(F.t)+'</h3>'
+      +'<div class="pdate">'+(fmtDate(A.date)||'Date to be set')+(A.led?' · Opened by '+esc(A.led):'')+'</div>'
+      +'<div class="ag"><span class="at">Open</span><p>'+esc(M.open[v%M.open.length])+'</p></div>'
+      +'<div class="ag"><span class="at">Scripture</span><div><div class="scrq">"'+esc(vv[1])+'" — '+esc(vv[0])+' · KJV</div></div></div>'
+      +'<div class="ag"><span class="at">The Conversation</span><div><p style="font-weight:600;color:var(--ink)">"'+esc(F.q)+'"</p><ol>'+M.qs.map(function(q){return '<li>'+esc(q)+'</li>';}).join('')+'</ol></div></div>'
+      +(A.notes?'<div class="ag"><span class="at">Ours</span><p>'+esc(A.notes)+'</p></div>':'')
+      +'<div class="ag"><span class="at">One Step</span><p>'+esc(M.steps[v%M.steps.length])+'</p></div>'
+      +'<div class="ag"><span class="at">Close</span><p style="font-style:italic">'+esc(M.prays[v%M.prays.length])+'</p></div>'
+      +'<div class="ag"><span class="at">Next</span><p>'+(fmtDate(A.next)||'<span class="blank">Set the next gathering before you leave the table.</span>')+'</p></div>';
+  }
+  document.getElementById('mvpick').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-mv]'); if(!b) return;
+    S.agenda.mv=+b.dataset.mv; agSel(); agCard(); save('agenda');
+  });
+  document.getElementById('agshuffle').addEventListener('click',function(){ S.agenda.v=(S.agenda.v+1)%3; agCard(); save('agenda'); });
+  ['agdate','agled','agnext','agnotes'].forEach(function(id){
+    document.getElementById(id).addEventListener('input',function(){
+      S.agenda[{agdate:'date',agled:'led',agnext:'next',agnotes:'notes'}[id]]=this.value; agCard(); dsave('agenda');
+    });
+  });
+
+  /* ═══════════ 06 · GIVING ═══════════ */
+  var RH=["A yearly family generosity conversation","The youngest person picks one gift each season","Two hours of serving, side by side, each quarter","One jar, envelope, or budget line with a name on it","A family service project every year","Each person answers yearly: where should our family show up?"];
+  S.giving=load('giving',{why:'',pr:[{c:'',w:''},{c:'',w:''},{c:'',w:''}],ng:'',rh:[],rhx:''});
+  function gFields(){
+    document.getElementById('gfields').innerHTML=
+      '<div class="fld"><label>The purpose</label><div class="starter">Begin: "We believe God has entrusted resources to our family so that we can…"</div><textarea data-g="why">'+esc(S.giving.why)+'</textarea></div>'
+      +'<div class="fld"><label>Our giving priorities <em>— three causes, and why each matters to us</em></label>'
+      +S.giving.pr.map(function(p,i){
+        return '<div class="trow2" style="margin-top:'+(i?'10px':'4px')+'"><input type="text" data-gp="'+i+'" data-gk="c" value="'+esc(p.c)+'" placeholder="Cause or place '+(i+1)+'"><input type="text" data-gp="'+i+'" data-gk="w" value="'+esc(p.w)+'" placeholder="Why it matters to us"></div>';
+      }).join('')+'</div>'
+      +'<div class="fld"><label>How the next generation participates</label><textarea data-g="ng" placeholder="This year, the children will help choose…">'+esc(S.giving.ng)+'</textarea></div>'
+      +'<div class="fld"><label>Our rhythm <em>— choose what your family will actually keep</em></label><div class="rchecks">'
+      +RH.map(function(r,i){ return '<label><input type="checkbox" data-gr="'+i+'"'+(S.giving.rh.indexOf(i)>-1?' checked':'')+'> '+r+'</label>'; }).join('')
+      +'</div><input type="text" data-g="rhx" value="'+esc(S.giving.rhx)+'" placeholder="Or a rhythm of your own…" style="margin-top:6px"></div>'
+      +'<div class="tacts"><button type="button" class="btn grad sm" onclick="printCard(\'giving\')">Print The Plan <span class="ar">→</span></button><span class="saved" id="sv-giving">Saved in this browser ✓</span></div>';
+  }
+  function gCard(){
+    var G=S.giving, anyPr=G.pr.some(function(p){return p.c;});
+    document.getElementById('pc-giving').innerHTML=
+      '<div class="ph"><span class="tk">The Family Giving Plan</span></div>'
+      +'<h3 class="pt">'+famTitle('Giving Plan')+'</h3><div class="pdate">Drafted '+today()+'</div>'
+      +'<div class="pbody">'
+      +'<div class="sec2"><b>Why we give</b><p style="margin:0;font-size:13.5px">We believe God has entrusted resources to our family so that we can '+orBlank(G.why,'…')+'</p></div>'
+      +'<div class="sec2"><b>Where we show up</b>'+(anyPr?G.pr.map(function(p){ return p.c?'<p style="margin:2px 0 4px;font-size:13.5px"><i style="font-style:normal;font-weight:600;color:#57833B">'+esc(p.c)+'</i>'+(p.w?' — '+esc(p.w):'')+'</p>':''; }).join(''):'<p class="blank" style="font-size:13px">Three priorities, chosen together.</p>')+'</div>'
+      +'<div class="sec2"><b>The next generation</b><p style="margin:0;font-size:13.5px">'+orBlank(G.ng,'How the youngest will take part…')+'</p></div>'
+      +'<div class="sec2"><b>Our rhythm</b>'+((G.rh.length||G.rhx)?'<ul style="margin:2px 0 0;padding-left:18px;font-size:13.5px">'+G.rh.map(function(i){return '<li>'+RH[i]+'</li>';}).join('')+(G.rhx?'<li>'+esc(G.rhx)+'</li>':'')+'</ul>':'<p class="blank" style="font-size:13px">The practices this family will keep.</p>')+'</div>'
+      +'</div><div class="sig"><span>Agreed at our table</span><span>Reviewed next on</span></div>';
+  }
+  document.getElementById('gfields').addEventListener('input',function(e){
+    var g=e.target.closest('[data-g]'); if(g){ S.giving[g.dataset.g]=g.value; gCard(); dsave('giving'); return; }
+    var p=e.target.closest('[data-gp]'); if(p){ S.giving.pr[+p.dataset.gp][p.dataset.gk]=p.value; gCard(); dsave('giving'); return; }
+  });
+  document.getElementById('gfields').addEventListener('change',function(e){
+    var r=e.target.closest('input[data-gr]'); if(!r) return;
+    var i=+r.dataset.gr, at=S.giving.rh.indexOf(i);
+    if(r.checked&&at<0) S.giving.rh.push(i); if(!r.checked&&at>-1) S.giving.rh.splice(at,1);
+    gCard(); save('giving');
+  });
+
+  /* ---------- kit icons + boot ---------- */
+  document.querySelectorAll('[data-kic]').forEach(function(el){ el.innerHTML=icon(el.dataset.kic,22,1.9); });
+  function renderAll(){ vCard(); mCard(); lCard(); heirCard(); agCard(); gCard(); }
+  chipRow(); vBlocks(); heirUI(); gFields(); agSel(); renderAll();
+  FLobserve();
+})();
+</script>
+</body>
+</html>

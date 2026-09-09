@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Irrational Obedience — The Project</title>
+<style>
+:root{--teal:#2D7B79;--gold:#F6BE64;--ink:#18242A;--slate:#4A5761;--mint:#F1F6F5;--line:#E2E7E6}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:8.5in 11in;margin:0}
+body{font-family:'Carlito','Inter',sans-serif;color:var(--ink);line-height:1.55;background:#8a9797}
+
+.pg{width:8.5in;height:11in;padding:0.82in 0.92in 0.62in;background:#fff;position:relative;
+  overflow:hidden;display:flex;flex-direction:column;page-break-after:always;margin:0 auto 0.25in}
+.pg:last-child{page-break-after:auto}
+.pg.mint{background:var(--mint)}
+.pg.teal{background:var(--teal);color:#fff}
+.pg.teal p,.pg.teal li,.pg.teal td{color:rgba(255,255,255,.93)}
+.body{flex:1 1 auto}
+.foot{flex:0 0 auto;padding-top:12pt;border-top:1px solid var(--line);display:flex;
+  justify-content:space-between;font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:#9AA6A5}
+.pg.teal .foot{border-top-color:rgba(255,255,255,.25);color:rgba(255,255,255,.6)}
+.pg.mint .foot{border-top-color:#D6E0DE}
+
+.eyebrow{font-size:8pt;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--teal)}
+.pg.teal .eyebrow{color:var(--gold)}
+.grule{width:38px;height:2.5px;background:var(--gold);margin:9pt 0 12pt}
+.numeral{position:absolute;top:0.62in;right:0.62in;font-family:'Lora',Georgia,serif;font-size:52pt;
+  line-height:1;font-weight:600;color:rgba(45,123,121,.08)}
+.pg.teal .numeral{color:rgba(255,255,255,.11)}
+.pg.mint .numeral{color:rgba(45,123,121,.10)}
+
+h1{font-family:'Lora',Georgia,serif;font-size:44pt;line-height:1.06;font-weight:600;letter-spacing:-.02em}
+h2{font-family:'Lora',Georgia,serif;font-size:19pt;line-height:1.22;font-weight:600;letter-spacing:-.01em}
+h2 em{font-style:normal;color:var(--teal)}
+.pg.teal h2 em{color:var(--gold)}
+h3{font-family:'Lora',Georgia,serif;font-size:13pt;font-weight:600;line-height:1.25}
+.pg.teal h3{color:#fff}
+h4{font-size:8pt;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--teal);margin-top:15pt}
+.pg.teal h4{color:var(--gold)}
+p{font-size:10pt;margin-top:9pt;color:var(--slate)}
+p.lede{font-size:11.5pt;color:var(--ink);line-height:1.5}
+.pg.teal p.lede{color:#fff}
+p strong,li strong,td strong{color:var(--ink);font-weight:700}
+.pg.teal p strong,.pg.teal li strong{color:#fff}
+.sub{font-family:'Lora',serif;font-style:italic;font-size:13pt;color:var(--slate);margin-top:14pt;max-width:30ch;line-height:1.4}
+
+.toc a{display:flex;gap:10pt;align-items:baseline;padding:7.5pt 0;border-bottom:1px solid #D6E0DE;
+  text-decoration:none;color:var(--ink);font-size:10pt}
+.toc a:last-child{border-bottom:none}
+.toc a b{font-size:8pt;letter-spacing:.12em;color:var(--teal);min-width:20pt;font-weight:700}
+.toc a span{display:block;color:var(--slate);font-size:8.5pt;margin-top:1pt}
+
+ul.plain{list-style:none;margin-top:9pt}
+ul.plain li{padding:7pt 0 7pt 13pt;position:relative;font-size:10pt;color:var(--slate);border-bottom:1px solid var(--line)}
+ul.plain li:last-child{border-bottom:none}
+ul.plain li:before{content:"";position:absolute;left:0;top:13pt;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.pg.teal ul.plain li{border-bottom-color:rgba(255,255,255,.18)}
+
+ol.steps{list-style:none;margin-top:10pt;counter-reset:s}
+ol.steps li{counter-increment:s;padding:9pt 0 9pt 30pt;position:relative;border-bottom:1px solid var(--line)}
+ol.steps li:last-child{border-bottom:none}
+ol.steps li:before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:10pt;
+  font-family:'Lora',serif;font-size:12pt;color:var(--gold);font-weight:600}
+ol.steps li b{display:block;font-size:10.5pt;color:var(--ink);font-weight:700}
+ol.steps li p{margin-top:2pt;font-size:9.5pt}
+.pg.teal ol.steps li{border-bottom-color:rgba(255,255,255,.18)}
+.pg.teal ol.steps li b{color:#fff}
+
+table{width:100%;border-collapse:collapse;margin-top:10pt;font-size:10pt}
+th{text-align:left;font-size:8pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);
+  font-weight:700;padding:0 0 7pt;border-bottom:1px solid var(--line)}
+td{padding:8pt 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--slate)}
+td b{color:var(--ink);font-weight:700}
+td.r{text-align:right;white-space:nowrap;color:var(--ink);font-weight:700}
+td small{font-size:8.5pt;display:block;margin-top:1pt}
+.pg.teal th{color:var(--gold);border-bottom-color:rgba(255,255,255,.25)}
+.pg.teal td{border-bottom-color:rgba(255,255,255,.18)}
+.pg.teal td b{color:#fff}
+
+.spec{border:1px solid var(--line);padding:16pt 15pt;margin-top:11pt;background:#fff}
+.spec .rh{display:flex;justify-content:space-between;font-size:7.5pt;letter-spacing:.16em;
+  text-transform:uppercase;color:#9AA6A5;border-bottom:1px solid var(--line);padding-bottom:6pt}
+.spec h3{margin-top:11pt;font-size:15pt}
+.spec .vs{font-family:'Lora',serif;font-style:italic;font-size:10.5pt;color:var(--teal);
+  border-left:2.5px solid var(--gold);padding-left:9pt;margin-top:10pt}
+.spec p{font-size:9.5pt;margin-top:8pt}
+.spec .mini{font-size:7.5pt;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-top:11pt}
+.spec .fol{text-align:center;font-size:8pt;color:#9AA6A5;margin-top:13pt;border-top:1px solid var(--line);
+  padding-top:8pt;letter-spacing:.1em}
+.cap{font-size:8pt;color:#8A9796;margin-top:7pt;font-style:italic}
+.pg.teal .cap{color:rgba(255,255,255,.62)}
+
+.specd{border:1px solid rgba(255,255,255,.28);border-left:2.5px solid var(--gold);padding:15pt 14pt;margin-top:11pt}
+.specd .rh{display:flex;justify-content:space-between;font-size:7.5pt;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.62);border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:6pt}
+.specd h3{margin-top:10pt;font-size:14pt}
+.specd p{font-size:9.5pt;color:rgba(255,255,255,.9);margin-top:8pt}
+.specd .fol{margin-top:12pt;border-top:1px solid rgba(255,255,255,.22);padding-top:8pt;font-size:8pt;
+  letter-spacing:.1em;color:rgba(255,255,255,.6);text-align:center}
+ol.qs{margin:9pt 0 0 15pt;color:rgba(255,255,255,.93);font-size:9.5pt}
+ol.qs li{margin-top:5.5pt;line-height:1.45}
+
+.devrow{display:flex;gap:18pt;align-items:flex-start;margin-top:12pt}
+.phone{width:1.75in;border:1px solid var(--line);border-radius:14pt;padding:5pt;background:#fff;flex:0 0 auto}
+.phone .scr{background:var(--mint);border-radius:9pt;padding:10pt 9pt}
+.phone .d{font-size:6.5pt;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700}
+.phone .t{font-family:'Lora',serif;font-size:11pt;margin-top:4pt;line-height:1.2;color:var(--ink)}
+.phone .v{font-size:7.5pt;color:var(--slate);margin-top:6pt;font-style:italic;line-height:1.35}
+.phone .qr{width:30pt;height:30pt;background:repeating-linear-gradient(90deg,var(--ink) 0 3px,#fff 3px 6px),
+  repeating-linear-gradient(0deg,var(--ink) 0 3px,transparent 3px 6px);margin-top:9pt;border:2px solid #fff;outline:1px solid var(--line)}
+.phone .btn{background:var(--teal);color:#fff;font-size:7pt;text-align:center;border-radius:20pt;padding:5pt 0;margin-top:9pt;font-weight:700}
+.phone .ql{font-size:7pt;color:var(--slate);margin-top:8pt;border-top:1px solid var(--line);padding-top:6pt;line-height:1.4}
+.vid{flex:1 1 auto}
+.vidstage{background:#1f4a4e;height:1.5in;position:relative}
+.vidstage .play{position:absolute;left:50%;top:50%;width:30pt;height:30pt;margin:-15pt 0 0 -15pt;
+  border-radius:50%;border:1.5px solid rgba(255,255,255,.85)}
+.vidstage .play:after{content:"";position:absolute;left:11pt;top:8pt;border-left:9pt solid rgba(255,255,255,.9);
+  border-top:6pt solid transparent;border-bottom:6pt solid transparent}
+.vidstage .lower{position:absolute;left:12pt;bottom:12pt;color:#fff}
+.vidstage .lower b{display:block;font-family:'Lora',serif;font-size:11pt}
+.vidstage .lower span{font-size:7pt;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.vidbar{background:var(--ink);color:rgba(255,255,255,.72);font-size:7pt;letter-spacing:.1em;
+  text-transform:uppercase;padding:6pt 10pt;display:flex;justify-content:space-between}
+
+.pbar{margin-top:8pt}
+.pbar .r{display:flex;justify-content:space-between;font-size:9.5pt}
+.pbar .r b{font-weight:700;color:var(--ink)}
+.pbar .r em{font-style:normal;color:var(--slate);font-size:8pt;letter-spacing:.06em;text-transform:uppercase}
+.track{height:6pt;background:var(--line);margin-top:3pt;overflow:hidden}
+.fillt{height:100%;background:var(--teal)}
+.fillg{height:100%;background:var(--gold)}
+
+.tl .row{display:flex;gap:12pt;padding:8pt 0;border-bottom:1px solid var(--line)}
+.tl .row:last-child{border-bottom:none}
+.tl .w{width:1.05in;flex:0 0 auto;font-size:8pt;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--teal);font-weight:700;padding-top:1.5pt;line-height:1.3}
+.tl .c b{display:block;font-size:10pt;font-weight:700;color:var(--ink)}
+.tl .c p{margin-top:2pt;font-size:9.5pt}
+.pg.teal .tl .row{border-bottom-color:rgba(255,255,255,.18)}
+.pg.teal .tl .w{color:var(--gold)}
+.pg.teal .tl .c b{color:#fff}
+
+.totrow{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;
+  padding:14pt 18pt;margin-top:14pt}
+.totrow span{font-size:10pt;letter-spacing:.04em;color:rgba(255,255,255,.85)}
+.totrow b{font-family:'Lora',serif;font-size:20pt;color:var(--gold);font-weight:600}
+.goldbar{border-left:2.5px solid var(--gold);padding-left:12pt;margin-top:13pt}
+.hr{height:1px;background:rgba(255,255,255,.22);margin:15pt 0}
+.hrl{height:1px;background:var(--line);margin:15pt 0}
+.note{font-size:8.5pt;color:#8A9796;margin-top:12pt;border-top:1px solid var(--line);padding-top:9pt;line-height:1.5}
+.pg.teal .note{color:rgba(255,255,255,.72);border-top-color:rgba(255,255,255,.22)}
+.arc{position:absolute;width:5in;height:5in;border-radius:50%;background:var(--gold);opacity:.16;right:-1.9in;top:-2.3in}
+.coverfoot{background:var(--teal);color:#fff;padding:16pt 26px;margin-top:1.5in;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:8.5pt;letter-spacing:.12em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<!-- 1 COVER -->
+<div class="pg" style="padding-bottom:1.2in">
+  <div class="arc"></div>
+  <div class="body" style="display:flex;flex-direction:column;justify-content:center">
+    <div class="eyebrow">A Development Proposal &middot; Prepared for the Board of The Signatry</div>
+    <div class="grule"></div>
+    <h1>Irrational<br>Obedience</h1>
+    <p class="sub">A 40-day formation experience for families, advisors and generational legacy.</p>
+    <p class="lede" style="margin-top:22pt;max-width:44ch">Not primarily a book. A repeatable discipleship engine built around Steve French's message — delivered in print and digital, and designed to be run again every year.</p>
+  </div>
+  <div class="coverfoot"><span>The Project &middot; $100,000</span><span>Delivered before Thanksgiving 2026</span></div>
+</div>
+
+<!-- 2 CONTENTS -->
+<div class="pg mint">
+  <div class="body">
+    <div class="eyebrow">Contents</div>
+    <div class="grule"></div>
+    <div class="toc">
+      <a><b>01</b><div>Executive Summary<span>What this is, in one page</span></div></a>
+      <a><b>02</b><div>Vision and the Problem<span>Three gaps in how families are formed</span></div></a>
+      <a><b>03</b><div>The Experience<span>Six stages, forty days</span></div></a>
+      <a><b>04</b><div>What the Project Delivers<span>The forty days, one studio day, the digital experience</span></div></a>
+      <a><b>05</b><div>The Assessment and the Family Profile<span>Every member answers; the family gets one picture</span></div></a>
+      <a><b>06</b><div>Delivery and the Year-End Window<span>Finished before Thanksgiving</span></div></a>
+      <a><b>07</b><div>Strategic Impact<span>Acquisition, retention, platform, revenue</span></div></a>
+      <a><b>08</b><div>Strategic Value<span>What each audience gains</span></div></a>
+      <a><b>09</b><div>The Editions<span>One experience, every generation and every room</span></div></a>
+      <a><b>10</b><div>The Toolbox and the Collective<span>Over 100 tools, and a library of journeys</span></div></a>
+      <a><b>11</b><div>Extensions<span>Forty families on film, and other voices</span></div></a>
+      <a><b>12</b><div>Investment and Terms<span>One hundred thousand dollars, and who owns what</span></div></a>
+      <a><b>13</b><div>Success and Next Steps<span>How we will know, and what happens first</span></div></a>
+    </div>
+  </div>
+  <div class="foot"><span>Irrational Obedience</span><span>ii</span></div>
+</div>
+
+<!-- 3 -->
+<div class="pg">
+  <div class="numeral">01</div>
+  <div class="body">
+    <div class="eyebrow">Executive Summary</div>
+    <div class="grule"></div>
+    <h2>Almost every instruction that mattered in Scripture would have failed a <em>reasonable review</em> on the day it was given.</h2>
+    <p>Fishermen drop their nets in the middle of a workday. A widow cooks the last of her flour for a stranger. A commander sends most of his army home before the battle. Jesus walks toward the cross rather than away from it. None of it adds up, and that is not a flaw in the obedience — it is the evidence of it. The people who obeyed were not being unreasonable. They were working from a larger set of facts than the people watching them.</p>
+    <p><em>Irrational</em> is the word the watching world reaches for. Scripture reaches for three better ones: surrender, honor, faith.</p>
+    <div class="goldbar">
+      <p class="lede"><strong>Irrational Obedience is a forty-day formation experience, in print and digital, built on one idea: God often calls His people to obey before they understand.</strong> Forty biblical narratives. Forty contemporary stories. Six teaching sessions with Steve. A daily digital journey, an obedience assessment, and a family legacy profile.</p>
+    </div>
+    <p><strong>It is not primarily a book.</strong> A book is finished when it is read. This is a repeatable discipleship engine — a system a family runs together, an advisor runs with clients, and a congregation runs as a season — and it is built so that the second thing made from it costs a fraction of the first.</p>
+    <p>The whole design turns on forty days. Short enough that a family will actually finish it. Long enough that something moves. Six stages, six weeks, one conversation at the table each week, and a household that arrives at the far end using words it did not have before.</p>
+    <p class="note"><em>Irrational Obedience</em> is the working title. <em>Living Obedience</em> is the experience that follows — the yes worked out over a life. They are first and second rather than one or the other, and the final naming belongs to the author.</p>
+  </div>
+  <div class="foot"><span>Irrational Obedience</span><span>1</span></div>
+</div>
+
+<!-- 4 -->
+<div class="pg mint">
+  <div class="numeral">02</div>
+  <div class="body">
+    <div class="eyebrow">Vision and the Problem</div>
+    <div class="grule"></div>
+    <h2>To help families and leaders develop a culture of courageous, immediate, <em>generational obedience.</em></h2>
+    <p>Transformation happens when faith becomes practical rather than theoretical, when obedience becomes immediate rather than delayed, when generosity becomes normal rather than exceptional, and when legacy becomes intentional rather than accidental. Every one of those is a shift from something a family agrees with to something a family does.</p>
+    <p>Three gaps stand in between.</p>
+    <ol class="steps">
+      <li><b>Inspiration without implementation</b><p>People are moved by a sermon or a book and then handed nothing to do on Tuesday. The distance between conviction and action is where most formation quietly dies.</p></li>
+      <li><b>Individual faith without family integration</b><p>Nearly all spiritual formation is built for one person reading alone. Very little of it is built for a household, and almost none of it is built for three generations in the same room.</p></li>
+      <li><b>Wealth and calling disconnected from obedience</b><p>Advisors and the families they serve rarely share a spiritual framework for decisions that are, at bottom, spiritual — what a business is for, what is enough, and what the children are being prepared to carry.</p></li>
+    </ol>
+    <div class="goldbar">
+      <p>None of the three is a content problem. Good content already exists in abundance. They are structure problems — nobody has built the thing that carries a conviction from a page into a household and keeps it there past February.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Vision and the Problem</span><span>2</span></div>
+</div>
+
+<!-- 5 -->
+<div class="pg">
+  <div class="numeral">03</div>
+  <div class="body">
+    <div class="eyebrow">The Experience</div>
+    <div class="grule"></div>
+    <h2>Six stages. Forty days. <em>One conversation a week at the table.</em></h2>
+    <p>The journey integrates Scripture, story, reflection, action, conversation, digital reinforcement and advisor engagement — and moves a reader through six stages in the order a person actually travels them.</p>
+    <table>
+      <tr><th>Stage</th><th>The week's question</th><th class="r">Days</th></tr>
+      <tr><td><b>Hearing</b><small>Recognizing the invitation</small></td><td>Where might God be asking us to trust Him before we have the answers?</td><td class="r">1&ndash;7</td></tr>
+      <tr><td><b>Trusting</b><small>When the outcome is uncertain</small></td><td>Where are fear, comfort or control competing with trust?</td><td class="r">8&ndash;14</td></tr>
+      <tr><td><b>Surrendered</b><small>When obedience costs something</small></td><td>What are we most tempted to protect from God?</td><td class="r">15&ndash;21</td></tr>
+      <tr><td><b>Generous</b><small>Trusting God with what is entrusted</small></td><td>What would irrational generosity look like for our family?</td><td class="r">22&ndash;28</td></tr>
+      <tr><td><b>Courageous</b><small>Using influence where it matters</small></td><td>Where has God given us influence we may be underusing?</td><td class="r">29&ndash;35</td></tr>
+      <tr><td><b>Legacy</b><small>Becoming a family that says yes</small></td><td>What changes if obedience becomes part of who we are?</td><td class="r">36&ndash;40</td></tr>
+    </table>
+    <p>Six stages, six weeks, six teachings — so a reader and a group are never out of step. Each day carries the same ten parts: a title built on the day's principle, a key Scripture, the biblical story retold, the principle in Steve's voice, a contemporary story, one reflection question, one conversation question, one action, a short prayer, and a code that opens the companion video.</p>
+  </div>
+  <div class="foot"><span>The Experience</span><span>3</span></div>
+</div>
+
+<!-- 6 -->
+<div class="pg mint">
+  <div class="numeral">04</div>
+  <div class="body">
+    <div class="eyebrow">What the Project Delivers</div>
+    <div class="grule"></div>
+    <h2>Three bodies of work, <em>built together and priced as one.</em></h2>
+    <p class="lede">Not just physical but digital. Not just material but marketing assets. Not just a book but something built to reach more families. Not just for families but for the advisors who serve them.</p>
+    <h4>A &middot; The Forty Days</h4>
+    <p>Forty biblical narratives paired with forty contemporary obedience stories. The voice is aligned to Steve throughout — it should sound like a man talking, not like a devotional. Pastoral clarity, accessible to a reader with no theological training, and a tone that works equally at a kitchen table and across an advisor's desk. Scripture in NIV, integrated rather than appended, with theological humility wherever mature Christians legitimately disagree.</p>
+    <p>The forty contemporary stories are sourced across the people this house already knows: legacy families, founders, Christian financial advisors, donor families, pastors, professional advisors, parents and grandparents. Each answers one question — <strong>what did God ask you to do that didn't make sense at the time, and what happened when you obeyed?</strong> We interview, transcribe, shape each to roughly four hundred words, and clear permissions in writing before anything is printed.</p>
+    <p>A specimen day follows. It is shown for position: the final text, trim and design are developed with the author.</p>
+    <div class="goldbar">
+      <p>The manuscript is delivered in five blocks of eight days rather than as one finished draft, so the voice can be corrected at day eight instead of at day forty.</p>
+    </div>
+  </div>
+  <div class="foot"><span>What the Project Delivers</span><span>4</span></div>
+</div>
+
+<!-- 7 SPECIMEN -->
+<div class="pg">
+  <div class="body">
+    <div class="eyebrow">Specimen &middot; One of Forty Days</div>
+    <div class="grule"></div>
+    <div class="spec" style="margin-top:4pt">
+      <div class="rh"><span>Stage Three &middot; Surrendered</span><span>Day 21</span></div>
+      <h3>What Are You Still Holding?</h3>
+      <div class="vs">&ldquo;Go, sell everything you have and give to the poor.&rdquo; &mdash; Mark 10:21, NIV</div>
+      <p>He was not a bad man. He was the kind of man any congregation would be glad to have — moral, successful, genuinely searching. He asked the right question, and he asked it of the right person. And Mark records something easy to miss: Jesus looked at him and loved him. What followed was not a rebuke. It was a diagnosis.</p>
+      <p>The one thing he could not release turned out to be the one thing that had a grip on him. That is the uncomfortable arithmetic of surrender. We do not discover what owns us by examining what we believe. We discover it by noticing what we will not let go of.</p>
+      <p>Most of us have an answer to that question and have never said it out loud. Saying it out loud is most of the work.</p>
+      <div class="mini">Think About It</div>
+      <p>If God asked you tomorrow for the one asset you would least like to name out loud, what would it be — and what does that tell you?</p>
+      <div class="mini">Talk About It</div>
+      <p>Ask the people at your table what they think you would find hardest to release. Their answer is usually faster than yours.</p>
+      <div class="mini">Live It</div>
+      <p>Name it. Write it on one line today, and tell one person you trust that you wrote it.</p>
+      <div class="mini">Pray</div>
+      <p>Father, I have been careful with the one thing I never offered You. I am offering it now, before I understand what You will do with it.</p>
+      <div class="fol">&mdash; 89 &mdash;</div>
+    </div>
+    <p class="cap">Specimen page shown for position. Final text, trim and design to be developed with the author.</p>
+  </div>
+  <div class="foot"><span>Specimen &middot; Day 21</span><span>5</span></div>
+</div>
+
+<!-- 8 -->
+<div class="pg mint">
+  <div class="body">
+    <div class="eyebrow">What the Project Delivers &middot; continued</div>
+    <div class="grule"></div>
+    <h4 style="margin-top:0">B &middot; One Studio Day with Steve</h4>
+    <h2 style="margin-top:6pt">Three bodies of content <em>from a single day.</em></h2>
+    <ul class="plain">
+      <li><strong>Steve's personal stories</strong> — eight to twelve foundational accounts tied to the major themes. These cannot be written by anyone else, which is why the day comes first.</li>
+      <li><strong>Six core teachings</strong> — one per stage, ten to twelve minutes each, with three discussion questions, a family application, a personal action and a prayer behind each.</li>
+      <li><strong>Daily micro-devotionals</strong> — short clips placed at the turning points of the forty days and opened by code from the printed page.</li>
+    </ul>
+    <p>Whatever time remains captures testimony, defining moments, lessons from failure, and a word for children and grandchildren. That footage does not belong to this experience alone. It is the raw material for everything built after it, and it is captured once.</p>
+    <div class="devrow">
+      <div class="vid">
+        <div class="vidstage">
+          <div class="play"></div>
+          <div class="lower"><span>Stage Three &middot; Teaching</span><b>What Are You Still Holding?</b></div>
+        </div>
+        <div class="vidbar"><span>Steve French</span><span>11:24</span></div>
+        <p class="cap">One of six core teachings. Shown for position.</p>
+      </div>
+      <div class="phone">
+        <div class="scr">
+          <div class="d">Day 21 &middot; Surrendered</div>
+          <div class="t">What Are You Still Holding?</div>
+          <div class="v">&ldquo;Go, sell everything you have and give to the poor.&rdquo; Mark 10:21</div>
+          <div class="qr"></div>
+          <div class="btn">Watch &middot; 2 min with Steve</div>
+          <div class="ql"><b>Live it:</b> Name it. Write it on one line today.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>One Studio Day</span><span>6</span></div>
+</div>
+
+<!-- 9 -->
+<div class="pg">
+  <div class="body">
+    <div class="eyebrow">What the Project Delivers &middot; continued</div>
+    <div class="grule"></div>
+    <h4 style="margin-top:0">C &middot; The Digital Experience</h4>
+    <h2 style="margin-top:6pt">Daily delivery, <em>not a download.</em></h2>
+    <p>A book on a nightstand reaches one reader. The same forty days delivered to a phone each morning reaches a household, a small group, an advisor's client list and a congregation — and it tells you who is still reading on day thirty-one.</p>
+    <p>Every printed page carries the code that opens the same day, so the two formats are one experience rather than two products. A family that reads on paper and a son who reads on a phone arrive at the same table on Thursday having covered the same ground.</p>
+    <ul class="plain">
+      <li><strong>Daily delivery</strong> — the reading, the Scripture, the action and the companion clip, each morning, in the order the journey intends.</li>
+      <li><strong>Video integration</strong> — by code from the page or in the app, so nothing has to be searched for.</li>
+      <li><strong>Progress tracking</strong> — who is still with it on day thirty-one, by household rather than by individual reader.</li>
+      <li><strong>Reflection prompts a reader keeps</strong> — what a person writes on Day 21 is still there on Day 40, which is where most of the change becomes visible to them.</li>
+      <li><strong>Group and cohort views</strong> — so a host, an advisor or a pastor can run the experience without administering it by hand.</li>
+    </ul>
+    <div class="goldbar">
+      <p><strong>The digital layer is not a companion app. It is the distribution.</strong> Print reaches the people who buy a book. Delivery reaches everyone an advisor, a congregation or a family can invite — which is a materially larger number, and a knowable one.</p>
+    </div>
+  </div>
+  <div class="foot"><span>The Digital Experience</span><span>7</span></div>
+</div>
+
+<!-- 10 -->
+<div class="pg mint">
+  <div class="numeral">05</div>
+  <div class="body">
+    <div class="eyebrow">The Assessment and the Family Profile</div>
+    <div class="grule"></div>
+    <h2>Every member answers for themselves. <em>The family gets one picture.</em></h2>
+    <p>One instrument, six dimensions — the same six stages the journey travels. Twenty-four short statements, about ten minutes, and the result is not a grade. It is a route: which stage to read first, which teaching to watch, and the one question to bring to your own table this week.</p>
+    <p><strong>Each person in the family takes it individually</strong> — the founder, the spouse, the adult children, the next generation. Their results then roll up into a single <strong>family legacy profile</strong>: where the household is settled, where it is open, and — the part families almost never see stated plainly — <strong>where the generations quietly disagree.</strong> Two people can love each other and hold opposite convictions about what is enough. Most families discover that during a crisis. This surfaces it over dinner.</p>
+    <div class="spec">
+      <div class="rh"><span>The Whitfield Family &middot; 5 responses</span><span>Family Legacy Profile</span></div>
+      <div class="pbar"><div class="r"><b>Hearing</b><em>Settled</em></div><div class="track"><div class="fillt" style="width:90%"></div></div></div>
+      <div class="pbar"><div class="r"><b>Trusting</b><em>Forming</em></div><div class="track"><div class="fillt" style="width:75%"></div></div></div>
+      <div class="pbar"><div class="r"><b>Surrendered</b><em>Unsettled</em></div><div class="track"><div class="fillg" style="width:55%"></div></div></div>
+      <div class="pbar"><div class="r"><b>Generous</b><em>Forming</em></div><div class="track"><div class="fillt" style="width:70%"></div></div></div>
+      <div class="pbar"><div class="r"><b>Courageous</b><em>Forming</em></div><div class="track"><div class="fillt" style="width:65%"></div></div></div>
+      <div class="pbar"><div class="r"><b>Legacy</b><em>Open invitation</em></div><div class="track"><div class="fillg" style="width:40%"></div></div></div>
+      <div class="mini">Where the generations disagree</div>
+      <p>On <em>Surrendered</em>, the two oldest responses sit a full band above the three youngest. The parents believe this is settled. The children do not.</p>
+      <div class="fol">A starting place for a conversation, not a score</div>
+    </div>
+    <p class="cap">Family and results illustrative. Shown for position.</p>
+  </div>
+  <div class="foot"><span>The Assessment</span><span>8</span></div>
+</div>
+
+<!-- 11 -->
+<div class="pg">
+  <div class="body">
+    <div class="eyebrow">The Assessment &middot; continued</div>
+    <div class="grule"></div>
+    <h2>What the profile <em>makes possible.</em></h2>
+    <p>The profile is the engine underneath everything that follows. Once a family has one on file, the system can recommend what they should do next rather than asking them to choose from a catalog — a particular stage to revisit, a tool for the decision in front of them, another journey when this one is finished.</p>
+    <div class="hrl"></div>
+    <h3>A customized family edition</h3>
+    <p>It also makes something possible that no publisher can offer: a named family, their own profile, their own transitions, their own Scriptures and questions. <em>The Whitfield Family's Irrational Obedience Journey</em> — assembled for them rather than selected by them.</p>
+    <p>That is not part of this project and does not need to be decided now. It is named here because it is the reason the profile is built properly the first time rather than bolted on later.</p>
+    <div class="hrl"></div>
+    <h3>Where an advisor fits</h3>
+    <p>A Christian advisor has very little to hand a family in the years before a transaction, and almost nothing genuinely about the family rather than the assets. This is something to give without asking for anything — and when a family chooses to share what came back, the conversation that follows is a different conversation entirely.</p>
+    <div class="goldbar">
+      <p><strong>Assessment and profile results stay with the family.</strong> An advisor sees what the family chooses to share and nothing else. Results are never routed to a development office or used to rank a household, and that commitment is printed inside the instrument itself. It is what makes families willing to answer honestly, which is the only reason the instrument is worth building.</p>
+    </div>
+  </div>
+  <div class="foot"><span>The Assessment</span><span>9</span></div>
+</div>
+
+<!-- 12 -->
+<div class="pg teal">
+  <div class="numeral">06</div>
+  <div class="body">
+    <div class="eyebrow">Delivery</div>
+    <div class="grule"></div>
+    <h2>Delivered <em>before Thanksgiving</em> — in hand for the giving season and the family table.</h2>
+    <p>The two irreplaceable pieces — the studio day and the family conversations — are scheduled first rather than last, so that nothing downstream waits on a calendar.</p>
+    <div class="hr"></div>
+    <div class="tl">
+      <div class="row"><div class="w">September</div><div class="c"><b>Thirty minutes with Steve, then the outline</b><p>Three questions first: what he would call it, which families he would want in it, and one story of something God asked that made no sense. Then the six stages, forty principles, forty Scriptures and the six family conversations approved before drafting begins.</p></div></div>
+      <div class="row"><div class="w">Late September</div><div class="c"><b>The studio day</b><p>Personal stories, six core teachings, micro-devotionals and the archive footage — one day, three bodies of content.</p></div></div>
+      <div class="row"><div class="w">Sept &ndash; October</div><div class="c"><b>Manuscript and forty stories</b><p>The manuscript in five blocks of eight days. Forty family conversations run alongside, roughly six a week, transcribed and cleared in writing as they come in rather than in a batch at the end.</p></div></div>
+      <div class="row"><div class="w">Oct &ndash; November</div><div class="c"><b>Digital build and launch preparation</b><p>Daily delivery, assessment and family profile built and tested with real families before anyone else sees them. Advisor materials, pilot groups, final read-through and quality assurance.</p></div></div>
+      <div class="row"><div class="w">November 20</div><div class="c"><b>Delivered</b><p>Complete manuscript, all stories cleared, every teaching cut, the digital experience running end to end — before Thanksgiving.</p></div></div>
+    </div>
+    <div class="goldbar">
+      <p>Work begins the week it is approved. The first two family conversations can be recorded before the next board meeting.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Delivery</span><span>10</span></div>
+</div>
+
+<!-- 13 -->
+<div class="pg teal">
+  <div class="body">
+    <div class="eyebrow">The Year-End Window</div>
+    <div class="grule"></div>
+    <h2>Thanksgiving through December 31 is the <em>highest concentration of charitable decision-making</em> in the year.</h2>
+    <p>It is also the only stretch when three generations of a family are reliably under one roof. Delivering in November puts this in hand for both.</p>
+    <div class="hr"></div>
+    <div class="tl">
+      <div class="row"><div class="w">Thanksgiving Week</div><div class="c"><b>Soft launch &middot; awareness activation</b><p>Early access to selected advisor partners and families. A short <em>Gratitude and Obedience</em> pre-launch reading for the holiday week. Advisors introduced to the framework as a year-end client engagement tool, and the first storytelling begins around legacy, gratitude and obedience.</p></div></div>
+      <div class="row"><div class="w">Black Friday &ndash; Giving Tuesday</div><div class="c"><b>Engagement surge</b><p>Public awareness push begins. Advisors introduce the experience to their top clients. Families are invited in as a year-end spiritual reset, and assessment and profile onboarding opens.</p></div></div>
+      <div class="row"><div class="w">December</div><div class="c"><b>Core experience window</b><p>Cohorts run the forty days. Advisors use it as a client deepening tool rather than a campaign. Families hold the weekly conversation while everyone is already gathered.</p></div></div>
+      <div class="row"><div class="w">December 15&ndash;31</div><div class="c"><b>Giving and legacy decision window</b><p>Integration with The Signatry and the advisor networks across end-of-year giving, non-liquid asset gift planning, donor-advised fund engagement and legacy intention setting. Families complete assessments and profiles, and bring what they choose to share into conversations about giving, estate and business transition, and generational alignment.</p></div></div>
+      <div class="row"><div class="w">January</div><div class="c"><b>The new-year cohorts</b><p>The same forty days open to groups, congregations and families who did not begin in November. No family has to wait for January, and none has to have started by then.</p></div></div>
+    </div>
+    <div class="goldbar">
+      <p><strong>Nothing inside the experience itself asks anyone for anything.</strong> No appeal, no card, no giving link, no result routed anywhere the family did not send it. That is not a limitation — it is the reason an advisor can hand it to a client in December without it reading as a pitch. Generosity is a theme inside the forty days. It is never the transaction.</p>
+    </div>
+  </div>
+  <div class="foot"><span>The Year-End Window</span><span>11</span></div>
+</div>
+
+<!-- 14 -->
+<div class="pg">
+  <div class="numeral">07</div>
+  <div class="body">
+    <div class="eyebrow">Strategic Impact</div>
+    <div class="grule"></div>
+    <h2>Five ecosystem-level outcomes, <em>and the timing is what produces them.</em></h2>
+    <ol class="steps">
+      <li><b>New client acquisition &middot; advisors</b><p>A differentiated spiritual-legacy engagement tool, and an entry point into new high-capacity family relationships. Something an advisor can give without asking for anything, in the season when trust and relational depth are actually built.</p></li>
+      <li><b>Generational retention</b><p>Families engage across multiple generations during holiday gatherings and come away with shared language for obedience, generosity and calling. Relationships that include the children outlast the ones that only include the parents — which is what makes both assets and relationships more likely to hold across a transfer.</p></li>
+      <li><b>Platform expansion &middot; The Signatry and the advisor ecosystem</b><p>A repeatable year-end engagement system rather than a one-time release: integration into donor-advised fund conversations, and a real expansion of the advisor toolkit. The same architecture carries the next experience at a fraction of the original build cost.</p></li>
+      <li><b>New revenue streams</b><p>Advisor and firm licensing, cohort access, family experience subscriptions, the assessment and profile as a licensed instrument, and the formation product suite that follows. All of it sits on the licensing platform described in section twelve, which carries no development fee.</p></li>
+      <li><b>Business owner transition and non-liquid giving</b><p>Owners engage the exit conversation at year end, while almost everything that could be done still can be — including gifts of business equity, real estate and appreciated assets, which only work before a transaction closes. Most owners learn about that window after it has shut. This puts the question in front of them a year early, as formation rather than as a proposal.</p></li>
+    </ol>
+  </div>
+  <div class="foot"><span>Strategic Impact</span><span>12</span></div>
+</div>
+
+<!-- 15 -->
+<div class="pg mint">
+  <div class="numeral">08</div>
+  <div class="body">
+    <div class="eyebrow">Strategic Value</div>
+    <div class="grule"></div>
+    <h2>Four audiences, <em>one body of work.</em></h2>
+    <table>
+      <tr><th>Audience</th><th>What they gain</th></tr>
+      <tr><td><b>Steve French</b></td><td>A decade of conviction written down once, in his own voice, and a body of intellectual property that carries everything built after it. The message keeps working long after he has stopped repeating it.</td></tr>
+      <tr><td><b>Families</b></td><td>A structured forty-day experience they can actually finish, and shared language across three generations for decisions usually made alone.</td></tr>
+      <tr><td><b>Advisors</b></td><td>A differentiated engagement tool, a values-based planning framework, and a relational entry point that does not begin with a product.</td></tr>
+      <tr><td><b>The Signatry</b></td><td>A scalable annual engagement engine, deeper participation across the advisor network, and a formation layer underneath the infrastructure this house already operates.</td></tr>
+    </table>
+    <div class="hrl"></div>
+    <h3>Three outcomes worth measuring</h3>
+    <p><strong>Personal obedience</strong> — participants move from passive agreement to a named action they can point to. <strong>Family alignment</strong> — households develop shared language around faith, calling and generosity. <strong>Advisor integration</strong> — advisors gain a framework for guiding clients past financial planning into legacy formation.</p>
+    <div class="goldbar">
+      <p>One measure we would counsel against reporting: dollars attributed to the experience. The moment a formation product is judged on the giving it produces, it becomes a fundraising instrument and stops working as formation. Measure participation, completion, and the conversations it started.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Strategic Value</span><span>13</span></div>
+</div>
+
+<!-- 16 -->
+<div class="pg">
+  <div class="numeral">09</div>
+  <div class="body">
+    <div class="eyebrow">The Editions</div>
+    <div class="grule"></div>
+    <h2>One experience. <em>Every generation, and every room.</em></h2>
+    <p>The forty days ask a household to have a conversation at the table — but as commissioned, only the adults will have read anything. A father finishes a book, then asks his fifteen-year-old a question the fifteen-year-old has no context for. That is the quiet flaw in almost every family discipleship product ever published, and the editions close it. Same forty days, same six stages, same week; a nine-year-old, a nineteen-year-old and a grandfather all arrive at Thursday's conversation having read something written for them.</p>
+    <div class="goldbar">
+      <p class="lede"><strong>The theology never changes between editions. What changes is the stakes and the instruments.</strong> A child surrenders a toy; a founder surrenders a company. It is the same stage.</p>
+    </div>
+    <h4>The core, and the professional rooms</h4>
+    <table>
+      <tr><th>Edition</th><th>Who it is for</th></tr>
+      <tr><td><b>The Family Edition</b><small>Included in this project</small></td><td>Adults, couples and households reading together, with the weekly conversation at the table. Every edition below is an adaptation of it rather than a new work.</td></tr>
+      <tr><td><b>The Advisor Edition</b></td><td>The forty days written for the advisor's own life first, then for the advisor's table — a client conversation guide and a cohort script for running it with a group of families.</td></tr>
+      <tr><td><b>The Next Generation Edition</b><small>Customized to a family</small></td><td>Adults in their twenties to forties who did not build what they are being asked to carry. Asks a different question throughout — not <em>will you steward this</em>, but <em>what is God asking of you that He is not asking of the generation ahead of you.</em></td></tr>
+      <tr><td><b>The Family Office Edition</b></td><td>Families with a structure around them — a foundation, an office, a board, a grant table. The six stages applied to what a structure creates and cannot answer: who decides, how much is enough, what the office is finally for.</td></tr>
+    </table>
+  </div>
+  <div class="foot"><span>The Editions</span><span>14</span></div>
+</div>
+
+<!-- 17 -->
+<div class="pg">
+  <div class="body">
+    <div class="eyebrow">The Editions &middot; continued</div>
+    <div class="grule"></div>
+    <h4 style="margin-top:0">The wider rooms</h4>
+    <table>
+      <tr><th>Edition</th><th>Who it is for</th></tr>
+      <tr><td><b>The Church Campaign Edition</b><small>One edition, not two</small></td><td>The congregation-wide version: six weekends, six group sessions, forty readings, with host training, a group kit and a campaign handbook. A church-wide edition and a church campaign are the same product under two names, so it carries one name here.</td></tr>
+      <tr><td><b>The Youth Edition</b><small>Ages 13&ndash;18</small></td><td>Forty readings at teenage length, on the stories that land at that age — a shepherd nobody picked, a young queen who risked her position, a boy who handed over his lunch. Includes a six-session youth track so a church or a family can run it alongside the adults.</td></tr>
+      <tr><td><b>The Children's Edition</b><small>Ages 5&ndash;12</small></td><td>Illustrated, read aloud, built for ten minutes at a dinner table rather than forty solitary mornings. Comes with the parent's guide for the same six weeks, because a children's book that leaves the parents out changes nothing.</td></tr>
+      <tr><td><b>Custom experiences</b></td><td>A single family, a single firm, a single company — built from a profile rather than chosen from a list.</td></tr>
+    </table>
+    <div class="hrl"></div>
+    <h3>If only two are ever built</h3>
+    <p>Build the children's and youth editions first, and build them together. They are not the most commercially obvious — the advisor and family office editions are — but they are the two that turn a book a parent read into something a family did. Everything this proposal claims about generational retention depends on the youngest person at the table having something in front of them.</p>
+    <p class="note">Each edition is an adaptation of one body of work, not a new one — which is why each is a fraction of this project. They are separate decisions, and none of them needs to be made now.</p>
+  </div>
+  <div class="foot"><span>The Editions</span><span>15</span></div>
+</div>
+
+<!-- 18 -->
+<div class="pg teal">
+  <div class="numeral">10</div>
+  <div class="body">
+    <div class="eyebrow">The Toolbox</div>
+    <div class="grule"></div>
+    <h2>Most families will never do the same forty days. <em>Almost none of them should.</em></h2>
+    <p>A family in the year before a sale, a family that has just buried its patriarch, and a family whose children are eleven and fourteen have almost nothing in common except that all three would be handed the same book. That is the limitation of publishing, and why so much good material sits unopened on the shelves of the people who could most use it.</p>
+    <div class="hr"></div>
+    <h4 style="margin-top:0">Over 100 customizable tools</h4>
+    <p>Every instrument built across this work becomes a tool that stands on its own, brands to the firm or the family, and works in a single meeting without committing anyone to a forty-day anything. An advisor does not always need a season; sometimes he needs one page for one conversation on Thursday. Ten of more than a hundred:</p>
+    <ul class="plain">
+      <li><strong>Before the Letter of Intent</strong> — eight questions for an owner while every option is still open</li>
+      <li><strong>How Much Is Enough</strong> — the conversation a couple has never quite finished</li>
+      <li><strong>The Family Giving Statement</strong> — five decisions, one signed page</li>
+      <li><strong>The Grant Table Agenda</strong> — ninety minutes, and the children decide one of them</li>
+      <li><strong>Twenty Questions, One Evening</strong> — the whole family discovery in a single sitting</li>
+      <li><strong>The Holiday Table Guide</strong> — for the years when everyone is home and nobody says anything</li>
+      <li><strong>The Grandparent Interview</strong> — before the stories are gone</li>
+      <li><strong>The Inheritance Conversation</strong> — at eighteen, at twenty-five, at thirty</li>
+      <li><strong>The Legacy Letter</strong> — what you would want read aloud</li>
+      <li><strong>The Advisor's First Meeting</strong> — an introduction that is not a pitch</li>
+    </ul>
+    <p>Roughly a hundred more sit behind these, across discovery, family conversation, story capture, giving, business transition, next generation, children and youth, advisor practice and church. The library grows with every experience added to it.</p>
+  </div>
+  <div class="foot"><span>The Toolbox</span><span>16</span></div>
+</div>
+
+<!-- 19 -->
+<div class="pg teal">
+  <div class="body">
+    <div class="eyebrow">Specimen &middot; One Tool of More Than a Hundred</div>
+    <div class="grule"></div>
+    <div class="specd" style="margin-top:4pt">
+      <div class="rh"><span>Tool 47 &middot; Business and Transition</span><span>The Signatry Toolbox</span></div>
+      <h3>Before the Letter of Intent</h3>
+      <p>Eight questions for a business owner while every option is still open. Roughly forty minutes. Nothing is signed and nothing is proposed.</p>
+      <ol class="qs">
+        <li>If this sold next year, what would you want true about your family the day after?</li>
+        <li>What number is enough — and when did you last say it out loud to your spouse?</li>
+        <li>Who besides you knows what you would want done if it happened without warning?</li>
+        <li>What percentage of this company do you think of as yours?</li>
+        <li>Which of your children could run it, and which of them wants to?</li>
+        <li>What would you regret not giving while you could still see where it went?</li>
+        <li>What would you want your grandchildren to know about how this was built?</li>
+        <li>What decision have you been putting off because it is easier to decide later?</li>
+      </ol>
+      <p><strong>Facilitator note.</strong> Question four is the one that changes the conversation. Ask it, then say nothing for fifteen seconds.</p>
+      <div class="fol">Customizable &middot; firm-branded &middot; usable in one meeting</div>
+    </div>
+    <p class="cap">Shown for position. The Toolbox is not part of this project.</p>
+    <div class="goldbar">
+      <p>A tool is how a family meets this work before they are ready for forty days of it — and how an advisor stays useful in the two years when there is nothing to sell.</p>
+    </div>
+  </div>
+  <div class="foot"><span>The Toolbox</span><span>17</span></div>
+</div>
+
+<!-- 20 -->
+<div class="pg teal">
+  <div class="body">
+    <div class="eyebrow">The Collective</div>
+    <div class="grule"></div>
+    <h2>Behind one journey sits <em>a library of them.</em></h2>
+    <p>Irrational Obedience is one experience. Behind it sits a library of others on the themes families actually face — so a household finishing these forty days has somewhere to go next, and a family not ready for them has somewhere to start.</p>
+    <table>
+      <tr><td><b>Living Obedience</b><small>The yes worked out over a life</small></td><td><b>Living Surrender</b><small>Whose is it, actually</small></td></tr>
+      <tr><td><b>Living Legacy</b><small>What lasts, and who carries it</small></td><td><b>Living Generosity</b><small>From giving to generous</small></td></tr>
+      <tr><td><b>Obedience in Business</b><small>What a company is finally for</small></td><td><b>The Next Generation</b><small>Carrying what you did not build</small></td></tr>
+      <tr><td><b>Enough</b><small>The number nobody says out loud</small></td><td><b>Well Done</b><small>Finishing on purpose</small></td></tr>
+    </table>
+    <p>The profile connects them. A family completes it once; the system recommends where to begin and what comes after, which is how a single forty-day experience becomes a decade-long relationship rather than a book somebody read one winter.</p>
+    <div class="goldbar">
+      <p class="lede"><strong>This is the difference between publishing a book and operating a system.</strong> A book is the same for everyone who receives it. A journey is different for every family — and a family given something built for their situation reads it, finishes it, and remembers who handed it to them.</p>
+    </div>
+  </div>
+  <div class="foot"><span>The Collective</span><span>18</span></div>
+</div>
+
+<!-- 21 -->
+<div class="pg mint">
+  <div class="numeral">11</div>
+  <div class="body">
+    <div class="eyebrow">Extensions</div>
+    <div class="grule"></div>
+    <h2>Separate decisions, <em>made later.</em></h2>
+    <p>None of what follows is part of this project or required for it to be worth doing. Each is built on assets this project will already have produced.</p>
+    <h4>Forty Families on Film</h4>
+    <p>The forty contemporary stories captured properly rather than lightly — filmed, directed and cut into a documentary series, with the same recordings becoming a year of weekly episodes with Steve at no additional shoot.</p>
+    <p>Forty families on film is the only asset in this whole picture that expires. Those families sit for a camera because of who is asking, and that is true this year. Expanded formats sit alongside it and are worth considering together — a filmed panel, a roundtable of three or four families in one room, or a town hall. A studio conversation produces a product; a town hall produces a moment. It is usually worth taking both.</p>
+    <p><strong>Approximately $150,000</strong>, driven by the production rather than by the interviews.</p>
+    <h4>Other voices</h4>
+    <p>Steve's voice anchors this, and it should. But the architecture does not require him to be the only one. Later experiences in the library can be carried by other teachers, practitioners and trainers — a pastor on a theme he has preached for twenty years, an advisor who has sat in a thousand of these conversations, an institutional voice from a network that already has the audience.</p>
+    <p>That matters twice over. The library can grow faster than any one person's calendar allows, and the message travels into rooms where a different messenger opens the door. Worth naming now, worth deciding later.</p>
+    <h4>The editions, the Toolbox and the Collective</h4>
+    <p>Sections nine and ten. Each is a separate decision, each a fraction of this project, and each cheaper as the library grows — because the manuscript, the film, the assessment engine, the design system and the delivery platform will already exist.</p>
+  </div>
+  <div class="foot"><span>Extensions</span><span>19</span></div>
+</div>
+
+<!-- 22 -->
+<div class="pg">
+  <div class="numeral">12</div>
+  <div class="body">
+    <div class="eyebrow">Investment</div>
+    <div class="grule"></div>
+    <h2>One project. <em>One number.</em></h2>
+    <p>The Irrational Obedience Project is commissioned and priced as a single body of work. The manuscript, the studio day, the forty stories, the six teachings, the digital experience, the assessment and the family profile are built together and delivered together, because each one is worth considerably less without the others.</p>
+    <ul class="plain">
+      <li>The forty-day manuscript — forty biblical narratives, forty contemporary stories, theological and editorial development</li>
+      <li>One studio day with Steve — personal stories, six core teachings, daily micro-devotionals, archive capture</li>
+      <li>The forty contemporary stories — sourcing, interviews, transcription, shaping, written permissions</li>
+      <li>The digital experience — daily delivery, video integration, progress tracking, group and cohort views</li>
+      <li>The assessment and the family legacy profile — individual and family-level</li>
+      <li>Family and advisor launch materials, project management and integration</li>
+    </ul>
+    <div class="totrow"><span>The Irrational Obedience Project</span><b>$100,000</b></div>
+    <h4>Terms</h4>
+    <table>
+      <tr><th>Payment</th><th class="r">Due</th></tr>
+      <tr><td><b>$50,000</b> — to initiate</td><td class="r">On commissioning</td></tr>
+      <tr><td><b>$25,000</b></td><td class="r">Thirty days after</td></tr>
+      <tr><td><b>$25,000</b></td><td class="r">Thirty days after that</td></tr>
+    </table>
+    <p>Payments are scheduled by date rather than tied to deliverables, so that no part of the work waits on an approval cycle and nothing is invoiced out of sequence with the calendar. Delivery is complete before Thanksgiving.</p>
+  </div>
+  <div class="foot"><span>Investment</span><span>20</span></div>
+</div>
+
+<!-- 23 -->
+<div class="pg">
+  <div class="body">
+    <div class="eyebrow">Terms &middot; continued</div>
+    <div class="grule"></div>
+    <h2>Who <em>owns what.</em></h2>
+    <p><strong>The Signatry owns the work outright.</strong> The story, the name and the voice belong to you, without qualification.</p>
+    <p>LifeTogether retains the underlying curriculum, campaign and assessment frameworks it brings to the work, licensed to you in perpetuity at no cost. That is the ordinary arrangement in publishing, and it is what allows the second experience to cost a fraction of the first.</p>
+    <div class="hrl"></div>
+    <h3>The licensing platform</h3>
+    <p>Beneath everything described here sits the layer that lets a church, an advisory firm or a family office run any of it under their own name — church licensing, firm licensing, family office and enterprise editions, and the tool library behind them.</p>
+    <p><strong>We build and operate it at our own cost and risk, co-branded, and it carries no development fee.</strong> Participation is written as ordinary commercial instruments at arm's length rather than as an interest in your organization, which a foundation cannot grant and should not be asked for. Better settled at the start than after the work is done.</p>
+    <div class="hrl"></div>
+    <h3>Not included</h3>
+    <p>Print and manufacturing, travel for filming outside the studio day, and publication itself. A trade publisher may offset this project in full.</p>
+    <p class="note">One disclosure made here rather than later: Brett Eastman serves as Chief Marketing Officer at Equity Partners, and donor capital in this sector is invested in vehicles of that kind. Your counsel will want to know that at the beginning rather than at the end.</p>
+  </div>
+  <div class="foot"><span>Terms</span><span>21</span></div>
+</div>
+
+<!-- 24 -->
+<div class="pg mint">
+  <div class="numeral">13</div>
+  <div class="body">
+    <div class="eyebrow">Success and Next Steps</div>
+    <div class="grule"></div>
+    <h2>How we will know <em>it worked.</em></h2>
+    <ul class="plain">
+      <li>Families finish the forty days <strong>together</strong> — completion measured by household, not by individual reader.</li>
+      <li>Advisors use the framework in real client conversations, and can say what changed in one of them.</li>
+      <li>Participants report a specific shift in obedience, generosity or clarity — named, not scored.</li>
+      <li>Steve's teaching becomes embedded in a system that can be run again without him in the room.</li>
+    </ul>
+    <div class="hrl"></div>
+    <h2>Three decisions, <em>in this order.</em></h2>
+    <ol class="steps">
+      <li><b>Thirty minutes with Steve</b><p>Before anything is commissioned. If nothing else on this page happens, that half hour is still worth having.</p></li>
+      <li><b>Commission the project</b><p>One hundred thousand dollars, delivered before Thanksgiving. We can begin the week it is approved, and the first two family conversations can be recorded before your next board meeting.</p></li>
+      <li><b>Revisit the rest in ninety days</b><p>By late November you will be holding a finished manuscript, six teachings, forty stories and a working assessment — a far better basis for deciding about the film series, an edition or the platform than any estimate written today.</p></li>
+    </ol>
+    <h4>What we would need</h4>
+    <p>Two things, both small. Access to the families willing to tell their stories — a list of names, and one note from Steve asking. And one person on your side who can say yes to a schedule without convening anyone.</p>
+  </div>
+  <div class="foot"><span>Next Steps</span><span>22</span></div>
+</div>
+
+<!-- 25 CLOSE -->
+<div class="pg teal">
+  <div class="body" style="display:flex;flex-direction:column;justify-content:center">
+    <div class="eyebrow">In Closing</div>
+    <div class="grule"></div>
+    <h2>This is not a publishing project. It is a <em>discipleship infrastructure</em> project.</h2>
+    <p>The Signatry means the one who signs. The vision is to write the last check to the last worker reaching the last unreached people group — and that check is only possible because, somewhere upstream, a family signed first and decided that what they held was not finally theirs.</p>
+    <p>A book will not change that arithmetic on its own. What it can do is put the decision in front of a family in the year they are actually making it — before the sale closes, before the documents are drafted, before the children have already decided what they think the money means.</p>
+    <div class="goldbar">
+      <p class="lede">The result is not readers. It is families who have made a decision together, advisors who have a reason to ask a better question, and a message that outlasts the room it is currently spoken in.</p>
+    </div>
+  </div>
+  <div class="foot"><span>LifeTogether for The Signatry &middot; August 2026</span><span>23</span></div>
+</div>
+
+</body>
+</html>

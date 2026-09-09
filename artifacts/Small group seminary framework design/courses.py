@@ -1,0 +1,548 @@
+# -*- coding: utf-8 -*-
+"""SmallGroupSeminary.com course catalog data.
+20 disciplines x 20 courses = 400 courses.
+Within each discipline: 6 Foundation (1xx), 8 Core (2xx), 6 Advanced (3xx).
+"""
+
+# (code_prefix, discipline name, status) status: "existing" | "new"
+DISCIPLINES = [
+    ("ST",   "Systematic Theology", "existing"),
+    ("OT",   "Old Testament", "existing"),
+    ("NT",   "New Testament", "existing"),
+    ("CH",   "Church History", "existing"),
+    ("HERM", "Hermeneutics &amp; Bible Study Methods", "existing"),
+    ("APOL", "Apologetics", "existing"),
+    ("HOM",  "Homiletics &amp; Teaching", "existing"),
+    ("PC",   "Pastoral Care &amp; Counseling", "existing"),
+    ("ETH",  "Christian Ethics &amp; Worldview", "existing"),
+    ("LEAD", "Church Leadership &amp; Missiology", "existing"),
+    ("BT",   "Biblical Theology &amp; Redemptive History", "new"),
+    ("SF",   "Spiritual Formation &amp; the Disciplines", "new"),
+    ("WOR",  "Worship &amp; the Life of the Church", "new"),
+    ("DIS",  "Discipleship &amp; Small Group Multiplication", "new"),
+    ("EV",   "Evangelism &amp; Personal Witness", "new"),
+    ("FAM",  "Marriage, Family &amp; Household Discipleship", "new"),
+    ("STW",  "Money, Work &amp; Vocation", "new"),
+    ("WR",   "World Religions &amp; Comparative Belief", "new"),
+    ("CT",   "Christian Thought &amp; the Great Tradition", "new"),
+    ("CULT", "Culture, Technology &amp; Digital Discernment", "new"),
+]
+
+BLURBS = {
+    "ST": "Doctrine as the church has confessed it, taught so an ordinary member can hold it, defend it, and pass it on.",
+    "OT": "Thirty-nine books, one story. Survey first, then book by book, then the theology that holds it together.",
+    "NT": "From the world Jesus entered to the last vision of Revelation, with every major book given its own course.",
+    "CH": "Twenty centuries of the church's memory, from the martyrs to the global south, read through primary sources.",
+    "HERM": "The competence that makes every other discipline possible: reading a passage well and knowing why.",
+    "APOL": "Honest answers to the objections your members are already hearing, taught with gentleness and respect.",
+    "HOM": "Preparation and delivery for pulpit, classroom, and living room. Teaching is a craft, and it can be learned.",
+    "PC": "The bedside, the kitchen table, and the crisis call. Care that is warm, wise, and knows its own limits.",
+    "ETH": "How Christians decide, applied to the questions that actually reach a pastor's desk.",
+    "LEAD": "Governance, vision, teams, and mission, from the elder board to the unreached peoples list.",
+    "BT": "The whole Bible read as one unfolding story, and the interpretive discipline that makes that reading responsible.",
+    "SF": "The practices by which a person is actually changed, drawn from Scripture and the historic traditions.",
+    "WOR": "What happens when the church gathers, why it is ordered that way, and how to lead it well.",
+    "DIS": "The LifeTogether core discipline: making disciples in community, and multiplying leaders who do the same.",
+    "EV": "Telling the good news in an ordinary week, and training a congregation to do it without fear.",
+    "FAM": "Marriage, parenting, singleness, and the household as the first place discipleship happens.",
+    "STW": "Ownership, work, calling, and generosity: the theology and the practice of money and vocation.",
+    "WR": "What the world's major religions and the newer secular faiths actually teach, and how to engage them fairly.",
+    "CT": "The Christian intellectual tradition, read slowly and in company, from Augustine to the modern self.",
+    "CULT": "Discernment for a screen-shaped age: attention, technology, artificial intelligence, and the digital household.",
+}
+
+COURSES = {}
+
+COURSES["ST"] = [
+    ("What Is Doctrine For?", "Why theology belongs to the whole church, not just the academy"),
+    ("The Doctrine of Scripture", "Inspiration, authority, sufficiency, and how we got the Bible"),
+    ("Who God Is", "The attributes and character of God"),
+    ("The Trinity", "One God, three persons, and why it matters on a Monday"),
+    ("Creation and Providence", "God's world, God's ongoing rule, and human freedom"),
+    ("Made in His Image", "A Christian doctrine of the human person"),
+    ("Sin and the Fall", "What went wrong, and how deep it goes"),
+    ("The Person of Christ", "Fully God, fully man, one Lord"),
+    ("The Work of Christ", "Atonement, resurrection, and what the cross accomplished"),
+    ("The Holy Spirit", "Person, presence, and power in the believer"),
+    ("Salvation Applied", "Calling, justification, adoption, and sanctification"),
+    ("The Doctrine of the Church", "Marks, membership, and mission"),
+    ("Baptism and the Lord's Supper", "The ordinances as the traditions have understood them"),
+    ("Last Things", "Death, return, judgment, and the new creation"),
+    ("Reading the Confessions", "Nicaea to Westminster, and why creeds still guard the church"),
+    ("Denominational Distinctives Side by Side", "Where faithful Christians disagree, and why"),
+    ("Calvinism and Arminianism", "A charitable walk through the oldest argument in evangelicalism"),
+    ("Covenant, Dispensation, and Kingdom", "Three ways of reading the whole Bible"),
+    ("Theological Method", "How to build a doctrine and test it against Scripture"),
+    ("Teaching Doctrine to a Congregation", "Turning systematic theology into a teaching series"),
+]
+
+COURSES["OT"] = [
+    ("The Story of the Old Testament", "One narrative from Eden to exile and back"),
+    ("Genesis 1 to 11", "Creation, fall, flood, and the nations"),
+    ("The Patriarchs", "Abraham, Isaac, Jacob, and the promise"),
+    ("Exodus and Sinai", "Rescue, covenant, and the law given"),
+    ("Israel in the Land", "Joshua, Judges, and the cost of compromise"),
+    ("Kings and Chronicles", "The rise and ruin of the monarchy"),
+    ("The Torah in Depth", "Leviticus, Numbers, and Deuteronomy for the ordinary reader"),
+    ("Psalms", "Praying the full range of human emotion"),
+    ("Wisdom Literature", "Proverbs, Ecclesiastes, and the fear of the Lord"),
+    ("Job and the Problem of Suffering", "Wrestling honestly with God"),
+    ("Isaiah", "The holiness of God and the servant who saves"),
+    ("Jeremiah and Lamentations", "Prophecy, judgment, and grief"),
+    ("Ezekiel and Daniel", "Visions in exile"),
+    ("The Twelve", "Hosea through Malachi in a single course"),
+    ("Exile and Return", "Ezra, Nehemiah, Esther, and rebuilding a people"),
+    ("Old Testament Theology", "Covenant, kingdom, temple, and presence as unifying threads"),
+    ("The Prophets and Justice", "What the prophets actually demanded of God's people"),
+    ("Ancient Near Eastern Background", "Culture, geography, and archaeology behind the text"),
+    ("Christ in the Old Testament", "Typology done carefully"),
+    ("Teaching the Old Testament", "Handling hard texts without flinching"),
+]
+
+COURSES["NT"] = [
+    ("The Story of the New Testament", "From the manger to the new Jerusalem"),
+    ("The World Jesus Entered", "Second temple Judaism, Rome, and Greek culture"),
+    ("Mark", "The shortest gospel and the servant King"),
+    ("Matthew", "The promised King and the new Israel"),
+    ("Luke", "Good news for those on the edges"),
+    ("John", "Believing in the Word made flesh"),
+    ("The Life of Christ Harmonized", "All four gospels in one chronology"),
+    ("The Parables", "How Jesus taught, and how to teach them"),
+    ("The Sermon on the Mount", "The ethics of the kingdom"),
+    ("Acts", "How the church actually spread"),
+    ("Romans", "The gospel explained"),
+    ("First and Second Corinthians", "A messy church and a patient apostle"),
+    ("The Prison and Freedom Letters", "Galatians, Ephesians, Philippians, Colossians"),
+    ("The Pastoral Epistles", "Leadership, order, and sound doctrine"),
+    ("Hebrews", "Better than everything that came before"),
+    ("James, Peter, John, and Jude", "Faith that works and truth that guards"),
+    ("Revelation", "Reading apocalyptic literature without fear or fantasy"),
+    ("Paul: Life, Mission, and Theology", "The man behind thirteen letters"),
+    ("New Testament Theology", "Kingdom, cross, Spirit, and church as unifying threads"),
+    ("Text and Canon", "Manuscripts, translation, and why we can trust it"),
+]
+
+COURSES["CH"] = [
+    ("Why History Matters for Discipleship", "Learning from the church that went before you"),
+    ("The Apostolic Church", "AD 30 to 150"),
+    ("Martyrs and Apologists", "Faith under an empire"),
+    ("The Councils", "Nicaea, Constantinople, Chalcedon, and orthodoxy defined"),
+    ("Augustine", "The mind that shaped the Western church"),
+    ("The Medieval Church", "Monasteries, scholastics, and popular faith"),
+    ("The Great Schism", "How East and West divided"),
+    ("The Reformation: Luther", "Justification recovered"),
+    ("The Reformation: Calvin and Geneva", "A city, a system, and a pastor"),
+    ("The Radical Reformation", "Believer's baptism and costly conviction"),
+    ("The Catholic Reformation", "Trent, the Jesuits, and the response"),
+    ("Puritans and Pietists", "Heart religion in England and Germany"),
+    ("The Great Awakenings", "Edwards, Wesley, Whitefield, and revival"),
+    ("The Modern Missionary Movement", "Carey to the twentieth century"),
+    ("The American Church", "Frontier, denomination, and revivalism"),
+    ("Fundamentalism and Evangelicalism", "Battles, splits, and the shaping of an identity"),
+    ("The Global Church Today", "Africa, Asia, and Latin America at the center"),
+    ("The Persecuted Church", "Then and now"),
+    ("Women in Church History", "Recovering the record"),
+    ("Working with Primary Sources", "Reading history in its own words"),
+]
+
+COURSES["HERM"] = [
+    ("How to Read the Bible for Yourself", "Observation, interpretation, application"),
+    ("Context Is King", "Historical, literary, and canonical setting"),
+    ("Genre Matters", "Reading narrative, poetry, law, letter, and prophecy differently"),
+    ("The Inductive Method", "A repeatable process for any passage"),
+    ("Word Studies Without Greek", "Using the tools honestly and avoiding the common errors"),
+    ("Choosing and Comparing Translations", "Why versions differ and which to use when"),
+    ("Interpreting Old Testament Narrative", "Story, character, and theology"),
+    ("Interpreting Poetry and Psalms", "Parallelism, imagery, and emotion"),
+    ("Interpreting the Prophets", "Near and far horizons"),
+    ("Interpreting the Gospels", "What Jesus meant then, and what it means now"),
+    ("Interpreting the Epistles", "Argument, occasion, and audience"),
+    ("Interpreting Apocalyptic", "Symbols, numbers, and restraint"),
+    ("From Text to Today", "Building a responsible bridge to application"),
+    ("Common Interpretive Mistakes", "Proof-texting, allegorizing, and reading yourself into the text"),
+    ("Greek Toolkit for the Layperson", "Alphabet, lexicons, and interlinears without a grammar course"),
+    ("Hebrew Toolkit for the Layperson", "Enough to use the tools well and know their limits"),
+    ("Biblical Theology as a Lens", "Reading any passage inside the whole story"),
+    ("Difficult and Disputed Passages", "Working carefully where the church disagrees"),
+    ("Building Your Study Library", "Commentaries, dictionaries, and software worth owning"),
+    ("Teaching Others to Study", "Multiplying interpretive skill inside your group"),
+]
+
+COURSES["APOL"] = [
+    ("Why Apologetics Is for Everyone", "Giving a reason, with gentleness and respect"),
+    ("Does God Exist?", "The classic arguments in plain language"),
+    ("Is the Bible Reliable?", "Manuscripts, archaeology, and honest questions"),
+    ("Did the Resurrection Happen?", "Evidence and explanation"),
+    ("The Problem of Evil and Suffering", "The hardest objection there is"),
+    ("Faith and Doubt", "Making room for honest questions inside the church"),
+    ("Science and Christian Faith", "Where the real conflicts are, and are not"),
+    ("Creation, Age, and Origins", "Mapping the Christian positions charitably"),
+    ("Miracles", "Can a rational person believe them?"),
+    ("The Exclusivity of Christ", "One way among many religions?"),
+    ("Answering the New Atheism", "Engaging the popular critics"),
+    ("Sexuality and the Christian Ethic", "Explaining conviction with compassion"),
+    ("The Church's Failures as an Objection", "Hypocrisy, abuse, and history"),
+    ("Cultural Apologetics", "Meeting the longings underneath the arguments"),
+    ("Apologetic Methods Compared", "Classical, evidential, and presuppositional"),
+    ("Conversational Apologetics", "Asking better questions than you answer"),
+    ("Apologetics with Skeptical Family", "The hardest audience, and the one you love most"),
+    ("Answering Deconstruction", "Walking with those on the way out"),
+    ("Objections from Other Faiths", "Islam, Judaism, and Eastern thought"),
+    ("Building an Apologetics Ministry", "Forums, classes, and a church that welcomes questions"),
+]
+
+COURSES["HOM"] = [
+    ("Anyone Can Teach the Bible", "Calling, confidence, and competence"),
+    ("From Passage to Point", "Finding the one thing the text says"),
+    ("Structuring a Lesson", "Opening, movement, and landing"),
+    ("Illustration and Story", "Making truth visible"),
+    ("Application That Lands", "Moving people from information to obedience"),
+    ("Delivery Basics", "Voice, presence, notes, and nerves"),
+    ("Expository Preaching", "Letting the text set the agenda"),
+    ("Preaching Narrative", "Teaching a story as a story"),
+    ("Preaching Psalms and Poetry", "Teaching to the affections"),
+    ("Preaching the Epistles", "Making an argument clear"),
+    ("Topical Teaching Done Faithfully", "Starting where people live and ending in the text"),
+    ("Building a Series", "Arc, pacing, and a year of teaching"),
+    ("Teaching in Small Groups", "Facilitation is not lecturing"),
+    ("Leading a Discussion", "Questions that open a room"),
+    ("Preaching Christ from All of Scripture", "Redemptive-historical teaching"),
+    ("Preaching Hard Subjects", "Judgment, sexuality, money, and suffering"),
+    ("Teaching Across Generations", "One text, three audiences"),
+    ("Getting Feedback and Getting Better", "Manuscript review, peer critique, and film"),
+    ("Teaching Online and Hybrid", "Camera, chat, and cohort"),
+    ("Developing Other Teachers", "An apprenticeship model for your church"),
+]
+
+COURSES["PC"] = [
+    ("The Ministry of Presence", "Showing up before you have answers"),
+    ("Listening Well", "The most underused pastoral skill"),
+    ("A Theology of Suffering", "What God is doing in pain"),
+    ("Grief and Loss", "Walking with the bereaved"),
+    ("Praying with People", "In hospitals, kitchens, and crises"),
+    ("Knowing Your Limits", "When to hand off to a licensed professional"),
+    ("Biblical Counseling Foundations", "Scripture, the heart, and how change happens"),
+    ("Anxiety and Depression", "Care that honors body and soul"),
+    ("Marriage Crisis Care", "The first conversations when a marriage is failing"),
+    ("Coming Alongside Overwhelmed Parents", "Care for families under strain"),
+    ("Addiction and Recovery", "Understanding compulsion and supporting change"),
+    ("Trauma-Informed Care", "Doing no further harm"),
+    ("Conflict and Reconciliation", "Confession, forgiveness, and restored relationship"),
+    ("Crisis Response Protocol", "Presence, safety, and immediate professional partnership"),
+    ("Hospital, Hospice, and End of Life", "The bedside ministry"),
+    ("Protecting the Vulnerable", "Disclosure, reporting duties, and putting safety first"),
+    ("Caring for the Caregiver", "Sustaining the people who carry others"),
+    ("Boundaries and Confidentiality in Lay Care", "Where the lines are and why they hold"),
+    ("Building a Congregational Care Team", "Structure, training, and oversight"),
+    ("Supervised Care Practicum", "Real cases, real supervision, real feedback"),
+]
+
+COURSES["ETH"] = [
+    ("What Is a Worldview?", "The story you are already living in"),
+    ("How Christians Decide", "Scripture, wisdom, conscience, and community"),
+    ("The Ten Commandments Today", "Ancient law, present obedience"),
+    ("Competing Worldviews", "Naturalism, individualism, and the therapeutic self"),
+    ("Truth, Honesty, and Integrity", "Ordinary ethics in ordinary life"),
+    ("Conscience", "Living with conviction and charity at the same time"),
+    ("The Sanctity of Life", "Beginning-of-life questions"),
+    ("End-of-Life Ethics", "Dying well in a medical age"),
+    ("Sexual Ethics", "Singleness, marriage, desire, and faithfulness"),
+    ("Marriage, Divorce, and Remarriage", "The pastoral and ethical map"),
+    ("Wealth, Poverty, and Justice", "What Scripture asks of the comfortable"),
+    ("Race and Reconciliation", "History, Scripture, and honest conversation"),
+    ("Work, Rest, and Sabbath", "Ordering a life"),
+    ("Christians and Government", "Citizenship, authority, and conscience"),
+    ("Bioethics and Emerging Technology", "Genetics, fertility, and enhancement"),
+    ("War, Violence, and Peacemaking", "Just war, pacifism, and self-defense"),
+    ("Creation Care", "Dominion and stewardship"),
+    ("Business Ethics", "Profit, people, and integrity under pressure"),
+    ("Political Theology Across Traditions", "Comparing the major Christian positions charitably"),
+    ("Case Study Ethics Lab", "Reasoning through real dilemmas in cohort"),
+]
+
+COURSES["LEAD"] = [
+    ("Servant Leadership", "Character before competence"),
+    ("Elders, Deacons, and Governance", "What the New Testament says and how traditions differ"),
+    ("The Church's Mission", "Why the church exists at all"),
+    ("Membership and Discipline", "Belonging that means something"),
+    ("Volunteers and Spiritual Gifts", "The right people in the right place"),
+    ("Meetings, Decisions, and Discernment", "Leading a group toward a decision"),
+    ("Vision, Values, and Strategy", "Naming where you are going"),
+    ("Leading Change", "Bringing a congregation with you"),
+    ("Conflict in the Church", "Diagnosing it and resolving it"),
+    ("Church Finances and Stewardship Leadership", "Budgets, generosity, and trust"),
+    ("Staff, Team, and Culture", "Building a healthy ministry team"),
+    ("Church Planting Foundations", "From launch team to first birthday"),
+    ("Missions Strategy for the Local Church", "Partnership over tourism"),
+    ("Contextualization", "The gospel in every culture without compromise"),
+    ("Unreached Peoples and Global Strategy", "Where the church is not yet"),
+    ("Short-Term Missions Done Right", "Helping without hurting"),
+    ("Urban and Multiethnic Ministry", "Leading in a mixed city"),
+    ("Succession and Legacy", "Handing off well"),
+    ("Leadership Failure and Restoration", "Accountability, power, and repentance"),
+    ("Supervised Leadership Practicum", "A real project, a real mentor, a real evaluation"),
+]
+
+COURSES["BT"] = [
+    ("The Whole Bible in One Story", "Creation, fall, redemption, restoration"),
+    ("Covenants", "The spine of Scripture"),
+    ("The Kingdom of God", "Already and not yet"),
+    ("Temple, Presence, and Dwelling", "God with his people"),
+    ("Promise and Fulfillment", "How the New Testament reads the Old"),
+    ("Christ at the Center", "Luke 24 as a reading method"),
+    ("Eden and New Creation", "The Bible's two bookends"),
+    ("Exile and Homecoming", "A pattern that runs the whole canon"),
+    ("Sacrifice and Priesthood", "From Leviticus to Hebrews"),
+    ("Kingship and Messiah", "David's throne and its heir"),
+    ("Law and Gospel", "Continuity, discontinuity, and the Christian and the law"),
+    ("Israel and the Church", "One people or two?"),
+    ("Wisdom Across the Canon", "Proverbs to Christ the wisdom of God"),
+    ("The Spirit Across the Canon", "From Genesis to Pentecost and beyond"),
+    ("Typology Done Carefully", "Finding Christ without inventing him"),
+    ("Themes You Can Teach", "Building a biblical theology series"),
+    ("Biblical and Systematic Theology Together", "How the two disciplines serve each other"),
+    ("The Bible in a Year, With Understanding", "A guided canonical journey"),
+    ("Schools of Biblical Theology", "Covenantal, dispensational, progressive covenantal, new covenant"),
+    ("Teaching the Storyline to a Church", "Making the whole Bible feel like one book"),
+]
+
+COURSES["SF"] = [
+    ("What Formation Is", "Becoming like Christ over a lifetime"),
+    ("Scripture Intake", "Reading, meditating, memorizing"),
+    ("Prayer", "Learning to talk with God"),
+    ("Silence, Solitude, and Stillness", "Practices for a loud life"),
+    ("Fasting and Simplicity", "Saying no in order to say yes"),
+    ("Worship as a Daily Practice", "Ordering the ordinary"),
+    ("The Fruit of the Spirit", "Character as the real evidence"),
+    ("Confession and Repentance", "The practice that keeps a heart soft"),
+    ("Sabbath and Rest", "Rhythm as discipleship"),
+    ("Generosity as a Discipline", "What money does to a heart"),
+    ("Hospitality and Service", "Formation that only happens with others"),
+    ("Gratitude and Lament", "Two practices most Christians only do halfway"),
+    ("Discernment", "Hearing God without only hearing yourself"),
+    ("Temptation and Spiritual Warfare", "Realism without obsession"),
+    ("The Classics of Christian Devotion", "Augustine, Bernard, a Kempis, Teresa, Baxter"),
+    ("Traditions of Formation", "Contemplative, holiness, charismatic, evangelical, incarnational"),
+    ("Spiritual Dryness", "When God feels absent"),
+    ("Writing a Rule of Life", "Naming your practices and keeping them"),
+    ("Spiritual Direction and Soul Friendship", "Accompanying another person's formation"),
+    ("Formation in Community", "Designing a group that actually forms people"),
+]
+
+COURSES["WOR"] = [
+    ("A Theology of Worship", "Who we gather for, and why"),
+    ("The Shape of a Service", "Why the order matters"),
+    ("Scripture in Worship", "Reading, praying, and singing the Bible"),
+    ("Corporate Prayer", "Leading a room to God"),
+    ("Music and the Congregation", "Choosing songs that teach"),
+    ("Baptism and the Table in Practice", "Administering the ordinances well"),
+    ("The Church Calendar", "Advent to Pentecost as a formation tool"),
+    ("Preaching and Worship Together", "One service, one aim"),
+    ("Lament in Worship", "Making room for grief in the gathering"),
+    ("Worship Across Cultures", "Global song in a local congregation"),
+    ("Weddings", "Theology, planning, and the ceremony"),
+    ("Funerals", "Grieving with hope"),
+    ("Membership and Baptism Classes", "Teaching the entry points"),
+    ("Technology in Worship", "Sound, screens, and streaming without distraction"),
+    ("The History of Christian Worship", "Synagogue to livestream"),
+    ("Hymnody and Theology", "What the church has sung, and why"),
+    ("Building a Worship Team", "Auditions, rehearsals, and pastoral care"),
+    ("Liturgy for Homes and Small Groups", "Table and household worship"),
+    ("Worship and Formation", "How gathered practice shapes belief"),
+    ("Planning a Year of Worship", "Series, seasons, and rhythms"),
+]
+
+COURSES["DIS"] = [
+    ("What a Disciple Is", "Jesus' definition, not ours"),
+    ("The Great Commission as Church Strategy", "Making disciples, not attenders"),
+    ("Life Together", "The biblical case for small groups"),
+    ("Leading Your First Group", "The first six weeks"),
+    ("Asking Good Questions", "The core skill of a group leader"),
+    ("The Group Covenant", "Agreements that make honesty possible"),
+    ("The Five Biblical Purposes in a Group", "Fellowship, discipleship, ministry, evangelism, worship"),
+    ("Group Dynamics", "Silence, dominance, conflict, and drift"),
+    ("Discipling One to One", "The pair as the smallest classroom"),
+    ("Apprenticeship", "Raising the next leader from inside the group"),
+    ("Multiplication", "Birthing a group without breaking a group"),
+    ("Choosing and Adapting Curriculum", "Picking a study and making it fit"),
+    ("Care Within the Group", "When a member's life falls apart"),
+    ("Groups and the Church", "Alignment, reporting, and coaching structures"),
+    ("Church-Wide Campaigns", "Aligning the pulpit, the group, and the home"),
+    ("Coaching Group Leaders", "Building a coaching layer that lasts"),
+    ("Groups by Life Stage", "Men, women, couples, singles, seniors, students"),
+    ("Missional Groups", "Groups that serve outward"),
+    ("Assessing Discipleship", "Measuring what actually matters"),
+    ("Building a Group System from Scratch", "A twelve-month plan for a church"),
+]
+
+COURSES["EV"] = [
+    ("Why We Tell", "A theology of evangelism"),
+    ("Your Story", "Learning to tell it in three minutes"),
+    ("The Gospel in Plain Words", "Explaining it without jargon"),
+    ("Everyday Evangelism", "Neighbors, coworkers, and an ordinary week"),
+    ("Praying for the Lost", "Persistence and hope"),
+    ("Getting Past the Freeze", "Fear, awkwardness, and the first sentence"),
+    ("Conversational Evangelism", "Listening your way to the gospel"),
+    ("The Five Objections You Will Hear Most", "Answers you can actually remember"),
+    ("Evangelism and Hospitality", "The table as an open door"),
+    ("Reaching the Nominally Christian", "People who think they already believe"),
+    ("Reaching the De-Churched", "Those who left, and why"),
+    ("Cross-Cultural Witness at Home", "The nations in your neighborhood"),
+    ("Word and Deed Together", "Evangelism and mercy ministry"),
+    ("Leading Someone to Christ", "The conversation, and what comes next"),
+    ("Discipling a New Believer", "The first ninety days"),
+    ("Evangelism Through Groups", "Open groups and a culture of invitation"),
+    ("Digital Witness", "Sharing faith online without becoming a caricature"),
+    ("Workplace Witness", "Integrity, wisdom, and appropriate boundaries"),
+    ("Training a Church to Share Its Faith", "Building a culture, not an event"),
+    ("Supervised Outreach Practicum", "Real conversations with real feedback"),
+]
+
+COURSES["FAM"] = [
+    ("A Theology of Marriage", "Covenant, not contract"),
+    ("A Theology of the Family", "The household as the first church"),
+    ("Communication and Conflict in Marriage", "Skill and repentance together"),
+    ("Intimacy and Faithfulness", "Guarding a marriage"),
+    ("Money in Marriage", "The most common fight"),
+    ("Parenting Foundations", "Discipline, discipleship, and grace"),
+    ("Family Worship", "Simple practices that actually last"),
+    ("Discipling Young Children", "Teaching a five-year-old about God"),
+    ("Discipling Teenagers", "Presence, autonomy, and honest faith"),
+    ("Launching Adult Children", "Letting go well"),
+    ("Singleness", "A full life and a full calling"),
+    ("Blended and Step Families", "Complexity, patience, and grace"),
+    ("Divorce and Separation", "Pastoral care in the ruins"),
+    ("Caring for Aging Parents", "The sandwich decade"),
+    ("Infertility, Miscarriage, and Adoption", "Ministering in the hardest family grief"),
+    ("Family Systems and Generational Patterns", "What gets passed down"),
+    ("The Family Legacy Conversation", "Values, story, and blessing across generations"),
+    ("Marriage Mentoring", "Training couples to help couples"),
+    ("Premarital Counseling", "Leading a couple through preparation"),
+    ("Building a Family Ministry", "Aligning church, home, and next generation"),
+]
+
+COURSES["STW"] = [
+    ("God Owns It All", "A theology of ownership and stewardship"),
+    ("A Theology of Work", "Why your job matters to God"),
+    ("Calling and Vocation", "Discerning what you are for"),
+    ("Money Basics for Christians", "Earning, giving, saving, spending, owing"),
+    ("Generosity", "The joy and the discipline"),
+    ("Contentment", "Fighting comparison and consumer desire"),
+    ("Debt and Freedom", "Getting out and staying out"),
+    ("Budgeting and Household Planning", "A plan you will actually follow"),
+    ("Saving, Investing, and Risk", "Wisdom rather than speculation"),
+    ("Giving Beyond the Tithe", "Percentage, planned, and spontaneous"),
+    ("Work and Rest", "Ambition, burnout, and sabbath"),
+    ("Integrity at Work", "Pressure, compromise, and courage"),
+    ("Business as Ministry", "Redemptive work in the marketplace"),
+    ("Ambition Without Losing Your Soul", "Wanting more, rightly"),
+    ("Wealth and the Soul", "Pastoral care for the prosperous"),
+    ("Inheritance and Legacy Giving", "Passing on both money and values"),
+    ("Poverty, Charity, and Development", "Helping without hurting"),
+    ("Church Stewardship Campaigns", "Teaching generosity to a congregation"),
+    ("Financial Coaching Skills", "Sitting down with a household in trouble"),
+    ("Vocation Across a Lifetime", "Career change, retirement, and the second half"),
+]
+
+COURSES["WR"] = [
+    ("How to Study Another Religion", "Fairly, accurately, and without fear"),
+    ("Judaism", "Roots, relationship, and respect"),
+    ("Islam", "Beliefs, practices, and conversation"),
+    ("Hinduism", "Many gods, many paths"),
+    ("Buddhism", "Suffering, desire, and the self"),
+    ("Secularism and the Nones", "The fastest-growing group in the West"),
+    ("Mormonism", "History, doctrine, and points of contact"),
+    ("Jehovah's Witnesses", "Doctrine and conversation"),
+    ("Spirituality Without Religion", "The sacred self and the new spiritualities"),
+    ("Folk Religion and Syncretism", "What people actually practice"),
+    ("High-Control Groups", "Recognizing them and caring for those leaving"),
+    ("Atheism and Agnosticism", "The varieties of unbelief"),
+    ("Orthodoxy and Roman Catholicism", "Understanding other Christian traditions honestly"),
+    ("Progressive Christianity", "Where the disagreements actually lie"),
+    ("Comparative Theology", "God, salvation, and scripture side by side"),
+    ("Interfaith Dialogue", "Conviction and civility together"),
+    ("Religion, Culture, and Public Life", "Where belief meets politics"),
+    ("Reaching Immigrant Communities", "Hospitality across religions"),
+    ("Befriending Your Muslim, Jewish, and Hindu Neighbors", "Practical friendship"),
+    ("Teaching World Religions in the Church", "A course your congregation needs"),
+]
+
+COURSES["CT"] = [
+    ("Why Christians Should Think", "Loving God with your mind"),
+    ("Logic and Clear Thinking", "Arguments, fallacies, and charity"),
+    ("The Big Questions", "Truth, beauty, goodness, being"),
+    ("Greek Philosophy and the Church", "Plato, Aristotle, and Christian borrowing"),
+    ("Augustine's Confessions", "Reading one classic slowly"),
+    ("Faith Seeking Understanding", "Boethius, Anselm, and Aquinas"),
+    ("Reformation Thought", "Luther, Calvin, and the recovery of Scripture"),
+    ("The Enlightenment and Its Challenge", "Reason, autonomy, and doubt"),
+    ("Pascal", "The heart, the wager, and the human condition"),
+    ("Kierkegaard", "Anxiety, leap, and sincerity"),
+    ("Modernism, Postmodernism, and Truth", "How we got here"),
+    ("C. S. Lewis", "Apologist, storyteller, moralist"),
+    ("Bonhoeffer", "Costly discipleship under tyranny"),
+    ("The Christian Imagination", "Chesterton, Sayers, and wit as witness"),
+    ("Christianity and the Arts", "Beauty as theology"),
+    ("Literature as Formation", "Dante, Dostoevsky, O'Connor, Eliot"),
+    ("Philosophy of Religion", "Knowledge, faith, and rationality"),
+    ("Expressive Individualism", "The modern self and the church's answer"),
+    ("Reading Difficult Books Together", "A method for cohort reading"),
+    ("A Christian Intellectual Life", "Habits of a thinking believer"),
+]
+
+COURSES["CULT"] = [
+    ("Reading the Culture", "Discernment as a discipleship skill"),
+    ("Attention", "The most contested resource of your life"),
+    ("Social Media and the Soul", "Comparison, outrage, and identity"),
+    ("Smartphones and the Household", "Practices for a connected family"),
+    ("Truth, Misinformation, and Outrage", "Christian honesty online"),
+    ("Christian Presence Online", "Witness without warfare"),
+    ("Artificial Intelligence: What It Is", "A plain-language primer for the church"),
+    ("AI and the Image of God", "What makes a person a person"),
+    ("AI as a Ministry Tool", "Stewardship, honesty, and disclosure"),
+    ("Screens and Children", "Ages, stages, and limits"),
+    ("Pornography and Digital Sexuality", "Understanding, care, and recovery"),
+    ("Gaming, Streaming, and Leisure", "Rest, escape, and moderation"),
+    ("Loneliness in a Connected Age", "The church as the antidote"),
+    ("Privacy, Surveillance, and Data", "Christian ethics for a tracked life"),
+    ("Technology and the Body", "Presence, place, and the incarnation"),
+    ("Media Literacy for Disciples", "Evaluating what you consume"),
+    ("Digital Ministry Strategy", "Online church, hybrid groups, and their limits"),
+    ("Transhumanism and Enhancement", "The next ethical frontier"),
+    ("Work, Automation, and Vocation", "When jobs change fast"),
+    ("Leading a Digital Discernment Class", "Teaching your church to think about technology"),
+]
+
+
+def codes_for(prefix):
+    """Return the 20 course codes in registrar order."""
+    out = []
+    for i in range(6):
+        out.append("%s %d" % (prefix, 101 + i))
+    for i in range(8):
+        out.append("%s %d" % (prefix, 201 + i))
+    for i in range(6):
+        out.append("%s %d" % (prefix, 301 + i))
+    return out
+
+
+TIERS = ["Foundation"] * 6 + ["Core"] * 8 + ["Advanced"] * 6
+
+
+def validate():
+    assert len(DISCIPLINES) == 20, len(DISCIPLINES)
+    total = 0
+    for prefix, name, _ in DISCIPLINES:
+        assert prefix in COURSES, "missing %s" % prefix
+        assert prefix in BLURBS, "missing blurb %s" % prefix
+        n = len(COURSES[prefix])
+        assert n == 20, "%s has %d" % (prefix, n)
+        total += n
+    return total
+
+
+if __name__ == "__main__":
+    print("disciplines:", len(DISCIPLINES))
+    print("courses:", validate())
+    new = [d for d in DISCIPLINES if d[2] == "new"]
+    print("new disciplines:", len(new))

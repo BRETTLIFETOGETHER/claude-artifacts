@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products &amp; Packages · LifeTogether</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f1a2e; --navy-mid:#162035; --navy-light:#1e2d4a;
+    --gold:#c9a84c; --gold-light:#e2c97e; --gold-pale:#f0dfa0;
+    --cream:#f5f0e8; --cream-dark:#ede4d2;
+    --text-light:#d4c9b8; --text-muted:#9aa7c2;
+    --white:#ffffff;
+    --forest:#16261a; --plum:#201229; --teal:#0d211f; --umber:#221207;
+  }
+  *{margin:0; padding:0; box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Lato', sans-serif; background:var(--navy); color:var(--cream); line-height:1.6; font-size:16px;}
+  h1,h2,h3{font-family:'Playfair Display', serif; font-weight:700;}
+  em{font-style:italic; color:var(--gold-light);}
+  a{color:inherit;}
+
+  .cover{
+    min-height:92vh; background:var(--navy); display:flex; flex-direction:column;
+    justify-content:center; align-items:flex-start; padding:80px 32px 60px;
+    position:relative; overflow:hidden;
+  }
+  .cover::before{
+    content:''; position:absolute; top:0; right:0; width:50%; height:100%;
+    background:linear-gradient(135deg, var(--navy-light) 0%, #0a1220 100%);
+    clip-path:polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .cover::after{
+    content:''; position:absolute; bottom:0; left:0; width:100%; height:3px;
+    background:linear-gradient(90deg, var(--gold) 0%, var(--gold-pale) 50%, transparent 100%);
+  }
+  .cover-eyebrow{font-size:11px; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:26px; position:relative; z-index:1;}
+  .cover h1{font-size:clamp(32px,5.6vw,54px); line-height:1.15; color:var(--white); max-width:680px; position:relative; z-index:1;}
+  .cover-sub{font-family:'Cormorant Garamond', serif; font-weight:300; font-size:19px; color:var(--text-light); max-width:580px; margin-top:26px; line-height:1.6; position:relative; z-index:1;}
+  .cover-stats{display:flex; gap:40px; margin-top:44px; position:relative; z-index:1; flex-wrap:wrap;}
+  .cover-stat-num{font-family:'Playfair Display', serif; font-size:26px; color:var(--gold-light);}
+  .cover-stat-label{font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-muted); margin-top:4px; max-width:170px;}
+
+  section.block{padding:70px 32px;}
+  .bg-navy{background:var(--navy);} .bg-navy-mid{background:var(--navy-mid);}
+  .bg-forest{background:var(--forest);} .bg-plum{background:var(--plum);}
+  .bg-teal{background:var(--teal);} .bg-umber{background:var(--umber);}
+  .block-inner{max-width:980px; margin:0 auto;}
+  .section-eyebrow{font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--gold);}
+  .section-title{font-size:clamp(25px,4vw,36px); color:var(--white); margin-top:14px; max-width:660px;}
+  .section-lede{font-family:'Cormorant Garamond', serif; font-weight:300; font-size:18px; color:var(--text-light); max-width:660px; margin-top:16px; line-height:1.65;}
+  .center{text-align:center;} .mx-auto{margin-left:auto; margin-right:auto;}
+
+  /* MODEL CARDS */
+  .model-grid{display:grid; grid-template-columns:1fr; gap:18px; margin-top:36px;}
+  .model-card{border:1px solid rgba(201,168,76,0.3); padding:26px 24px; background:rgba(255,255,255,0.02);}
+  .model-card .m-eyebrow{font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); font-weight:700;}
+  .model-card h3{font-size:20px; color:var(--white); margin:10px 0 8px;}
+  .model-card p{font-family:'Cormorant Garamond', serif; font-size:16px; color:var(--text-light); font-weight:300; line-height:1.6;}
+  .model-card .how{margin-top:12px; font-size:12px; color:var(--text-muted); letter-spacing:0.3px;}
+  @media(min-width:860px){ .model-grid{grid-template-columns:1fr 1fr 1fr;} }
+
+  /* OFFERING LIST */
+  .offer-list{list-style:none; margin-top:30px; max-width:700px;}
+  .offer-item{padding:16px 0; border-bottom:1px solid rgba(201,168,76,0.16);}
+  .offer-item:last-child{border-bottom:none;}
+  .offer-item .name{font-family:'Playfair Display', serif; font-style:italic; font-size:19px; color:var(--white);}
+  .offer-item .desc{font-family:'Cormorant Garamond', serif; font-size:16px; color:var(--text-light); font-weight:300; margin-top:4px;}
+
+  /* PACKAGE CARDS */
+  .package-grid{display:grid; grid-template-columns:1fr; gap:22px; margin-top:40px;}
+  .package-card{
+    border:1px solid rgba(201,168,76,0.3); padding:32px 28px; position:relative;
+    background:rgba(255,255,255,0.02);
+  }
+  .package-card.featured{
+    border-color:var(--gold);
+    background:linear-gradient(135deg, rgba(201,168,76,0.12) 0%, rgba(201,168,76,0.04) 100%);
+  }
+  .package-badge{
+    position:absolute; top:-13px; left:28px; background:var(--gold); color:var(--navy);
+    font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    padding:5px 12px;
+  }
+  .package-card .p-name{font-size:24px; color:var(--white); font-style:italic; font-weight:400;}
+  .package-card .p-for{font-family:'Lato'; font-size:12.5px; color:var(--text-muted); margin-top:8px; letter-spacing:0.3px;}
+  .package-card .p-price{font-family:'Playfair Display', serif; font-size:15px; color:var(--gold-light); margin-top:16px; letter-spacing:0.5px;}
+  .package-includes{list-style:none; margin-top:20px;}
+  .package-includes li{
+    padding:9px 0; font-family:'Cormorant Garamond', serif; font-size:16px; color:var(--cream-dark);
+    display:flex; gap:10px; border-bottom:1px dotted rgba(201,168,76,0.14);
+  }
+  .package-includes li:last-child{border-bottom:none;}
+  .package-includes li::before{content:'✓'; color:var(--gold); flex-shrink:0;}
+  .package-includes li.inherit{color:var(--text-muted); font-style:italic;}
+  .package-includes li.inherit::before{content:'—'; color:var(--text-muted);}
+  @media(min-width:900px){ .package-grid{grid-template-columns:1fr 1fr 1fr;} }
+
+  /* ADD-ONS */
+  .addon-grid{display:grid; grid-template-columns:1fr; gap:18px; margin-top:34px;}
+  .addon-card{border:1px dashed rgba(201,168,76,0.35); padding:24px 22px;}
+  .addon-card .a-tag{font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); font-weight:700;}
+  .addon-card h3{font-size:19px; color:var(--white); margin:8px 0 8px; font-style:italic; font-weight:400;}
+  .addon-card p{font-family:'Cormorant Garamond', serif; font-size:15.5px; color:var(--text-light); font-weight:300; line-height:1.6;}
+  @media(min-width:760px){ .addon-grid{grid-template-columns:1fr 1fr;} }
+
+  .divider{height:1px; background:linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent); margin:50px auto 0; max-width:120px;}
+
+  .colophon{background:var(--navy); padding:80px 32px; text-align:center;}
+  .colophon h2{color:var(--white); font-size:clamp(26px,4.2vw,38px); max-width:560px; margin:0 auto; line-height:1.3;}
+  .colophon .gold-rule{width:60px; height:2px; background:var(--gold); margin:26px auto;}
+  .colophon p.sub{font-family:'Cormorant Garamond', serif; font-weight:300; font-size:18px; color:var(--text-light); max-width:480px; margin:0 auto 32px; line-height:1.6;}
+  .cta-btn{display:inline-block; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--navy); background:var(--gold); padding:16px 34px; text-decoration:none;}
+  .cta-sub{margin-top:18px; font-size:11px; letter-spacing:1px; color:var(--text-muted);}
+
+  @media(min-width:720px){
+    .cover{padding:110px 90px 80px;}
+    section.block{padding:90px 80px;}
+    .colophon{padding:100px 80px;}
+  }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <p class="cover-eyebrow">Products &amp; Packages · LifeTogether Ministry Intelligence</p>
+  <h1>One system.<br>Every way your church can use it.</h1>
+  <p class="cover-sub">A menu of individual products, built three different ways — service, software, and licensed content — bundled into three packages that grow with your church.</p>
+  <div class="cover-stats">
+    <div><div class="cover-stat-num">3</div><div class="cover-stat-label">Ways We Work — Service, Software, Licensing</div></div>
+    <div><div class="cover-stat-num">10+</div><div class="cover-stat-label">Named Products &amp; Tools</div></div>
+    <div><div class="cover-stat-num">3</div><div class="cover-stat-label">Package Tiers, One Growth Path</div></div>
+  </div>
+</section>
+
+<section class="block bg-navy-mid">
+  <div class="block-inner">
+    <p class="section-eyebrow">How We Work</p>
+    <h2 class="section-title">Three business models. One relationship.</h2>
+    <p class="section-lede">Not everything we build for you works the same way — and pricing follows the model, not a single one-size-fits-all fee.</p>
+    <div class="model-grid">
+      <div class="model-card">
+        <span class="m-eyebrow">Service</span>
+        <h3>Built By Our Team</h3>
+        <p>Hands-on work scoped to your church: library builds, legacy preservation, churchwide alignment, custom campaigns.</p>
+        <div class="how">Priced per project or as an ongoing retainer.</div>
+      </div>
+      <div class="model-card">
+        <span class="m-eyebrow">Software</span>
+        <h3>Tools You Use Every Week</h3>
+        <p>The Sermon Intelligence workspace — finding, curating, building, and multiplying your message, every single week.</p>
+        <div class="how">Priced as a subscription, by church size.</div>
+      </div>
+      <div class="model-card">
+        <span class="m-eyebrow">Licensing</span>
+        <h3>Ready to Adapt</h3>
+        <p>Our 2,900+ campaign and curriculum library — proven titles and formats, licensed for your church to adapt and use.</p>
+        <div class="how">Priced per title, per campaign, or via subscription access.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block bg-forest">
+  <div class="block-inner">
+    <p class="section-eyebrow">Service Offerings</p>
+    <h2 class="section-title">Built for you, by our team.</h2>
+    <ul class="offer-list">
+      <li class="offer-item"><div class="name">Pastor's Library Project</div><div class="desc">We catalog and index your entire preaching archive into one searchable library.</div></li>
+      <li class="offer-item"><div class="name">Legacy Library Project™</div><div class="desc">Full preservation of a lifetime of ministry — for senior pastors, retiring pastors, and ministry founders.</div></li>
+      <li class="offer-item"><div class="name">Church Formation System™</div><div class="desc">Ongoing strategic alignment across preaching, groups, families, and leadership.</div></li>
+      <li class="offer-item"><div class="name">Campaign Builder™ (Custom Track)</div><div class="desc">Hands-on development of a full churchwide campaign from your strongest sermon series.</div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="block bg-teal">
+  <div class="block-inner">
+    <p class="section-eyebrow">Software Offerings</p>
+    <h2 class="section-title">Tools your team uses every week.</h2>
+    <ul class="offer-list">
+      <li class="offer-item"><div class="name">Sermon Finder™</div><div class="desc">Discover themes, Scriptures, and pathways that fit what your church needs right now.</div></li>
+      <li class="offer-item"><div class="name">Sermon Curator™</div><div class="desc">Organize years of preaching into one searchable ministry knowledge base.</div></li>
+      <li class="offer-item"><div class="name">Sermon Builder™</div><div class="desc">Develop stronger messages without losing your authentic pastoral voice.</div></li>
+      <li class="offer-item"><div class="name">Sermon Accelerator™</div><div class="desc">Move from sermon concept to complete implementation in dramatically less time.</div></li>
+      <li class="offer-item"><div class="name">Sermon Multiplier™</div><div class="desc">Transform one sermon into curriculum, devotionals, and digital experiences.</div></li>
+      <li class="offer-item"><div class="name">Message to Movement™</div><div class="desc">Coordinate preaching, groups, families, and leadership around one churchwide journey.</div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="block bg-plum">
+  <div class="block-inner">
+    <p class="section-eyebrow">Licensed Content</p>
+    <h2 class="section-title">Proven titles, ready to adapt.</h2>
+    <ul class="offer-list">
+      <li class="offer-item"><div class="name">The Campaign &amp; Curriculum Library</div><div class="desc">2,900+ titles across 40-Day, 30-Day, 21-Day, and 7-Day formats, spanning 30+ categories.</div></li>
+      <li class="offer-item"><div class="name">Ministry Intelligence Framework</div><div class="desc">The Pastor Intelligence + Church Intelligence + LifeTogether Intelligence methodology, licensed for training your own team.</div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="block bg-umber">
+  <div class="block-inner">
+    <p class="section-eyebrow">The Package Ladder</p>
+    <h2 class="section-title">Three tiers. One growth path.</h2>
+    <p class="section-lede">Every package builds on the last — nothing you outgrow gets thrown away.</p>
+
+    <div class="package-grid">
+      <div class="package-card">
+        <div class="p-name">Foundation</div>
+        <div class="p-for">For single-campus churches getting started</div>
+        <div class="p-price">Custom Quote — Contact Us</div>
+        <ul class="package-includes">
+          <li>Pastor's Library Project (self-serve)</li>
+          <li>Sermon Finder™ + Sermon Curator™</li>
+          <li>Limited access to the Campaign &amp; Curriculum Library</li>
+        </ul>
+      </div>
+
+      <div class="package-card featured">
+        <span class="package-badge">Most Popular</span>
+        <div class="p-name">Growth</div>
+        <div class="p-for">For churches running 2–4 campaigns a year</div>
+        <div class="p-price">Custom Quote — Contact Us</div>
+        <ul class="package-includes">
+          <li class="inherit">Everything in Foundation</li>
+          <li>Sermon Builder™ + Sermon Accelerator™</li>
+          <li>Full Campaign &amp; Curriculum Library subscription</li>
+          <li>Message to Movement™ alignment tool</li>
+        </ul>
+      </div>
+
+      <div class="package-card">
+        <div class="p-name">Movement</div>
+        <div class="p-for">For multisite churches &amp; larger ministries</div>
+        <div class="p-price">Custom Quote — Contact Us</div>
+        <ul class="package-includes">
+          <li class="inherit">Everything in Growth</li>
+          <li>Sermon Multiplier™</li>
+          <li>Church Formation System™</li>
+          <li>White-glove Pastor Library curation</li>
+          <li>Priority access to Campaign Builder™</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block bg-navy">
+  <div class="block-inner">
+    <p class="section-eyebrow">Available at Any Tier</p>
+    <h2 class="section-title">Add-Ons</h2>
+    <div class="addon-grid">
+      <div class="addon-card">
+        <span class="a-tag">Legacy Preservation</span>
+        <h3>Legacy Library Project™</h3>
+        <p>Custom-quoted, one-time engagement to preserve an entire lifetime of ministry.</p>
+      </div>
+      <div class="addon-card">
+        <span class="a-tag">Custom Development</span>
+        <h3>Campaign Builder™</h3>
+        <p>Project-based development of a custom churchwide campaign, for churches who need it beyond their subscription.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="colophon">
+  <h2>Let's find the right place to start.</h2>
+  <div class="gold-rule"></div>
+  <p class="sub">One conversation is enough to see which package fits — and to start with the Pastor's Library, no matter which tier you land on.</p>
+  <a href="mailto:hello@lifetogetherministries.com" class="cta-btn">Talk Through Packages</a>
+  <p class="cta-sub">hello@lifetogetherministries.com &nbsp;·&nbsp; lifetogetherministries.com</p>
+</div>
+
+</body>
+</html>

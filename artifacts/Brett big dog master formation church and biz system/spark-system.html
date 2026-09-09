@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SPARK &middot; Life Change Engine &middot; LifeTogether</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#c9a84c;--glt:#e2c97e;--gdk:#8a6e30;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lato',sans-serif;background:#0e0c14;color:#f0ece0;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(5,3,11,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:stretch;padding:0 16px;overflow-x:auto;}
+.nbr{display:flex;flex-direction:column;justify-content:center;padding:9px 14px 9px 0;margin-right:6px;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.nbr-t{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--g);line-height:1;}
+.nbr-s{font-size:5.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;margin-top:2px;}
+.nt{padding:0 11px;font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.25);display:flex;align-items:center;white-space:nowrap;background:none;font-family:'Lato',sans-serif;transition:all .12s;flex-shrink:0;}
+.nt:hover{color:rgba(255,255,255,.6);}
+.nt.on{color:var(--g);border-bottom-color:var(--g);}
+.ntag{margin-left:auto;font-size:5.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--gdk);border:1px solid rgba(201,168,76,.18);padding:3px 7px;flex-shrink:0;align-self:center;}
+
+.pnl{display:none;}
+.pnl.on{display:block;}
+
+.hero{background:linear-gradient(160deg,#050310,#090615 50%,#050310);padding:54px 24px 42px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 70%,rgba(201,168,76,.09),transparent 50%),radial-gradient(ellipse at 80% 30%,rgba(90,80,180,.07),transparent 50%);}
+.hpre{font-size:7px;letter-spacing:5px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.5);display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:18px;position:relative;}
+.hpre::before,.hpre::after{content:'';width:28px;height:1px;background:rgba(201,168,76,.28);}
+.h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6.5vw,84px);font-weight:400;line-height:.85;color:#fff;letter-spacing:-3px;margin-bottom:15px;position:relative;}
+.h1 em{font-style:italic;color:var(--g);}
+.hsub{font-family:'Playfair Display',serif;font-size:clamp(13px,1.8vw,18px);font-weight:300;font-style:italic;color:rgba(195,178,148,.68);max-width:620px;margin:0 auto 28px;line-height:1.55;position:relative;}
+.brow{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:26px;position:relative;}
+.bp{padding:6px 13px;border:1px solid;font-size:8px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);max-width:760px;margin:0 auto;border:1px solid rgba(201,168,76,.13);position:relative;}
+.st{padding:13px 6px;border-right:1px solid rgba(201,168,76,.09);text-align:center;}
+.st:last-child{border-right:none;}
+.st-n{font-family:'Playfair Display',serif;font-size:21px;color:var(--g);display:block;line-height:1;}
+.st-l{font-size:5px;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.15);font-weight:700;display:block;margin-top:3px;}
+
+.sec{padding:40px 24px;background:#09070f;}
+.skk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.5);display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.skk::before{content:'';width:13px;height:1px;background:rgba(201,168,76,.38);}
+.sh{font-family:'Playfair Display',serif;font-size:clamp(22px,3.6vw,44px);font-weight:400;color:#fff;line-height:.9;margin-bottom:9px;}
+.sh em{font-style:italic;color:var(--g);}
+.ssub{font-size:11.5px;color:rgba(255,255,255,.34);max-width:700px;line-height:1.72;margin-bottom:22px;}
+
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.g7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+.card{padding:16px 14px;border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:background .1s;}
+.card:hover,.card.on{background:rgba(255,255,255,.045);}
+.c-ic{font-size:19px;display:block;margin-bottom:7px;}
+.c-lb{font-size:6.5px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.2);display:block;margin-bottom:4px;}
+.c-nm{font-family:'Playfair Display',serif;font-size:14px;font-style:italic;margin-bottom:4px;line-height:1.2;}
+.c-tg{font-size:9px;color:rgba(255,255,255,.35);line-height:1.4;}
+
+.det{display:none;background:#100e1c;border:1px solid rgba(255,255,255,.08);padding:22px 26px;margin:5px 0;}
+.det.on{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.dlbl{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.2);display:block;margin-bottom:7px;margin-top:12px;}
+.dlbl:first-child{margin-top:0;}
+.dnm{font-family:'Playfair Display',serif;font-size:17px;font-style:italic;margin-bottom:9px;line-height:1.25;}
+.dtx{font-size:11.5px;color:rgba(255,255,255,.5);line-height:1.68;}
+.dital{font-size:10.5px;color:rgba(255,255,255,.38);line-height:1.65;font-style:italic;}
+.dact{padding:11px 13px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.14);font-size:11px;color:rgba(255,255,255,.66);line-height:1.6;font-style:italic;}
+.dq{padding:9px 12px;border-left:2px solid rgba(201,168,76,.3);background:rgba(255,255,255,.03);font-size:11px;color:rgba(255,255,255,.6);font-style:italic;line-height:1.5;margin-bottom:5px;}
+.dscr{font-size:9px;color:rgba(201,168,76,.42);font-style:italic;margin-top:10px;}
+.dtool{font-size:8px;padding:3px 8px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.32);display:inline-block;margin:2px;}
+.dqbig{font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:rgba(255,255,255,.78);line-height:1.45;}
+
+.frow{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;}
+.fb{padding:4px 11px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.3);font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;background:transparent;font-family:'Lato',sans-serif;transition:all .1s;}
+.fb:hover,.fb.on{border-color:rgba(201,168,76,.45);color:var(--g);background:rgba(201,168,76,.07);}
+
+.spk{padding:13px 12px;border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:background .1s;}
+.spk:hover,.spk.on{background:rgba(255,255,255,.045);}
+.spk-n{font-size:6.5px;letter-spacing:2px;color:rgba(255,255,255,.18);font-weight:700;display:block;margin-bottom:4px;}
+.spk-t{font-family:'Playfair Display',serif;font-size:12px;font-style:italic;color:#fff;margin-bottom:3px;line-height:1.2;}
+.spk-s{font-size:8.5px;color:rgba(255,255,255,.33);line-height:1.35;}
+.spk-w{font-size:6.5px;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-top:5px;opacity:.75;}
+
+.blk{padding:22px 20px;border:1px solid rgba(255,255,255,.07);}
+.blk-w{font-family:'Playfair Display',serif;font-size:34px;font-style:italic;margin-bottom:6px;line-height:1;}
+.blk-q{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;margin-bottom:7px;}
+.blk-d{font-size:11.5px;color:rgba(255,255,255,.52);line-height:1.65;margin-bottom:9px;}
+.blk-n{font-size:10px;color:rgba(255,255,255,.36);line-height:1.6;padding:8px 10px;border-left:2px solid rgba(255,255,255,.08);font-style:italic;}
+.blk-e{font-size:10px;margin-top:9px;font-style:italic;opacity:.8;}
+
+.box{padding:22px 26px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);margin-top:26px;}
+.box-t{font-family:'Playfair Display',serif;font-size:20px;font-style:italic;color:var(--g);margin-bottom:14px;}
+.box-i{padding:13px 15px;border-left:3px solid;}
+.box-ih{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;margin-bottom:5px;}
+.box-id{font-size:10.5px;color:rgba(255,255,255,.42);line-height:1.68;}
+
+.aiw{background:linear-gradient(160deg,#04020e,#08060f);border-top:3px solid var(--g);min-height:75vh;}
+.aii{max-width:980px;margin:0 auto;padding:42px 24px;}
+.ata{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#f4f0e8;padding:16px 18px;font-size:12.5px;font-family:'Lato',sans-serif;outline:none;resize:none;line-height:1.65;margin-bottom:10px;}
+.ata::placeholder{color:rgba(255,255,255,.2);}
+.ata:focus{border-color:rgba(201,168,76,.45);}
+.abtn{background:var(--g);color:#000;border:none;padding:13px 28px;font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;font-family:'Lato',sans-serif;}
+.abtn:hover{background:var(--glt);}
+.abtn:disabled{opacity:.4;cursor:not-allowed;}
+.athink{display:none;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin:12px 0;}
+.athink.on{display:flex;}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pl 1.2s infinite;}
+@keyframes pl{0%,100%{opacity:1;}50%{opacity:.12;}}
+.arg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:16px;}
+.arg .full{grid-column:1/-1;}
+.ab{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:16px 18px;}
+.ab.gold{border-color:rgba(201,168,76,.22);background:rgba(201,168,76,.04);}
+.ab.fire{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.07);}
+.ablb{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--g);display:flex;align-items:center;gap:7px;margin-bottom:9px;}
+.ablb::before{content:'';width:11px;height:1px;background:var(--g);}
+.abig{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:#fff;line-height:1.45;}
+.amed{font-size:11.5px;color:rgba(255,255,255,.55);line-height:1.65;}
+.amon{font-family:'Playfair Display',serif;font-size:27px;font-style:italic;color:#fff;line-height:1.3;}
+.adg{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px;}
+.adr{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);padding:11px 13px;}
+.adrd{font-size:7px;letter-spacing:2px;text-transform:uppercase;font-weight:700;display:block;margin-bottom:3px;}
+.adrv{font-size:10px;color:rgba(255,255,255,.65);font-style:italic;margin-bottom:3px;}
+.adrp{font-size:10px;color:rgba(255,255,255,.44);line-height:1.5;margin-bottom:3px;}
+.adrq{font-size:9.5px;color:rgba(255,255,255,.38);font-style:italic;border-left:2px solid rgba(201,168,76,.2);padding-left:7px;}
+.asm{display:grid;grid-template-columns:60px 1fr;margin-bottom:3px;}
+.asml{font-size:7.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--g);padding:9px 10px;background:rgba(201,168,76,.07);border-right:1px solid rgba(201,168,76,.15);}
+.asmt{font-size:11px;color:rgba(255,255,255,.58);padding:9px 12px;line-height:1.55;font-style:italic;background:rgba(255,255,255,.02);}
+.asw{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:5px;}
+.aswc{padding:11px 12px;border:1px solid rgba(255,255,255,.07);border-top:2px solid var(--g);}
+.aswq{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;color:var(--g);margin-bottom:4px;}
+.aswa{font-size:10.5px;color:rgba(255,255,255,.52);line-height:1.5;}
+.aqi{padding:7px 11px;border-left:2px solid rgba(201,168,76,.22);background:rgba(255,255,255,.02);margin-bottom:3px;font-size:11px;color:rgba(255,255,255,.58);line-height:1.5;}
+.aerr{font-size:11px;color:#e08080;padding:12px;background:rgba(180,50,50,.1);border:1px solid rgba(180,50,50,.2);margin-top:10px;display:none;}
+.aprev{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:14px;}
+.apc{padding:10px;border:1px solid rgba(255,255,255,.07);border-top:2px solid rgba(201,168,76,.35);}
+.apci{font-size:14px;display:block;margin-bottom:4px;}
+.apcn{font-family:'Playfair Display',serif;font-size:10px;font-style:italic;color:var(--g);line-height:1.2;}
+
+@media(max-width:900px){.g5,.g7{grid-template-columns:repeat(3,1fr);}.g3,.g4,.g2{grid-template-columns:1fr;}.det.on{grid-template-columns:1fr;}.stats{grid-template-columns:repeat(3,1fr);}.arg,.adg,.asw{grid-template-columns:1fr;}.aprev{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:540px){.g5,.g7{grid-template-columns:1fr 1fr;}.stats{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nbr"><div class="nbr-t">SPARK</div><div class="nbr-s">Life Change Engine</div></div>
+  <button class="nt on" onclick="tab(0)">Sunday Moments</button>
+  <button class="nt" onclick="tab(1)">7-Day Arc</button>
+  <button class="nt" onclick="tab(2)">25 Sparks</button>
+  <button class="nt" onclick="tab(3)">Say Mean Do</button>
+  <button class="nt" onclick="tab(4)">Change Agent</button>
+  <button class="nt" onclick="tab(5)">AI Engine</button>
+  <div class="ntag">LifeTogether &middot; 2026</div>
+</nav>
+
+<div id="p0" class="pnl on">
+  <div class="hero">
+    <p class="hpre">Inspiration Sunday &middot; Application All Week Long</p>
+    <h1 class="h1">Sunday Sermon.<br><em>Seven Days of Formation.</em></h1>
+    <p class="hsub">Daily devotion is the greatest life transformation available to a congregation. The pastor who builds the arc from Sunday to Saturday changes how church is done.</p>
+    <div class="brow">
+      <div class="bp" style="color:#c9a84c;border-color:rgba(201,168,76,.3)">SPARK of Life Change &middot; Willow Creek</div>
+      <div class="bp" style="color:#5a88c9;border-color:rgba(90,136,201,.3)">CATALYST &middot; LifeWork &middot; LifeTogether</div>
+      <div class="bp" style="color:#6a9a6a;border-color:rgba(106,154,106,.3)">Next Step Sundays &middot; Rick Warren</div>
+    </div>
+    <div class="stats">
+      <div class="st"><span class="st-n">5</span><span class="st-l">Sunday Moments</span></div>
+      <div class="st"><span class="st-n">7</span><span class="st-l">Day Arc</span></div>
+      <div class="st"><span class="st-n">25</span><span class="st-l">Sparks</span></div>
+      <div class="st"><span class="st-n">2</span><span class="st-l">Frameworks</span></div>
+      <div class="st"><span class="st-n">6</span><span class="st-l">Principles</span></div>
+      <div class="st"><span class="st-n">12</span><span class="st-l">AI Outputs</span></div>
+    </div>
+  </div>
+  <div class="sec">
+    <p class="skk">The Five Sunday Formation Moments</p>
+    <h2 class="sh">Brunch. Dinner. <em>Together.</em><br>Night. <em>Conversation.</em></h2>
+    <p class="ssub">Sunday does not end at the benediction. Five distinct formation windows carry the sermon from the platform into the rest of the day. Click any to open the full architecture.</p>
+    <div class="g5" id="mgrid"></div>
+    <div id="mdet"></div>
+  </div>
+</div>
+
+<div id="p1" class="pnl">
+  <div class="hero" style="padding-bottom:34px">
+    <p class="hpre">The Formation Week</p>
+    <h1 class="h1">The 7-Day<br><em>Sermon Devotional Arc.</em></h1>
+    <p class="hsub">Daily devotion is the greatest life transformation available to a congregation. The sermon that travels from Sunday to Saturday produces a different person by the following Sunday.</p>
+  </div>
+  <div class="sec">
+    <div class="g7" id="dgrid"></div>
+    <div id="ddet"></div>
+    <div class="box">
+      <div class="box-t">Daily Devotion Is the Greatest Life Transformation.</div>
+      <div class="g3">
+        <div class="box-i" style="border-color:#c9a84c"><div class="box-ih" style="color:#c9a84c">The Person Who Reads</div><div class="box-id">The congregation member who opens Scripture every day for 40 days is not the same person at Day 40. Not because of willpower &mdash; because of exposure. The Word does the work when the person shows up for the appointment.</div></div>
+        <div class="box-i" style="border-color:#5a88c9"><div class="box-ih" style="color:#5a88c9">The Pastor Who Creates</div><div class="box-id">The pastor who sends a daily formation prompt &mdash; voice memo, text, podcast &mdash; has built a pastoral relationship that exists outside of Sunday. This is how you change how church is done.</div></div>
+        <div class="box-i" style="border-color:#5a8a6a"><div class="box-ih" style="color:#5a8a6a">The System That Sustains</div><div class="box-id">Inspiration lasts 72 hours. Formation requires architecture. The 7-day arc is the architecture. Without it, Sunday produces inspired people who change nothing. With it, Sunday produces formed people who change everything.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="p2" class="pnl">
+  <div class="hero" style="padding-bottom:34px">
+    <p class="hpre">25 Ways to Start the Fire</p>
+    <h1 class="h1">Become a<br><em>Change Agent.</em></h1>
+    <p class="hsub">Not just a disciple &mdash; a disciple maker. Not just a pastor &mdash; a catalyst. 25 specific sparks that change how church is done, one gathering at a time.</p>
+  </div>
+  <div class="sec">
+    <div class="frow" id="sfrow"></div>
+    <div class="g5" id="sgrid"></div>
+    <div id="sdet"></div>
+    <div class="box" style="background:rgba(90,136,201,.06);border-color:rgba(90,136,201,.18)">
+      <div class="box-t" style="color:#5a88c9">Host the First. Bring Three Friends.</div>
+      <div class="g4">
+        <div class="box-i" style="border-color:rgba(90,136,201,.35)"><div class="box-ih" style="color:#5a88c9">The Host</div><div class="box-id">A couch. Three friends. Sunday's sermon clip. You don't need a plan &mdash; you need a gathering.</div></div>
+        <div class="box-i" style="border-color:rgba(90,136,201,.35)"><div class="box-ih" style="color:#5a88c9">The Invite</div><div class="box-id">Don't call it a Bible study. Say: come over tonight, I want to show you something from this morning.</div></div>
+        <div class="box-i" style="border-color:rgba(90,136,201,.35)"><div class="box-ih" style="color:#5a88c9">The First</div><div class="box-id">Most will say yes to come over who would say no to join a group. Start there. Call it what it is later.</div></div>
+        <div class="box-i" style="border-color:rgba(90,136,201,.35)"><div class="box-ih" style="color:#5a88c9">This Week</div><div class="box-id">Not when the curriculum is ready. Not when the system is built. This Sunday. These three people. Your house.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="p3" class="pnl">
+  <div class="hero" style="padding-bottom:34px">
+    <p class="hpre">The Application Frameworks</p>
+    <h1 class="h1">Say. Mean. Do.<br><em>So What. How. Now What.</em></h1>
+    <p class="hsub">Two frameworks. One purpose: close the gap between the sermon that was heard and the life that was changed.</p>
+  </div>
+  <div class="sec">
+    <p class="skk">Framework One</p>
+    <h2 class="sh">Say. <em>Mean.</em> Do.</h2>
+    <p class="ssub">Three sentences. End of every sermon. The congregation leaves knowing what you said, what you meant, and what they do. The DO is not optional &mdash; it happens before the benediction.</p>
+    <div class="g3" id="smdg"></div>
+    <div style="margin-top:38px">
+      <p class="skk">Framework Two</p>
+      <h2 class="sh">So What? <em>How What?</em> Now What?</h2>
+      <p class="ssub">Three questions every listener is asking. Answer them explicitly from the platform. The sermon that does not answer all three leaves the congregation with inspiration but not formation.</p>
+      <div class="g3" id="sowg"></div>
+    </div>
+    <div class="box" style="text-align:center">
+      <div class="box-t" style="font-size:26px">This One Thing.</div>
+      <div style="font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:rgba(255,255,255,.62);margin:0 auto 18px;max-width:660px">&ldquo;If you remember nothing else from today, remember this one thing.&rdquo;</div>
+      <div class="g3" style="max-width:820px;margin:0 auto;text-align:left">
+        <div class="box-i" style="border-color:#c9a84c"><div class="box-ih" style="color:#c9a84c">Before You Go to Bed</div><div class="box-id">One sentence. Tonight. What is the one thing from Sunday you want to still be thinking about on Thursday?</div></div>
+        <div class="box-i" style="border-color:#5a88c9"><div class="box-ih" style="color:#5a88c9">Feet on the Floor</div><div class="box-id">Monday morning &mdash; before anything else &mdash; say this one thing out loud. Seven words or fewer. Then go.</div></div>
+        <div class="box-i" style="border-color:#5a8a6a"><div class="box-ih" style="color:#5a8a6a">Mark It or Write It</div><div class="box-id">The one thing gets marked in your Bible or written in your journal right now &mdash; before another word is said.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="p4" class="pnl">
+  <div class="hero" style="padding-bottom:34px">
+    <p class="hpre">The CATALYST Life Mission</p>
+    <h1 class="h1">Change How<br><em>Church Is Done.</em></h1>
+    <p class="hsub">The pastor who changes how church is done starts with themselves. The congregation forms around what the pastor is &mdash; not what the pastor says.</p>
+  </div>
+  <div class="sec">
+    <p class="skk">Six Change Agent Principles</p>
+    <h2 class="sh">How Can a Pastor<br><em>Do and Be the Change?</em></h2>
+    <p class="ssub">Become a disciple maker, not just a disciple. Each principle carries one specific action you can take this week.</p>
+    <div class="g3" id="cag"></div>
+    <div class="box">
+      <div class="box-t">No Longer If or When &mdash; But Who and How.</div>
+      <div class="g2">
+        <div class="box-i" style="border-color:rgba(255,255,255,.18)">
+          <div class="box-ih" style="color:rgba(255,255,255,.45)">The Old Question &mdash; If and When</div>
+          <div class="box-id"><b style="color:rgba(255,255,255,.6)">If:</b> Will the congregation grow? Will they form? Will they stay? &mdash; These assume formation is optional and the outcome uncertain.<br><br><b style="color:rgba(255,255,255,.6)">When:</b> When will they be ready to be discipled? When will they join a group? &mdash; These delay what can begin today.</div>
+        </div>
+        <div class="box-i" style="border-color:#c9a84c">
+          <div class="box-ih" style="color:#c9a84c">The New Question &mdash; Who and How</div>
+          <div class="box-id" style="color:rgba(255,255,255,.6)"><b style="color:#c9a84c">Who:</b> Who is the specific person you are walking with? Name them. Formation is relational, not programmatic.<br><br><b style="color:#c9a84c">How:</b> What is the specific architecture &mdash; the 7-day arc, the 25 sparks, the Sunday moments &mdash; that carries formation from intention to transformation?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="p5" class="pnl">
+  <div class="aiw">
+    <div class="aii">
+      <p class="skk" style="margin-bottom:10px">The SPARK AI Formation Engine</p>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,48px);font-weight:400;color:#fff;margin-bottom:8px;line-height:.9">Sermon In.<br><em style="font-style:italic;color:var(--g)">Twelve Outputs Out.</em></h2>
+      <p style="font-size:12px;color:rgba(255,255,255,.35);max-width:660px;line-height:1.7;margin-bottom:20px">Describe your sermon &mdash; the text, the central truth, or what you felt compelled to say. The engine generates the complete Sunday-to-Saturday formation system.</p>
+      <textarea id="ain" class="ata" rows="5" placeholder="Describe your sermon. Example: Preaching John 15, the vine and branches. Central truth is that apart from Jesus you can produce nothing and no one can fake that for long. My congregation is full of busy, achieving people who have disconnected from the vine while maintaining the appearance of fruit."></textarea>
+      <button class="abtn" id="abtn" onclick="gen()">Generate Formation Week &rarr;</button>
+      <div class="athink" id="athink"><div class="pulse"></div><span style="font-size:12px;color:rgba(255,255,255,.38)">Building your Sunday-to-Saturday formation system&hellip;</span></div>
+      <div class="aerr" id="aerr"></div>
+      <div id="aout"></div>
+      <div id="apv">
+        <div style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.16);font-weight:700;margin-top:26px">The Twelve Outputs</div>
+        <div class="aprev">
+          <div class="apc"><span class="apci">&#10022;</span><div class="apcn">The One Sentence</div></div>
+          <div class="apc"><span class="apci">&#9749;</span><div class="apcn">Sunday Dinner Question</div></div>
+          <div class="apc"><span class="apci">&#127769;</span><div class="apcn">Sunday Night Prayer</div></div>
+          <div class="apc"><span class="apci">&#9889;</span><div class="apcn">Feet on the Floor</div></div>
+          <div class="apc"><span class="apci">&#128214;</span><div class="apcn">7-Day Devotional Arc</div></div>
+          <div class="apc"><span class="apci">&#128483;</span><div class="apcn">Say Mean Do</div></div>
+          <div class="apc"><span class="apci">&#128161;</span><div class="apcn">So What How Now</div></div>
+          <div class="apc"><span class="apci">&#10022;</span><div class="apcn">This One Thing</div></div>
+          <div class="apc"><span class="apci">&#129309;</span><div class="apcn">5 Group Questions</div></div>
+          <div class="apc"><span class="apci">&#129398;</span><div class="apcn">Sermon to Reflection</div></div>
+          <div class="apc"><span class="apci">&#128226;</span><div class="apcn">Sermon to Storytelling</div></div>
+          <div class="apc"><span class="apci">&#128293;</span><div class="apcn">This Week's SPARK</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var MOM = [
+{id:"brunch",ic:"&#9749;",nm:"Sunday Brunch",c:"#c9a84c",tg:"Stay. The Formation Happens After the Service Ends.",
+ d:"The 20 minutes after a service ends are the most underused formation minutes of the week. The congregation is still in the text. They are still with each other. The pastor who stays and the congregation that lingers are doing formation that cannot be replicated by any program.",
+ f:"Conversation is formation. The story told over coffee is the sermon landing in real life. Stay for it.",
+ a:"Before anyone leaves, tables are set in the lobby. Sit with someone you didn't come with. We are not done yet.",
+ q:["What was the moment in the message where you leaned in?","What question did the sermon raise that it didn't answer?","What would it look like to do what you just heard, specifically, this week?"],
+ s:"Acts 2:46 &middot; Luke 24:13-35"},
+{id:"dinner",ic:"&#127869;",nm:"Sunday Dinner",c:"#8a6a9a",tg:"The Table Is the Formation. The Question Is the Catalyst.",
+ d:"Sunday dinner is the most consistent formation moment available to the congregation and the least intentionally used. Every family sits down together. The pastor who gives the congregation one question before they go home to dinner has extended the sermon by hours.",
+ f:"The question at Sunday dinner is worth more than the bulletin insert. Give them a question, not content.",
+ a:"Before you eat tonight, before anyone touches their food, ask this one question. Then listen. Don't rush to the next topic.",
+ q:["What was the one thing from this morning that you keep thinking about?","If you had to do one thing differently this week because of what you heard, what would it be?","Who came to mind during the message? Name them. Why do you think that happened?"],
+ s:"Deuteronomy 6:6-7 &middot; Luke 22:14-20"},
+{id:"together",ic:"&#129309;",nm:"Sunday Together",c:"#5a8a6a",tg:"Community Is the Formation. Proximity Is the Practice.",
+ d:"Sunday Together is the deliberate creation of community around the sermon's truth. Not a program. Not a class. A gathering, in a home or a lobby or a park, of people who heard the same thing and are willing to sit with it together for one more hour.",
+ f:"The congregation that processes the sermon together on Sunday evening has double the formation outcome of the congregation that processes it alone.",
+ a:"A few of us are getting together tonight. No agenda. No curriculum. Just the question the sermon raised and space to sit with it together. You are welcome.",
+ q:["What is the tension the sermon created that hasn't resolved yet?","What would change in your life if you actually believed what you just heard?","What is the one thing you need someone to help you do as a result of this morning?"],
+ s:"Hebrews 10:24-25 &middot; Acts 2:42"},
+{id:"night",ic:"&#127769;",nm:"Sunday Night",c:"#4a5a88",tg:"Before the Week Begins, Let the Word Land.",
+ d:"Sunday night is the hinge between the Sunday that received the word and the Monday that will test it. The congregation member who closes Sunday with intentional reflection arrives at Monday differently. The pastor's Sunday night voice note is the most intimate formation touchpoint of the week.",
+ f:"Sunday night is the last chance to set the formation anchor before Monday pulls the congregation in every direction. Use it.",
+ a:"Before you sleep tonight, send yourself a voice memo or write one sentence. What is the one thing I want to still be thinking about on Friday?",
+ q:["What did God say to you today that you haven't told anyone yet?","What is the one prayer you want to take into this week?","What would it mean for your Monday if you woke up still holding what you received this morning?"],
+ s:"Psalm 4:4 &middot; Psalm 134 &middot; Luke 2:19"},
+{id:"conv",ic:"&#128172;",nm:"Sunday Conversation",c:"#7a5a9a",tg:"The Sermon Travels in the Mouth, Not the Bulletin.",
+ d:"The conversation that happens Sunday afternoon, in the car, at the restaurant, at the family table, is the sermon's last mile. The congregation member who has language for what they experienced becomes the carrier of the formation.",
+ f:"Give them the words to tell someone what happened. The person who can tell the story has been formed by it.",
+ a:"Before you talk about anything else today, tell the person with you what happened in you this morning. Not what I said. What happened in you.",
+ q:["Tell me one thing from this morning in your own words, not mine.","What was the moment when you felt the most and the least? Why?","If someone who wasn't there asked you what today was about, what would you say?"],
+ s:"Deuteronomy 6:7 &middot; Mark 5:19-20"}];
+
+var DAYS = [
+{d:"Sunday",ic:"&#128293;",c:"#c9a84c",nm:"The Ignition",tg:"Receive the Word. Mark It. Carry It Home.",
+ p:"Sunday is the ignition, not the formation. The sermon is the launch, not the destination. Everything in the week depends on what is activated today.",
+ pr:"Mark the passage. Write one sentence that captures what landed. Not what the pastor said. What happened in you.",
+ py:"God, what you said this morning is still in me. I don't want to lose it. Hold it in me through this week.",
+ q:"If this were the last sermon you ever heard, what would you want to remember from it?",
+ m:"The Sunday dinner table. The one question before anyone eats.",
+ fm:"Sunday brunch conversation,Sunday dinner question,Sunday night voice memo,Sunday conversation starter"},
+{d:"Monday",ic:"&#9889;",c:"#5a88c9",nm:"The Activation",tg:"Feet on the Floor. The Formation Begins.",
+ p:"Monday is the most important formation day of the week. The person who does something with Sunday before Monday ends will carry it all week. The person who lets Monday pass will let the week pass.",
+ pr:"The moment your feet touch the floor, before the phone, before the news, before coffee, say the one prayer. Then read the day's passage.",
+ py:"God, before this day takes everything I have, before the first notification and the first demand, I give it to you. Today I live from what I heard Sunday.",
+ q:"What is the one thing from Sunday that would change today if I actually believed it?",
+ m:"Before the phone. Five minutes. The pastor's Monday morning devotional.",
+ fm:"Feet-on-the-floor prayer,Pastor's 5-minute Monday podcast,Daily devotion text,One act committed today"},
+{d:"Tuesday",ic:"&#128214;",c:"#8a6a9a",nm:"The Deepening",tg:"Go Deeper. Ask the Question You Didn't Ask Sunday.",
+ p:"Tuesday is the deepening day. The first read is Sunday's. The second read is Tuesday's. Sunday you heard it with the crowd. Tuesday you read it alone and it speaks differently.",
+ pr:"Read the sermon text again, alone and quietly. The first time you heard it with the crowd's energy. This time you read it with the week's reality. What is different?",
+ py:"God, I read this again today and something different happened. Something the crowd noise covered on Sunday is louder now. I am listening.",
+ q:"What is the question this text raises that you didn't have room to ask on Sunday?",
+ m:"Re-read the passage. Read one commentary note. Write one new observation.",
+ fm:"The second read,Context note from the pastor,Podcast on the text,Small group preparation"},
+{d:"Wednesday",ic:"&#128165;",c:"#aa7a5a",nm:"The Test",tg:"The Feeling of Sunday Is Gone. Formation Just Started.",
+ p:"Wednesday is the formation test. By Wednesday the feeling of Sunday has faded. The architecture takes over where the emotion left off. The congregation member with mid-week support keeps going. The one without it quits here.",
+ pr:"Acknowledge that the feeling is gone. That is not failure. That is the normal arc of formation. Read today's passage not because you feel inspired but because you made a decision on Sunday.",
+ py:"God, I don't feel Sunday anymore. I feel Wednesday. That is okay. I am here anyway. Not because of the feeling. Because of the decision.",
+ q:"What have you done with Sunday so far this week? What is still undone?",
+ m:"Mid-week check-in from the pastor or group leader. One sentence reply.",
+ fm:"Pastor mid-week text,Wednesday group meeting,Accountability partner,The hardest practice day"},
+{d:"Thursday",ic:"&#129309;",c:"#5a8a6a",nm:"The Community",tg:"Bring What This Week Did to You. Tell Someone.",
+ p:"Thursday is when individual formation becomes communal. The small group that meets Thursday is not reviewing Sunday's sermon. They are processing what happened between Sunday and Thursday. That is a deeper conversation.",
+ pr:"Before your small group meets, write two sentences. What happened to me because of Sunday? What is still unresolved? Bring both into the group.",
+ py:"God, I don't want to bring the right answers to my group tonight. I want to bring what actually happened. Give me courage to say the true thing instead of the impressive thing.",
+ q:"What did Sunday produce in you this week that you are willing to say out loud in community?",
+ m:"Small group. The formation question, not the comprehension question.",
+ fm:"Small group meets Thursday,Mentoring conversation,Serving act from sermon,Community formation moment"},
+{d:"Friday",ic:"&#9997;",c:"#7a8a5a",nm:"The Testimony",tg:"Something Happened This Week Because of Sunday. Name It.",
+ p:"Friday is the testimony day. By Friday something should have changed. The person who can name what happened by Friday has been formed. The person who cannot has been inspired.",
+ pr:"Write one sentence. This week, because of Sunday, I did this specific thing. If you cannot write that sentence, look back at what was activated Monday through Thursday and ask where it stalled.",
+ py:"God, here is what happened. It started Sunday. It is still going. I am a different person than I was on Saturday.",
+ q:"What is the story from this week that you could tell someone that would make Sunday make sense to them?",
+ m:"Send the pastor your one-sentence testimony. He reads them Saturday morning.",
+ fm:"One-sentence testimony to pastor,Story to share in group,Formation journal,Testimony for next Sunday"},
+{d:"Saturday",ic:"&#127807;",c:"#9a7a5a",nm:"The Preparation",tg:"The Week's Formation Becomes Next Sunday's Foundation.",
+ p:"Saturday prepares for next Sunday. The person who arrives having carried this week's sermon all the way to Saturday arrives at a different depth. The formation compounds. Week over week, this is how people change.",
+ pr:"Sabbath. Rest. Let the week's formation settle. Read Day 7 of the devotional. Then do nothing. The formation does not require more activity. It requires fallow ground.",
+ py:"God, this week I received something. I carried it. I acted on it. I told someone. Now I rest in it. Let it go deep before next Sunday adds more.",
+ q:"Who is one person you could invite to next Sunday because of what this week did to you?",
+ m:"Day 7 reading. One invitation. Sabbath rest.",
+ fm:"Day 7 reading,One invitation for next Sunday,Rest and Sabbath,Pastor reads testimonies"}];
+
+var SPK = [
+{n:"01",t:"Host a Gathering This Week",s:"Three friends. Your house. Sunday dinner. Don't call it a group. Just gather.",cat:"gather",c:"#c9a84c",w:"Pastor",h:"Text three people by Sunday noon. Come over tonight. Bring nothing. Just come."},
+{n:"02",t:"The Five-Minute Morning Devotional",s:"Record on your phone Tuesday morning. Send it to everyone who was in Sunday's service.",cat:"devo",c:"#5a88c9",w:"Pastor",h:"Voice memo. Two to three minutes. What is still with you from Sunday. Send it before 7am."},
+{n:"03",t:"The Sunday Night Text",s:"Send one question to the whole congregation Sunday night. Not a newsletter. A personal text.",cat:"connect",c:"#8a6a9a",w:"Pastor",h:"One thing from this morning I can't stop thinking about is this. What's yours?"},
+{n:"04",t:"The Monday Morning Podcast Drop",s:"Your voice. Five minutes. What the sermon was really about. What you didn't have time to say.",cat:"devo",c:"#6a9aaa",w:"Pastor",h:"Record Sunday night. Publish Monday at 6am. Title it: What I Didn't Finish Saying Sunday."},
+{n:"05",t:"The Dinner Table Question",s:"One question that makes Sunday dinner formation. Give it from the pulpit before you close.",cat:"gather",c:"#aa7a5a",w:"Congregation",h:"Before you eat tonight, ask everyone at your table this one question."},
+{n:"06",t:"One Thing Learned Card",s:"Every bulletin has one card with one question. What is the one thing you learned today?",cat:"reflect",c:"#7a9a5a",w:"Congregation",h:"Read them Monday morning. Use them in Tuesday's devo. The congregation formed the pastor."},
+{n:"07",t:"Sunday Brunch After Service",s:"Stay. Don't rush to lunch. The formation happens in the 20 minutes after the service ends.",cat:"gather",c:"#c9a84c",w:"Pastor",h:"We are not rushing out today. Tables are set in the lobby. Sit with someone you didn't come with."},
+{n:"08",t:"The Sermon-to-Story Challenge",s:"Ask three people to text you their story of the sermon's truth by Friday. Read them Sunday.",cat:"connect",c:"#9a7a5a",w:"Congregation",h:"Before Friday, text me the moment this week when what I said Sunday became true for you."},
+{n:"09",t:"The Before-Bed Prayer",s:"Send a 60-second prayer every Sunday night. Voice note. Their specific prayer for the week.",cat:"prayer",c:"#7a6a9a",w:"Pastor",h:"Before your feet leave the floor tomorrow morning, pray this one sentence."},
+{n:"10",t:"Feet on the Floor Morning Prayer",s:"Give the congregation one prayer to pray the moment their feet touch the floor Monday.",cat:"prayer",c:"#5a7a9a",w:"Congregation",h:"Print it on a card they take home. When your feet hit the floor tomorrow, say these seven words."},
+{n:"11",t:"So What, How What, Now What",s:"End every sermon with three sentences. Give them a card with space to answer each.",cat:"reflect",c:"#8a9a5a",w:"Congregation",h:"So what does this mean for me? How does this change what I do? Now what is my first step?"},
+{n:"12",t:"Say Mean Do",s:"Before you dismiss: What did I say? What did I mean by it? What do you do with it?",cat:"reflect",c:"#c9a84c",w:"Pastor",h:"I said this. I meant this. The one thing you do with it is this. Don't leave without knowing your one thing."},
+{n:"13",t:"The Sunday Night Community Group",s:"Not the Tuesday small group. A gathering Sunday night. Same house, same text, different question.",cat:"gather",c:"#5a8a6a",w:"Group Leader",h:"Come back tonight. Bring your questions. We are not done with this morning's text."},
+{n:"14",t:"Mark It or Write It, Right Now",s:"Give 90 seconds of silence after the sermon. Mark the passage. Write the thought. Not later. Now.",cat:"reflect",c:"#6a8aaa",w:"Congregation",h:"Before I say anything else, mark that passage or write that thought. Ninety seconds. Go."},
+{n:"15",t:"The Sermon-to-Question Series",s:"Every sermon ends with one unanswered question. The small group answers it that week.",cat:"group",c:"#9a6a8a",w:"Small Group",h:"I am not going to answer this question. Your group is. Come back next Sunday and tell me what you found."},
+{n:"16",t:"Become a Disciple Maker This Week",s:"Not just a disciple. A maker. Ask one person to coffee and tell them what God is doing in you.",cat:"disciple",c:"#aa8a4a",w:"Congregation",h:"This week don't just be a disciple. Make one. Text one person today and ask if you can tell them your story."},
+{n:"17",t:"Host the First, Bring Three Friends",s:"You don't need a curriculum. You need a couch and three friends who don't go to church.",cat:"gather",c:"#5a9a7a",w:"Congregation",h:"Host a gathering this week. Play this week's sermon clip and ask them what they thought."},
+{n:"18",t:"Message to Ministry",s:"Every sermon reveals a need. Name the ministry that meets it. Connect the message to the mission.",cat:"serve",c:"#8a6a4a",w:"Pastor",h:"This sermon is about this. The ministry that lives it out every week is this. Here is how you join them."},
+{n:"19",t:"The Listen-for-Five Pastoral Podcast",s:"Five minutes. Pastor's voice. Every weekday. Not a sermon, a formation moment from the week's text.",cat:"devo",c:"#6a7aaa",w:"Pastor",h:"Monday context. Tuesday application. Wednesday story. Thursday prayer. Friday challenge."},
+{n:"20",t:"Sermon to Small Group in 48 Hours",s:"Every sermon has a group version. The guide is ready before you preach. Groups meet within 48 hours.",cat:"group",c:"#5a8a6a",w:"Group Leader",h:"Your group guide for this Sunday's message is already in your app. Meet before Tuesday ends."},
+{n:"21",t:"No Longer If or When, But Who and How",s:"Stop asking if they will grow. Start asking who will walk with them and how the system supports it.",cat:"disciple",c:"#c9a84c",w:"Pastor",h:"Name one person from Sunday's service who needs a next step. Reach out personally by Monday noon."},
+{n:"22",t:"This One Thing",s:"Every sermon has one thing. Not three points. Not five applications. One thing. Name it.",cat:"reflect",c:"#aa7a5a",w:"Pastor",h:"If you remember nothing else from today, remember this one thing. Write it down before you leave."},
+{n:"23",t:"The Sermon-to-Reflection Loop",s:"Send a reflection prompt Wednesday. Ask what happened between Sunday and now. Close the loop Friday.",cat:"connect",c:"#7a9a6a",w:"Pastor",h:"Wednesday text: It's been three days since Sunday. What happened? Reply and tell me."},
+{n:"24",t:"Sunday Together, Stay and Pray",s:"After the service, ten minutes of open prayer. Anyone can stay. The pastor stays.",cat:"prayer",c:"#7a6aaa",w:"Pastor",h:"I am staying here for ten minutes to pray with anyone who wants to stay. That is all. You are welcome."},
+{n:"25",t:"The Loved and Liked Question",s:"What did you love? What did you like? Different questions produce different conversations.",cat:"reflect",c:"#9a8a5a",w:"Congregation",h:"At dinner tonight ask what you loved about this morning and what you only liked. Go deeper on the love."}];
+
+var SMD = [
+{w:"SAY",c:"#c9a84c",ic:"&#128483;",d:"What did the sermon actually say? One sentence. Not a summary, a declaration. The congregation that cannot say the sermon in one sentence has not received it.",n:"The pastor who cannot say their sermon in one sentence has not finished preparing it.",e:"I said: you cannot produce fruit apart from the vine. Not spiritually. Not at all. Full stop."},
+{w:"MEAN",c:"#5a88c9",ic:"&#128161;",d:"What did it mean for the specific congregation in the room this morning? Bridge the gap between what was said and what was meant.",n:"The gap between what was said and what was meant is where most formation is lost. Bridge it explicitly.",e:"I meant: the person working sixty hours a week and calling it kingdom work has been disconnected from the vine."},
+{w:"DO",c:"#5a8a6a",ic:"&#9889;",d:"What is the one thing the person in the room does before Sunday ends? Not what they should do. What they DO. Present tense. Before the service ends.",n:"The DO is the activation of the SAY and the MEAN. Without it the sermon produces inspiration. With it, formation.",e:"The one thing you do: text someone today and tell them you are disconnected from something you should be connected to."}];
+
+var SOW = [
+{q:"So What?",c:"#c9a84c",m:"What does this truth mean for me specifically, not in general, not for everyone else?",p:"If I am honest about my actual life right now, not the life I perform on Sunday, what does this say to me?"},
+{q:"How What?",c:"#5a88c9",m:"How does this change how I live, think, relate, work, or spend, specifically?",p:"If I actually believed this and lived it, what would be visibly different about my week?"},
+{q:"Now What?",c:"#5a8a6a",m:"What is the first specific step I take, and when do I take it?",p:"Not someday. Not this week. What is the first thing I do, and when exactly does it happen?"}];
+
+var CA = [
+{n:"01",nm:"You Are the First Disciple Maker",c:"#c9a84c",d:"Not the CEO of a formation organization. The first practitioner of what you preach. The congregation does not do what the pastor says. They do what the pastor does. If you want a congregation of disciple makers, be one first.",a:"Name one person you are personally discipling from the stage. Not as an example. As an invitation."},
+{n:"02",nm:"Your Life Is the Curriculum",c:"#5a88c9",d:"The most formation-rich resource in your congregation is not the sermon series. It is your story. The congregation that knows what God is doing in the pastor right now believes God can do the same in them.",a:"Share something from your personal devotional life in every sermon. Not an illustration. The actual thing that happened to you this week."},
+{n:"03",nm:"Be the First to Do What You Are Calling For",c:"#8a6a9a",d:"Before you ask the congregation to host a gathering, host one. Before you ask them to have the conversation, have it. Before you call for the fast, fast. The call from the pulpit is most powerful when the congregation knows the pastor has already done it.",a:"Every application Sunday, tell them you already did it. I hosted a dinner this week. Here is what happened."},
+{n:"04",nm:"Stay After the Service",c:"#5a8a6a",d:"The pastor who rushes from the platform to the parking lot shows the congregation that the sermon is the thing. The pastor who stays, who lingers, who prays, who sits with people, shows the congregation that the formation is the thing.",a:"Stay in the room for fifteen minutes after every service. No agenda. Just present."},
+{n:"05",nm:"Name Who You Are Becoming",c:"#aa7a5a",d:"Not who you are. Who you are becoming. The congregation member who hears the pastor say God is forming this in me right now is the congregation member who believes formation is possible for them.",a:"Say it plainly: here is what God is working in me right now. It started three weeks ago. It is not finished. This is where I am."},
+{n:"06",nm:"Change the Ending of the Sermon",c:"#c9a84c",d:"Most sermons end with an invitation. The SPARK system ends with an activation. Not I invite you to consider, but here is the one thing you do before you reach your car. The ending is not the conclusion. It is the ignition.",a:"Write your sermon ending last. Ask what is the one irreversible thing that happens in this room before anyone leaves."}];
+
+var DAYC = ["#c9a84c","#5a88c9","#8a6a9a","#aa7a5a","#5a8a6a","#7a8a5a","#9a7a5a"];
+var am = null, ad = null, as = null, sf = "all";
+
+function tab(i){
+  for(var k=0;k<6;k++){ document.getElementById("p"+k).classList.remove("on"); }
+  document.getElementById("p"+i).classList.add("on");
+  var ts = document.getElementsByClassName("nt");
+  for(var k=0;k<ts.length;k++){ ts[k].classList.remove("on"); }
+  ts[i].classList.add("on");
+  window.scrollTo(0,0);
+}
+
+function find(arr,key,val){ for(var i=0;i<arr.length;i++){ if(arr[i][key]===val) return arr[i]; } return null; }
+
+function mgrid(){
+  var h="";
+  for(var i=0;i<MOM.length;i++){
+    var m=MOM[i];
+    h+="<div class='card"+(am===m.id?" on":"")+"' style='border-top:3px solid "+m.c+"' onclick=\"tm('"+m.id+"')\">";
+    h+="<span class='c-ic'>"+m.ic+"</span>";
+    h+="<div class='c-nm' style='color:"+m.c+"'>"+m.nm+"</div>";
+    h+="<div class='c-tg'>"+m.tg+"</div></div>";
+  }
+  document.getElementById("mgrid").innerHTML=h;
+}
+
+function tm(id){
+  if(am===id){ am=null; document.getElementById("mdet").innerHTML=""; mgrid(); return; }
+  am=id; mgrid();
+  var m=find(MOM,"id",id);
+  var qs="";
+  for(var i=0;i<m.q.length;i++){ qs+="<div class='dq'>&ldquo;"+m.q[i]+"&rdquo;</div>"; }
+  var h="<div class='det on' style='border-left:4px solid "+m.c+"'>";
+  h+="<div><span class='dlbl'>"+m.ic+" "+m.nm+"</span>";
+  h+="<div class='dnm' style='color:"+m.c+"'>"+m.tg+"</div>";
+  h+="<div class='dtx'>"+m.d+"</div>";
+  h+="<span class='dlbl'>Formation Principle</span>";
+  h+="<div class='dital'>"+m.f+"</div>";
+  h+="<span class='dlbl'>Activation Script</span>";
+  h+="<div class='dact'>&ldquo;"+m.a+"&rdquo;</div>";
+  h+="<div class='dscr'>"+m.s+"</div></div>";
+  h+="<div><span class='dlbl'>Three Questions for This Moment</span>"+qs+"</div>";
+  h+="</div>";
+  document.getElementById("mdet").innerHTML=h;
+}
+
+function dgrid(){
+  var h="";
+  for(var i=0;i<DAYS.length;i++){
+    var d=DAYS[i];
+    h+="<div class='card"+(ad===d.d?" on":"")+"' style='border-top:3px solid "+d.c+";padding:14px 11px' onclick=\"td('"+d.d+"')\">";
+    h+="<span class='c-lb'>"+d.d+"</span>";
+    h+="<span class='c-ic' style='font-size:15px'>"+d.ic+"</span>";
+    h+="<div class='c-nm' style='color:"+d.c+";font-size:13px'>"+d.nm+"</div>";
+    h+="<div class='c-tg' style='font-size:8.5px'>"+d.tg+"</div></div>";
+  }
+  document.getElementById("dgrid").innerHTML=h;
+}
+
+function td(dn){
+  if(ad===dn){ ad=null; document.getElementById("ddet").innerHTML=""; dgrid(); return; }
+  ad=dn; dgrid();
+  var d=find(DAYS,"d",dn);
+  var fms=d.fm.split(","), ft="";
+  for(var i=0;i<fms.length;i++){ ft+="<span class='dtool'>"+fms[i]+"</span>"; }
+  var h="<div class='det on' style='border-top:3px solid "+d.c+"'>";
+  h+="<div><span class='dlbl'>"+d.d+" &middot; "+d.nm+"</span>";
+  h+="<div class='dnm' style='color:"+d.c+"'>"+d.tg+"</div>";
+  h+="<span class='dlbl'>The Practice</span>";
+  h+="<div class='dact'>"+d.pr+"</div>";
+  h+="<span class='dlbl'>The Prayer</span>";
+  h+="<div class='dital'>"+d.py+"</div>";
+  h+="<span class='dlbl'>Pastoral Principle</span>";
+  h+="<div class='dtx' style='font-size:10.5px'>"+d.p+"</div></div>";
+  h+="<div><span class='dlbl'>Formation Question</span>";
+  h+="<div class='dqbig'>"+d.q+"</div>";
+  h+="<span class='dlbl'>The Moment</span>";
+  h+="<div class='dtx'>"+d.m+"</div>";
+  h+="<span class='dlbl'>Format Options</span><div>"+ft+"</div></div>";
+  h+="</div>";
+  document.getElementById("ddet").innerHTML=h;
+}
+
+function sfrow(){
+  var cats=["all"], seen={};
+  for(var i=0;i<SPK.length;i++){ if(!seen[SPK[i].cat]){ seen[SPK[i].cat]=1; cats.push(SPK[i].cat); } }
+  var h="";
+  for(var i=0;i<cats.length;i++){
+    var c=cats[i], lb = (c==="all") ? "All 25" : c;
+    h+="<button class='fb"+(sf===c?" on":"")+"' onclick=\"ssf('"+c+"')\">"+lb+"</button>";
+  }
+  document.getElementById("sfrow").innerHTML=h;
+}
+
+function ssf(c){ sf=c; as=null; document.getElementById("sdet").innerHTML=""; sfrow(); sgrid(); }
+
+function sgrid(){
+  var h="";
+  for(var i=0;i<SPK.length;i++){
+    var s=SPK[i];
+    if(sf!=="all" && s.cat!==sf) continue;
+    h+="<div class='spk"+(as===s.n?" on":"")+"' style='border-top:2px solid "+s.c+"' onclick=\"ts('"+s.n+"')\">";
+    h+="<span class='spk-n'>"+s.n+"</span>";
+    h+="<div class='spk-t'>"+s.t+"</div>";
+    h+="<div class='spk-s'>"+s.s+"</div>";
+    h+="<div class='spk-w' style='color:"+s.c+"'>"+s.w+"</div></div>";
+  }
+  document.getElementById("sgrid").innerHTML=h;
+}
+
+function ts(n){
+  if(as===n){ as=null; document.getElementById("sdet").innerHTML=""; sgrid(); return; }
+  as=n; sgrid();
+  var s=find(SPK,"n",n);
+  var h="<div class='det on' style='border-left:3px solid "+s.c+"'>";
+  h+="<div><span class='dlbl'>Spark "+s.n+" &middot; "+s.cat+" &middot; "+s.w+"</span>";
+  h+="<div class='dnm' style='color:"+s.c+"'>"+s.t+"</div>";
+  h+="<div class='dtx'>"+s.s+"</div></div>";
+  h+="<div><span class='dlbl'>How to Do It This Week</span>";
+  h+="<div class='dact'>&ldquo;"+s.h+"&rdquo;</div></div>";
+  h+="</div>";
+  document.getElementById("sdet").innerHTML=h;
+}
+
+function smdg(){
+  var h="";
+  for(var i=0;i<SMD.length;i++){
+    var s=SMD[i];
+    h+="<div class='blk' style='border-top:4px solid "+s.c+"'>";
+    h+="<span style='font-size:18px;display:block;margin-bottom:8px'>"+s.ic+"</span>";
+    h+="<div class='blk-w' style='color:"+s.c+"'>"+s.w+"</div>";
+    h+="<div class='blk-d'>"+s.d+"</div>";
+    h+="<div class='blk-n'>"+s.n+"</div>";
+    h+="<div class='blk-e' style='color:"+s.c+"'>&ldquo;"+s.e+"&rdquo;</div></div>";
+  }
+  document.getElementById("smdg").innerHTML=h;
+}
+
+function sowg(){
+  var h="";
+  for(var i=0;i<SOW.length;i++){
+    var s=SOW[i];
+    h+="<div class='blk' style='border-top:3px solid "+s.c+"'>";
+    h+="<div class='blk-q' style='color:"+s.c+"'>"+s.q+"</div>";
+    h+="<div class='blk-d'>"+s.m+"</div>";
+    h+="<div class='blk-n' style='border-color:"+s.c+"'>"+s.p+"</div></div>";
+  }
+  document.getElementById("sowg").innerHTML=h;
+}
+
+function cagrid(){
+  var h="";
+  for(var i=0;i<CA.length;i++){
+    var c=CA[i];
+    h+="<div class='blk' style='border-left:4px solid "+c.c+"'>";
+    h+="<span class='c-lb'>"+c.n+"</span>";
+    h+="<div style='font-family:Playfair Display,serif;font-size:15px;font-style:italic;color:"+c.c+";margin-bottom:8px;line-height:1.2'>"+c.nm+"</div>";
+    h+="<div class='blk-d' style='font-size:10.5px'>"+c.d+"</div>";
+    h+="<div class='dact'>&ldquo;"+c.a+"&rdquo;</div></div>";
+  }
+  document.getElementById("cag").innerHTML=h;
+}
+
+function gen(){
+  var sm = document.getElementById("ain").value;
+  if(!sm || !sm.trim()) return;
+  var b=document.getElementById("abtn");
+  var t=document.getElementById("athink");
+  var e=document.getElementById("aerr");
+  var o=document.getElementById("aout");
+  var pv=document.getElementById("apv");
+  b.disabled=true; b.textContent="Building...";
+  t.classList.add("on"); e.style.display="none";
+  o.innerHTML=""; pv.style.display="none";
+
+  var q = "You are the master formation architect for Lifetogether Ministries. Convert this sermon into a complete Sunday-to-Saturday formation system.\n\nSERMON: " + sm.replace(/"/g,"'") +
+    "\n\nGenerate every output SPECIFIC to THIS sermon. Nothing generic. The Sunday dinner question must be arresting enough to generate an hour of conversation. The Monday feet-on-the-floor prayer must be exactly 7 to 12 memorizable words. The five group questions must be formation questions that make people lean in, not comprehension questions. The SPARK is one irreversible act that must happen before Tuesday.\n\nRespond ONLY with valid JSON. No markdown fences. No preamble.\n" +
+    '{"one_sentence":"","sunday_dinner_q":"","sunday_night_prayer":"","monday_prayer":"","seven_day":[{"name":"Sunday","passage":"","practice":"","question":""},{"name":"Monday","passage":"","practice":"","question":""},{"name":"Tuesday","passage":"","practice":"","question":""},{"name":"Wednesday","passage":"","practice":"","question":""},{"name":"Thursday","passage":"","practice":"","question":""},{"name":"Friday","passage":"","practice":"","question":""},{"name":"Saturday","passage":"","practice":"","question":""}],"say":"","mean":"","do":"","so_what":"","how_what":"","now_what":"","one_thing":"","group_questions":["","","","",""],"reflection":"","storytelling":"","spark":""}';
+
+  fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:2500,messages:[{role:"user",content:q}]})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    var tx="", cc = d.content || [];
+    for(var i=0;i<cc.length;i++){ if(cc[i].type==="text"){ tx = cc[i].text; } }
+    tx = tx.replace(/```json/g,"").replace(/```/g,"").trim();
+    render(JSON.parse(tx));
+    b.disabled=false; b.textContent="Generate Formation Week \u2192";
+    t.classList.remove("on");
+  })
+  .catch(function(){
+    e.textContent="Generation failed. Try a more specific sermon description.";
+    e.style.display="block"; pv.style.display="block";
+    b.disabled=false; b.textContent="Generate Formation Week \u2192";
+    t.classList.remove("on");
+  });
+}
+
+function render(d){
+  var dv="";
+  if(d.seven_day){
+    for(var i=0;i<d.seven_day.length;i++){
+      var x=d.seven_day[i];
+      dv+="<div class='adr' style='border-top:2px solid "+DAYC[i]+"'>";
+      dv+="<span class='adrd' style='color:"+DAYC[i]+"'>"+x.name+"</span>";
+      dv+="<div class='adrv'>"+x.passage+"</div>";
+      dv+="<div class='adrp'>"+x.practice+"</div>";
+      dv+="<div class='adrq'>&ldquo;"+x.question+"&rdquo;</div></div>";
+    }
+  }
+  var gq="";
+  if(d.group_questions){
+    for(var i=0;i<d.group_questions.length;i++){
+      gq+="<div class='aqi'>"+(i+1)+". "+d.group_questions[i]+"</div>";
+    }
+  }
+  var h="<div class='arg'>";
+  h+="<div class='ab gold full'><div class='ablb'>&#10022; The One Sentence</div><div class='abig'>&ldquo;"+(d.one_sentence||"")+"&rdquo;</div></div>";
+  h+="<div class='ab'><div class='ablb'>&#9749; Sunday Dinner Question</div><div class='abig'>&ldquo;"+(d.sunday_dinner_q||"")+"&rdquo;</div></div>";
+  h+="<div class='ab'><div class='ablb'>&#127769; Sunday Night Prayer</div><div class='amed' style='font-style:italic'>"+(d.sunday_night_prayer||"")+"</div></div>";
+  h+="<div class='ab fire full'><div class='ablb'>&#9889; Feet on the Floor &mdash; Monday Morning Prayer</div><div class='amon'>&ldquo;"+(d.monday_prayer||"")+"&rdquo;</div></div>";
+  h+="<div class='ab full'><div class='ablb'>&#128214; 7-Day Devotional Arc</div><div class='adg'>"+dv+"</div></div>";
+  h+="<div class='ab'><div class='ablb'>&#128483; Say &middot; Mean &middot; Do</div>";
+  h+="<div class='asm'><div class='asml'>SAY</div><div class='asmt'>&ldquo;"+(d.say||"")+"&rdquo;</div></div>";
+  h+="<div class='asm'><div class='asml'>MEAN</div><div class='asmt'>&ldquo;"+(d.mean||"")+"&rdquo;</div></div>";
+  h+="<div class='asm'><div class='asml'>DO</div><div class='asmt'>&ldquo;"+(d.do||"")+"&rdquo;</div></div></div>";
+  h+="<div class='ab'><div class='ablb'>&#128161; So What &middot; How What &middot; Now What</div><div class='asw'>";
+  h+="<div class='aswc'><div class='aswq'>So What?</div><div class='aswa'>"+(d.so_what||"")+"</div></div>";
+  h+="<div class='aswc'><div class='aswq'>How What?</div><div class='aswa'>"+(d.how_what||"")+"</div></div>";
+  h+="<div class='aswc'><div class='aswq'>Now What?</div><div class='aswa'>"+(d.now_what||"")+"</div></div></div></div>";
+  h+="<div class='ab gold full'><div class='ablb'>&#10022; This One Thing</div><div class='abig'>&ldquo;"+(d.one_thing||"")+"&rdquo;</div></div>";
+  h+="<div class='ab'><div class='ablb'>&#129309; Five Small Group Questions</div>"+gq+"</div>";
+  h+="<div class='ab'><div class='ablb'>&#129398; Sermon to Reflection</div>";
+  h+="<div class='amed' style='font-style:italic;margin-bottom:16px'>"+(d.reflection||"")+"</div>";
+  h+="<div class='ablb'>&#128226; Sermon to Storytelling</div>";
+  h+="<div class='amed' style='font-style:italic'>&ldquo;"+(d.storytelling||"")+"&rdquo;</div></div>";
+  h+="<div class='ab fire full'><div class='ablb'>&#128293; This Week's SPARK &mdash; The One Irreversible Act Before Tuesday</div><div class='abig'>&ldquo;"+(d.spark||"")+"&rdquo;</div></div>";
+  h+="</div>";
+  document.getElementById("aout").innerHTML=h;
+}
+
+mgrid();
+dgrid();
+sfrow();
+sgrid();
+smdg();
+sowg();
+cagrid();
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeTogether — Small Group Ministry Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0E7; --paper-2:#F6F7F0; --paper-3:#E4E7DA;
+    --ink:#1A2A20; --ink-soft:#41544A; --ink-faint:#7C8A80;
+    --line:#D3D8C9; --line-soft:#DEE2D3;
+    --moss:#4A7C59; --moss-deep:#2F5B3E; --moss-wash:#DDE7DF;
+    --brass:#A8853C; --brass-soft:#C6A65E; --brass-wash:#EFE6D2;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important}
+  }
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:'Fraunces',serif}
+  em{font-family:'Fraunces',serif; font-style:italic; font-weight:500; color:var(--moss-deep)}
+  a{color:inherit}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 clamp(1.3rem,5vw,3.5rem)}
+
+  /* reveal-on-scroll */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1; transform:translateY(0)}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:clamp(3.4rem,10vw,6.5rem) 0 clamp(2.6rem,7vw,4rem);
+    border-bottom:1px solid var(--line);
+    position:relative; overflow:hidden;
+  }
+  header.hero::before{
+    content:""; position:absolute; top:-40%; right:-10%; width:60%; height:180%;
+    background:radial-gradient(circle, var(--moss-wash) 0%, transparent 70%);
+    opacity:.7; pointer-events:none;
+  }
+  .kicker{
+    font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--brass); font-weight:700; margin-bottom:1.1rem;
+    display:flex; align-items:center; gap:.6rem;
+  }
+  .kicker::before{content:""; width:22px; height:1px; background:var(--brass)}
+  h1.title{
+    font-family:'Fraunces',serif; font-weight:600;
+    font-size:clamp(2.5rem,7vw,4.4rem); line-height:1.03;
+    letter-spacing:-.01em; max-width:14ch;
+  }
+  h1.title em{font-style:italic; font-weight:500}
+  .lede{
+    margin-top:1.6rem; font-size:clamp(1.02rem,2vw,1.2rem); color:var(--ink-soft);
+    max-width:56ch; font-weight:400;
+  }
+  .stat-row{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem;
+    margin-top:clamp(2.4rem,6vw,3.4rem); position:relative; z-index:1;
+  }
+  .stat .n{font-family:'Fraunces',serif; font-size:clamp(1.5rem,3.6vw,2.1rem); font-weight:600; color:var(--moss-deep)}
+  .stat .l{font-size:.74rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); margin-top:.25rem}
+  @media (max-width:640px){ .stat-row{grid-template-columns:repeat(2,1fr); row-gap:1.6rem} }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:clamp(3rem,8vw,5rem) 0}
+  section + section{border-top:1px solid var(--line)}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--moss); font-weight:700; margin-bottom:.7rem;
+  }
+  h2.section-title{
+    font-family:'Fraunces',serif; font-weight:600;
+    font-size:clamp(1.7rem,4vw,2.5rem); max-width:22ch; letter-spacing:-.01em;
+  }
+  .section-intro{margin-top:1rem; color:var(--ink-soft); max-width:58ch; font-size:1.02rem}
+
+  /* ---------- PIPELINE ---------- */
+  .pipeline{margin-top:clamp(2.4rem,6vw,3.2rem)}
+  .pipe-step{
+    display:grid; grid-template-columns:64px 1fr; gap:1.4rem;
+    padding:1.6rem 0; position:relative;
+  }
+  .pipe-step:not(:last-child)::after{
+    content:""; position:absolute; left:31px; top:64px; bottom:-1.6rem; width:1px;
+    background:repeating-linear-gradient(to bottom, var(--brass-soft) 0 6px, transparent 6px 12px);
+  }
+  .pipe-num{
+    font-family:'Fraunces',serif; font-size:1.05rem; font-weight:600;
+    width:64px; height:64px; border-radius:50%; border:1px solid var(--moss);
+    display:flex; align-items:center; justify-content:center; color:var(--moss-deep);
+    background:var(--paper-2); flex-shrink:0; z-index:1;
+  }
+  .pipe-body h3{font-family:'Fraunces',serif; font-size:1.18rem; font-weight:600; margin-bottom:.4rem}
+  .pipe-body p{color:var(--ink-soft); font-size:.96rem; max-width:52ch}
+  .pipe-tag{
+    display:inline-block; margin-top:.6rem; font-size:.7rem; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--brass); border:1px solid var(--brass-soft);
+    background:var(--brass-wash); padding:.22rem .6rem; border-radius:100px; font-weight:700;
+  }
+
+  /* ---------- DOORS ---------- */
+  .doors-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:1.4rem;
+    margin-top:clamp(2rem,5vw,2.8rem);
+  }
+  @media (max-width:760px){ .doors-grid{grid-template-columns:1fr} }
+  .door{
+    border:1px solid var(--line); border-radius:4px; padding:clamp(1.6rem,4vw,2.2rem);
+    background:var(--paper-2); transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    display:flex; flex-direction:column;
+  }
+  .door:hover{transform:translateY(-4px); border-color:var(--moss); box-shadow:0 14px 30px -18px rgba(26,42,32,.35)}
+  .door-tag{font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; font-weight:700}
+  .door.finder .door-tag{color:var(--moss-deep)}
+  .door.builder .door-tag{color:var(--brass)}
+  .door h3{font-family:'Fraunces',serif; font-size:1.65rem; font-weight:600; margin:.5rem 0 .3rem}
+  .door .door-line{font-family:'Fraunces',serif; font-style:italic; color:var(--ink-soft); font-size:1.02rem; margin-bottom:1rem}
+  .door p.desc{color:var(--ink-soft); font-size:.95rem; flex-grow:1}
+  .door .fit{
+    margin-top:1.3rem; padding-top:1rem; border-top:1px solid var(--line-soft);
+    font-size:.85rem;
+  }
+  .door .fit b{color:var(--ink); font-weight:600}
+  .door .fit span{color:var(--ink-faint)}
+
+  /* ---------- LIBRARY ---------- */
+  .fam{
+    border:1px solid var(--line); border-radius:4px; background:var(--paper-2);
+    padding:clamp(1.5rem,4vw,2rem); margin-top:1.1rem;
+  }
+  .fam-top{display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap}
+  .fam-top h3{font-family:'Fraunces',serif; font-weight:600; font-size:1.32rem}
+  .fam-count{
+    font-family:'Fraunces',serif; font-weight:600; font-size:1.35rem; color:var(--moss-deep);
+    white-space:nowrap;
+  }
+  .fam-count small{display:block; font-family:'Inter',sans-serif; font-weight:600; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint)}
+  .fam-desc{color:var(--ink-soft); font-size:.92rem; margin-top:.3rem; max-width:60ch}
+  .collections{margin-top:1.1rem; display:flex; flex-direction:column; gap:.7rem}
+  .coll{display:grid; grid-template-columns:1fr auto; gap:.6rem; align-items:baseline; font-size:.9rem; border-top:1px solid var(--line-soft); padding-top:.7rem}
+  .coll:first-child{border-top:none; padding-top:0}
+  .coll .cname{font-weight:600}
+  .coll .cmeta{color:var(--ink-faint); font-size:.82rem}
+  .coll .ccount{color:var(--brass); font-weight:700; font-size:.82rem; white-space:nowrap}
+  .chips{display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.2rem}
+  .chip{
+    font-size:.78rem; padding:.32rem .75rem; border-radius:100px; border:1px solid var(--line);
+    color:var(--ink-soft); background:var(--paper); font-family:'Fraunces',serif; font-style:italic;
+  }
+
+  /* ---------- SHIPSET ---------- */
+  .ship-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:2rem}
+  @media (max-width:820px){ .ship-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:480px){ .ship-grid{grid-template-columns:1fr} }
+  .ship-card{
+    border:1px solid var(--line); border-radius:4px; padding:1.3rem 1.1rem; background:var(--paper-2);
+  }
+  .ship-mark{
+    width:34px; height:34px; border-radius:50%; background:var(--moss-wash); color:var(--moss-deep);
+    display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600; font-size:.95rem;
+    margin-bottom:.9rem;
+  }
+  .ship-card h4{font-family:'Fraunces',serif; font-weight:600; font-size:1.02rem; margin-bottom:.35rem}
+  .ship-card p{font-size:.85rem; color:var(--ink-soft)}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:clamp(2.6rem,7vw,4rem) 0; }
+  .foot-word{font-family:'Fraunces',serif; font-weight:600; font-size:1.3rem}
+  .foot-word em{font-style:italic; color:var(--moss)}
+  footer p{color:var(--ink-faint); font-size:.82rem; margin-top:.6rem; max-width:52ch}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">LifeTogether · Small Group Ministry Platform</div>
+    <h1 class="title">One library.<br><em>Two</em> ways in.</h1>
+    <p class="lede">Every campaign, discipleship theme, and preaching arc LifeTogether has built collapses into a six-session Small Group series — indexed for churches who want it ready-made, and open as a starting template for churches who want to build their own.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="n">1,925+</div><div class="l">Titles in the Master Directory</div></div>
+      <div class="stat"><div class="n">5</div><div class="l">Major Collections</div></div>
+      <div class="stat"><div class="n">25+</div><div class="l">Sermon &amp; Life Categories</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">Doors — Finder &amp; Builder</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="pipeline">
+  <div class="wrap">
+    <div class="eyebrow reveal">How a series is born</div>
+    <h2 class="section-title reveal">From Sunday to the living room</h2>
+    <p class="section-intro reveal">Nothing in the Small Group library starts from a blank page. Every series has already been preached, written, and vetted at churchwide scale — the small group edition is just its next form.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step reveal">
+        <div class="pipe-num">01</div>
+        <div class="pipe-body">
+          <h3>A 40-day campaign</h3>
+          <p>The churchwide arc — weekend messages, daily devotionals, and a scripture arc already built and preached.</p>
+        </div>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-num">02</div>
+        <div class="pipe-body">
+          <h3>Six-session distillation</h3>
+          <p>The campaign is condensed for a living room instead of a stage: one big idea, key and supporting scripture, and discussion questions per session.</p>
+        </div>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-num">03</div>
+        <div class="pipe-body">
+          <h3>Teaching notes, always</h3>
+          <p>Every session ships with a full leader script — the words, the flow, the transitions — so any capable leader can teach it, with or without video.</p>
+          <span class="pipe-tag">No video required</span>
+        </div>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-num">04</div>
+        <div class="pipe-body">
+          <h3>Two doors</h3>
+          <p>The finished series lists in the Finder as a ready-to-run study, and enters the Builder as a template a church can reshape into their own.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="doors">
+  <div class="wrap">
+    <div class="eyebrow reveal">Two doors, one library</div>
+    <h2 class="section-title reveal">Finder or Builder — same shelf, different reach</h2>
+    <p class="section-intro reveal">Most churches want curriculum handled. A smaller, more capable group wants to shape it. Both are served from the same source material, so nothing built in either door ever drifts from what LifeTogether has already vetted.</p>
+
+    <div class="doors-grid">
+      <div class="door finder reveal">
+        <span class="door-tag">The Finder</span>
+        <h3>Browse. Pick. Meet tonight.</h3>
+        <p class="door-line">Curriculum, not a project.</p>
+        <p class="desc">Every campaign, discipleship theme, and preaching arc in the library — browsable by topic, length, and audience — arrives complete: six sessions, teaching notes, a discussion guide, and a verified scripture arc.</p>
+        <div class="fit"><b>Best for:</b> <span>the small group pastor who wants the next six weeks handled, not built.</span></div>
+      </div>
+      <div class="door builder reveal">
+        <span class="door-tag">The Builder</span>
+        <h3>Start from a series. Make it yours.</h3>
+        <p class="door-line">Their fingerprint, our foundation.</p>
+        <p class="desc">Pick any series in the library as a starting template, then reorder sessions, re-weight the scripture emphasis, or blend two themes into one arc — without ever leaving the library.</p>
+        <div class="fit"><b>Best for:</b> <span>curriculum-savvy staff shaping a custom season for their own congregation.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="library">
+  <div class="wrap">
+    <div class="eyebrow reveal">The library behind both doors</div>
+    <h2 class="section-title reveal">Big enough to feel endless. Organized enough to never get lost.</h2>
+    <p class="section-intro reveal">Everything below already exists as titles, subtitles, and scripture arcs. Each collection is a candidate for a six-session Small Group edition — which is what makes both doors possible at this scale.</p>
+
+    <div class="fam reveal">
+      <div class="fam-top">
+        <h3>Formation &amp; Discipleship</h3>
+        <div class="fam-count">900<small>Titles</small></div>
+      </div>
+      <p class="fam-desc">The everyday walk of faith — knowing God, following Jesus, and building the habits that hold a life together.</p>
+      <div class="collections">
+        <div class="coll"><span class="cname">The Discipleship 500</span><span class="cmeta">Knowing God · Following Jesus · Spiritual Growth · Prayer · The Word</span><span class="ccount">500 titles</span></div>
+        <div class="coll"><span class="cname">Spiritual Growth Lines</span><span class="cmeta">10 thematic lines, incl. Foundations, Transformation, Habits, Abiding &amp; Intimacy, Purpose &amp; Calling</span><span class="ccount">400 titles</span></div>
+      </div>
+      <div class="chips">
+        <span class="chip">Growing Deeper</span>
+        <span class="chip">Moving Beyond Surface Faith</span>
+      </div>
+    </div>
+
+    <div class="fam reveal">
+      <div class="fam-top">
+        <h3>Preaching &amp; Pulpit</h3>
+        <div class="fam-count">925+<small>Titles</small></div>
+      </div>
+      <p class="fam-desc">What senior pastors are actually preaching now, and where the next three years are heading.</p>
+      <div class="collections">
+        <div class="coll"><span class="cname">The Flagship Collection</span><span class="cmeta">25 categories drawn from America's top-500 churches</span><span class="ccount">925+ titles</span></div>
+        <div class="coll"><span class="cname">Preaching Forecast 2026–2029</span><span class="cmeta">6 enduring themes (anxiety, marriage, money, identity, grace, rest) + 8 rising (AI &amp; digital discernment, men &amp; masculinity, honest doubt, and more)</span><span class="ccount">280 titles</span></div>
+      </div>
+      <div class="chips">
+        <span class="chip">Finding Peace</span>
+        <span class="chip">Faith in the Age of AI</span>
+      </div>
+    </div>
+
+    <div class="fam reveal">
+      <div class="fam-top">
+        <h3>Vision &amp; Generosity</h3>
+        <div class="fam-count">100<small>Titles</small></div>
+      </div>
+      <p class="fam-desc">Building campaigns and stewardship arcs — for churches raising a vision, and companies asking the same questions of purpose.</p>
+      <div class="collections">
+        <div class="coll"><span class="cname">The Capital Campaign 100</span><span class="cmeta">8 campaign arcs for building and vision drives</span><span class="ccount">100 titles</span></div>
+      </div>
+      <div class="chips">
+        <span class="chip">Stewarding Opportunity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shipset">
+  <div class="wrap">
+    <div class="eyebrow reveal">The standard, every time</div>
+    <h2 class="section-title reveal">What ships with every series</h2>
+    <p class="section-intro reveal">Whether a church finds it or builds it, a series never leaves the library missing a piece.</p>
+
+    <div class="ship-grid">
+      <div class="ship-card reveal">
+        <div class="ship-mark">Aa</div>
+        <h4>Leader script</h4>
+        <p>Full teaching notes — the words, the flow, the transitions a leader needs to teach it well.</p>
+      </div>
+      <div class="ship-card reveal">
+        <div class="ship-mark">?</div>
+        <h4>Discussion guide</h4>
+        <p>Six sessions of questions, scaled for groups of any size or maturity.</p>
+      </div>
+      <div class="ship-card reveal">
+        <div class="ship-mark">§</div>
+        <h4>Scripture arc</h4>
+        <p>Key and supporting passages for every session, verified against the text.</p>
+      </div>
+      <div class="ship-card reveal">
+        <div class="ship-mark">▶</div>
+        <h4>Video slot</h4>
+        <p>Open by design — pair it with a recorded teacher, or run leader-only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-word">LifeTogether <em>Small Group Ministry</em></div>
+    <p>One library, indexed for the church that wants it handled, and open as a template for the church that wants to build. Concept brochure — LifeTogether Campaign Intelligence Library.</p>
+  </div>
+</footer>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

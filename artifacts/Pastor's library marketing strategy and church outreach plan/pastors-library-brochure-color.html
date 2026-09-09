@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pastor's Library Project — LifeTogether</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f1e4; --paper-2:#f0e8d6;
+    --ink:#231a10; --ink-soft:rgba(35,26,16,.72); --ink-faint:rgba(35,26,16,.5);
+    --navy:#141d33; --navy-2:#1b2745;
+    --gold:#b8823a; --gold-light:#d6a86a;
+    --wine:#8a2b3f; --wine-light:#c76a7d;
+    --forest:#2c5741; --forest-light:#6fa384;
+    --teal:#1c5b62; --teal-light:#5fa3a8;
+    --amber:#b96a1f; --amber-light:#e0a24f;
+    --plum:#5b2f66; --plum-light:#a17bab;
+    --hair:rgba(35,26,16,.14);
+    --cream-ink:#fbf7ee;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Cormorant Garamond',serif; font-size:18px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--gold-light); color:var(--ink); }
+  h1,h2,h3{ font-family:'Playfair Display',serif; margin:0; font-weight:600; }
+  .wrap{ max-width:960px; margin:0 auto; padding:0 24px; }
+  .eyebrow{
+    font-family:'Lato',sans-serif; letter-spacing:.28em; text-transform:uppercase;
+    font-size:12px; font-weight:700;
+  }
+  .rule{ width:100px; height:2px; opacity:.8; }
+  .rule.center{ margin:24px auto; }
+  section{ padding:64px 0; }
+  p.lede{ font-size:1.15rem; line-height:1.75; }
+
+  @media (min-width:640px){
+    section{ padding:88px 0; }
+    body{ font-size:19px; }
+  }
+
+  /* ---------- HERO (navy, bold open) ---------- */
+  .hero{ background:var(--navy); color:var(--cream-ink); text-align:center; padding:76px 0 0; }
+  .hero .eyebrow{ color:var(--gold-light); display:block; margin-bottom:18px; }
+  .hero h1{ font-size:clamp(2rem,8vw,3.7rem); line-height:1.14; margin-bottom:16px; color:var(--cream-ink); }
+  .hero .subtitle{ font-style:italic; font-size:1.15rem; color:var(--gold-light); margin-bottom:8px; }
+  .hero .rule.center{ background:var(--gold); }
+  .hero p.deck{ max-width:600px; margin:0 auto; color:rgba(251,247,238,.88); font-size:1.05rem; }
+  @media (min-width:640px){ .hero p.deck{ font-size:1.15rem; } }
+
+  /* ---------- SPINE SHELF (signature element) ---------- */
+  .shelf{ display:flex; align-items:flex-end; justify-content:center; gap:6px; margin-top:48px; padding:0 16px; overflow-x:auto; }
+  .spine{ border-radius:5px 5px 0 0; flex:0 0 auto; }
+  .shelf-base{ height:10px; background:var(--gold); opacity:.5; margin-top:0; }
+  .shelf-wrap{ background:var(--navy-2); padding-bottom:0; }
+  .shelf-cap{ text-align:center; font-family:'Lato',sans-serif; font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-light); padding:14px 0 40px; opacity:.75; }
+
+  .stat-bar{ display:flex; justify-content:center; gap:44px; flex-wrap:wrap; padding:44px 0 60px; background:var(--navy-2); }
+  .stat .n{ font-family:'Playfair Display',serif; font-size:1.9rem; color:var(--gold-light); text-align:center; }
+  .stat .l{ font-family:'Lato',sans-serif; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(251,247,238,.6); margin-top:4px; text-align:center; }
+
+  /* ---------- SECTION HEADERS w/ color ---------- */
+  .sec-head{ margin-bottom:36px; }
+  .sec-head .eyebrow{ display:block; margin-bottom:14px; }
+  .sec-head h2{ font-size:1.7rem; max-width:600px; }
+  @media (min-width:640px){ .sec-head h2{ font-size:2.1rem; } }
+
+  /* THE HIDDEN LIBRARY — wine */
+  .s-wine .eyebrow, .s-wine .rule{ color:var(--wine); background:var(--wine); }
+  .s-wine blockquote{ border-left:3px solid var(--wine); color:var(--wine); }
+  .library-grid{ display:grid; grid-template-columns:1fr; gap:28px; }
+  @media (min-width:760px){ .library-grid{ grid-template-columns:1fr 1.3fr; gap:48px; } }
+  .cap{ font-size:4rem; font-family:'Playfair Display',serif; color:var(--wine); line-height:1; float:left; margin-right:12px; }
+  blockquote{ font-style:italic; font-size:1.3rem; padding-left:20px; margin:20px 0 0; }
+
+  /* COMPARISON — forest */
+  .s-forest .eyebrow{ color:var(--forest); }
+  .compare-row{ display:grid; grid-template-columns:1fr; gap:6px; padding:18px 0; border-top:1px solid var(--hair); }
+  .compare-row:last-child{ border-bottom:1px solid var(--hair); }
+  .compare-cell.left{ color:var(--ink-faint); font-size:.98rem; }
+  .compare-cell.right{ color:var(--forest); font-weight:600; }
+  @media (min-width:700px){
+    .compare-row{ grid-template-columns:1fr 24px 1fr; align-items:center; gap:0; }
+    .compare-cell{ padding:0 20px; }
+    .compare-cell.left{ text-align:right; }
+  }
+
+  /* DELIVERABLES — mixed spine colors */
+  .deliverables ul{ list-style:none; margin:0; padding:0; }
+  .deliverables li{ padding:20px 0; border-top:1px solid var(--hair); display:grid; grid-template-columns:44px 1fr; gap:18px; }
+  .deliverables li:last-child{ border-bottom:1px solid var(--hair); }
+  .swatch{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; color:#fff; font-size:.95rem; font-style:italic; }
+  .deliverables h3{ font-size:1.18rem; margin-bottom:3px; }
+  .deliverables p{ margin:0; color:var(--ink-soft); font-size:1rem; }
+
+  /* INK SECTION — navy band */
+  .ink-band{ background:var(--navy); color:var(--cream-ink); text-align:center; }
+  .ink-band .eyebrow{ color:var(--amber-light); }
+  .ink-band h2{ color:var(--cream-ink); font-size:1.7rem; max-width:600px; margin:0 auto 18px; }
+  @media (min-width:640px){ .ink-band h2{ font-size:2rem; } }
+  .ink-band p.lede{ max-width:580px; margin:0 auto; color:rgba(251,247,238,.85); }
+
+  /* TRUST — plum */
+  .s-plum .eyebrow{ color:var(--plum); }
+  .trust-grid{ display:grid; grid-template-columns:1fr; gap:28px; }
+  @media (min-width:760px){ .trust-grid{ grid-template-columns:.9fr 1.1fr; gap:48px; align-items:center; } }
+  .trust-figure{ text-align:center; padding:28px; border:2px solid var(--plum); border-radius:6px; }
+  .trust-figure .n{ font-family:'Playfair Display',serif; font-size:2.4rem; color:var(--plum); }
+  .trust-figure .l{ font-family:'Lato',sans-serif; font-size:.72rem; letter-spacing:.06em; color:var(--ink-soft); margin-top:8px; line-height:1.5; }
+
+  /* PROCESS — amber, teal, wine, forest rotating */
+  .s-amber .eyebrow{ color:var(--amber); }
+  .process-item{ display:grid; grid-template-columns:52px 1fr; gap:20px; padding:24px 0; border-top:1px solid var(--hair); }
+  .process-item:last-child{ border-bottom:1px solid var(--hair); }
+  .process-chip{ width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-size:1.05rem; }
+  .process-item h3{ font-size:1.2rem; margin-bottom:4px; }
+  .process-item p{ margin:0; color:var(--ink-soft); }
+
+  /* TIERS — teal / wine / plum */
+  .s-teal .eyebrow{ color:var(--teal); }
+  .tier{ padding:28px; border-radius:8px; margin-bottom:18px; }
+  .tier h3{ font-size:1.35rem; margin-bottom:8px; color:#fff; }
+  .tier p{ margin:0 0 10px; color:rgba(255,255,255,.88); }
+  .tier .for{ font-family:'Lato',sans-serif; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.7); }
+  .tier .numeral{ font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; color:#fff; opacity:.75; }
+
+  /* CTA */
+  .cta{ text-align:center; background:var(--navy); color:var(--cream-ink); }
+  .cta .eyebrow{ color:var(--gold-light); }
+  .cta h2{ font-size:1.8rem; max-width:520px; margin:14px auto 18px; color:var(--cream-ink); }
+  @media (min-width:640px){ .cta h2{ font-size:2.1rem; } }
+  .cta p.lede{ max-width:500px; margin:0 auto 32px; color:rgba(251,247,238,.85); }
+  .btn{
+    display:inline-block; font-family:'Lato',sans-serif; font-weight:700; letter-spacing:.05em;
+    text-transform:uppercase; font-size:.85rem; color:var(--navy); background:var(--gold-light);
+    padding:16px 34px; text-decoration:none; border-radius:3px;
+  }
+  footer{ text-align:center; padding:40px 0 50px; color:var(--ink-faint); font-family:'Lato',sans-serif; font-size:.75rem; letter-spacing:.04em; background:var(--paper-2); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="shelf-wrap">
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">LifeTogether · The Pastor's Library Project</span>
+      <h1>The Sermons You've<br>Already Preached Are<br>Your Next Book.</h1>
+      <div class="subtitle">Someone just has to help you find them.</div>
+      <div class="rule center" style="background:var(--gold);"></div>
+      <p class="deck">Every senior pastor with more than a decade in the pulpit is sitting on a library — years of convictions, stories, and hard-won wisdom that never left the sanctuary. We come alongside you, in person and digitally, to organize it, verify it, and turn it into the curriculum, devotional, or book your congregation needs next.</p>
+    </div>
+    <div class="shelf">
+      <div class="spine" style="width:22px;height:70px;background:var(--wine);"></div>
+      <div class="spine" style="width:16px;height:54px;background:var(--forest);"></div>
+      <div class="spine" style="width:26px;height:82px;background:var(--amber);"></div>
+      <div class="spine" style="width:18px;height:46px;background:var(--teal);"></div>
+      <div class="spine" style="width:20px;height:66px;background:var(--plum);"></div>
+      <div class="spine" style="width:16px;height:58px;background:var(--gold);"></div>
+      <div class="spine" style="width:24px;height:74px;background:var(--wine-light);"></div>
+      <div class="spine" style="width:18px;height:50px;background:var(--teal-light);"></div>
+      <div class="spine" style="width:22px;height:64px;background:var(--forest-light);"></div>
+      <div class="spine" style="width:16px;height:44px;background:var(--amber-light);"></div>
+    </div>
+    <div class="shelf-cap">Every pastor's library looks different. That's the point.</div>
+  </section>
+  <div class="stat-bar">
+    <div class="stat"><div class="n">25</div><div class="l">Years in Ministry Publishing</div></div>
+    <div class="stat"><div class="n">500+</div><div class="l">Church Relationships</div></div>
+    <div class="stat"><div class="n">50M+</div><div class="l">Campaigns Distributed</div></div>
+  </div>
+</div>
+
+<!-- THE HIDDEN LIBRARY -->
+<section class="s-wine">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The Problem</span>
+      <h2>You don't need help writing something new.</h2>
+    </div>
+    <div class="library-grid">
+      <div></div>
+      <div>
+        <span class="cap">Y</span>
+        <p class="lede">ou need help finding what you've already said. Hundreds of sermons. Decades of counsel, illustrations, and theology shaped in the pressure of real ministry. It's the most valuable asset most churches own — and it's almost entirely unsearchable, sitting in file folders, old drives, and boxes of recordings nobody has time to revisit.</p>
+        <blockquote>Your life's message deserves to become more than something people had to be in the room to hear.</blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="s-forest" style="background:var(--paper-2);">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Why This Is Different</span>
+      <h2>Generic AI hands you a chatbot. We hand you a finished library.</h2>
+    </div>
+    <div class="compare-row" style="border-top:1px solid var(--hair); font-family:'Lato',sans-serif; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; padding-bottom:10px;">
+      <div class="compare-cell left" style="color:var(--ink-faint);">Generic AI Tools</div>
+      <div></div>
+      <div class="compare-cell right" style="color:var(--forest);">Pastor's Library Project</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell left">You type a prompt and hope</div><div></div>
+      <div class="compare-cell right">Our team works alongside you, in person and digitally</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell left">Output lives on a screen</div><div></div>
+      <div class="compare-cell right">Output becomes print-ready curriculum, devotionals, and books</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell left">No relationship to what you already teach</div><div></div>
+      <div class="compare-cell right">Built from your own sermons — your voice, your convictions</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell left">Nothing checks its work</div><div></div>
+      <div class="compare-cell right">Every quote and citation is human-verified before it reaches your church</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell left">Unproven at scale</div><div></div>
+      <div class="compare-cell right">Built inside a system already trusted by 500+ churches</div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERABLES -->
+<section class="deliverables">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" style="color:var(--amber);">What You Walk Away With</span>
+      <h2>Not a theory. A finished set of resources.</h2>
+    </div>
+    <ul>
+      <li>
+        <div class="swatch" style="background:var(--wine);">I</div>
+        <div><h3>A private, searchable library</h3><p>Every sermon you give us — tagged by theme, passage, and life stage — organized for the first time in your ministry.</p></div>
+      </li>
+      <li>
+        <div class="swatch" style="background:var(--forest);">II</div>
+        <div><h3>A small group series drawn from your own teaching</h3><p>Six sessions your congregation studies together, in your voice, on the themes you actually preach.</p></div>
+      </li>
+      <li>
+        <div class="swatch" style="background:var(--teal);">III</div>
+        <div><h3>A devotional built from your archive</h3><p>Daily readings pulled from years of sermons, not generated from nothing.</p></div>
+      </li>
+      <li>
+        <div class="swatch" style="background:var(--amber);">IV</div>
+        <div><h3>Print-ready, and printed, materials</h3><p>Designed and produced through the same pipeline that has shipped 50M+ campaigns — not a PDF you have to format yourself.</p></div>
+      </li>
+      <li>
+        <div class="swatch" style="background:var(--plum);">V</div>
+        <div><h3>A library that keeps growing</h3><p>New sermons added on a regular cadence, so this becomes a living resource across the next several years — not a one-time project.</p></div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- FROM INTELLIGENCE TO INK -->
+<section class="ink-band">
+  <div class="wrap">
+    <span class="eyebrow">The Part Nobody Else Has</span>
+    <h2 style="margin-top:16px;">From Intelligence to Ink.</h2>
+    <p class="lede" style="margin-top:20px;">Any AI tool can organize text. Almost none of them can turn that text into something your church can actually hold, hand out, and study together. Our production and print pipeline — the same one behind a quarter century of published curriculum — is the last mile most technology stops short of. Your library doesn't end as a folder of files. It ends as a finished resource.</p>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="s-plum">
+  <div class="wrap trust-grid">
+    <div class="trust-figure">
+      <div class="n">100%</div>
+      <div class="l">of quotes and Scripture citations verified by a person — before anything is produced</div>
+    </div>
+    <div>
+      <span class="eyebrow">Verified, Not Automated</span>
+      <h2 style="margin-top:14px; font-size:1.5rem;">We understand why you're cautious about AI. So are we.</h2>
+      <p class="lede" style="margin-top:14px;">Most pastors feel some hesitation about AI touching what they preach — and rightly so. That's why nothing built from your library reaches your congregation without a person on our team checking every citation and quote against the original source. The technology organizes. A human verifies. Your voice stays yours.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="s-amber" style="background:var(--paper-2);">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">How It Works</span>
+      <h2>Four steps. Your time required: far less than you'd think.</h2>
+    </div>
+    <div class="process-item">
+      <div class="process-chip" style="background:var(--wine);">i</div>
+      <div><h3>Discover</h3><p>A conversation about what exists — manuscripts, recordings, notes — and a simple agreement that keeps you as the owner of every word.</p></div>
+    </div>
+    <div class="process-item">
+      <div class="process-chip" style="background:var(--forest);">ii</div>
+      <div><h3>Organize</h3><p>We collect, transcribe, and tag your material against the themes and needs your congregation actually faces.</p></div>
+    </div>
+    <div class="process-item">
+      <div class="process-chip" style="background:var(--teal);">iii</div>
+      <div><h3>Verify</h3><p>A human editor checks every citation and quote before anything moves forward. Nothing goes to your church unchecked.</p></div>
+    </div>
+    <div class="process-item">
+      <div class="process-chip" style="background:var(--amber);">iv</div>
+      <div><h3>Produce</h3><p>Your first finished resource — a devotional, a small group series, or the start of a book — designed and, if you choose, printed.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ENGAGEMENTS -->
+<section class="s-teal">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Ways to Begin</span>
+      <h2>Three ways to work together.</h2>
+    </div>
+    <div class="tier" style="background:var(--teal);">
+      <div class="numeral">I</div>
+      <h3>The Foundation Engagement</h3>
+      <p>We organize a focused portion of your recent teaching and produce your first small group series and devotional from it — a real, finished result, without asking for your entire archive up front.</p>
+      <div class="for">Best for a first step</div>
+    </div>
+    <div class="tier" style="background:var(--wine);">
+      <div class="numeral">II</div>
+      <h3>The Legacy Library</h3>
+      <p>Your fuller preaching history, organized and verified, producing multiple resources across formats — with a print run included and new material added each quarter.</p>
+      <div class="for">Best for an established ministry</div>
+    </div>
+    <div class="tier" style="background:var(--plum);">
+      <div class="numeral">III</div>
+      <h3>The Dynasty Partnership</h3>
+      <p>An ongoing relationship: your team trained to use the living library, priority production, and co-branded published works for wider distribution.</p>
+      <div class="for">Best for a multi-year vision</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="wrap">
+    <span class="eyebrow">Begin With One Sermon</span>
+    <h2>You don't have to hand over 30 years to find out if this works.</h2>
+    <p class="lede">Give us a single season of sermons. We'll show you what a devotional built from your own words looks like — before you decide on anything more.</p>
+    <a href="#" class="btn">Start the Conversation</a>
+  </div>
+</section>
+
+<footer>LifeTogether Ministries · The Pastor's Library Project</footer>
+
+</body>
+</html>

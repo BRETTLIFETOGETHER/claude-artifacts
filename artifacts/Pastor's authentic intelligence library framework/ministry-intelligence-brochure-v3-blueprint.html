@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Blueprint — LifeTogether</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A2540;
+    --navy-2:#0F2E4D;
+    --navy-3:#153A5E;
+    --line:#BFE3EA;
+    --white-ish:#EAF6F8;
+    --dim:#83A6B8;
+    --cyan:#5FC7D6;
+    --amber:#E3A63B;
+    --coral:#E36A54;
+    --grid: rgba(191,227,234,0.07);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(0deg, var(--grid) 0px, var(--grid) 1px, transparent 1px, transparent 34px),
+      repeating-linear-gradient(90deg, var(--grid) 0px, var(--grid) 1px, transparent 1px, transparent 34px),
+      var(--navy);
+    color:var(--white-ish);
+    font-family:"IBM Plex Sans", Arial, sans-serif;
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:"Space Grotesk", sans-serif;
+    font-weight:600;
+    margin:0;
+    color:var(--white-ish);
+  }
+  p{margin:0;}
+  .mono{font-family:"JetBrains Mono", monospace;}
+  .eyebrow{
+    font-family:"JetBrains Mono", monospace;
+    font-size:11.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    font-weight:500;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:0 26px;}
+  .divider{height:1px; background:rgba(191,227,234,0.18); border:0;}
+
+  /* corner brackets */
+  .bracketed{position:relative;}
+  .bracketed::before, .bracketed::after,
+  .bracketed .bl, .bracketed .br{
+    content:""; position:absolute; width:14px; height:14px;
+    border-color:var(--cyan); opacity:0.55;
+  }
+  .bracketed::before{ top:-1px; left:-1px; border-top:1.5px solid var(--cyan); border-left:1.5px solid var(--cyan); }
+  .bracketed::after{ top:-1px; right:-1px; border-top:1.5px solid var(--cyan); border-right:1.5px solid var(--cyan); }
+  .bracketed .bl{ bottom:-1px; left:-1px; border-bottom:1.5px solid var(--cyan); border-left:1.5px solid var(--cyan); }
+  .bracketed .br{ bottom:-1px; right:-1px; border-bottom:1.5px solid var(--cyan); border-right:1.5px solid var(--cyan); }
+
+  /* header */
+  header.site{padding:22px 0; border-bottom:1px solid rgba(191,227,234,0.18);}
+  header.site .wrap{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  .wordmark{font-family:"Space Grotesk", sans-serif; font-weight:600; font-size:18px;}
+  .wordmark span{color:var(--amber);}
+  .dwg-tag{
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px; letter-spacing:0.06em;
+    color:var(--dim);
+  }
+
+  /* hero */
+  .hero{padding:76px 0 30px; text-align:center;}
+  .hero .eyebrow{display:block; margin-bottom:20px;}
+  .hero h1{font-size:clamp(32px,5.4vw,54px); line-height:1.12;}
+  .hero h1 em{font-style:normal; color:var(--amber);}
+  .hero .lede{max-width:640px; margin:24px auto 0; color:var(--dim); font-size:18px;}
+  .hero .lede.second{margin-top:16px;}
+
+  /* dimension diagram */
+  .dim-diagram{max-width:640px; margin:56px auto 10px;}
+  .dim-line{display:flex; align-items:stretch; height:46px;}
+  .dim-seg{
+    flex:1; border-top:1.5px solid var(--seg-color); position:relative;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .dim-seg::before, .dim-seg::after{
+    content:""; position:absolute; top:-6px; width:1.5px; height:12px; background:var(--seg-color);
+  }
+  .dim-seg::before{left:0;}
+  .dim-seg::after{right:0;}
+  .dim-seg span{
+    font-family:"JetBrains Mono", monospace;
+    font-size:10.5px; letter-spacing:0.03em;
+    color:var(--seg-color);
+    padding-bottom:8px;
+    text-align:center;
+  }
+  .dim-seg.foundation{--seg-color:var(--amber);}
+  .dim-seg.framework{--seg-color:var(--cyan);}
+  .dim-seg.finish{--seg-color:var(--coral);}
+  .dim-total{
+    text-align:center; margin-top:10px;
+    font-family:"JetBrains Mono", monospace; font-size:12px;
+    color:var(--dim); letter-spacing:0.05em;
+  }
+
+  section{padding:76px 0;}
+  .section-head{max-width:660px; margin:0 auto 46px; text-align:center;}
+  .section-head h2{font-size:clamp(26px,3.8vw,36px); margin-top:12px;}
+  .section-head p{margin-top:15px; color:var(--dim); font-size:16.5px;}
+
+  .reveal{opacity:0; transform:translateY(16px); transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* three elements */
+  .elements{display:flex; flex-direction:column; gap:0;}
+  .element-row{
+    display:grid; grid-template-columns:210px 1fr; gap:30px;
+    padding:32px 0; border-bottom:1px solid rgba(191,227,234,0.14);
+  }
+  .element-row:last-child{border-bottom:none;}
+  .element-row .tag-block{padding-top:4px;}
+  .element-row .layer{
+    font-family:"JetBrains Mono", monospace; font-size:11px;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--dim);
+    margin-bottom:6px; display:block;
+  }
+  .element-row.foundation .layer, .element-row.foundation h3{color:var(--amber);}
+  .element-row.framework .layer, .element-row.framework h3{color:var(--cyan);}
+  .element-row.finish .layer, .element-row.finish h3{color:var(--coral);}
+  .element-row h3{font-size:22px; margin-bottom:2px;}
+  .element-row .subhead{font-size:13.5px; color:var(--dim); font-family:"JetBrains Mono", monospace;}
+  .element-row .copy{color:var(--dim); font-size:16px; margin-top:2px;}
+  .element-row .bestline{margin-top:14px; font-style:italic; color:var(--white-ish); font-size:15.5px;}
+
+  @media (max-width:700px){
+    .element-row{grid-template-columns:1fr; gap:6px;}
+  }
+
+  /* as-built survey (pastor's library) */
+  .survey-section{background:var(--navy-2);}
+  .survey-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:44px; align-items:start;}
+  .survey-copy p{margin-bottom:16px; color:var(--dim); font-size:16.5px;}
+  .survey-copy p.lead{color:var(--white-ish); font-size:18.5px; font-family:"Space Grotesk", sans-serif; font-weight:500;}
+  .spec-list{list-style:none; margin:22px 0 0; padding:0;}
+  .spec-list li{
+    padding:10px 0; border-bottom:1px dashed rgba(191,227,234,0.2);
+    font-size:15.5px; color:var(--white-ish);
+    display:flex; gap:10px;
+  }
+  .spec-list li:last-child{border-bottom:none;}
+  .spec-list li::before{content:"§"; color:var(--cyan); flex-shrink:0;}
+
+  .dwg-card{
+    background:var(--navy-3);
+    padding:24px 22px 20px;
+    position:relative;
+  }
+  .dwg-card .dwg-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:1px solid rgba(191,227,234,0.25);
+    padding-bottom:10px; margin-bottom:12px;
+  }
+  .dwg-card .dwg-head .n{font-family:"JetBrains Mono", monospace; font-size:11px; color:var(--cyan);}
+  .dwg-row{
+    display:grid; grid-template-columns:80px 1fr; gap:10px;
+    padding:7px 0; font-size:13.5px;
+    border-bottom:1px dotted rgba(191,227,234,0.16);
+  }
+  .dwg-row:last-child{border-bottom:none;}
+  .dwg-row .k{font-family:"JetBrains Mono", monospace; font-size:10.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--dim); padding-top:2px;}
+  .dwg-row .v{color:var(--white-ish); font-size:14.5px;}
+  .rev-stamp{
+    position:absolute; bottom:14px; right:16px;
+    border:1.5px solid var(--coral); color:var(--coral);
+    font-family:"JetBrains Mono", monospace; font-size:10px; letter-spacing:0.08em;
+    text-transform:uppercase; padding:4px 8px; transform:rotate(-6deg); opacity:0.9;
+  }
+  .survey-punch{text-align:center; margin-top:36px; font-family:"Space Grotesk", sans-serif; font-weight:500; font-size:19px;}
+
+  @media (max-width:760px){ .survey-grid{grid-template-columns:1fr;} }
+
+  /* formula / spec sheet */
+  .formula-row{display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:14px;}
+  .formula-chip{
+    font-family:"JetBrains Mono", monospace; font-size:14px;
+    padding:11px 18px; border:1px solid rgba(191,227,234,0.3);
+  }
+  .formula-chip.pi{color:var(--amber);}
+  .formula-chip.ci{color:var(--cyan);}
+  .formula-chip.lti{color:var(--coral);}
+  .formula-op{font-size:18px; color:var(--dim);}
+  .formula-eq{font-family:"Space Grotesk", sans-serif; font-size:18px; color:var(--white-ish);}
+
+  /* why not ai */
+  .why-ai .wrap{max-width:720px;}
+  .why-ai p{margin-bottom:18px; font-size:17.5px; color:var(--dim);}
+  .why-ai p strong{color:var(--white-ish); font-weight:600;}
+
+  /* phases */
+  .phases{display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative;}
+  .phases::before{content:""; position:absolute; top:23px; left:8%; right:8%; height:1px; background:rgba(191,227,234,0.25);}
+  .phase{text-align:center; padding:0 16px; position:relative;}
+  .phase .p-num{
+    width:46px; height:46px; margin:0 auto 16px; border-radius:50%;
+    background:var(--navy); border:1.5px solid var(--cyan);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"JetBrains Mono", monospace; font-size:14px; color:var(--cyan);
+    position:relative; z-index:1;
+  }
+  .phase h3{font-size:18px; margin-bottom:6px;}
+  .phase .p-tag{font-family:"JetBrains Mono", monospace; font-size:11px; color:var(--dim); margin-bottom:8px; display:block;}
+  .phase p.desc{color:var(--dim); font-size:15px;}
+
+  @media (max-width:700px){ .phases{grid-template-columns:1fr; gap:32px;} .phases::before{display:none;} }
+
+  /* pull quote */
+  .pullquote{text-align:center;}
+  .pullquote blockquote{
+    margin:0; font-family:"Space Grotesk", sans-serif; font-weight:500;
+    font-size:clamp(20px,2.8vw,27px); max-width:740px; margin:0 auto; line-height:1.45;
+  }
+  .pullquote .attrib{margin-top:18px; font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--cyan);}
+
+  /* cta */
+  .cta{background:var(--navy-3); text-align:center; border-top:1px solid rgba(191,227,234,0.18);}
+  .cta h2{font-size:clamp(28px,4.4vw,40px);}
+  .cta .lede{max-width:560px; margin:20px auto 30px; color:var(--dim); font-size:16.5px;}
+  .cta-btn{
+    display:inline-block; font-family:"JetBrains Mono", monospace; font-size:13px;
+    letter-spacing:0.06em; text-transform:uppercase; font-weight:600;
+    color:var(--navy); background:var(--cyan); padding:15px 30px; text-decoration:none;
+  }
+  .cta-sub{margin-top:16px; font-family:"JetBrains Mono", monospace; font-size:11.5px; color:var(--dim);}
+
+  footer{padding:28px 0 44px; text-align:center; font-family:"JetBrains Mono", monospace; font-size:11px; color:var(--dim);}
+
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none; transition:none;} }
+
+  @media print{
+    body{background:#fff; color:#0A2540;}
+    h1,h2,h3{color:#0A2540;}
+    .cta, .survey-section{background:#fff;}
+    .cta-btn{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="wordmark">LifeTogether <span>Ministries</span></div>
+    <div class="dwg-tag mono">DWG NO. LTM-003 · REV A · SCALE NTS</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">For the Senior Pastor — Edition Three</span>
+    <h1>You can't build a campaign<br>on a <em>prompt.</em> You need a blueprint.</h1>
+    <p class="lede">A prompt is a guess dressed up as a plan. A blueprint is drawn from what's actually there — measured, surveyed, and proven before a single wall goes up. That's the difference between generic AI content and something your church can actually build on.</p>
+    <p class="lede second">Every resource we design for you is drawn to the same three specifications. Miss one, and the whole structure is compromised.</p>
+
+    <div class="dim-diagram">
+      <div class="dim-line">
+        <div class="dim-seg foundation"><span>Foundation<br>Pastor Intelligence</span></div>
+        <div class="dim-seg framework"><span>Framework<br>Church Intelligence</span></div>
+        <div class="dim-seg finish"><span>Finish<br>LifeTogether Intelligence</span></div>
+      </div>
+      <div class="dim-total mono">— Ministry Intelligence —</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="elements-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Structural Spec</span>
+      <h2>Three load-bearing elements. None optional.</h2>
+      <p>Remove the foundation and it's unstable. Remove the framework and it can't hold weight. Remove the finish and no one can actually use it.</p>
+    </div>
+
+    <div class="elements">
+      <div class="element-row foundation reveal">
+        <div class="tag-block">
+          <span class="layer">01 — Foundation</span>
+          <h3>Pastor Intelligence</h3>
+          <div class="subhead">unseen, but everything rests on it</div>
+        </div>
+        <div>
+          <p class="copy">Your purpose, your passion, your point of view — the burden God keeps bringing back, and the convictions you protect even under pressure. Pour a resource without this, and it may stand for a while, but it was never actually built on your church's ground.</p>
+          <p class="bestline">"Pastor Intelligence protects your voice and your church's DNA."</p>
+        </div>
+      </div>
+
+      <div class="element-row framework reveal">
+        <div class="tag-block">
+          <span class="layer">02 — Framework</span>
+          <h3>Church Intelligence</h3>
+          <div class="subhead">tested, proven, load-rated</div>
+        </div>
+        <div>
+          <p class="copy">Scripture, church history, and the proven patterns of healthy churches worldwide. This is the framing that's already been stress-tested by two thousand years of the church answering hard questions — so you're not re-engineering something already solved.</p>
+          <p class="bestline">"Church Intelligence brings the wisdom of the wider church to the work of your local church."</p>
+        </div>
+      </div>
+
+      <div class="element-row finish reveal">
+        <div class="tag-block">
+          <span class="layer">03 — Finish</span>
+          <h3>LifeTogether Intelligence</h3>
+          <div class="subhead">what people actually touch</div>
+        </div>
+        <div>
+          <p class="copy">Decades of experience turning wisdom into finished campaigns, curriculum, video studies, and launch plans — the difference between a sound structure and a room people actually want to walk into.</p>
+          <p class="bestline">"LifeTogether Intelligence turns ministry wisdom into ministry resources."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="survey-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Before We Design Anything</span>
+      <h2>The As-Built Survey</h2>
+      <p>No architect drafts new plans without first surveying what's already standing. Before we design your first campaign, we survey your entire preaching library.</p>
+    </div>
+
+    <div class="survey-grid reveal">
+      <div class="survey-copy">
+        <p class="lead">Somewhere in your files sits thirty years of load-bearing material — sermons, series, stories, and outlines nobody has measured in years.</p>
+        <p>The Pastor's Library Project is your as-built survey. We gather every message you've ever delivered — pulpit series, Vision Sundays, membership talks, staff devotionals, even outlines that never left a notebook — and document it into one permanent, searchable record.</p>
+        <p>Every entry is measured against theme, audience, anchor passage, and season, so what took decades to preach becomes something your team can locate in seconds. No future campaign starts from a blank sheet again — it starts from a site that's already been surveyed.</p>
+        <ul class="spec-list">
+          <li>Full transcription and cataloging of your preaching archive</li>
+          <li>Thematic and Scriptural indexing across every series</li>
+          <li>A searchable, permanent digital record</li>
+          <li>A master title directory, cross-referenced and deduplicated</li>
+          <li>Verified material, ready for the next set of drawings</li>
+        </ul>
+      </div>
+
+      <div class="dwg-card bracketed">
+        <span class="bl"></span><span class="br"></span>
+        <div class="dwg-head">
+          <span class="n">DWG PI-2019.14</span>
+          <span class="n">REV A</span>
+        </div>
+        <div class="dwg-row"><div class="k">Title</div><div class="v">"The Anchor and the Storm"</div></div>
+        <div class="dwg-row"><div class="k">Series</div><div class="v">Stewarding Opportunity</div></div>
+        <div class="dwg-row"><div class="k">Ref</div><div class="v">Psalm 24:1</div></div>
+        <div class="dwg-row"><div class="k">Theme</div><div class="v">Generosity · Trust</div></div>
+        <div class="dwg-row"><div class="k">Status</div><div class="v">Surveyed — Ready to Build</div></div>
+        <div class="rev-stamp">Surveyed</div>
+      </div>
+    </div>
+
+    <p class="survey-punch reveal">A structure that's already held weight once — ready to hold it again.</p>
+  </div>
+</section>
+
+<section class="formula-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Spec Sheet</span>
+      <h2>One equation. Every resource we build.</h2>
+    </div>
+    <div class="formula-row reveal">
+      <div class="formula-chip pi">Pastor Intelligence</div>
+      <span class="formula-op">+</span>
+      <div class="formula-chip ci">Church Intelligence</div>
+      <span class="formula-op">+</span>
+      <div class="formula-chip lti">LifeTogether Intelligence</div>
+      <span class="formula-op">=</span>
+      <span class="formula-eq">Ministry Intelligence</span>
+    </div>
+  </div>
+</section>
+
+<section class="why-ai">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why Not Just AI</span>
+      <h2>A prompt is not a blueprint.</h2>
+    </div>
+    <p class="reveal"><strong>Any tool can generate something that looks like a finished drawing.</strong> Very few can generate one that's actually load-bearing — grounded in a passage you'd preach, in language your congregation already recognizes, built to hold the specific weight your church is carrying.</p>
+    <p class="reveal">That's the gap between artificial content and Pastor Intelligence. One starts from a guess and hopes it's close enough to code. The other starts from a site survey of what God has already built in you and your church, and simply drafts a better set of plans.</p>
+  </div>
+</section>
+
+<section class="phases-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Project Phases</span>
+      <h2>Three phases. One first conversation.</h2>
+    </div>
+    <div class="phases reveal">
+      <div class="phase">
+        <div class="p-num mono">01</div>
+        <span class="p-tag">Site Survey</span>
+        <h3>Catalog Your Library</h3>
+        <p class="desc">We gather and index everything you've already taught.</p>
+      </div>
+      <div class="phase">
+        <div class="p-num mono">02</div>
+        <span class="p-tag">Schematic Design</span>
+        <h3>Map Your Intelligence</h3>
+        <p class="desc">We identify your purpose, passion, priorities, and point of view.</p>
+      </div>
+      <div class="phase">
+        <div class="p-num mono">03</div>
+        <span class="p-tag">Construction</span>
+        <h3>Build Your First Campaign</h3>
+        <p class="desc">We turn what's already yours into something your church can use.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pullquote-section">
+  <div class="wrap pullquote reveal">
+    <blockquote>"We combine Pastor Intelligence, Church Intelligence, and LifeTogether Intelligence to turn a pastor's voice, the church's wisdom, and proven campaign architecture into practical resources that disciple people for years."</blockquote>
+    <div class="attrib">LifeTogether Ministries</div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <span class="eyebrow">Let's Begin</span>
+    <h2>Let's survey what's already<br>standing.</h2>
+    <p class="lede">One conversation starts the survey of everything you've already built — and gives your first campaign a blueprint drawn from your own proven preaching, not a blank sheet.</p>
+    <a href="mailto:hello@lifetogetherministries.com" class="cta-btn">Start the Site Survey</a>
+    <p class="cta-sub">hello@lifetogetherministries.com &nbsp;·&nbsp; lifetogetherministries.com</p>
+  </div>
+</section>
+
+<footer>LifeTogether Ministries · Ministry Intelligence · Edition Three</footer>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  els.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

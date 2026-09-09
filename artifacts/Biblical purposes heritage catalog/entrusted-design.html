@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrusted — A LifeTogether Stewardship Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f0e2; --stripe:rgba(26,61,46,0.055);
+    --ink-green:#1a3d2e; --ink:#2b2a22; --ink-soft:#5a5644;
+    --gold:#a9832f; --gold-bright:#c79c48;
+    --rule:#c3b184; --deep:#0f2a20; --deep-2:#153327; --cream:#f2ecda;
+    --font-display:'Cormorant Garamond', serif;
+    --font-body:'EB Garamond', serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;}
+  .label{font-family:var(--font-mono);font-weight:500;letter-spacing:0.18em;text-transform:uppercase;font-size:0.63rem;}
+  section{padding:3rem 1.5rem;}
+  .inner{max-width:40rem;margin:0 auto;}
+  h2.section-title{font-family:var(--font-display);font-weight:600;font-style:italic;font-size:clamp(1.6rem,5.5vw,2.2rem);margin:0.3rem 0 0.6rem;color:var(--ink-green);}
+  .deck{font-family:var(--font-body);color:var(--ink-soft);font-size:1.02rem;line-height:1.75;margin:0 0 1.6rem;max-width:34rem;}
+
+  /* striped ledger paper backdrop */
+  .ledger-paper{
+    background-image:repeating-linear-gradient(180deg, var(--stripe) 0px, var(--stripe) 2.1rem, transparent 2.1rem, transparent 4.2rem);
+  }
+
+  /* ===== COVER ===== */
+  .cover-wrap{background:radial-gradient(ellipse at 50% -10%, rgba(199,156,72,0.18), transparent 55%), var(--deep);padding:2.2rem 1.1rem;}
+  .cover-frame{border:1.5px solid var(--gold-bright);padding:3px;position:relative;}
+  .cover-frame::before,.cover-frame::after,.cover-frame .tick-tr,.cover-frame .tick-bl{content:"";position:absolute;width:9px;height:9px;background:var(--gold-bright);transform:rotate(45deg);}
+  .cover-frame::before{top:-4.5px;left:-4.5px;}
+  .cover-frame::after{bottom:-4.5px;right:-4.5px;}
+  .tick-tr{top:-4.5px;right:-4.5px;}
+  .tick-bl{bottom:-4.5px;left:-4.5px;}
+  .cover-inner{border:1px solid rgba(199,156,72,0.55);padding:3.4rem 1.6rem 3rem;text-align:center;color:var(--cream);}
+  .seal{width:92px;height:92px;margin:0 auto 1.4rem;}
+  .cover-inner .label{color:var(--gold-bright);}
+  .cover-inner h1{font-family:var(--font-display);font-weight:700;font-style:italic;font-size:clamp(2.6rem,11vw,4.2rem);margin:0.7rem 0 0.7rem;letter-spacing:0.01em;}
+  .cover-inner .sub{font-family:var(--font-body);font-size:clamp(1rem,3.4vw,1.2rem);color:rgba(242,236,218,0.85);max-width:26rem;margin:0 auto 1.6rem;line-height:1.6;}
+  .cover-rule{width:60px;height:1px;background:var(--gold-bright);margin:0 auto 1.5rem;}
+  .cover-inner .tagline{font-family:var(--font-display);font-style:italic;font-size:1.05rem;color:var(--gold-bright);max-width:24rem;margin:0 auto;line-height:1.5;}
+
+  /* ===== ledger rows (overview) ===== */
+  .ledger-list{margin-top:1.5rem;border-top:1px solid var(--rule);}
+  .ledger-row{display:flex;gap:0.9rem;padding:0.85rem 0;border-bottom:1px dashed var(--rule);align-items:baseline;}
+  .ledger-no{font-family:var(--font-mono);font-size:0.72rem;color:var(--gold);white-space:nowrap;padding-top:0.15rem;width:2.6rem;flex-shrink:0;}
+  .ledger-body{flex:1;}
+  .ledger-title{font-family:var(--font-display);font-style:italic;font-weight:600;font-size:1.12rem;color:var(--ink-green);}
+  .ledger-tag{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-top:0.15rem;}
+
+  /* ===== statement cards (deep-dives) ===== */
+  .statement{border:1px solid var(--ink-green);margin-bottom:1.6rem;background:var(--paper);position:relative;}
+  .statement-head{background:var(--ink-green);color:var(--cream);padding:1rem 1.3rem;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:0.4rem;}
+  .statement-head .acct{font-family:var(--font-display);font-style:italic;font-weight:600;font-size:1.3rem;}
+  .statement-head .meta{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold-bright);}
+  .statement-body{padding:0.4rem 1.3rem 1rem;}
+  .stmt-row{display:flex;gap:0.8rem;padding:0.6rem 0;border-bottom:1px dotted var(--rule);align-items:baseline;}
+  .stmt-row:last-child{border-bottom:none;}
+  .stmt-no{font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);width:1.6rem;flex-shrink:0;}
+  .stmt-title{font-family:var(--font-body);font-size:0.94rem;color:var(--ink);}
+  .statement-foot{padding:0.7rem 1.3rem;border-top:1px solid var(--rule);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);}
+
+  /* ===== closing ===== */
+  .closing{background:var(--deep);color:var(--cream);text-align:center;padding:4rem 1.5rem 3rem;}
+  .closing .seal{width:56px;height:56px;}
+  .closing-line{font-family:var(--font-display);font-style:italic;font-weight:500;font-size:clamp(1.15rem,4.5vw,1.5rem);max-width:26rem;margin:1.2rem auto 0.8rem;line-height:1.5;color:var(--gold-bright);}
+  .colophon{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(242,236,218,0.55);margin-top:0.6rem;}
+
+  @media (min-width:640px){
+    .stmt-grid-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
+  }
+  @media (min-width:900px){
+    section{padding:4.5rem 3rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<div class="cover-wrap">
+  <div class="cover-frame">
+    <span class="tick-tr"></span><span class="tick-bl"></span>
+    <div class="cover-inner">
+      <svg class="seal" viewBox="0 0 120 120" fill="none">
+        <circle cx="60" cy="60" r="54" stroke="#c79c48" stroke-width="1"/>
+        <circle cx="60" cy="60" r="47" stroke="#c79c48" stroke-width="0.5"/>
+        <text x="60" y="34" text-anchor="middle" fill="#c79c48" font-family="IBM Plex Mono" font-size="6.5" letter-spacing="2">ENTRUSTED</text>
+        <ellipse cx="60" cy="68" rx="16" ry="5" stroke="#f2ecda" stroke-width="1"/>
+        <ellipse cx="60" cy="62" rx="16" ry="5" stroke="#f2ecda" stroke-width="1"/>
+        <ellipse cx="60" cy="56" rx="16" ry="5" stroke="#f2ecda" stroke-width="1"/>
+        <text x="60" y="94" text-anchor="middle" fill="#c79c48" font-family="IBM Plex Mono" font-size="5.5" letter-spacing="2">LIFETOGETHER</text>
+      </svg>
+      <span class="label">A LifeTogether Stewardship Series</span>
+      <h1>Entrusted</h1>
+      <div class="cover-rule"></div>
+      <p class="sub">40 Days to Know God as Owner, Belong to a Community of Stewards, Grow in Financial Wisdom, Serve through Generosity, and Live Sent with What You've Been Given.</p>
+      <p class="tagline">Everything you have, held in trust. Everything you give, multiplied for good.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= OVERVIEW LEDGER ================= -->
+<section class="ledger-paper">
+  <div class="inner">
+    <span class="label" style="color:var(--gold);">The Overview Campaign</span>
+    <h2 class="section-title">Six Entries. One Ledger.</h2>
+    <p class="deck">A 40-day churchwide campaign, six sessions, one devotional — moving a congregation from ownership to open-handed generosity.</p>
+
+    <div class="ledger-list">
+      <div class="ledger-row"><span class="ledger-no">WK 01</span><div class="ledger-body"><span class="ledger-title">Know God as Owner</span><span class="ledger-tag">Worship</span></div></div>
+      <div class="ledger-row"><span class="ledger-no">WK 02</span><div class="ledger-body"><span class="ledger-title">Belong to a Community of Stewards</span><span class="ledger-tag">Fellowship</span></div></div>
+      <div class="ledger-row"><span class="ledger-no">WK 03</span><div class="ledger-body"><span class="ledger-title">Grow in Financial Wisdom</span><span class="ledger-tag">Discipleship</span></div></div>
+      <div class="ledger-row"><span class="ledger-no">WK 04</span><div class="ledger-body"><span class="ledger-title">Serve through Generosity</span><span class="ledger-tag">Ministry</span></div></div>
+      <div class="ledger-row"><span class="ledger-no">WK 05</span><div class="ledger-body"><span class="ledger-title">Live Sent with What You've Been Given</span><span class="ledger-tag">Mission</span></div></div>
+      <div class="ledger-row"><span class="ledger-no">WK 06</span><div class="ledger-body"><span class="ledger-title">Multiply Your Stewardship</span><span class="ledger-tag">Multiply</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FIVE STATEMENTS ================= -->
+<section>
+  <div class="inner">
+    <span class="label" style="color:var(--gold);">The Deep-Dive Series</span>
+    <h2 class="section-title">Five Ledgers of Stewardship</h2>
+    <p class="deck">Beyond the overview campaign, each purpose gets its own standalone four-session series — its own devotional, its own small group guide.</p>
+
+    <div class="stmt-grid-wrap">
+      <div class="statement">
+        <div class="statement-head"><span class="acct">Entrusted: Worship</span><span class="meta">4 Sessions</span></div>
+        <div class="statement-body">
+          <div class="stmt-row"><span class="stmt-no">01</span><span class="stmt-title">Everything Belongs to God</span></div>
+          <div class="stmt-row"><span class="stmt-no">02</span><span class="stmt-title">Breaking Money's Grip on Your Heart</span></div>
+          <div class="stmt-row"><span class="stmt-no">03</span><span class="stmt-title">Contentment in a Culture of More</span></div>
+          <div class="stmt-row"><span class="stmt-no">04</span><span class="stmt-title">Worshiping with Your Wallet</span></div>
+        </div>
+        <div class="statement-foot">Own Devotional · Own Small Group Guide</div>
+      </div>
+
+      <div class="statement">
+        <div class="statement-head"><span class="acct">Entrusted: Fellowship</span><span class="meta">4 Sessions</span></div>
+        <div class="statement-body">
+          <div class="stmt-row"><span class="stmt-no">01</span><span class="stmt-title">Why We Don't Talk about Money</span></div>
+          <div class="stmt-row"><span class="stmt-no">02</span><span class="stmt-title">Getting on the Same Page as a Family</span></div>
+          <div class="stmt-row"><span class="stmt-no">03</span><span class="stmt-title">Accountability without Shame</span></div>
+          <div class="stmt-row"><span class="stmt-no">04</span><span class="stmt-title">A Church Family That Talks Finances</span></div>
+        </div>
+        <div class="statement-foot">Own Devotional · Own Small Group Guide</div>
+      </div>
+
+      <div class="statement">
+        <div class="statement-head"><span class="acct">Entrusted: Discipleship</span><span class="meta">4 Sessions</span></div>
+        <div class="statement-body">
+          <div class="stmt-row"><span class="stmt-no">01</span><span class="stmt-title">Building a Budget That Works</span></div>
+          <div class="stmt-row"><span class="stmt-no">02</span><span class="stmt-title">Getting Free from Debt</span></div>
+          <div class="stmt-row"><span class="stmt-no">03</span><span class="stmt-title">Saving, Investing, Planning Ahead</span></div>
+          <div class="stmt-row"><span class="stmt-no">04</span><span class="stmt-title">Teaching the Next Generation</span></div>
+        </div>
+        <div class="statement-foot">Own Devotional · Own Small Group Guide</div>
+      </div>
+
+      <div class="statement">
+        <div class="statement-head"><span class="acct">Entrusted: Ministry</span><span class="meta">4 Sessions</span></div>
+        <div class="statement-body">
+          <div class="stmt-row"><span class="stmt-no">01</span><span class="stmt-title">The Joy of Radical Generosity</span></div>
+          <div class="stmt-row"><span class="stmt-no">02</span><span class="stmt-title">Giving as a Spiritual Discipline</span></div>
+          <div class="stmt-row"><span class="stmt-no">03</span><span class="stmt-title">Serving the Poor with Your Resources</span></div>
+          <div class="stmt-row"><span class="stmt-no">04</span><span class="stmt-title">Generosity That Costs Something</span></div>
+        </div>
+        <div class="statement-foot">Own Devotional · Own Small Group Guide</div>
+      </div>
+    </div>
+
+    <div class="statement" style="margin-top:0;">
+      <div class="statement-head"><span class="acct">Entrusted: Mission</span><span class="meta">4 Sessions</span></div>
+      <div class="statement-body">
+        <div class="stmt-row"><span class="stmt-no">01</span><span class="stmt-title">Funding What Matters Most</span></div>
+        <div class="stmt-row"><span class="stmt-no">02</span><span class="stmt-title">Your Money and the Great Commission</span></div>
+        <div class="stmt-row"><span class="stmt-no">03</span><span class="stmt-title">Leaving More Than an Inheritance</span></div>
+        <div class="stmt-row"><span class="stmt-no">04</span><span class="stmt-title">A Legacy That Outlives Your Bank Account</span></div>
+      </div>
+      <div class="statement-foot">Own Devotional · Own Small Group Guide</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLOSING ================= -->
+<div class="closing">
+  <svg class="seal" viewBox="0 0 120 120" fill="none" style="margin:0 auto;">
+    <circle cx="60" cy="60" r="54" stroke="#c79c48" stroke-width="1"/>
+    <ellipse cx="60" cy="68" rx="16" ry="5" stroke="#f2ecda" stroke-width="1"/>
+    <ellipse cx="60" cy="62" rx="16" ry="5" stroke="#f2ecda" stroke-width="1"/>
+    <ellipse cx="60" cy="56" rx="16" ry="5" stroke="#f2ecda" stroke-width="1"/>
+  </svg>
+  <p class="closing-line">Everything you have, held in trust.<br>Everything you give, multiplied for good.</p>
+  <p class="colophon">LifeTogether Ministries · Entrusted: A Stewardship Series</p>
+</div>
+
+</body>
+</html>

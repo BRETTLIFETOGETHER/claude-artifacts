@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 Days Campaign Engine — Emotional & Mental Health</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0B1526; --navy-panel:#101D33; --navy-line:rgba(201,162,75,0.18);
+    --gold:#C9A24B; --gold-bright:#E4C271; --gold-dim:#8B7332;
+    --ivory:#F3EEE2; --slate:#8D96A8; --slate-dim:#5C6579; --max-w:1180px;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+  body{ margin:0; background:var(--navy-deep); color:var(--ivory); font-family:'Cormorant Garamond', serif; font-size:19px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  a{ color:inherit; text-decoration:none; }
+  h1,h2,h3,h4{ font-family:'Playfair Display', serif; margin:0; font-weight:700; }
+  button{ font-family:inherit; cursor:pointer; }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:3px; }
+
+  .topbar{ position:sticky; top:0; z-index:10; background:rgba(11,21,38,0.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--navy-line); padding:0.9rem 1.5rem; }
+  .topbar-inner{ max-width:var(--max-w); margin:0 auto; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+  .brand{ font-family:'Playfair Display', serif; font-size:1.02rem; color:var(--gold-bright); }
+  .brand em{ font-style:italic; color:var(--ivory); font-weight:400; }
+  .crumb-sep{ color:var(--slate-dim); }
+  .crumb-current{ color:var(--gold); font-style:italic; font-size:0.92rem; }
+
+  .masthead{ max-width:var(--max-w); margin:0 auto; padding:3.2rem 1.5rem 2rem; text-align:center; }
+  .eyebrow{ font-style:italic; letter-spacing:0.24em; text-transform:uppercase; font-size:0.78rem; color:var(--gold); margin-bottom:1rem; }
+  .masthead h1{ font-size:clamp(1.9rem, 4vw, 3rem); }
+  .masthead h1 em{ color:var(--gold-bright); font-style:italic; }
+  .masthead p{ color:var(--slate); font-style:italic; max-width:680px; margin:1.1rem auto 0; }
+
+  main{ max-width:var(--max-w); margin:0 auto; padding:1rem 1.5rem 5rem; }
+
+  .cat-list{ display:flex; flex-direction:column; }
+  .cat-row{ display:flex; align-items:center; gap:1.1rem; padding:1.1rem 0.4rem; border-top:1px solid var(--navy-line); transition:background .15s; }
+  .cat-row:first-child{ border-top:none; }
+  .cat-row:hover{ background:#101d33; }
+  .cat-num{ font-family:'Playfair Display', serif; font-size:1.5rem; color:transparent; -webkit-text-stroke:1px var(--gold); width:2.4rem; flex-shrink:0; }
+  .cat-info{ flex:1; min-width:0; }
+  .cat-info .tt-title{ font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--ivory); }
+  .cat-row:hover .tt-title{ color:var(--gold-bright); }
+  .cat-info .tt-sub{ display:block; font-style:italic; font-size:0.86rem; color:var(--slate); margin-top:0.2rem; }
+  .badge{ font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.22rem 0.6rem; border-radius:2px; flex-shrink:0; }
+  .badge-gen{ border:1px solid var(--gold); color:var(--gold-bright); }
+  .badge-pending{ border:1px solid var(--navy-line); color:var(--slate-dim); }
+
+  .detail-head{ padding:2.2rem 0 1.5rem; border-bottom:1px solid var(--navy-line); }
+  .detail-head .of{ font-size:0.78rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); }
+  .detail-head h1{ font-size:clamp(1.8rem, 4vw, 2.6rem); margin-top:0.4rem; }
+  .detail-head .sub{ color:var(--slate); font-style:italic; margin-top:0.6rem; font-size:1.08rem; }
+
+  .action-row{ display:flex; gap:0.7rem; flex-wrap:wrap; padding:1.6rem 0; border-bottom:1px solid var(--navy-line); }
+  .action-btn{ border:1px solid var(--gold-dim); background:none; color:var(--gold-bright); padding:0.65rem 1.3rem; border-radius:2px; font-size:1rem; font-family:'Cormorant Garamond', serif; }
+  .action-btn:hover{ background:var(--navy-panel); border-color:var(--gold); }
+  .action-btn.active{ background:var(--gold); color:var(--navy-deep); border-color:var(--gold); }
+
+  .pending-box{ margin:2rem 0; padding:1.6rem 1.8rem; border:1px solid var(--gold-dim); border-radius:2px; background:var(--navy-panel); }
+  .pending-box h2{ color:var(--gold-bright); font-size:1.2rem; margin-bottom:0.6rem; }
+  .pending-box p{ color:var(--slate); margin:0; }
+
+  .section-block{ padding:2rem 0; border-bottom:1px solid var(--navy-line); display:none; }
+  .section-block.open{ display:block; }
+  .section-block h2{ font-size:1.3rem; margin-bottom:0.3rem; }
+  .section-block .section-note{ color:var(--slate); font-style:italic; font-size:0.94rem; margin-bottom:1.3rem; }
+
+  .week-block{ margin-bottom:2.4rem; border:1px solid var(--navy-line); border-radius:3px; overflow:hidden; }
+  .week-head{ background:var(--navy-panel); padding:0.9rem 1.2rem; display:flex; align-items:baseline; gap:0.9rem; }
+  .week-head .wn{ font-family:'Playfair Display', serif; color:transparent; -webkit-text-stroke:1px var(--gold); font-size:1.3rem; }
+  .week-head .wt{ font-family:'Playfair Display', serif; color:var(--gold-bright); font-size:1.15rem; }
+  .week-head .wsub{ color:var(--slate-dim); font-style:italic; font-size:0.88rem; }
+  .week-body{ padding:1.2rem 1.4rem; }
+
+  .field{ margin-bottom:0.9rem; }
+  .field:last-child{ margin-bottom:0; }
+  .field .fl{ font-size:0.76rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold-dim); margin-bottom:0.25rem; }
+  .field .fv{ font-size:1rem; color:var(--ivory); }
+  .field .fv.big{ font-family:'Playfair Display', serif; font-style:italic; color:var(--gold-bright); font-size:1.1rem; }
+
+  .qa-item{ padding:0.7rem 0; border-top:1px solid var(--navy-line); }
+  .qa-item:first-child{ border-top:none; }
+  .qa-q{ color:var(--ivory); font-size:1.02rem; }
+  .qa-note{ color:var(--slate); font-style:italic; font-size:0.9rem; margin-top:0.25rem; }
+
+  .devo-row{ display:flex; gap:1rem; padding:0.7rem 0; border-top:1px solid var(--navy-line); align-items:baseline; }
+  .devo-row:first-child{ border-top:none; }
+  .devo-num{ font-size:0.8rem; color:var(--gold-dim); width:3.8rem; flex-shrink:0; }
+  .devo-body{ flex:1; }
+  .devo-title{ font-family:'Playfair Display', serif; color:var(--gold-bright); font-size:1.02rem; }
+  .devo-ref{ font-style:italic; color:var(--slate-dim); font-size:0.85rem; margin-left:0.5rem; }
+  .devo-text{ margin-top:0.3rem; font-size:0.98rem; }
+  .devo-meta{ margin-top:0.35rem; font-size:0.9rem; color:var(--slate); }
+
+  .kit-week-tabs{ display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.2rem; }
+  .kit-week-tab{ border:1px solid var(--navy-line); color:var(--slate); padding:0.4rem 0.9rem; border-radius:2px; font-size:0.9rem; background:none; }
+  .kit-week-tab.active{ border-color:var(--gold); color:var(--gold-bright); background:var(--navy-panel); }
+  .kit-cat-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:0.8rem; }
+  .kit-cat-card{ border:1px solid var(--navy-line); border-radius:2px; padding:1rem 1.1rem; background:var(--navy-panel); }
+  .kit-cat-card h4{ color:var(--gold-bright); font-size:1rem; margin-bottom:0.6rem; }
+
+  .comp-block{ margin-bottom:1.8rem; }
+  .comp-block:last-child{ margin-bottom:0; }
+  .comp-block h3{ color:var(--gold-bright); font-size:1.1rem; margin-bottom:0.7rem; }
+  .comp-line{ padding:0.5rem 0; border-top:1px solid var(--navy-line); }
+  .comp-line:first-child{ border-top:none; }
+  .comp-l{ font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold-dim); }
+  .comp-v{ font-size:0.98rem; margin-top:0.15rem; }
+
+  footer{ max-width:var(--max-w); margin:0 auto; padding:3rem 1.5rem 4rem; text-align:center; color:var(--slate-dim); font-style:italic; font-size:0.92rem; }
+
+  @media (max-width: 640px){
+    .kit-cat-grid{ grid-template-columns:1fr; }
+    .devo-row{ flex-direction:column; gap:0.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner" id="topbarInner"></div></div>
+<div id="app"></div>
+<footer>LifeTogether Ministries — Emotional &amp; Mental Health, built on the Campaign Engine schema. Real content for "40 Days of Peace"; the rest ready to generate on request.</footer>
+
+<script>
+(function(){
+
+  var PEACE = /*__PEACE_JSON__*/;
+
+  var CAMPAIGNS = [
+    {title:"40 Days of Peace", tier:"Original", generated:true, data:PEACE},
+    {title:"40 Days of Joy", tier:"Original", generated:false},
+    {title:"40 Days of Gratitude", tier:"Original", generated:false},
+    {title:"40 Days of Confidence", tier:"Original", generated:false},
+    {title:"40 Days of Resilience", tier:"Original", generated:false},
+    {title:"40 Days of Overcoming Anxiety", tier:"Original", generated:false},
+    {title:"40 Days of Rest", tier:"Original", generated:false},
+    {title:"40 Days of Healing from the Past", tier:"Original", generated:false},
+    {title:"40 Days of Shalom", tier:"Original", generated:false},
+    {title:"40 Days of Renewal of the Mind", tier:"Original", generated:false},
+    {title:"40 Days of Overcoming Fear", tier:"Thematic", generated:false},
+    {title:"40 Days of Emotional Health", tier:"Thematic", generated:false},
+    {title:"40 Days of Grief & Loss", tier:"Thematic", generated:false},
+    {title:"40 Days of Depression Recovery Support", tier:"Thematic", generated:false},
+    {title:"40 Days of Self-Worth in Christ", tier:"Thematic", generated:false},
+    {title:"40 Days of Overcoming Shame", tier:"Thematic", generated:false},
+    {title:"40 Days of Managing Stress", tier:"Thematic", generated:false},
+    {title:"40 Days of Inner Healing", tier:"Thematic", generated:false},
+    {title:"40 Days of Emotional Resilience", tier:"Thematic", generated:false},
+    {title:"40 Days of Overcoming Comparison", tier:"Thematic", generated:false}
+  ];
+
+  var KIT_LABELS = {
+    family:{name:"Family Edition", fields:[["big","Big Idea"],["dinner","Dinner Table Question"],["prayer","Bedtime Prayer"],["practice","Family Practice"],["coaching","Parent Coaching Note"]]},
+    student:{name:"Student Edition", fields:[["line","The One Line"],["honest","The Honest Part"],["q","Question"],["week","This Week's Assignment"],["verse","Verse"]]},
+    video:{name:"Video Script", fields:[["open","Opening Line — 0:00"],["heart","The Heart of It — 3:00"],["handoff","Handoff Question — 8:00"]]},
+    leader:{name:"Leader Guide", fields:[["prep","Prep Note"],["stalls","Where This Stalls"],["ifshort","If Short on Time"]]},
+    campaign:{name:"Campaign Kit", fields:[["bulletin","Bulletin Line"],["card","Response Card"],["social","Social Post"],["followup","Tuesday Follow-Up Text"]]},
+    kids:{name:"Kids Curriculum", fields:[["big","Big Idea"],["q","Question"],["activity","Activity"],["takehome","Take-Home Card"]]},
+    verses:{name:"Memory Verse", fields:[["ref","Reference"],["text","Verse Text"],["practice","Practice"]]},
+    testimony:{name:"Testimony Prompt", fields:[["prompt","Prompt"]]}
+  };
+  var KIT_ORDER = ["family","student","video","leader","campaign","kids","verses","testimony"];
+
+  var COMPLETION_LABELS = {
+    testimony_system:"Testimony Capture System",
+    callback:"The 90-Day Callback",
+    host:"Host Recruitment",
+    measurement:"Measurement Sheet",
+    lengths:"Alternate Lengths",
+    access:"Translation & Accessibility"
+  };
+  var COMPLETION_ORDER = ["testimony_system","callback","host","measurement","lengths","access"];
+
+  function parseSubtitle(fullTitle){
+    var rest = fullTitle.replace(/^40 Days (of|in|with|at|on|from|through|to)\s+/i, "");
+    var idx = rest.indexOf(":");
+    if (idx !== -1) return rest.substring(idx+1).trim();
+    return "A 40-day journey into " + rest + ".";
+  }
+
+  function renderTopbar(route){
+    var el = document.getElementById("topbarInner");
+    var html = '<a class="brand" href="#/">40 Days Campaign Engine <em>— Emotional & Mental Health</em></a>';
+    if (route.name === "detail"){
+      html += '<span class="crumb-sep">/</span><span class="crumb-current">' + CAMPAIGNS[route.idx].title + '</span>';
+    }
+    el.innerHTML = html;
+  }
+
+  function renderHome(){
+    var html = [];
+    html.push('<div class="masthead">');
+    html.push('<div class="eyebrow">Category 3 of 20 · LifeTogether Ministries</div>');
+    html.push('<h1>Emotional &amp; Mental <em>Health</em></h1>');
+    html.push('<p>Twenty campaigns from this category, built on the Campaign Engine schema: eight sessions, forty devotionals, eight sermons, and a full kit per campaign. "40 Days of Peace" is fully generated below — the rest are ready to build on request.</p>');
+    html.push('</div>');
+    html.push('<main><div class="cat-list">');
+    for (var i=0;i<CAMPAIGNS.length;i++){
+      var c = CAMPAIGNS[i];
+      var sub = c.generated ? c.data.meta.subtitle : parseSubtitle(c.title);
+      html.push('<a class="cat-row" href="#/c/' + i + '">');
+      html.push('<span class="cat-num">' + (i+1 < 10 ? "0"+(i+1) : (i+1)) + '</span>');
+      html.push('<span class="cat-info"><span class="tt-title">' + c.title + '</span><span class="tt-sub">' + sub + ' · ' + c.tier + '</span></span>');
+      html.push('<span class="badge ' + (c.generated ? "badge-gen" : "badge-pending") + '">' + (c.generated ? "Generated" : "Not Yet Generated") + '</span>');
+      html.push('</a>');
+    }
+    html.push('</div></main>');
+    document.getElementById("app").innerHTML = html.join("");
+  }
+
+  function renderPendingDetail(campaign){
+    var sub = parseSubtitle(campaign.title);
+    var html = [];
+    html.push('<main>');
+    html.push('<div class="detail-head"><div class="of">' + campaign.tier + '</div><h1>' + campaign.title + '</h1><div class="sub">' + sub + '</div></div>');
+    html.push('<div class="pending-box">');
+    html.push('<h2>Not Yet Generated</h2>');
+    html.push('<p>This campaign has not been run through the Campaign Engine yet. Ask for it by name and it will be built with the same real, non-placeholder content as 40 Days of Peace: eight full sessions, forty devotionals, eight sermon outlines, the complete eight-part kit, and all eight completions.</p>');
+    html.push('</div>');
+    html.push('</main>');
+    document.getElementById("app").innerHTML = html.join("");
+  }
+
+  function renderGeneratedDetail(campaign){
+    var d = campaign.data;
+    var html = [];
+    html.push('<main>');
+    html.push('<div class="detail-head"><div class="of">' + campaign.tier + ' · Generated</div><h1>' + d.meta.title + '</h1><div class="sub">' + d.meta.subtitle + ' — ' + d.meta.weeks + ' sessions, ' + d.meta.days + ' devotionals, primary text ' + d.meta.text + '</div></div>');
+
+    html.push('<div class="action-row">');
+    html.push('<button class="action-btn" id="btnCurric">The ' + d.meta.weeks + '-Session Curriculum</button>');
+    html.push('<button class="action-btn" id="btnCampaign">The ' + d.meta.days + '-Day Campaign</button>');
+    html.push('</div>');
+
+    /* CURRICULUM: sessions + paired sermons */
+    html.push('<div class="section-block" id="secCurric">');
+    html.push('<h2>The ' + d.meta.weeks + '-Session Curriculum</h2>');
+    html.push('<div class="section-note">Each week\'s small-group session, paired with that week\'s sermon outline.</div>');
+    for (var s=0; s<d.sessions.length; s++){
+      var sess = d.sessions[s];
+      var serm = d.sermons[s];
+      html.push('<div class="week-block">');
+      html.push('<div class="week-head"><span class="wn">W' + sess.n + '</span><span class="wt">' + sess.t + '</span><span class="wsub">' + sess.sub + '</span></div>');
+      html.push('<div class="week-body">');
+      html.push('<div class="field"><div class="fl">Primary Text</div><div class="fv">' + sess.ref + '</div></div>');
+      html.push('<div class="field"><div class="fl">Big Idea</div><div class="fv big">' + sess.big + '</div></div>');
+      html.push('<div class="field"><div class="fl">Opening Question</div><div class="fv">' + sess.open + '</div></div>');
+      html.push('<div class="field"><div class="fl">Commentary</div>' + sess.com.map(function(p){return '<div class="fv" style="margin-bottom:0.6rem;">' + p + '</div>';}).join("") + '</div>');
+      html.push('<div class="field"><div class="fl">Formation Questions</div>');
+      for (var qi=0;qi<sess.Q.length;qi++){
+        html.push('<div class="qa-item"><div class="qa-q">' + (qi+1) + '. ' + sess.Q[qi].q + '</div><div class="qa-note">Leader note: ' + sess.Q[qi].note + '</div></div>');
+      }
+      html.push('</div>');
+      html.push('<div class="field"><div class="fl">Application</div><div class="fv">' + sess.app + '</div></div>');
+      html.push('<div class="field"><div class="fl">Closing Prayer</div><div class="fv" style="font-style:italic;">' + sess.prayer + '</div></div>');
+      html.push('<div class="field"><div class="fl">Leader Notes</div><div class="fv">Stalls: ' + sess.LN[0] + '</div><div class="fv" style="margin-top:0.4rem;">If short: ' + sess.LN[1] + '</div></div>');
+      html.push('<div class="field" style="border-top:1px solid var(--navy-line); padding-top:0.9rem; margin-top:1rem;"><div class="fl">Matching Sermon — "' + serm.t + '"</div>');
+      html.push('<div class="fv" style="margin-bottom:0.4rem;"><em>' + serm.ref + '</em> — ' + serm.big + '</div>');
+      html.push('<div class="fv">Movements: ' + serm.movements.join(" · ") + '</div>');
+      html.push('<div class="fv" style="margin-top:0.4rem;">Call to action: ' + serm.cta + '</div>');
+      html.push('</div>');
+      html.push('</div></div>');
+    }
+    html.push('</div>');
+
+    /* CAMPAIGN: devotionals + kit + completions */
+    html.push('<div class="section-block" id="secCampaign">');
+    html.push('<h2>The ' + d.meta.days + '-Day Campaign</h2>');
+    html.push('<div class="section-note">All ' + d.meta.days + ' devotionals, the full eight-part kit for every week, and the eight completions.</div>');
+
+    html.push('<h3 style="color:var(--gold-bright); margin:1.2rem 0 0.8rem;">Devotionals</h3>');
+    for (var w=0; w<8; w++){
+      html.push('<div class="week-block"><div class="week-head"><span class="wn">W' + (w+1) + '</span><span class="wt">Days ' + (w*5+1) + '\u2013' + (w*5+5) + '</span></div><div class="week-body">');
+      for (var dd=w*5; dd<w*5+5; dd++){
+        var devo = d.devotionals[dd];
+        html.push('<div class="devo-row"><span class="devo-num">Day ' + (devo.d<10?"0"+devo.d:devo.d) + '</span><div class="devo-body">');
+        html.push('<span class="devo-title">' + devo.t + '</span><span class="devo-ref">' + devo.ref + '</span>');
+        html.push('<div class="devo-text">' + devo.body + '</div>');
+        html.push('<div class="devo-meta">Question: ' + devo.q + '<br>Practice: ' + devo.practice + '</div>');
+        html.push('</div></div>');
+      }
+      html.push('</div></div>');
+    }
+
+    html.push('<h3 style="color:var(--gold-bright); margin:2rem 0 0.8rem;">The Campaign Kit — All 8 Weeks</h3>');
+    for (var wk=0; wk<8; wk++){
+      html.push('<div class="week-block"><div class="week-head"><span class="wn">W' + (wk+1) + '</span><span class="wt">Kit Pieces</span></div><div class="week-body"><div class="kit-cat-grid">');
+      for (var ko=0; ko<KIT_ORDER.length; ko++){
+        var key = KIT_ORDER[ko];
+        var meta = KIT_LABELS[key];
+        var entry = d.kit[key][wk];
+        html.push('<div class="kit-cat-card"><h4>' + meta.name + '</h4>');
+        for (var f=0; f<meta.fields.length; f++){
+          var fk = meta.fields[f][0], fl = meta.fields[f][1];
+          html.push('<div class="field"><div class="fl">' + fl + '</div><div class="fv">' + entry[fk] + '</div></div>');
+        }
+        html.push('</div>');
+      }
+      html.push('</div></div></div>');
+    }
+
+    html.push('<h3 style="color:var(--gold-bright); margin:2rem 0 0.8rem;">The Eight Completions</h3>');
+    for (var co=0; co<COMPLETION_ORDER.length; co++){
+      var ckey = COMPLETION_ORDER[co];
+      var items = d.completions[ckey];
+      html.push('<div class="comp-block"><h3>' + COMPLETION_LABELS[ckey] + '</h3>');
+      for (var ii=0; ii<items.length; ii++){
+        var it = items[ii];
+        if (it.metric !== undefined){
+          html.push('<div class="comp-line"><div class="comp-l">' + it.metric + '</div><div class="comp-v">When: ' + it.when + ' — Tells you: ' + it.tells + '</div></div>');
+        } else if (it.t !== undefined){
+          html.push('<div class="comp-line"><div class="comp-l">' + it.t + ' (' + it.count + ')</div><div class="comp-v">Keeps: ' + it.keeps + '<br>Best for: ' + it.bestfor + '</div></div>');
+        } else {
+          html.push('<div class="comp-line"><div class="comp-l">' + it.l + '</div><div class="comp-v">' + it.v + '</div></div>');
+        }
+      }
+      html.push('</div>');
+    }
+
+    html.push('</div>');
+    html.push('</main>');
+    document.getElementById("app").innerHTML = html.join("");
+
+    var secCurric = document.getElementById("secCurric");
+    var secCampaign = document.getElementById("secCampaign");
+    var btnCurric = document.getElementById("btnCurric");
+    var btnCampaign = document.getElementById("btnCampaign");
+    function toggle(sec, btn){
+      var open = sec.classList.contains("open");
+      if (open){ sec.classList.remove("open"); btn.classList.remove("active"); }
+      else { sec.classList.add("open"); btn.classList.add("active"); }
+    }
+    btnCurric.addEventListener("click", function(){ toggle(secCurric, btnCurric); });
+    btnCampaign.addEventListener("click", function(){ toggle(secCampaign, btnCampaign); });
+    toggle(secCurric, btnCurric);
+  }
+
+  function parseHash(){
+    var h = window.location.hash || "#/";
+    var m = h.match(/^#\/c\/(\d+)$/);
+    if (m) return { name:"detail", idx: parseInt(m[1],10) };
+    return { name:"home" };
+  }
+
+  function render(){
+    var route = parseHash();
+    renderTopbar(route);
+    if (route.name === "detail"){
+      var campaign = CAMPAIGNS[route.idx];
+      if (campaign.generated) renderGeneratedDetail(campaign);
+      else renderPendingDetail(campaign);
+    } else {
+      renderHome();
+    }
+    window.scrollTo(0,0);
+  }
+
+  window.addEventListener("hashchange", render);
+  render();
+
+})();
+</script>
+</body>
+</html>

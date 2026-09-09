@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Daily Spark &middot; LifeTogether</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#c9a84c;--glt:#e2c97e;--gdk:#8a6e30;--ok:#5a9a6a;--no:#b05050;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lato',sans-serif;background:#0e0c14;color:#f0ece0;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(5,3,11,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:stretch;padding:0 16px;overflow-x:auto;}
+.nbr{display:flex;flex-direction:column;justify-content:center;padding:9px 14px 9px 0;margin-right:6px;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.nbr-t{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--g);line-height:1;}
+.nbr-s{font-size:5.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;margin-top:2px;}
+.nt{padding:0 12px;font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.25);display:flex;align-items:center;white-space:nowrap;background:none;font-family:'Lato',sans-serif;transition:all .12s;flex-shrink:0;}
+.nt:hover{color:rgba(255,255,255,.6);}
+.nt.on{color:var(--g);border-bottom-color:var(--g);}
+.whoami{margin-left:auto;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--gdk);border:1px solid rgba(201,168,76,.25);padding:4px 10px;align-self:center;cursor:pointer;background:none;font-family:'Lato',sans-serif;flex-shrink:0;}
+.whoami:hover{background:rgba(201,168,76,.08);color:var(--g);}
+
+.pnl{display:none;}
+.pnl.on{display:block;}
+.wrap{max-width:940px;margin:0 auto;padding:36px 22px 60px;}
+
+.kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.55);display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.kk::before{content:'';width:14px;height:1px;background:rgba(201,168,76,.4);}
+.h{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,46px);font-weight:400;color:#fff;line-height:.94;margin-bottom:10px;}
+.h em{font-style:italic;color:var(--g);}
+.sub{font-size:12px;color:rgba(255,255,255,.36);line-height:1.72;margin-bottom:26px;max-width:680px;}
+
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:20px 22px;margin-bottom:6px;}
+.card.gold{border-color:rgba(201,168,76,.24);background:rgba(201,168,76,.05);}
+.clbl{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--g);display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.clbl::before{content:'';width:11px;height:1px;background:var(--g);}
+.big{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:#fff;line-height:1.45;}
+.med{font-size:12px;color:rgba(255,255,255,.56);line-height:1.7;}
+.sm{font-size:10.5px;color:rgba(255,255,255,.38);line-height:1.6;}
+
+/* MEMORY VERSE TOOL */
+.mv-week{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.mv-sel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#f0ece0;padding:8px 12px;font-size:11px;font-family:'Lato',sans-serif;outline:none;}
+.mv-sel:focus{border-color:rgba(201,168,76,.45);}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:18px;}
+.day{padding:11px 4px;border:1px solid rgba(255,255,255,.09);text-align:center;cursor:pointer;transition:all .12s;background:none;font-family:'Lato',sans-serif;}
+.day:hover{background:rgba(255,255,255,.05);}
+.day.on{border-color:var(--g);background:rgba(201,168,76,.1);}
+.day.done{border-color:rgba(90,154,106,.5);background:rgba(90,154,106,.08);}
+.day-n{font-size:7px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.3);display:block;}
+.day.on .day-n{color:var(--g);}
+.day-num{font-family:'Playfair Display',serif;font-size:20px;color:rgba(255,255,255,.5);display:block;line-height:1.3;}
+.day.on .day-num{color:var(--g);}
+.day.done .day-num{color:var(--ok);}
+.day-chk{font-size:9px;color:var(--ok);display:block;height:12px;}
+.mode{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--gdk);margin-bottom:12px;}
+.verse-display{font-family:'Playfair Display',serif;font-size:clamp(17px,2.6vw,24px);font-style:italic;color:#fff;line-height:1.65;padding:22px 24px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);margin-bottom:6px;min-height:90px;}
+.verse-display .blank{color:rgba(201,168,76,.35);letter-spacing:1px;}
+.verse-ref{font-size:11px;color:var(--g);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:16px;}
+.mv-ta{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#f0ece0;padding:16px 18px;font-size:15px;font-family:'Playfair Display',serif;font-style:italic;outline:none;resize:none;line-height:1.7;margin-bottom:10px;}
+.mv-ta::placeholder{color:rgba(255,255,255,.18);font-style:normal;font-family:'Lato',sans-serif;font-size:12px;}
+.mv-ta:focus{border-color:rgba(201,168,76,.5);}
+.mv-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.btn{background:var(--g);color:#000;border:none;padding:11px 22px;font-size:9.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Lato',sans-serif;}
+.btn:hover{background:var(--glt);}
+.btn.ghost{background:none;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.45);}
+.btn.ghost:hover{border-color:rgba(201,168,76,.4);color:var(--g);background:none;}
+.result{margin-top:14px;padding:16px 18px;border:1px solid;display:none;}
+.result.on{display:block;}
+.result.pass{border-color:rgba(90,154,106,.4);background:rgba(90,154,106,.08);}
+.result.fail{border-color:rgba(176,80,80,.4);background:rgba(176,80,80,.07);}
+.score{font-family:'Playfair Display',serif;font-size:30px;font-style:italic;line-height:1;margin-bottom:8px;}
+.res-msg{font-size:12px;line-height:1.6;margin-bottom:12px;}
+.diff{font-size:15px;font-family:'Playfair Display',serif;font-style:italic;line-height:1.9;}
+.diff .ok{color:rgba(255,255,255,.75);}
+.diff .miss{color:#e08080;text-decoration:line-through;opacity:.6;}
+.diff .corr{color:var(--ok);}
+.streak{display:flex;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07);}
+.stat{text-align:center;}
+.stat-n{font-family:'Playfair Display',serif;font-size:24px;color:var(--g);display:block;line-height:1;}
+.stat-l{font-size:6px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;display:block;margin-top:3px;}
+
+/* SPARKS GRID */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.spark{padding:16px 15px;border:1px solid rgba(255,255,255,.07);border-top:2px solid var(--sc);cursor:pointer;transition:background .12s;}
+.spark:hover,.spark.on{background:rgba(255,255,255,.045);}
+.sp-ic{font-size:19px;display:block;margin-bottom:7px;}
+.sp-n{font-size:6.5px;letter-spacing:2px;color:rgba(255,255,255,.18);font-weight:700;display:block;margin-bottom:4px;}
+.sp-t{font-family:'Playfair Display',serif;font-size:13.5px;font-style:italic;color:#fff;margin-bottom:4px;line-height:1.2;}
+.sp-s{font-size:9px;color:rgba(255,255,255,.34);line-height:1.4;}
+.sdet{display:none;background:#100e1c;border:1px solid rgba(255,255,255,.08);border-left:4px solid var(--sdc);padding:22px 26px;margin:5px 0;}
+.sdet.on{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.dl{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.2);display:block;margin-bottom:7px;margin-top:14px;}
+.dl:first-child{margin-top:0;}
+.dn{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;margin-bottom:9px;}
+.dprompt{padding:11px 13px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);font-size:11.5px;color:rgba(255,255,255,.66);line-height:1.6;font-style:italic;}
+.dstep{padding:8px 11px;border-left:2px solid rgba(201,168,76,.28);background:rgba(255,255,255,.03);font-size:11px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:4px;}
+
+/* IDENTITY */
+.idov{display:none;position:fixed;inset:0;background:rgba(4,3,8,.95);z-index:500;overflow-y:auto;padding:40px 20px;}
+.idov.on{display:block;}
+.idin{max-width:760px;margin:0 auto;background:#100e1c;border:1px solid rgba(201,168,76,.2);padding:34px 36px;}
+.idgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px;}
+.idb{padding:14px 12px;border:1px solid rgba(255,255,255,.1);background:none;color:rgba(255,255,255,.5);cursor:pointer;font-family:'Lato',sans-serif;text-align:left;transition:all .12s;}
+.idb:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.05);}
+.idb.on{border-color:var(--g);background:rgba(201,168,76,.1);color:var(--g);}
+.idb-ic{font-size:17px;display:block;margin-bottom:5px;}
+.idb-t{font-family:'Playfair Display',serif;font-size:14px;font-style:italic;display:block;margin-bottom:2px;}
+.idb-s{font-size:8.5px;opacity:.6;line-height:1.35;}
+.idgroup{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.22);margin:18px 0 8px;}
+.idgroup:first-of-type{margin-top:0;}
+
+/* SERMON ASSETS */
+.audio-bar{display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);margin-bottom:6px;flex-wrap:wrap;}
+.play{width:44px;height:44px;border-radius:50%;background:var(--g);border:none;color:#000;font-size:15px;cursor:pointer;flex-shrink:0;}
+.play:hover{background:var(--glt);}
+.abar{flex:1;min-width:140px;height:3px;background:rgba(255,255,255,.12);position:relative;cursor:pointer;}
+.afill{position:absolute;left:0;top:0;bottom:0;width:34%;background:var(--g);}
+.atime{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px;flex-shrink:0;}
+.aspeed{font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.14);padding:4px 9px;cursor:pointer;background:none;font-family:'Lato',sans-serif;flex-shrink:0;}
+.aspeed:hover{border-color:rgba(201,168,76,.4);color:var(--g);}
+.outline-pt{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.outline-pt:last-child{border-bottom:none;}
+.opn{font-family:'Playfair Display',serif;font-size:24px;color:var(--g);opacity:.4;line-height:1;}
+.opt{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:#fff;margin-bottom:4px;line-height:1.25;}
+.ops{font-size:11px;color:rgba(255,255,255,.44);line-height:1.6;}
+.opv{font-size:9.5px;color:rgba(201,168,76,.5);font-style:italic;margin-top:4px;}
+.manu{max-height:340px;overflow-y:auto;padding:18px 20px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);font-size:12.5px;line-height:1.85;color:rgba(255,255,255,.55);font-family:Georgia,serif;}
+.manu p{margin-bottom:14px;}
+.manu b{color:rgba(255,255,255,.8);font-weight:400;}
+.tabrow{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tb{padding:6px 13px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.32);font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;background:none;font-family:'Lato',sans-serif;}
+.tb.on,.tb:hover{border-color:rgba(201,168,76,.45);color:var(--g);background:rgba(201,168,76,.07);}
+
+@media(max-width:820px){.sgrid{grid-template-columns:1fr 1fr;}.sdet.on{grid-template-columns:1fr;}.idgrid{grid-template-columns:1fr 1fr;}.days{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:520px){.sgrid,.idgrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nbr"><div class="nbr-t">The Daily Spark</div><div class="nbr-s">Sermon Next Steps</div></div>
+  <button class="nt on" onclick="tab(0)">Today</button>
+  <button class="nt" onclick="tab(1)">The Message</button>
+  <button class="nt" onclick="tab(2)">Memory Verse</button>
+  <button class="nt" onclick="tab(3)">12 Sparks</button>
+  <button class="whoami" onclick="openId()" id="whoami">Who are you?</button>
+</nav>
+
+<!-- TODAY -->
+<div id="p0" class="pnl on"><div class="wrap">
+  <p class="kk">Day <span id="todayday">1</span> &middot; <span id="todaydate"></span></p>
+  <h1 class="h">Today's <em>Spark.</em></h1>
+  <p class="sub" id="idline">Tap <b>Who are you?</b> in the corner and today's spark will be written for your actual life &mdash; no account, no email, nothing to sign up for.</p>
+  <div class="card gold">
+    <div class="clbl">&#128293; The One Sentence</div>
+    <div class="big">God is not working on your circumstances. He is working on your character &mdash; and he will use your circumstances to do it.</div>
+  </div>
+  <div class="card">
+    <div class="clbl">&#9889; Feet on the Floor</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-style:italic;color:#fff;">&ldquo;Lord, today form Christ in me. Nothing less.&rdquo;</div>
+  </div>
+  <div class="card" id="idspark">
+    <div class="clbl">&#127919; Your Spark Today</div>
+    <div class="med">Choose who you are and this becomes specific to your life &mdash; your kids, your marriage, your work, your season.</div>
+  </div>
+  <div class="card">
+    <div class="clbl">&#129504; This Week's Verse</div>
+    <div class="big" id="todayverse"></div>
+    <div class="sm" style="margin-top:8px;color:var(--g)" id="todayref"></div>
+    <button class="btn" style="margin-top:14px" onclick="tab(2)">Type It Today &rarr;</button>
+  </div>
+  <div class="card">
+    <div class="clbl">&#128172; Tell Me One Thing</div>
+    <div class="med" style="margin-bottom:12px">What is the one thing from Sunday you are still thinking about?</div>
+    <textarea class="mv-ta" rows="2" style="font-family:'Lato',sans-serif;font-style:normal;font-size:12.5px" placeholder="One word is enough."></textarea>
+    <button class="btn">Send to Pastor</button>
+  </div>
+</div></div>
+
+<!-- MESSAGE -->
+<div id="p1" class="pnl"><div class="wrap">
+  <p class="kk">Sunday &middot; Purpose Driven Life &middot; Purpose Three</p>
+  <h1 class="h">You Were Created to<br><em>Become Like Christ.</em></h1>
+  <p class="sub">The full message &mdash; audio, outline, and manuscript. Listen on the commute, scan the outline in two minutes, or read every word.</p>
+
+  <div class="audio-bar">
+    <button class="play" onclick="tog()" id="pbtn">&#9654;</button>
+    <div class="abar" onclick="seek(event)"><div class="afill" id="afill"></div></div>
+    <span class="atime" id="atime">14:22 / 38:40</span>
+    <button class="aspeed" onclick="spd()" id="spd">1.0&times;</button>
+  </div>
+
+  <div class="tabrow">
+    <button class="tb on" onclick="mtab(0)">Outline</button>
+    <button class="tb" onclick="mtab(1)">Manuscript</button>
+  </div>
+
+  <div id="m0" class="card">
+    <div class="clbl">&#128203; The Full Outline</div>
+    <div class="outline-pt"><div class="opn">I</div><div><div class="opt">God's Goal Is Not Your Comfort</div><div class="ops">Every believer assumes God wants them happy. Scripture says he wants them holy. The gap between those two assumptions explains most spiritual disappointment.</div><div class="opv">Romans 8:28-29 &middot; Hebrews 12:10-11</div></div></div>
+    <div class="outline-pt"><div class="opn">II</div><div><div class="opt">Growth Is Not Automatic</div><div class="ops">Time in church does not equal transformation. Attendance is not formation. The person who has been here fifteen years and is not measurably more like Jesus has been attending, not growing.</div><div class="opv">Ephesians 4:22-24 &middot; 2 Peter 3:18</div></div></div>
+    <div class="outline-pt"><div class="opn">III</div><div><div class="opt">God Uses Circumstances to Form Character</div><div class="ops">The situation you have been begging God to remove may be the classroom he enrolled you in. Not every hardship is discipline, but no hardship is wasted.</div><div class="opv">James 1:2-4 &middot; Romans 5:3-5</div></div></div>
+    <div class="outline-pt"><div class="opn">IV</div><div><div class="opt">Christlikeness Takes Intentional Commitment</div><div class="ops">You will not drift into Christ's character. Nobody accidentally becomes patient. Formation requires a decision, a practice, and a community.</div><div class="opv">1 Timothy 4:7-8 &middot; Philippians 2:12-13</div></div></div>
+    <div class="outline-pt"><div class="opn">V</div><div><div class="opt">The Process Is Slow and It Is Sure</div><div class="ops">God is more patient with your progress than you are. He who began a good work will complete it. The slowness is not evidence of failure.</div><div class="opv">Philippians 1:6 &middot; 2 Corinthians 3:18</div></div></div>
+    <div class="outline-pt"><div class="opn">&#10022;</div><div><div class="opt">The One Thing</div><div class="ops" style="color:var(--g);font-family:'Playfair Display',serif;font-style:italic;font-size:14px">God cares more about who you are becoming than what you are going through.</div></div></div>
+  </div>
+
+  <div id="m1" class="card" style="display:none">
+    <div class="clbl">&#128221; Full Manuscript</div>
+    <div class="manu">
+      <p><b>Let me start with a question that might sting a little.</b></p>
+      <p>If I asked the people closest to you &mdash; your spouse, your kids, the person in the cubicle next to you &mdash; whether you are more like Jesus than you were a year ago, what would they say?</p>
+      <p>Not whether you know more. Not whether you attend more. Whether you are <i>more like him.</i> More patient. Less defensive. Quicker to forgive. Slower to need the last word.</p>
+      <p>Because here is what I have come to believe after decades of watching people in this room: <b>God's ultimate goal for your life on earth is not comfort. It is character.</b></p>
+      <p>Romans 8:29 says it plainly &mdash; God knew what he was doing from the very beginning. He decided from the outset to shape the lives of those who love him along the same lines as the life of his Son.</p>
+      <p><b>Now here is the second thing, and this one is harder.</b></p>
+      <p>Spiritual growth is not automatic. It does not happen by osmosis. You do not become like Christ by sitting in a room where his name is spoken.</p>
+      <p>I have watched people attend this church for twenty years and remain exactly who they were on the day they walked in. Not because they were bad people. Because they were <i>attending</i>, not <i>growing.</i> Those are different verbs.</p>
+      <p><b>Which brings me to the third thing, and this is where it gets personal.</b></p>
+      <p>You have been praying about a situation. I know you have. Everyone in this room has one. And you have been asking God to change it, remove it, fix it.</p>
+      <p>What if he has been trying to use it?</p>
+      <p>Not causing it. Using it. There is a difference and it matters enormously. But James says count it all joy when you meet trials, because the testing of your faith produces steadfastness &mdash; and steadfastness is a character word.</p>
+      <p><b>So what do you do with that?</b></p>
+      <p>You stop asking <i>get me out of this</i> and you start asking <i>what are you forming in me through this.</i></p>
+      <p>That is not resignation. That is not pretending it does not hurt. It is a different question &mdash; and different questions get different answers.</p>
+      <p><b>Here is the last thing I want to leave you with.</b></p>
+      <p>Philippians 1:6. He who began a good work in you will bring it to completion.</p>
+      <p>He <i>began</i> it. You did not. He will <i>complete</i> it. You cannot. And in between the beginning and the completion is a long, slow, unglamorous middle &mdash; and that middle is where you live.</p>
+      <p>God is more patient with your progress than you are.</p>
+      <p><b>So before you leave today, do one thing.</b></p>
+      <p>Name the character trait. Just one. The one you already know. Write it on the card in your seat, put it somewhere you will see it Monday morning, and then this week, text one person who knows you well and ask them: <i>What is one area of my character you have watched God working on?</i></p>
+      <p>And then &mdash; and this is the hard part &mdash; do not defend yourself.</p>
+      <p><b>God cares more about who you are becoming than what you are going through.</b></p>
+    </div>
+  </div>
+</div></div>
+
+<!-- MEMORY VERSE -->
+<div id="p2" class="pnl"><div class="wrap">
+  <p class="kk">Hide His Word in Your Heart</p>
+  <h1 class="h">One Verse a Week.<br><em>Fifty-Two a Year.</em></h1>
+  <p class="sub">Type it every day. Day 1 you copy it. By Day 4 half the words are gone. By Day 7 the screen is blank and you write it from memory. That is not a quiz &mdash; that is how memory actually forms.</p>
+
+  <div class="mv-week">
+    <span style="font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.3)">Week</span>
+    <select class="mv-sel" id="wsel" onchange="pickWeek()"></select>
+  </div>
+
+  <div class="days" id="days"></div>
+  <div class="mode" id="mode"></div>
+  <div class="verse-display" id="vdisp"></div>
+  <div class="verse-ref" id="vref"></div>
+  <textarea class="mv-ta" id="mvin" rows="4" placeholder="Type the verse here from what you can see (or from memory)..."></textarea>
+  <div class="mv-btns">
+    <button class="btn" onclick="check()">Check It</button>
+    <button class="btn ghost" onclick="clearIn()">Clear</button>
+    <button class="btn ghost" onclick="peek()" id="peekb">Peek 3 Seconds</button>
+  </div>
+  <div class="result" id="res"></div>
+
+  <div class="streak">
+    <div class="stat"><span class="stat-n" id="stDays">0</span><span class="stat-l">Days Complete</span></div>
+    <div class="stat"><span class="stat-n" id="stVerses">0</span><span class="stat-l">Verses Learned</span></div>
+    <div class="stat"><span class="stat-n" id="stBest">0%</span><span class="stat-l">Best Today</span></div>
+    <div class="stat"><span class="stat-n">52</span><span class="stat-l">This Year</span></div>
+  </div>
+</div></div>
+
+<!-- 12 SPARKS -->
+<div id="p3" class="pnl"><div class="wrap">
+  <p class="kk">The Formation Practice Library</p>
+  <h1 class="h">Twelve <em>Daily Sparks.</em></h1>
+  <p class="sub">Memory verse is one. Here are twelve more &mdash; one formation practice per month, or rotate them weekly. Each one is under five minutes and each one compounds.</p>
+  <div class="sgrid" id="sgrid"></div>
+  <div id="sdet"></div>
+</div></div>
+
+<!-- IDENTITY OVERLAY -->
+<div class="idov" id="idov"><div class="idin">
+  <p class="kk">No account. No email. Nothing to sign up for.</p>
+  <h2 style="font-family:'Playfair Display',serif;font-size:30px;font-weight:400;color:#fff;margin-bottom:8px;line-height:1">Who are <em style="font-style:italic;color:var(--g)">you?</em></h2>
+  <p style="font-size:11.5px;color:rgba(255,255,255,.35);line-height:1.7;margin-bottom:20px">Tap what fits. Today's spark gets written for your actual life. You can change it any time, and it stays on this device only.</p>
+  <div id="idbody"></div>
+  <div style="display:flex;gap:8px;margin-top:20px">
+    <button class="btn" onclick="saveId()">That's Me &rarr;</button>
+    <button class="btn ghost" onclick="closeId()">Skip for Now</button>
+  </div>
+</div></div>
+
+<script>
+// ── 52 MEMORY VERSES ──────────────────────────────────────────────
+var V=[
+["Q1","Psalm 119:11","I have hidden your word in my heart that I might not sin against you"],
+["Q1","John 1:12","Yet to all who did receive him, to those who believed in his name, he gave the right to become children of God"],
+["Q1","2 Corinthians 5:17","Therefore if anyone is in Christ, the new creation has come. The old has gone, the new is here"],
+["Q1","Romans 8:1","Therefore, there is now no condemnation for those who are in Christ Jesus"],
+["Q1","Ephesians 2:8-9","For it is by grace you have been saved, through faith. And this is not from yourselves, it is the gift of God, not by works, so that no one can boast"],
+["Q1","Galatians 2:20","I have been crucified with Christ and I no longer live, but Christ lives in me"],
+["Q1","1 John 3:1","See what great love the Father has lavished on us, that we should be called children of God. And that is what we are"],
+["Q1","Psalm 139:14","I praise you because I am fearfully and wonderfully made. Your works are wonderful, I know that full well"],
+["Q1","Jeremiah 29:11","For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future"],
+["Q1","Romans 5:8","But God demonstrates his own love for us in this. While we were still sinners, Christ died for us"],
+["Q1","John 3:16","For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life"],
+["Q1","Colossians 1:13-14","For he has rescued us from the dominion of darkness and brought us into the kingdom of the Son he loves, in whom we have redemption, the forgiveness of sins"],
+["Q1","Isaiah 43:1","Do not fear, for I have redeemed you. I have summoned you by name. You are mine"],
+["Q2","Romans 12:2","Do not conform to the pattern of this world, but be transformed by the renewing of your mind"],
+["Q2","Galatians 5:22-23","But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self control"],
+["Q2","Philippians 4:8","Whatever is true, whatever is noble, whatever is right, whatever is pure, whatever is lovely, whatever is admirable, think about such things"],
+["Q2","Philippians 1:6","Being confident of this, that he who began a good work in you will carry it on to completion until the day of Christ Jesus"],
+["Q2","James 1:2-3","Consider it pure joy, my brothers and sisters, whenever you face trials of many kinds, because you know that the testing of your faith produces perseverance"],
+["Q2","Proverbs 3:5-6","Trust in the Lord with all your heart and lean not on your own understanding. In all your ways submit to him, and he will make your paths straight"],
+["Q2","2 Corinthians 3:18","And we all, who with unveiled faces contemplate the Lord's glory, are being transformed into his image with ever increasing glory"],
+["Q2","Hebrews 12:1-2","Let us throw off everything that hinders and the sin that so easily entangles, and let us run with perseverance the race marked out for us"],
+["Q2","Psalm 51:10","Create in me a pure heart, O God, and renew a steadfast spirit within me"],
+["Q2","Ephesians 4:22-24","Put off your old self, be made new in the attitude of your minds, and put on the new self, created to be like God in true righteousness and holiness"],
+["Q2","Colossians 3:12","Clothe yourselves with compassion, kindness, humility, gentleness and patience"],
+["Q2","1 Timothy 4:7-8","Train yourself to be godly. For physical training is of some value, but godliness has value for all things"],
+["Q2","Micah 6:8","He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God"],
+["Q3","Matthew 28:19-20","Therefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit"],
+["Q3","Acts 1:8","But you will receive power when the Holy Spirit comes on you, and you will be my witnesses in Jerusalem, and in all Judea and Samaria, and to the ends of the earth"],
+["Q3","Matthew 5:16","Let your light shine before others, that they may see your good deeds and glorify your Father in heaven"],
+["Q3","1 Peter 3:15","Always be prepared to give an answer to everyone who asks you to give the reason for the hope that you have"],
+["Q3","Mark 10:45","For even the Son of Man did not come to be served, but to serve, and to give his life as a ransom for many"],
+["Q3","Galatians 6:2","Carry each other's burdens, and in this way you will fulfill the law of Christ"],
+["Q3","John 13:34-35","A new command I give you. Love one another. As I have loved you, so you must love one another"],
+["Q3","Hebrews 10:24-25","And let us consider how we may spur one another on toward love and good deeds, not giving up meeting together"],
+["Q3","2 Corinthians 9:7","Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver"],
+["Q3","Matthew 25:40","Truly I tell you, whatever you did for one of the least of these brothers and sisters of mine, you did for me"],
+["Q3","Ephesians 4:32","Be kind and compassionate to one another, forgiving each other, just as in Christ God forgave you"],
+["Q3","Colossians 3:23","Whatever you do, work at it with all your heart, as working for the Lord, not for human masters"],
+["Q3","Philippians 2:3-4","Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves"],
+["Q4","Isaiah 41:10","So do not fear, for I am with you. Do not be dismayed, for I am your God. I will strengthen you and help you"],
+["Q4","Philippians 4:6-7","Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God"],
+["Q4","Romans 8:28","And we know that in all things God works for the good of those who love him, who have been called according to his purpose"],
+["Q4","Psalm 23:1-3","The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul"],
+["Q4","Isaiah 40:31","But those who hope in the Lord will renew their strength. They will soar on wings like eagles"],
+["Q4","2 Corinthians 12:9","My grace is sufficient for you, for my power is made perfect in weakness"],
+["Q4","Joshua 1:9","Be strong and courageous. Do not be afraid, do not be discouraged, for the Lord your God will be with you wherever you go"],
+["Q4","Lamentations 3:22-23","Because of the Lord's great love we are not consumed, for his compassions never fail. They are new every morning"],
+["Q4","Psalm 46:1","God is our refuge and strength, an ever present help in trouble"],
+["Q4","John 16:33","In this world you will have trouble. But take heart. I have overcome the world"],
+["Q4","Romans 15:13","May the God of hope fill you with all joy and peace as you trust in him, so that you may overflow with hope"],
+["Q4","1 Peter 5:7","Cast all your anxiety on him because he cares for you"],
+["Q4","Revelation 21:4","He will wipe every tear from their eyes. There will be no more death or mourning or crying or pain"]
+];
+
+// ── 12 FORMATION SPARKS ────────────────────────────────────────────
+var SP=[
+{n:"01",ic:"&#129504;",t:"The Memory Spark",s:"One verse a week. Type it daily. Fifty-two a year.",c:"#c9a84c",
+ why:"The verse you have memorized travels into every environment your body enters. It surfaces at 2am on Wednesday when the feeling of Sunday is completely gone. Nothing else in formation does that.",
+ pr:"Type this week's verse from memory before you look at it.",
+ steps:["Day 1-2: read it and copy it","Day 3-4: type it with words removed","Day 5-6: first letters only","Day 7: blank screen, from memory","Review Week 4, 8, and 12"],
+ time:"3 minutes"},
+{n:"02",ic:"&#128221;",t:"The Gratitude Spark",s:"Three specific things. Not general. Named.",c:"#5a9a6a",
+ why:"General gratitude produces a mood. Specific gratitude produces a changed brain. The person who names three concrete things daily for six weeks reports measurably different baseline outlook.",
+ pr:"Name three things from the last 24 hours. Be embarrassingly specific.",
+ steps:["Nothing generic like family or health","Name the actual moment","Name why it mattered","Say one of them out loud to someone"],
+ time:"2 minutes"},
+{n:"03",ic:"&#128367;",t:"The Confession Spark",s:"One thing named and released. Private.",c:"#8a5a6a",
+ why:"Unnamed sin does not disappear. It relocates. The daily practice of naming one thing keeps the account short and the conscience clean, and it stops small things becoming large ones.",
+ pr:"Name one thing from today. Write it. Then write forgiven over it.",
+ steps:["What did I do or fail to do today","Name it without softening","Receive 1 John 1:9 out loud","Do not carry it into tomorrow"],
+ time:"3 minutes"},
+{n:"04",ic:"&#128591;",t:"The Intercession Spark",s:"One person by name. Every day. Same person.",c:"#7a6a9a",
+ why:"Scattered prayer for everyone produces nothing. Sustained prayer for one person over thirty days changes the person praying as much as the person prayed for.",
+ pr:"Who is the one person you are carrying this month?",
+ steps:["Pick one name for the whole month","Pray for them by name daily","Pray something specific, not general","Tell them on day 30"],
+ time:"2 minutes"},
+{n:"05",ic:"&#9671;",t:"The Generosity Spark",s:"One act of giving. Money, time, or attention.",c:"#aa8a4a",
+ why:"Generosity is a muscle, not a mood. The person who gives something away daily &mdash; even small &mdash; develops an open-handed reflex that changes how they hold everything.",
+ pr:"What are you giving away today, and to whom?",
+ steps:["It does not have to be money","Attention counts and costs more","Do it before you feel generous","Do not tell anyone about it"],
+ time:"varies"},
+{n:"06",ic:"&#128264;",t:"The Silence Spark",s:"Five minutes. No input. Nothing.",c:"#6a7a9a",
+ why:"You cannot hear God over the feed. Five minutes of true silence is the most countercultural thing available to a person in 2026 and the practice most people quit fastest.",
+ pr:"Five minutes. Phone in another room. Nothing to achieve.",
+ steps:["Set a timer so you stop watching the clock","Phone in another room, not face down","Do not try to pray","Notice what surfaces"],
+ time:"5 minutes"},
+{n:"07",ic:"&#10024;",t:"The Blessing Spark",s:"Speak a blessing over one person out loud.",c:"#9a7a9a",
+ why:"The blessing is the most neglected formation practice in the Western church. Spoken words over a person, especially a child, are received at a level ordinary encouragement never reaches.",
+ pr:"Who needs to hear a blessing spoken over them today?",
+ steps:["Say it out loud, not in your head","Use their name","Name who they are, not what they did","Children first &mdash; they carry it for life"],
+ time:"1 minute"},
+{n:"08",ic:"&#128172;",t:"The Encouragement Spark",s:"One text. Unprompted. To one person.",c:"#5a88c9",
+ why:"The person who receives an unprompted text saying I was thinking about you and here is why has been given something the algorithm cannot manufacture. It costs 30 seconds and it lands for a week.",
+ pr:"Whose name came to mind just now? Text them.",
+ steps:["Send it before you overthink it","Be specific about what you noticed","No ask attached, ever","Do not wait for a reply"],
+ time:"1 minute"},
+{n:"09",ic:"&#128375;",t:"The Fasting Spark",s:"One thing given up. Named, not vague.",c:"#7a7aaa",
+ why:"The body participates in formation or it does not participate at all. Fasting from one specific thing &mdash; food, screen, purchase, opinion &mdash; teaches the body that appetite is not the boss.",
+ pr:"What one thing are you saying no to today?",
+ steps:["Pick one specific thing, not everything","When you feel the want, pray instead","Do not announce it","Break it with community"],
+ time:"all day"},
+{n:"10",ic:"&#128269;",t:"The Examen Spark",s:"Where did I see God today, and where did I miss him?",c:"#aa7a5a",
+ why:"The Ignatian examen is 500 years old and remains the single most effective daily practice for developing spiritual awareness. It teaches you to notice God in retrospect until you can notice him in real time.",
+ pr:"Replay the day. Where was God, and where were you not looking?",
+ steps:["Replay the day in order, briefly","Where did you feel most alive","Where did you feel most distant","Thank him for one, name the other"],
+ time:"5 minutes"},
+{n:"11",ic:"&#127807;",t:"The Sabbath Spark",s:"One hour of real rest. Weekly, not daily.",c:"#5a8a5a",
+ why:"Rest is the practice with the lowest immediate response rate and the highest formation depth at ninety days. The person who cannot stop for one hour is being formed by something other than Christ.",
+ pr:"When is your hour this week, and what will you not do in it?",
+ steps:["Put it on the calendar like a meeting","No screens, no productivity, no errands","It is not a nap and not a hobby","Let it be useless on purpose"],
+ time:"1 hour weekly"},
+{n:"12",ic:"&#128226;",t:"The Story Spark",s:"Tell someone what happened. Two sentences.",c:"#9a6a4a",
+ why:"The person who can tell the story of what God did in two sentences has been formed by it. The person who cannot has been inspired by it. Storytelling is a formation diagnostic, not a communication skill.",
+ pr:"Tell one person what God did this week. Two sentences.",
+ steps:["Two sentences, not a testimony","Say what happened in you","Do not clean it up","Watch what it does to them"],
+ time:"2 minutes"}
+];
+
+// ── IDENTITIES ─────────────────────────────────────────────────────
+var IDG=[
+["Season of Life",[
+ {id:"father",ic:"&#128104;",t:"Father",s:"Kids at home or grown",sp:"Tonight before bed, ask one of your kids: what is one thing you wish I did more of? Then just listen. Do not explain or defend."},
+ {id:"mother",ic:"&#128105;",t:"Mother",s:"Kids at home or grown",sp:"Speak a blessing over one child out loud today. Use their name. Name who they are becoming, not what they did."},
+ {id:"married",ic:"&#128141;",t:"Married",s:"However long",sp:"Ask your spouse tonight: what is one area of my character you have watched God working on? Then do not defend yourself."},
+ {id:"single",ic:"&#128100;",t:"Single",s:"By choice or season",sp:"Text one friend today and tell them one specific thing you have noticed God doing in them. No ask attached."},
+ {id:"student",ic:"&#127891;",t:"Student",s:"High school or college",sp:"Before your first class today, pray the one sentence: Lord, form Christ in me. Then notice one moment where character mattered more than performance."},
+ {id:"empty",ic:"&#127968;",t:"Empty Nest",s:"Kids gone, house quiet",sp:"Call one of your adult children today and ask about their life without offering advice. That restraint is the formation."}]],
+["Work and Calling",[
+ {id:"business",ic:"&#128188;",t:"Business",s:"Owner, exec, professional",sp:"Before your first meeting Monday, ask: what does Christlike character look like in this specific room? Then do that one thing."},
+ {id:"caregiver",ic:"&#129309;",t:"Caregiver",s:"Parent, patient, or both",sp:"You are being formed in a classroom you did not choose. Name one thing this season has produced in you that comfort never would have."},
+ {id:"leader",ic:"&#129517;",t:"Ministry Leader",s:"Pastor, staff, volunteer",sp:"Name the one person you are personally discipling. If you cannot, that is this week's assignment. Pick one and text them."},
+ {id:"retired",ic:"&#9749;",t:"Retired",s:"New season, same calling",sp:"Who is the one younger person who would take your call? Reach out today. Your formation is now someone else's curriculum."}]],
+["Where You Are",[
+ {id:"new",ic:"&#127793;",t:"New to Faith",s:"Recently started following",sp:"Read Philippians 1:6 today. He started it. He finishes it. You do not have to get this right immediately."},
+ {id:"long",ic:"&#128218;",t:"Long-Time Believer",s:"Been at this a while",sp:"Be honest: are you more like Jesus than a year ago? What is the actual evidence? Write it down without softening it."},
+ {id:"hard",ic:"&#127785;",t:"Hard Season",s:"Grief, loss, or struggle",sp:"You do not have to be okay today. Ask a different question: not get me out of this, but what are you forming in me through this."},
+ {id:"skeptic",ic:"&#10067;",t:"Not Sure Yet",s:"Still working it out",sp:"You are welcome here with the questions intact. Today, just notice: what would have to be true for this to be worth believing?"}]]
+];
+
+var wk=0,day=1,pick=null,speed=1,playing=false;
+var ST={days:{},best:{},learned:0,id:null};
+try{var s=localStorage.getItem("dsp");if(s)ST=JSON.parse(s);}catch(e){}
+function save(){try{localStorage.setItem("dsp",JSON.stringify(ST));}catch(e){}}
+
+function tab(i){
+  for(var k=0;k<4;k++)document.getElementById("p"+k).classList.remove("on");
+  document.getElementById("p"+i).classList.add("on");
+  var t=document.getElementsByClassName("nt");
+  for(var k=0;k<t.length;k++)t[k].classList.remove("on");
+  t[i].classList.add("on");window.scrollTo(0,0);
+}
+function mtab(i){
+  document.getElementById("m0").style.display=i===0?"block":"none";
+  document.getElementById("m1").style.display=i===1?"block":"none";
+  var t=document.getElementsByClassName("tb");
+  for(var k=0;k<t.length;k++)t[k].classList.remove("on");
+  t[i].classList.add("on");
+}
+function tog(){playing=!playing;document.getElementById("pbtn").innerHTML=playing?"&#10074;&#10074;":"&#9654;";}
+function spd(){var s=[1,1.25,1.5,2];speed=s[(s.indexOf(speed)+1)%4];document.getElementById("spd").textContent=speed.toFixed(2).replace(/0$/,"")+"\u00d7";}
+function seek(ev){var r=ev.currentTarget.getBoundingClientRect();var p=(ev.clientX-r.left)/r.width;document.getElementById("afill").style.width=(p*100)+"%";
+ var tot=2320,cur=Math.floor(tot*p);document.getElementById("atime").textContent=fmt(cur)+" / 38:40";}
+function fmt(s){return Math.floor(s/60)+":"+("0"+(s%60)).slice(-2);}
+
+// ── MEMORY VERSE ENGINE ──
+function buildWeeks(){
+  var h="";for(var i=0;i<V.length;i++)h+="<option value='"+i+"'>Week "+(i+1)+" \u2014 "+V[i][1]+"</option>";
+  document.getElementById("wsel").innerHTML=h;
+}
+function pickWeek(){wk=parseInt(document.getElementById("wsel").value);day=1;render();}
+var MODES=["Read it. Copy it word for word.","Read it. Copy it again \u2014 slower this time.","Every third word is gone. Fill the gaps.","Half the words are gone.","First letters only.","Reference only. No words.","Blank screen. From memory."];
+function mask(txt,d){
+  var w=txt.split(" ");
+  if(d<=2)return txt;
+  if(d===3)return w.map(function(x,i){return (i+1)%3===0?"<span class='blank'>"+"_".repeat(Math.max(3,x.length))+"</span>":x;}).join(" ");
+  if(d===4)return w.map(function(x,i){return i%2===1?"<span class='blank'>"+"_".repeat(Math.max(3,x.length))+"</span>":x;}).join(" ");
+  if(d===5)return w.map(function(x){return x.charAt(0)+"<span class='blank'>"+"_".repeat(Math.max(2,x.length-1))+"</span>";}).join(" ");
+  if(d===6)return "<span class='blank'>\u2014 reference only \u2014</span>";
+  return "<span class='blank'>\u2014 from memory \u2014</span>";
+}
+function render(){
+  var v=V[wk];
+  document.getElementById("wsel").value=wk;
+  var h="";
+  for(var d=1;d<=7;d++){
+    var k=wk+"-"+d,done=ST.days[k];
+    h+="<button class='day"+(d===day?" on":"")+(done?" done":"")+"' onclick='setDay("+d+")'>";
+    h+="<span class='day-n'>Day</span><span class='day-num'>"+d+"</span>";
+    h+="<span class='day-chk'>"+(done?"\u2713":"")+"</span></button>";
+  }
+  document.getElementById("days").innerHTML=h;
+  document.getElementById("mode").textContent="Day "+day+" \u2014 "+MODES[day-1];
+  document.getElementById("vdisp").innerHTML=mask(v[2],day);
+  document.getElementById("vref").textContent=v[1];
+  document.getElementById("mvin").value="";
+  document.getElementById("res").className="result";
+  document.getElementById("todayverse").textContent="\u201c"+v[2]+"\u201d";
+  document.getElementById("todayref").textContent=v[1];
+  stats();
+}
+function setDay(d){day=d;render();}
+function clearIn(){document.getElementById("mvin").value="";document.getElementById("res").className="result";}
+function peek(){
+  var b=document.getElementById("peekb"),o=document.getElementById("vdisp").innerHTML;
+  document.getElementById("vdisp").innerHTML=V[wk][2];b.disabled=true;b.textContent="Look now...";
+  setTimeout(function(){document.getElementById("vdisp").innerHTML=o;b.disabled=false;b.textContent="Peek 3 Seconds";},3000);
+}
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9\s]/g,"").replace(/\s+/g," ").trim();}
+function check(){
+  var typed=norm(document.getElementById("mvin").value);
+  if(!typed){return;}
+  var target=norm(V[wk][2]);
+  var tw=target.split(" "),yw=typed.split(" ");
+  var hits=0,html="";
+  for(var i=0;i<tw.length;i++){
+    if(yw[i]===tw[i]){hits++;html+="<span class='ok'>"+tw[i]+"</span> ";}
+    else if(yw[i]){html+="<span class='miss'>"+yw[i]+"</span> <span class='corr'>"+tw[i]+"</span> ";}
+    else{html+="<span class='corr'>"+tw[i]+"</span> ";}
+  }
+  var pct=Math.round(hits/tw.length*100);
+  var k=wk+"-"+day;
+  if(!ST.best[k]||pct>ST.best[k])ST.best[k]=pct;
+  if(pct>=85){
+    ST.days[k]=true;
+    if(day===7&&!ST.days["v"+wk]){ST.days["v"+wk]=true;ST.learned=(ST.learned||0)+1;}
+  }
+  save();
+  var r=document.getElementById("res");
+  r.className="result on "+(pct>=85?"pass":"fail");
+  var msg = pct===100 ? "Word perfect. That verse is yours."
+    : pct>=85 ? "Locked in. Come back tomorrow and it will be easier."
+    : pct>=60 ? "Getting there. Read it once more and try again."
+    : "Early days. Read it slowly, then type it again.";
+  r.innerHTML="<div class='score' style='color:"+(pct>=85?"var(--ok)":"var(--no)")+"'>"+pct+"%</div>"+
+    "<div class='res-msg' style='color:rgba(255,255,255,.6)'>"+msg+"</div><div class='diff'>"+html+"</div>";
+  render2();
+}
+function render2(){
+  var h="";
+  for(var d=1;d<=7;d++){
+    var k=wk+"-"+d,done=ST.days[k];
+    h+="<button class='day"+(d===day?" on":"")+(done?" done":"")+"' onclick='setDay("+d+")'>";
+    h+="<span class='day-n'>Day</span><span class='day-num'>"+d+"</span>";
+    h+="<span class='day-chk'>"+(done?"\u2713":"")+"</span></button>";
+  }
+  document.getElementById("days").innerHTML=h;stats();
+}
+function stats(){
+  var c=0;for(var k in ST.days){if(ST.days[k]===true&&k.indexOf("v")!==0)c++;}
+  document.getElementById("stDays").textContent=c;
+  document.getElementById("stVerses").textContent=ST.learned||0;
+  document.getElementById("stBest").textContent=(ST.best[wk+"-"+day]||0)+"%";
+}
+
+// ── SPARKS ──
+function sgrid(){
+  var h="";
+  for(var i=0;i<SP.length;i++){var s=SP[i];
+    h+="<div class='spark' style='--sc:"+s.c+"' onclick='ts("+i+")'>";
+    h+="<span class='sp-ic'>"+s.ic+"</span><span class='sp-n'>"+s.n+"</span>";
+    h+="<div class='sp-t' style='color:"+s.c+"'>"+s.t+"</div><div class='sp-s'>"+s.s+"</div></div>";}
+  document.getElementById("sgrid").innerHTML=h;
+}
+var openSp=null;
+function ts(i){
+  if(openSp===i){openSp=null;document.getElementById("sdet").innerHTML="";return;}
+  openSp=i;var s=SP[i];
+  var st="";for(var j=0;j<s.steps.length;j++)st+="<div class='dstep'>"+s.steps[j]+"</div>";
+  document.getElementById("sdet").innerHTML="<div class='sdet on' style='--sdc:"+s.c+"'>"+
+    "<div><span class='dl'>Spark "+s.n+" \u00b7 "+s.time+"</span><div class='dn' style='color:"+s.c+"'>"+s.ic+" "+s.t+"</div>"+
+    "<div class='med'>"+s.why+"</div><span class='dl'>Today's Prompt</span><div class='dprompt'>\u201c"+s.pr+"\u201d</div></div>"+
+    "<div><span class='dl'>How to Do It</span>"+st+"</div></div>";
+}
+
+// ── IDENTITY ──
+function openId(){
+  var h="";
+  for(var g=0;g<IDG.length;g++){
+    h+="<div class='idgroup'>"+IDG[g][0]+"</div><div class='idgrid'>";
+    var arr=IDG[g][1];
+    for(var i=0;i<arr.length;i++){var a=arr[i];
+      h+="<button class='idb"+(pick===a.id||ST.id===a.id?" on":"")+"' onclick=\"selId('"+a.id+"')\">";
+      h+="<span class='idb-ic'>"+a.ic+"</span><span class='idb-t'>"+a.t+"</span><span class='idb-s'>"+a.s+"</span></button>";}
+    h+="</div>";
+  }
+  document.getElementById("idbody").innerHTML=h;
+  document.getElementById("idov").classList.add("on");
+  document.body.style.overflow="hidden";
+}
+function selId(id){pick=id;openId();}
+function closeId(){document.getElementById("idov").classList.remove("on");document.body.style.overflow="";}
+function saveId(){if(pick){ST.id=pick;save();applyId();}closeId();}
+function applyId(){
+  if(!ST.id)return;
+  var found=null;
+  for(var g=0;g<IDG.length;g++){var a=IDG[g][1];for(var i=0;i<a.length;i++){if(a[i].id===ST.id)found=a[i];}}
+  if(!found)return;
+  document.getElementById("whoami").innerHTML=found.ic+" "+found.t;
+  document.getElementById("idline").innerHTML="Written for you today \u2014 <b style='color:var(--g)'>"+found.t+"</b>. Tap your name in the corner any time to change it.";
+  document.getElementById("idspark").innerHTML="<div class='clbl'>&#127919; Your Spark Today \u00b7 "+found.t+"</div><div class='big'>\u201c"+found.sp+"\u201d</div>";
+}
+
+buildWeeks();render();sgrid();applyId();
+document.getElementById("todaydate").textContent=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+document.getElementById("idov").addEventListener("click",function(e){if(e.target.id==="idov")closeId();});
+</script>
+</body>
+</html>

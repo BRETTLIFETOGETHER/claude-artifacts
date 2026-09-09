@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 Days Campaigns — Navigation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16161D; --ink-2:#3A3A45; --dim:#5E5E6B; --faint:#8A8A98;
+  --orange:#F26C1E; --orange-d:#DE5E12; --gold:#E4AC43; --gold-d:#C68E2A;
+  --line:#ECE9F2; --card:#F5F3F9; --white:#FFFFFF;
+  --c1:#16A88F;--c2:#C8484C;--c3:#4F86E0;--c4:#E0703F;--c5:#E8A52E;
+  --c6:#36A85E;--c7:#7B5FE0;--c8:#E2542F;--c9:#5A6B8C;--c10:#C99A3C;
+}
+*{box-sizing:border-box;}
+body{margin:0;color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;
+  min-height:100vh;
+  background:
+   radial-gradient(50% 45% at 88% 0%, rgba(225,216,250,.8), transparent 60%),
+   radial-gradient(42% 40% at 99% 24%, rgba(252,222,214,.65), transparent 60%),
+   radial-gradient(44% 44% at 2% 70%, rgba(247,222,236,.55), transparent 62%),
+   #fff;}
+a{text-decoration:none;color:inherit;}
+h1,h2,h3,h4{font-family:'Figtree',sans-serif;margin:0;letter-spacing:-.02em;}
+.fig{font-family:'Figtree';}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Figtree';font-weight:700;font-size:14.5px;
+  padding:11px 18px;border-radius:999px;border:none;cursor:pointer;transition:.16s;white-space:nowrap;}
+.btn-dark{background:var(--ink);color:#fff;}.btn-dark:hover{background:#000;}
+.btn-orange{background:var(--orange);color:#fff;}.btn-orange:hover{background:var(--orange-d);}
+.btn-white{background:#fff;color:var(--ink);border:1px solid var(--line);}
+.btn-white:hover{box-shadow:0 8px 20px -12px rgba(0,0,0,.25);}
+
+/* ---------- NAV ---------- */
+.navwrap{position:sticky;top:0;z-index:90;padding:16px 16px 0;}
+.nav{max-width:1180px;margin:0 auto;position:relative;display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(22,22,29,.07);border-radius:999px;padding:9px 12px 9px 18px;
+  box-shadow:0 12px 34px -18px rgba(40,30,80,.34);}
+.brand{display:flex;align-items:center;gap:10px;margin-right:14px;}
+.mark{width:36px;height:36px;border-radius:10px;flex:none;position:relative;
+  background:linear-gradient(135deg,var(--gold),var(--gold-d));display:flex;align-items:center;justify-content:center;
+  box-shadow:0 5px 13px -5px rgba(228,172,67,.7);}
+.mark b{font-family:'Figtree';font-weight:900;font-size:14px;color:#26190A;}
+.mark i{position:absolute;right:-4px;bottom:-4px;width:15px;height:15px;border-radius:5px;background:var(--orange);
+  border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;}
+.mark i::after{content:"";border-left:5px solid #fff;border-top:3px solid transparent;border-bottom:3px solid transparent;margin-left:1px;}
+.brand .a{font-family:'Figtree';font-weight:800;font-size:15.5px;}
+.brand .a span{color:var(--gold-d);}
+
+.menu{display:flex;align-items:center;gap:2px;}
+.mi{position:static;}
+.mi > a{display:inline-flex;align-items:center;gap:6px;font-family:'Figtree';font-weight:700;font-size:13.5px;
+  letter-spacing:.02em;color:var(--ink-2);padding:11px 14px;border-radius:999px;cursor:pointer;transition:.14s;}
+.mi > a .cv{transition:transform .18s;color:var(--faint);}
+.mi:hover > a{color:var(--ink);background:rgba(22,22,29,.05);}
+.mi:hover > a .cv{transform:rotate(180deg);}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:9px;}
+.hamb{display:none;}
+
+/* ---------- dropdown shell ---------- */
+.dd{position:absolute;top:calc(100% + 12px);opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:.18s;z-index:95;}
+.mi:hover .dd, .dd:hover, .mi.open .dd{opacity:1;visibility:visible;transform:translateY(0);}
+.dd::before{content:"";position:absolute;top:-14px;left:0;right:0;height:14px;} /* hover bridge */
+.panel{background:#fff;border:1px solid var(--line);border-radius:20px;
+  box-shadow:0 30px 60px -24px rgba(40,30,80,.4);padding:22px;}
+
+/* big campaigns mega centered */
+.dd-mega{left:50%;transform:translateX(-50%) translateY(8px);width:min(940px,94vw);}
+.mi:hover .dd-mega,.dd-mega:hover,.mi.open .dd-mega{transform:translateX(-50%) translateY(0);}
+.mega{display:grid;grid-template-columns:1.35fr 1fr .9fr;gap:22px;}
+.col h5{font-family:'Figtree';font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 12px;}
+.chcols{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;}
+.chlink{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:9px;transition:.13s;}
+.chlink:hover{background:var(--card);}
+.chlink .dot{width:9px;height:9px;border-radius:3px;flex:none;}
+.chlink span{font-size:13.5px;font-weight:600;color:var(--ink);}
+.viewall{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'Figtree';font-weight:700;font-size:12.5px;color:var(--orange);}
+.sub{margin-bottom:18px;}
+.lk{display:block;padding:7px 8px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink);transition:.13s;}
+.lk:hover{background:var(--card);color:var(--orange);}
+.lk small{display:block;font-weight:500;font-size:11.5px;color:var(--faint);margin-top:1px;}
+.fmtwrap{display:flex;flex-wrap:wrap;gap:6px;}
+.fmt{font-family:'Figtree';font-weight:700;font-size:12px;color:var(--ink-2);background:var(--card);border-radius:999px;padding:6px 12px;cursor:pointer;transition:.13s;}
+.fmt:hover{background:var(--ink);color:#fff;}
+.feat{background:linear-gradient(160deg,#fbf5ee,#f4eee6);border-radius:14px;padding:14px;}
+.featcov{border-radius:11px;overflow:hidden;position:relative;margin-bottom:12px;}
+.featcov .cv2{aspect-ratio:16/10;background:linear-gradient(155deg,var(--c6),#176233);display:flex;align-items:flex-end;padding:13px;position:relative;}
+.featcov .cv2::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.4));}
+.featcov .tab{position:absolute;top:0;left:0;right:0;height:24px;background:var(--orange);z-index:2;display:flex;align-items:center;justify-content:center;}
+.featcov .tab::after{content:"";position:absolute;bottom:-11px;left:0;right:0;height:22px;background:var(--orange);border-radius:0 0 50% 50%/0 0 100% 100%;}
+.featcov .tab b{position:relative;z-index:2;font-family:'Figtree';font-weight:800;font-size:9px;color:#fff;letter-spacing:.14em;}
+.featcov .nm{position:relative;z-index:2;font-family:'Figtree';font-weight:800;font-size:16px;color:#fff;}
+.feat .ft{font-family:'Figtree';font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin-bottom:4px;}
+.feat p{font-size:12.5px;color:var(--ink-2);margin:0 0 12px;line-height:1.45;}
+
+/* medium dropdowns (anchored) */
+.dd-aud{right:auto;width:560px;}
+.dd-aud{left:50%;transform:translateX(-58%) translateY(8px);}
+.mi:hover .dd-aud,.dd-aud:hover{transform:translateX(-58%) translateY(0);}
+.audgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.aud{display:flex;gap:11px;padding:11px;border-radius:12px;transition:.13s;}
+.aud:hover{background:var(--card);}
+.aud .ai{width:34px;height:34px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;}
+.aud .at{font-family:'Figtree';font-weight:800;font-size:14px;color:var(--ink);}
+.aud .ad{font-size:12px;color:var(--dim);margin-top:1px;}
+
+.dd-simple{width:300px;left:50%;transform:translateX(-50%) translateY(8px);}
+.mi:hover .dd-simple,.dd-simple:hover{transform:translateX(-50%) translateY(0);}
+
+/* ---------- page body ---------- */
+.hero{max-width:1180px;margin:0 auto;padding:60px 28px 30px;text-align:center;}
+.hero .eb{font-family:'Figtree';font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);}
+.hero h1{font-weight:900;font-size:clamp(30px,4.4vw,50px);line-height:1.04;margin:14px 0 12px;}
+.hero p{font-size:17px;color:var(--ink-2);max-width:54ch;margin:0 auto;}
+.hint{display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:10px 18px;font-size:13.5px;color:var(--dim);font-weight:600;
+  box-shadow:0 10px 26px -18px rgba(40,30,80,.3);}
+.hint b{color:var(--ink);}
+
+/* breakdown cards */
+.grid{max-width:1180px;margin:30px auto 60px;padding:0 28px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;}
+.card .t{font-family:'Figtree';font-weight:800;font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.card .t .pin{width:8px;height:8px;border-radius:3px;background:var(--orange);}
+.card ul{margin:8px 0 0;padding-left:0;list-style:none;}
+.card li{font-size:13px;color:var(--ink-2);padding:4px 0;border-bottom:1px dashed var(--line);}
+.card li:last-child{border-bottom:none;}
+
+/* ---------- mobile menu ---------- */
+.mobile{position:fixed;inset:0;z-index:200;background:#fff;transform:translateX(100%);transition:.28s;
+  display:flex;flex-direction:column;padding:20px;overflow:auto;}
+.mobile.open{transform:translateX(0);}
+.mobile .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.mobile .x{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:20px;cursor:pointer;}
+.macc{border-bottom:1px solid var(--line);}
+.macc summary{list-style:none;font-family:'Figtree';font-weight:800;font-size:18px;padding:16px 4px;display:flex;justify-content:space-between;cursor:pointer;}
+.macc summary::-webkit-details-marker{display:none;}
+.macc .mbody{padding:0 4px 14px;}
+.macc .mbody a{display:block;padding:8px 0;font-size:14.5px;color:var(--ink-2);font-weight:600;}
+.mobile .mcta{margin-top:auto;display:flex;gap:10px;padding-top:20px;}
+.mobile .mcta .btn{flex:1;justify-content:center;}
+
+@media(max-width:900px){
+  .menu,.nav-right .btn-white{display:none;}
+  .hamb{display:inline-flex;}
+  .grid{grid-template-columns:1fr;}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;}}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="navwrap">
+  <nav class="nav">
+    <a class="brand" href="#"><span class="mark"><b>40</b><i></i></span><span class="a">40 Days <span>Campaigns</span></span></a>
+
+    <div class="menu">
+      <!-- CAMPAIGNS mega -->
+      <div class="mi" data-mi>
+        <a>Campaigns <span class="cv"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></span></a>
+        <div class="dd dd-mega"><div class="panel"><div class="mega">
+          <div class="col">
+            <h5>Browse by channel</h5>
+            <div class="chcols" id="chcols"></div>
+            <a class="viewall" href="#">View all 10 channels <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+          <div class="col">
+            <div class="sub">
+              <h5>Seasonal collections</h5>
+              <a class="lk" href="#">New Year &amp; Prayer</a>
+              <a class="lk" href="#">Lent &amp; Easter</a>
+              <a class="lk" href="#">Fall Kickoff</a>
+              <a class="lk" href="#">Advent &amp; Christmas</a>
+              <a class="lk" href="#">Year-End Giving</a>
+            </div>
+            <div class="sub">
+              <h5>Browse by outcome</h5>
+              <a class="lk" href="#">Small Group Launch</a>
+              <a class="lk" href="#">Build a Generosity Culture</a>
+              <a class="lk" href="#">Emotional Health</a>
+            </div>
+            <div>
+              <h5>Formats</h5>
+              <div class="fmtwrap">
+                <span class="fmt">7-Day</span><span class="fmt">21-Day</span><span class="fmt">30-Day</span>
+                <span class="fmt">40-Day</span><span class="fmt">6-Week</span><span class="fmt">One-Year</span>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <h5>Featured</h5>
+            <div class="feat">
+              <div class="featcov"><div class="cv2"><div class="tab"><b>40 DAYS</b></div><div class="nm">God Owns It All</div></div></div>
+              <div class="ft">Flagship · 40-Day</div>
+              <p>A 40-day journey to freedom, wisdom, and generosity for your whole church.</p>
+              <a class="btn btn-dark" href="#" style="width:100%;justify-content:center;">Preview campaign</a>
+            </div>
+            <a class="viewall" href="#" style="margin-top:12px;">New this month <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div></div></div>
+      </div>
+
+      <!-- AUDIENCES -->
+      <div class="mi" data-mi>
+        <a>Audiences <span class="cv"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></span></a>
+        <div class="dd dd-aud"><div class="panel">
+          <h5 style="font-family:'Figtree';font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 12px;">The campaign library, curated for who you serve</h5>
+          <div class="audgrid" id="audgrid"></div>
+        </div></div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="mi" data-mi>
+        <a>How It Works <span class="cv"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></span></a>
+        <div class="dd dd-simple"><div class="panel">
+          <a class="lk" href="#">What is a campaign?</a>
+          <a class="lk" href="#">Choosing a format</a>
+          <a class="lk" href="#">What's included</a>
+          <a class="lk" href="#">The campaign process</a>
+          <a class="lk" href="#">Case studies</a>
+          <a class="lk" href="#">FAQ</a>
+        </div></div>
+      </div>
+
+      <!-- RESOURCES -->
+      <div class="mi" data-mi>
+        <a>Resources <span class="cv"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 9l6 6 6-6"/></svg></span></a>
+        <div class="dd dd-simple"><div class="panel">
+          <a class="lk" href="#">Campaign Finder <small>Answer a few questions, get 3 matches</small></a>
+          <a class="lk" href="#">Guides &amp; playbooks</a>
+          <a class="lk" href="#">Turn sermons into campaigns</a>
+          <a class="lk" href="#">Blog</a>
+          <a class="lk" href="#">Help center</a>
+        </div></div>
+      </div>
+
+      <!-- PRICING -->
+      <div class="mi"><a href="#">Pricing</a></div>
+    </div>
+
+    <div class="nav-right">
+      <a class="btn btn-white" href="#">Sign in</a>
+      <a class="btn btn-orange" href="#">Get access <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+      <button class="btn btn-dark hamb" id="hamb" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </nav>
+</div>
+
+<!-- PAGE -->
+<div class="hero">
+  <span class="eb">Navigation system</span>
+  <h1>A short top bar.<br>One library underneath.</h1>
+  <p>The top bar stays lean like RightNow Media — the depth lives in the mega-menus. Channels, collections, formats, and audiences are all one or two hops away, no matter how big the library grows.</p>
+  <div class="hint">👆 <b>Hover</b> Campaigns or Audiences in the bar above to open the menus</div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="t"><span class="pin"></span>Campaigns</div>
+    <ul>
+      <li>Browse by channel — all 10, color-coded</li>
+      <li>Seasonal collections</li>
+      <li>Browse by outcome</li>
+      <li>Formats: 7 / 21 / 30 / 40-Day, 6-Week, One-Year</li>
+      <li>Featured campaign + New this month</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="t"><span class="pin"></span>Audiences</div>
+    <ul>
+      <li>Churches</li><li>Families</li><li>Next-Gen (Youth &amp; Kids)</li>
+      <li>Advisors</li><li>Business Owners</li><li>Networks &amp; Denominations</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="t"><span class="pin"></span>How It Works &amp; Resources</div>
+    <ul>
+      <li>What is a campaign · Formats · What's included</li>
+      <li>The process · Case studies · FAQ</li>
+      <li>Campaign Finder (quiz)</li>
+      <li>Guides · Sermon-to-campaign · Blog · Help</li>
+      <li>Pricing — direct link</li>
+    </ul>
+  </div>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mobile" id="mobile">
+  <div class="top">
+    <span class="brand"><span class="mark"><b>40</b><i></i></span><span class="a">40 Days <span>Campaigns</span></span></span>
+    <button class="x" id="mx" aria-label="Close">✕</button>
+  </div>
+  <details class="macc" open><summary>Campaigns <span>+</span></summary><div class="mbody">
+    <a href="#">All 10 channels</a><a href="#">Seasonal collections</a><a href="#">Browse by outcome</a><a href="#">Formats</a><a href="#">Flagship campaigns</a>
+  </div></details>
+  <details class="macc"><summary>Audiences <span>+</span></summary><div class="mbody">
+    <a href="#">Churches</a><a href="#">Families</a><a href="#">Next-Gen</a><a href="#">Advisors</a><a href="#">Business Owners</a><a href="#">Networks</a>
+  </div></details>
+  <details class="macc"><summary>How It Works <span>+</span></summary><div class="mbody">
+    <a href="#">What is a campaign</a><a href="#">What's included</a><a href="#">The process</a><a href="#">FAQ</a>
+  </div></details>
+  <details class="macc"><summary>Resources <span>+</span></summary><div class="mbody">
+    <a href="#">Campaign Finder</a><a href="#">Guides</a><a href="#">Sermon-to-campaign</a><a href="#">Help center</a>
+  </div></details>
+  <details class="macc"><summary>Pricing <span>→</span></summary><div class="mbody"><a href="#">View pricing</a></div></details>
+  <div class="mcta">
+    <a class="btn btn-white" href="#">Sign in</a>
+    <a class="btn btn-orange" href="#">Get access</a>
+  </div>
+</div>
+
+<script>
+const CH=[['Spiritual Formation',1],['The Bible',2],['Emotional &amp; Mental Health',3],['Relationships &amp; Family',4],
+['Community &amp; Belonging',5],['Money &amp; Generosity',6],['Purpose &amp; Work',7],['Mission &amp; Outreach',8],
+['Church Health &amp; Leadership',9],['Legacy &amp; Generations',10]];
+const chcols=document.getElementById('chcols');
+CH.forEach(c=>chcols.insertAdjacentHTML('beforeend',
+  `<a class="chlink" href="#"><span class="dot" style="background:var(--c${c[1]})"></span><span>${c[0]}</span></a>`));
+
+const AUD=[
+ ['Churches','Whole-church campaigns &amp; editions','var(--c5)','M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5'],
+ ['Families','For the household &amp; next-gen faith','var(--c4)','M9 21v-6h6v6M3 10l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
+ ['Next-Gen','Youth &amp; children\u2019s editions','var(--c3)','M12 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2'],
+ ['Advisors','Legacy &amp; generosity for clients','var(--c10)','M3 3v18h18M7 14l4-4 3 3 5-6'],
+ ['Business Owners','Campaigns for the marketplace','var(--c7)','M3 7h18v13H3zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'],
+ ['Networks &amp; Denominations','Deploy across many churches','var(--c1)','M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20'],
+];
+const ag=document.getElementById('audgrid');
+AUD.forEach(a=>ag.insertAdjacentHTML('beforeend',
+  `<a class="aud" href="#"><span class="ai" style="background:${a[2]}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="${a[3]}"/></svg></span><div><div class="at">${a[0]}</div><div class="ad">${a[1]}</div></div></a>`));
+
+/* mobile */
+const mob=document.getElementById('mobile');
+document.getElementById('hamb').addEventListener('click',()=>mob.classList.add('open'));
+document.getElementById('mx').addEventListener('click',()=>mob.classList.remove('open'));
+document.querySelectorAll('.macc').forEach(d=>{
+  const summary=d.querySelector('summary'); const g=summary.querySelector('span');
+  const isPricing=summary.textContent.includes('Pricing');
+  if(!isPricing) g.textContent=d.open?'−':'+';
+  d.addEventListener('toggle',()=>{ if(!isPricing) g.textContent=d.open?'−':'+'; });
+});
+
+/* click-to-open on touch */
+document.querySelectorAll('.mi[data-mi]').forEach(mi=>{
+  mi.querySelector('a').addEventListener('click',e=>{
+    if(window.matchMedia('(hover:none)').matches){e.preventDefault();
+      document.querySelectorAll('.mi').forEach(o=>{if(o!==mi)o.classList.remove('open')});
+      mi.classList.toggle('open');}
+  });
+});
+</script>
+</body>
+</html>

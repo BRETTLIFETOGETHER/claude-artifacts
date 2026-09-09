@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeTogether — Small Group Ministry Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F0E6; --paper-2:#F9F8F2; --paper-3:#E9E7DA;
+    --ink:#221F1A; --ink-soft:#4A463D; --ink-faint:#8A8577;
+    --line:#DBD7C6; --line-soft:#E6E3D5;
+
+    /* category jewel tones */
+    --c-formation:#3E7A56; --c-formation-wash:#E1EBE2;
+    --c-preaching:#B8862F; --c-preaching-wash:#F3E9D3;
+    --c-vision:#B5522E;    --c-vision-wash:#F4E1D8;
+    --c-stewardship:#1D7A76; --c-stewardship-wash:#DCEEEC;
+    --c-digital:#6C4FA0;   --c-digital-wash:#EAE2F2;
+    --c-corporate:#33517D; --c-corporate-wash:#DEE4EE;
+    --c-kids:#DD9F2E;      --c-kids-wash:#F7EAD2;
+    --c-teens:#C85B42;     --c-teens-wash:#F4E1DA;
+    --c-adults:#3E6B99;    --c-adults-wash:#DEE7F0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important}
+  }
+  body{background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased}
+  em{font-family:'Fraunces',serif; font-style:italic; font-weight:500; color:var(--c-formation)}
+  a{color:inherit}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 clamp(1.3rem,5vw,3.5rem)}
+
+  .reveal{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease}
+  .reveal.in{opacity:1; transform:translateY(0)}
+
+  /* ---------- HERO ---------- */
+  header.hero{padding:clamp(3.2rem,9vw,6rem) 0 clamp(2.4rem,6vw,3.6rem); border-bottom:1px solid var(--line); position:relative; overflow:hidden}
+  header.hero::before{
+    content:""; position:absolute; top:-50%; right:-8%; width:55%; height:190%;
+    background:conic-gradient(from 200deg, var(--c-formation-wash), var(--c-preaching-wash), var(--c-vision-wash), var(--c-stewardship-wash), var(--c-digital-wash), var(--c-formation-wash));
+    opacity:.55; filter:blur(30px); pointer-events:none;
+  }
+  .kicker{font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--c-preaching); font-weight:700; margin-bottom:1.1rem; display:flex; align-items:center; gap:.6rem; position:relative; z-index:1}
+  .kicker::before{content:""; width:22px; height:1px; background:var(--c-preaching)}
+  h1.title{font-family:'Fraunces',serif; font-weight:600; font-size:clamp(2.4rem,7vw,4.3rem); line-height:1.03; letter-spacing:-.01em; max-width:15ch; position:relative; z-index:1}
+  .lede{margin-top:1.5rem; font-size:clamp(1.02rem,2vw,1.18rem); color:var(--ink-soft); max-width:58ch; position:relative; z-index:1}
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:1.1rem; margin-top:clamp(2.2rem,6vw,3.2rem); position:relative; z-index:1}
+  .stat{border-left:3px solid var(--line); padding-left:.8rem}
+  .stat .n{font-family:'Fraunces',serif; font-size:clamp(1.5rem,3.6vw,2.15rem); font-weight:600}
+  .stat:nth-child(1) .n{color:var(--c-formation)}
+  .stat:nth-child(2) .n{color:var(--c-preaching)}
+  .stat:nth-child(3) .n{color:var(--c-digital)}
+  .stat:nth-child(4) .n{color:var(--c-vision)}
+  .stat .l{font-size:.74rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); margin-top:.25rem}
+  @media (max-width:640px){ .stat-row{grid-template-columns:repeat(2,1fr); row-gap:1.4rem} }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:clamp(2.8rem,7vw,4.6rem) 0}
+  section + section{border-top:1px solid var(--line)}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--c-formation); font-weight:700; margin-bottom:.7rem}
+  h2.section-title{font-family:'Fraunces',serif; font-weight:600; font-size:clamp(1.65rem,3.8vw,2.4rem); max-width:24ch; letter-spacing:-.01em}
+  .section-intro{margin-top:1rem; color:var(--ink-soft); max-width:60ch; font-size:1.01rem}
+
+  /* ---------- PIPELINE ---------- */
+  .pipeline{margin-top:clamp(2rem,5vw,2.8rem)}
+  .pipe-step{display:grid; grid-template-columns:60px 1fr; gap:1.3rem; padding:1.4rem 0; position:relative}
+  .pipe-step:not(:last-child)::after{content:""; position:absolute; left:29px; top:60px; bottom:-1.4rem; width:1px; background:repeating-linear-gradient(to bottom, var(--c-preaching) 0 6px, transparent 6px 12px)}
+  .pipe-num{font-family:'Fraunces',serif; font-size:1rem; font-weight:600; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; z-index:1; color:#fff}
+  .pipe-step:nth-child(1) .pipe-num{background:var(--c-formation)}
+  .pipe-step:nth-child(2) .pipe-num{background:var(--c-preaching)}
+  .pipe-step:nth-child(3) .pipe-num{background:var(--c-vision)}
+  .pipe-step:nth-child(4) .pipe-num{background:var(--c-digital)}
+  .pipe-body h3{font-family:'Fraunces',serif; font-size:1.14rem; font-weight:600; margin-bottom:.35rem}
+  .pipe-body p{color:var(--ink-soft); font-size:.95rem; max-width:52ch}
+  .pipe-tag{display:inline-block; margin-top:.55rem; font-size:.7rem; letter-spacing:.05em; text-transform:uppercase; color:var(--c-vision); border:1px solid var(--c-vision); background:var(--c-vision-wash); padding:.2rem .6rem; border-radius:100px; font-weight:700}
+
+  /* ---------- DOORS ---------- */
+  .doors-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; margin-top:clamp(1.8rem,5vw,2.6rem)}
+  @media (max-width:760px){ .doors-grid{grid-template-columns:1fr} }
+  .door{border:1px solid var(--line); border-top:5px solid var(--line); border-radius:4px; padding:clamp(1.5rem,4vw,2.1rem); background:var(--paper-2); transition:transform .3s ease, box-shadow .3s ease; display:flex; flex-direction:column}
+  .door.finder{border-top-color:var(--c-formation)}
+  .door.builder{border-top-color:var(--c-digital)}
+  .door:hover{transform:translateY(-4px); box-shadow:0 16px 32px -20px rgba(34,31,26,.35)}
+  .door-tag{font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; font-weight:700}
+  .door.finder .door-tag{color:var(--c-formation)}
+  .door.builder .door-tag{color:var(--c-digital)}
+  .door h3{font-family:'Fraunces',serif; font-size:1.6rem; font-weight:600; margin:.5rem 0 .3rem}
+  .door .door-line{font-family:'Fraunces',serif; font-style:italic; color:var(--ink-soft); font-size:1.02rem; margin-bottom:1rem}
+  .door p.desc{color:var(--ink-soft); font-size:.95rem; flex-grow:1}
+  .door .fit{margin-top:1.2rem; padding-top:1rem; border-top:1px solid var(--line-soft); font-size:.85rem}
+  .door .fit b{color:var(--ink); font-weight:600}
+  .door .fit span{color:var(--ink-faint)}
+
+  /* ---------- LIBRARY: legend ---------- */
+  .legend{display:flex; flex-wrap:wrap; gap:.6rem .9rem; margin-top:1.6rem}
+  .legend-item{display:flex; align-items:center; gap:.45rem; font-size:.82rem; font-weight:600; color:var(--ink-soft)}
+  .dot{width:9px; height:9px; border-radius:50%; flex-shrink:0}
+
+  .tier-label{margin-top:clamp(2.2rem,5vw,3rem); margin-bottom:.9rem; display:flex; align-items:baseline; gap:.6rem}
+  .tier-label h3{font-family:'Fraunces',serif; font-weight:600; font-size:1.2rem}
+  .tier-label span{font-size:.74rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em}
+
+  /* ---------- FAM CARDS ---------- */
+  .fam-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem}
+  @media (max-width:900px){ .fam-grid{grid-template-columns:1fr 1fr} }
+  @media (max-width:620px){ .fam-grid{grid-template-columns:1fr} }
+  .fam{border:1px solid var(--line); border-left:5px solid var(--line); border-radius:4px; background:var(--paper-2); padding:1.3rem 1.2rem; display:flex; flex-direction:column}
+  .fam .kind{font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:.15rem .5rem; border-radius:100px; align-self:flex-start; margin-bottom:.7rem}
+  .fam h4{font-family:'Fraunces',serif; font-weight:600; font-size:1.14rem; margin-bottom:.4rem}
+  .fam .count{font-family:'Fraunces',serif; font-weight:600; font-size:1.5rem; margin:.2rem 0}
+  .fam .count small{display:block; font-family:'Inter',sans-serif; font-weight:600; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint)}
+  .fam p.d{color:var(--ink-soft); font-size:.87rem; flex-grow:1}
+  .fam .sub{font-size:.78rem; color:var(--ink-faint); margin-top:.6rem; line-height:1.5}
+  .fam .chip{display:inline-block; margin-top:.7rem; font-size:.74rem; padding:.25rem .6rem; border-radius:100px; font-family:'Fraunces',serif; font-style:italic}
+
+  .fam.formation{border-left-color:var(--c-formation)}
+  .fam.formation .kind{background:var(--c-formation-wash); color:var(--c-formation)}
+  .fam.formation .count{color:var(--c-formation)}
+  .fam.formation .chip{background:var(--c-formation-wash); color:var(--c-formation)}
+
+  .fam.preaching{border-left-color:var(--c-preaching)}
+  .fam.preaching .kind{background:var(--c-preaching-wash); color:var(--c-preaching)}
+  .fam.preaching .count{color:var(--c-preaching)}
+  .fam.preaching .chip{background:var(--c-preaching-wash); color:var(--c-preaching)}
+
+  .fam.vision{border-left-color:var(--c-vision)}
+  .fam.vision .kind{background:var(--c-vision-wash); color:var(--c-vision)}
+  .fam.vision .count{color:var(--c-vision)}
+  .fam.vision .chip{background:var(--c-vision-wash); color:var(--c-vision)}
+
+  .fam.stewardship{border-left-color:var(--c-stewardship)}
+  .fam.stewardship .kind{background:var(--c-stewardship-wash); color:var(--c-stewardship)}
+  .fam.stewardship .count{color:var(--c-stewardship)}
+  .fam.stewardship .chip{background:var(--c-stewardship-wash); color:var(--c-stewardship)}
+
+  .fam.digital{border-left-color:var(--c-digital)}
+  .fam.digital .kind{background:var(--c-digital-wash); color:var(--c-digital)}
+  .fam.digital .count{color:var(--c-digital)}
+  .fam.digital .chip{background:var(--c-digital-wash); color:var(--c-digital)}
+
+  .fam.corporate{border-left-color:var(--c-corporate)}
+  .fam.corporate .kind{background:var(--c-corporate-wash); color:var(--c-corporate)}
+  .fam.corporate .count{color:var(--c-corporate)}
+  .fam.corporate .chip{background:var(--c-corporate-wash); color:var(--c-corporate)}
+
+  /* ---------- CONTENT LADDER STRIP ---------- */
+  .ladder{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:1rem}
+  @media (max-width:700px){ .ladder{grid-template-columns:1fr} }
+  .rung{border-radius:4px; padding:1.3rem 1.2rem; color:#fff; position:relative; overflow:hidden}
+  .rung .age{font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; font-weight:700; opacity:.85}
+  .rung h4{font-family:'Fraunces',serif; font-size:1.35rem; font-weight:600; margin:.3rem 0 .4rem}
+  .rung p{font-size:.86rem; opacity:.92; max-width:32ch}
+  .rung.kids{background:linear-gradient(135deg, var(--c-kids), #C98A24)}
+  .rung.teens{background:linear-gradient(135deg, var(--c-teens), #A8402C)}
+  .rung.adults{background:linear-gradient(135deg, var(--c-adults), #2C4E72)}
+
+  /* ---------- SHIPSET ---------- */
+  .ship-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:2rem}
+  @media (max-width:820px){ .ship-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:480px){ .ship-grid{grid-template-columns:1fr} }
+  .ship-card{border:1px solid var(--line); border-radius:4px; padding:1.3rem 1.1rem; background:var(--paper-2)}
+  .ship-mark{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600; font-size:.95rem; margin-bottom:.9rem; color:#fff}
+  .ship-grid .ship-card:nth-child(1) .ship-mark{background:var(--c-formation)}
+  .ship-grid .ship-card:nth-child(2) .ship-mark{background:var(--c-preaching)}
+  .ship-grid .ship-card:nth-child(3) .ship-mark{background:var(--c-vision)}
+  .ship-grid .ship-card:nth-child(4) .ship-mark{background:var(--c-digital)}
+  .ship-card h4{font-family:'Fraunces',serif; font-weight:600; font-size:1.02rem; margin-bottom:.35rem}
+  .ship-card p{font-size:.85rem; color:var(--ink-soft)}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:clamp(2.4rem,7vw,3.6rem) 0}
+  .foot-word{font-family:'Fraunces',serif; font-weight:600; font-size:1.3rem}
+  .foot-word em{color:var(--c-digital)}
+  footer p{color:var(--ink-faint); font-size:.82rem; margin-top:.6rem; max-width:54ch}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">LifeTogether · Small Group Ministry Platform</div>
+    <h1 class="title">One library.<br><em>Two</em> ways in.</h1>
+    <p class="lede">Every campaign, discipleship theme, preaching arc, and named curriculum LifeTogether has built collapses into a six-session Small Group series — indexed for churches who want it ready-made, and open as a starting template for churches who want to build their own.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="n">1,925+</div><div class="l">Small-Group-Ready Titles</div></div>
+      <div class="stat"><div class="n">6</div><div class="l">Content Categories</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">Audience Editions — Kids, Teens, Adults</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">Doors — Finder &amp; Builder</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="pipeline">
+  <div class="wrap">
+    <div class="eyebrow reveal">How a series is born</div>
+    <h2 class="section-title reveal">From Sunday to the living room</h2>
+    <p class="section-intro reveal">Nothing in the Small Group library starts from a blank page. Every series has already been preached, written, or piloted at churchwide scale — the small group edition is just its next form.</p>
+    <div class="pipeline">
+      <div class="pipe-step reveal">
+        <div class="pipe-num">01</div>
+        <div class="pipe-body"><h3>A source series</h3><p>A 40-day campaign, a named curriculum, or a corporate training arc — the churchwide or workplace version already built.</p></div>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-num">02</div>
+        <div class="pipe-body"><h3>Six-session distillation</h3><p>Condensed for a living room instead of a stage: one big idea, key and supporting scripture, and discussion questions per session.</p></div>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-num">03</div>
+        <div class="pipe-body"><h3>Teaching notes, always</h3><p>Every session ships with a full leader script, so any capable leader can teach it, with or without video.</p><span class="pipe-tag">No video required</span></div>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-num">04</div>
+        <div class="pipe-body"><h3>Two doors</h3><p>The finished series lists in the Finder as a ready-to-run study, and enters the Builder as a template a church can reshape into their own.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="doors">
+  <div class="wrap">
+    <div class="eyebrow reveal">Two doors, one library</div>
+    <h2 class="section-title reveal">Finder or Builder — same shelf, different reach</h2>
+    <p class="section-intro reveal">Most churches want curriculum handled. A smaller, more capable group wants to shape it. Both are served from the same source material, so nothing built in either door ever drifts from what LifeTogether has already vetted.</p>
+    <div class="doors-grid">
+      <div class="door finder reveal">
+        <span class="door-tag">The Finder</span>
+        <h3>Browse. Pick. Meet tonight.</h3>
+        <p class="door-line">Curriculum, not a project.</p>
+        <p class="desc">Every campaign, discipleship theme, and preaching arc in the library — browsable by topic, length, and audience — arrives complete: six sessions, teaching notes, a discussion guide, and a verified scripture arc.</p>
+        <div class="fit"><b>Best for:</b> <span>the small group pastor who wants the next six weeks handled, not built.</span></div>
+      </div>
+      <div class="door builder reveal">
+        <span class="door-tag">The Builder</span>
+        <h3>Start from a series. Make it yours.</h3>
+        <p class="door-line">Their fingerprint, our foundation.</p>
+        <p class="desc">Pick any series in the library as a starting template, then reorder sessions, re-weight the scripture emphasis, or blend two themes into one arc — without ever leaving the library.</p>
+        <div class="fit"><b>Best for:</b> <span>curriculum-savvy staff shaping a custom season for their own congregation.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="library">
+  <div class="wrap">
+    <div class="eyebrow reveal">The library behind both doors</div>
+    <h2 class="section-title reveal">Big enough to feel endless. Organized enough to never get lost.</h2>
+    <p class="section-intro reveal">The Master Directory alone carries 1,925+ small-group-ready titles across three core content families. Beyond it sit named flagship curricula built the same way, a corporate edition of the same material, and a content ladder that carries every series across three ages.</p>
+
+    <div class="legend reveal">
+      <div class="legend-item"><span class="dot" style="background:var(--c-formation)"></span>Formation &amp; Discipleship</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-preaching)"></span>Preaching &amp; Pulpit</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-vision)"></span>Vision &amp; Generosity</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-stewardship)"></span>Life &amp; Money Stewardship</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-digital)"></span>Digital &amp; Culture</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-corporate)"></span>Corporate &amp; Marketplace</div>
+    </div>
+
+    <div class="tier-label reveal"><h3>The Master Directory</h3><span>Numbered collections · 1,925+ titles</span></div>
+    <div class="fam-grid">
+      <div class="fam formation reveal">
+        <span class="kind">Collection</span>
+        <h4>Formation &amp; Discipleship</h4>
+        <div class="count">900<small>Titles</small></div>
+        <p class="d">Knowing God, following Jesus, and the habits that hold a life together.</p>
+        <p class="sub">The Discipleship 500 (5 pillars) + Spiritual Growth Lines (10 thematic lines)</p>
+        <span class="chip">Growing Deeper</span>
+      </div>
+      <div class="fam preaching reveal">
+        <span class="kind">Collection</span>
+        <h4>Preaching &amp; Pulpit</h4>
+        <div class="count">1,200+<small>Titles</small></div>
+        <p class="d">What senior pastors preach now, and where the next three years are heading.</p>
+        <p class="sub">The Flagship Collection (25 categories) + Preaching Forecast 2026–2029 (14 categories)</p>
+        <span class="chip">Finding Peace</span>
+      </div>
+      <div class="fam vision reveal">
+        <span class="kind">Collection</span>
+        <h4>Vision &amp; Generosity</h4>
+        <div class="count">100<small>Titles</small></div>
+        <p class="d">Building campaigns and stewardship arcs for churches raising a vision.</p>
+        <p class="sub">The Capital Campaign 100, across 8 campaign arcs</p>
+        <span class="chip">Stewarding Opportunity</span>
+      </div>
+    </div>
+
+    <div class="tier-label reveal"><h3>Named Flagship Curricula</h3><span>Full arcs, not title lists</span></div>
+    <div class="fam-grid">
+      <div class="fam stewardship reveal">
+        <span class="kind">Curriculum</span>
+        <h4>Life &amp; Money Stewardship</h4>
+        <div class="count">2<small>Editions</small></div>
+        <p class="d">A complete ownership-to-generosity arc, built for two audiences from one theology.</p>
+        <p class="sub">Adult Edition + Student Edition, six weeks each, with a full day-by-day devotional companion</p>
+        <span class="chip">God Owns It All</span>
+      </div>
+      <div class="fam digital reveal">
+        <span class="kind">Curriculum</span>
+        <h4>Digital &amp; Culture</h4>
+        <div class="count">In build<small>Status</small></div>
+        <p class="d">AI literacy taught through a stewardship lens — discernment, not fear, as the posture.</p>
+        <p class="sub">A growing lesson-by-lesson curriculum, aligned to the AI &amp; Digital Discernment rising category</p>
+        <span class="chip">The Prompt Series</span>
+      </div>
+    </div>
+
+    <div class="tier-label reveal"><h3>Corporate Edition</h3><span>The same material, for the workplace</span></div>
+    <div class="fam-grid">
+      <div class="fam corporate reveal">
+        <span class="kind">Initiative</span>
+        <h4>Corporate &amp; Marketplace</h4>
+        <div class="count">5<small>Revenue Models</small></div>
+        <p class="d">Purpose-driven training for companies asking the same questions of purpose and stewardship — licensed to organizations, not congregations.</p>
+        <p class="sub">Pricing matrix, market benchmarks, and a first case-study track already underway</p>
+        <span class="chip">Purpose Driven Business</span>
+      </div>
+      <div class="fam corporate reveal">
+        <span class="kind">Small Group Edition</span>
+        <h4>Flourishing Workplace</h4>
+        <div class="count">6<small>Sessions</small></div>
+        <p class="d">The same 6-session small group architecture as every church series, fixed to six flourishing domains for teams and organizations.</p>
+        <p class="sub">Purpose &amp; Calling · Character &amp; Integrity · Rest &amp; Sustainability · Relationships &amp; Belonging · Contribution &amp; Stewardship · Legacy &amp; Kingdom Impact</p>
+      </div>
+      <div class="fam corporate reveal">
+        <span class="kind">Collection</span>
+        <h4>Marketplace Edition</h4>
+        <div class="count">~2,000<small>Campaigns</small></div>
+        <p class="d">Purpose-Based Business, expanded — 40 categories built on the same 5-purpose theme layer as the church-facing library.</p>
+        <p class="sub">Worship · Fellowship · Discipleship · Ministry · Mission — tracked separately from the church-facing totals</p>
+      </div>
+    </div>
+
+    <div class="tier-label reveal"><h3>Mission &amp; Vision Values Edition</h3><span>Turning a wall statement into a discipleship pathway</span></div>
+    <div class="fam-grid">
+      <div class="fam vision reveal">
+        <span class="kind">Collection</span>
+        <h4>Mission to Movement</h4>
+        <div class="count">25<small>Components</small></div>
+        <p class="d">A complete churchwide collection that turns mission, vision, and values into conversation, curriculum, and repeatable culture — not just words on a wall.</p>
+        <p class="sub">Small group curriculum, a 30-Day Mission Journey, a 4-week sermon series, and dedicated youth, children, and family editions</p>
+        <span class="chip">Mission to Movement</span>
+      </div>
+    </div>
+
+    <div class="tier-label reveal"><h3>Adult Bible Fellowship Edition</h3><span>Sunday morning and weekday adult education</span></div>
+    <div class="fam-grid">
+      <div class="fam formation reveal">
+        <span class="kind">Collection</span>
+        <h4>Life-Stage Affinity Groups</h4>
+        <div class="count">7<small>Groups</small></div>
+        <p class="d">Community built around life stage, not a topic — each with its own flagship 30-day companion and matched felt-need themes.</p>
+        <p class="sub">College &amp; Emerging Adults · Young Married Couples · Singles · Parents of Teenagers · Empty Nesters · Second Half &amp; Senior Adults · Widows &amp; Caregivers</p>
+        <span class="chip">30 Days to Find Your Way</span>
+      </div>
+      <div class="fam formation reveal">
+        <span class="kind">Collection</span>
+        <h4>Bible Study Series</h4>
+        <div class="count">124<small>Titles</small></div>
+        <p class="d">The formation backbone — book and character studies organized entirely around Scripture, alongside a felt-need topical set for everyday application.</p>
+        <p class="sub">Genesis, Psalms, Proverbs, the Life of David, the Life of Paul, Gospels &amp; Epistles, Old Testament &amp; Topical-Biblical, plus four topical clusters (Decisions &amp; Calling, Emotional &amp; Mental Wellbeing, Relationships &amp; Community, Character &amp; Growth)</p>
+        <span class="chip">Songs for the Soul</span>
+      </div>
+      <div class="fam formation reveal">
+        <span class="kind">Collection</span>
+        <h4>Church-Based Seminary</h4>
+        <div class="count">100<small>Titles</small></div>
+        <p class="d">Advanced education for the adult ready to move past application into doctrine, history, and the pastoral disciplines — ten core disciplines, ten courses each.</p>
+        <p class="sub">Systematic Theology · Old &amp; New Testament Survey · Church History · Hermeneutics · Apologetics · Homiletics · Pastoral Care &amp; Counseling · Christian Ethics &amp; Worldview · Church Leadership &amp; Missions</p>
+        <span class="chip">Introduction to Systematic Theology</span>
+      </div>
+    </div>
+
+    <div class="tier-label reveal"><h3>The Content Ladder</h3><span>Every series, carried across three ages</span></div>
+    <div class="ladder">
+      <div class="rung kids reveal"><div class="age">Kids</div><h4>Wonder</h4><p>Story-first, warm, and parent-equipping — faith as delight before it's doctrine.</p></div>
+      <div class="rung teens reveal"><div class="age">Teens</div><h4>Honesty &amp; Identity</h4><p>Peer-voiced and identity-forming — a 14-year-old centerpoint, unafraid of hard questions.</p></div>
+      <div class="rung adults reveal"><div class="age">Adults</div><h4>Freedom &amp; Stewardship</h4><p>The manager-not-owner reframe — freedom that comes from what you're trusted with.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="shipset">
+  <div class="wrap">
+    <div class="eyebrow reveal">The standard, every time</div>
+    <h2 class="section-title reveal">What ships with every series</h2>
+    <p class="section-intro reveal">Whether a church finds it or builds it, a series never leaves the library missing a piece.</p>
+    <div class="ship-grid">
+      <div class="ship-card reveal"><div class="ship-mark">Aa</div><h4>Leader script</h4><p>Full teaching notes — the words, the flow, the transitions a leader needs to teach it well.</p></div>
+      <div class="ship-card reveal"><div class="ship-mark">?</div><h4>Discussion guide</h4><p>Six sessions of questions, scaled for groups of any size or maturity.</p></div>
+      <div class="ship-card reveal"><div class="ship-mark">§</div><h4>Scripture arc</h4><p>Key and supporting passages for every session, verified against the text.</p></div>
+      <div class="ship-card reveal"><div class="ship-mark">▶</div><h4>Video slot</h4><p>Open by design — pair it with a recorded teacher, or run leader-only.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-word">LifeTogether <em>Small Group Ministry</em></div>
+    <p>One library, six categories, three audience editions, indexed for the church that wants it handled and open as a template for the church that wants to build. Concept brochure — LifeTogether Campaign Intelligence Library.</p>
+  </div>
+</footer>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  els.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

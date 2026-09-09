@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaign Builder — 40 Day Campaigns</title>
+<meta name="description" content="Compose your own churchwide campaign from three intelligences: Pastor Intelligence (your sermons), Lifetogether Intelligence (our 1,252-campaign engine), and Church Intelligence (the global church's greatest voices).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23F26C1E'/%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%23FFFFFF' stroke-width='2'/%3E%3Ctext x='32' y='39' font-family='Georgia,serif' font-size='19' fill='%23FFFFFF' text-anchor='middle'%3E40%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#F26C1E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16161D; --ink-2:#3A3A45; --dim:#5E5E6B; --faint:#8A8A98;
+  --orange:#F26C1E; --orange-d:#DE5E12; --gold:#E4AC43; --gold-d:#C68E2A;
+  --line:#EAE7F0; --card:#F4F2F8; --card-2:#EFECF6; --white:#FFFFFF;
+  --c1a:#16A88F; --c1b:#0C5A4E; --c2a:#C8484C; --c2b:#7E2326; --c3a:#4F86E0; --c3b:#26417F;
+  --c4a:#E0703F; --c4b:#8A3A1E; --c5a:#E8A52E; --c5b:#9A6810; --c6a:#36A85E; --c6b:#176233;
+  --c7a:#7B5FE0; --c7b:#3F2E86; --c8a:#E2542F; --c8b:#8A2A14; --c9a:#5A6B8C; --c9b:#2E3A52;
+  --c10a:#C99A3C; --c10b:#7E601C; --c11a:#3E8FB0; --c11b:#1D4B60; --c12a:#B0578D; --c12b:#5F2A4C;
+  --c13a:#C86B8F; --c13b:#7A2F4E; --c14a:#8C6BD0; --c14b:#4A2F86; --c15a:#3FA796; --c15b:#1E5C52;
+  --pi:#4F86E0; --li:#F26C1E; --ci:#E4AC43;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;background:var(--white)}
+a{text-decoration:none;color:inherit}
+h1,h2,h3,h4{font-family:'Hanken Grotesk',sans-serif;margin:0;letter-spacing:-.02em}
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(18px,3.5vw,40px)}
+button{font-family:inherit;cursor:pointer}
+textarea{font-family:'Inter';font-size:13.5px;line-height:1.6}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- mast ---- */
+.mast{background:linear-gradient(180deg,#FBFAFE 0%,#fff 100%);border-bottom:1px solid var(--line);padding:clamp(38px,6vw,60px) 0 clamp(24px,4vw,36px)}
+.mast .kk{font-family:'Hanken Grotesk';font-weight:800;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin:0 0 10px}
+.mast h1{font-weight:900;font-size:clamp(29px,4.8vw,44px);line-height:1.06;max-width:20ch}
+.mast p.lede{color:var(--dim);font-size:clamp(14.5px,1.6vw,16.5px);max-width:66ch;margin:14px 0 0}
+.intel{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:22px}
+.intel .i{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden}
+.intel .i::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ib)}
+.intel .i b{font-family:'Hanken Grotesk';font-weight:800;font-size:13.5px;display:block;letter-spacing:-.01em}
+.intel .i span{font-size:12px;color:var(--dim);display:block;margin-top:3px;line-height:1.5}
+.intel .i .plus{position:absolute;right:-6px;top:50%;transform:translateY(-50%);font-family:'Hanken Grotesk';font-weight:900;font-size:20px;color:var(--faint)}
+@media (max-width:760px){.intel .i .plus{display:none}}
+
+/* ---- studio ---- */
+.studio{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,460px);gap:clamp(22px,3vw,44px);padding:clamp(28px,4vw,48px) 0 70px;align-items:start}
+@media (max-width:980px){.studio{grid-template-columns:1fr}.pv-wrap{position:static!important;order:-1}}
+
+/* ---- movements ---- */
+.mv{border:1px solid var(--line);border-radius:16px;background:#fff;margin-bottom:16px;overflow:hidden}
+.mv-head{display:flex;align-items:center;gap:14px;padding:16px 18px;width:100%;background:#fff;border:0;text-align:left}
+.mv-num{flex:0 0 34px;height:34px;border-radius:10px;display:grid;place-items:center;font-family:'Hanken Grotesk';font-weight:900;font-size:14px;background:var(--card);color:var(--ink-2);transition:background .25s,color .25s}
+.mv.done .mv-num{background:var(--orange);color:#fff}
+.mv.open .mv-num{background:var(--ink);color:#fff}
+.mv-title{font-family:'Hanken Grotesk';font-weight:800;font-size:15.5px;letter-spacing:-.01em}
+.mv-title .tag{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:2px}
+.tag.pi{background:#E8F0FD;color:#2E5AA8}.tag.li{background:#FDEDE2;color:#B14A0D}.tag.ci{background:#FBF2DC;color:#8F671B}
+.mv-sub{font-size:12.5px;color:var(--dim);margin-top:2px}
+.mv-body{display:none;padding:4px 18px 22px 66px;border-top:1px dashed var(--line)}
+.mv.open .mv-body{display:block}
+@media (max-width:640px){.mv-body{padding-left:18px}}
+.mv-chevron{margin-left:auto;color:var(--faint);transition:transform .25s}
+.mv.open .mv-chevron{transform:rotate(180deg)}
+
+.fld{margin-top:18px}
+.fld label,.fld .lab{display:block;font-family:'Hanken Grotesk';font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px}
+.fld .hint{font-size:12px;color:var(--faint);margin-top:6px}
+input[type=text],input[type=date],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14.5px;color:var(--ink);background:#fff}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);outline:none;box-shadow:0 0 0 3px rgba(242,108,30,.14)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-family:'Hanken Grotesk';font-weight:700;font-size:13px;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s}
+.chip .dot{width:9px;height:9px;border-radius:50%}
+.chip:hover{border-color:var(--faint)}
+.chip[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:#fff}
+.sug{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.sug button{border:1px dashed var(--line);background:var(--card);border-radius:8px;padding:7px 11px;font-size:12.5px;color:var(--ink-2)}
+.sug button:hover{border-color:var(--gold-d);background:#FBF4E4}
+.sug button.mine{border-color:#BBD0F5;background:#EFF5FE;color:#2E5AA8;font-weight:700}
+.lenrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.len{border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:12px;text-align:left}
+.len b{font-family:'Hanken Grotesk';font-weight:800;font-size:14.5px;display:block}
+.len span{font-size:11.5px;color:var(--dim)}
+.len[aria-pressed=true]{border-color:var(--orange);box-shadow:0 0 0 3px rgba(242,108,30,.12)}
+.len .flag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--orange);text-transform:uppercase;margin-bottom:4px}
+.eds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:640px){.eds{grid-template-columns:1fr}}
+.ed{display:flex;gap:11px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.ed input{margin-top:3px;accent-color:var(--orange);width:16px;height:16px}
+.ed b{font-family:'Hanken Grotesk';font-weight:800;font-size:13.5px;display:block}
+.ed span{font-size:12px;color:var(--dim);line-height:1.45;display:block;margin-top:2px}
+.ed .pr{font-size:11.5px;font-weight:800;color:var(--gold-d);margin-top:4px;display:block}
+.ed.core{background:var(--card);border-style:dashed}
+.ed.core .pr{color:var(--ink-2)}
+.next{margin-top:22px;display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:#fff;border:0;border-radius:11px;padding:12px 20px;font-family:'Hanken Grotesk';font-weight:800;font-size:14px}
+.next:hover{background:#000}
+.next.orange{background:var(--orange)} .next.orange:hover{background:var(--orange-d)}
+.ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink-2)}
+.ghost:hover{background:var(--card)}
+
+/* sermons */
+.ser{border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-top:14px;background:#fff;position:relative}
+.ser .sn{position:absolute;top:-10px;left:14px;background:#EFF5FE;color:#2E5AA8;border:1px solid #BBD0F5;font-family:'Hanken Grotesk';font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border-radius:6px;padding:3px 9px}
+.ser .rm{position:absolute;top:10px;right:12px;border:0;background:transparent;color:var(--faint);font-size:18px;line-height:1;padding:4px}
+.ser .rm:hover{color:var(--ink)}
+.ser .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
+@media (max-width:640px){.ser .grid2{grid-template-columns:1fr}}
+.ser textarea{margin-top:10px;min-height:96px;resize:vertical}
+.mined{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mined span{background:#EFF5FE;border:1px solid #BBD0F5;color:#2E5AA8;border-radius:999px;font-size:11.5px;font-weight:700;padding:4px 10px;font-family:'Hanken Grotesk'}
+.mined .none{background:var(--card);border-color:var(--line);color:var(--faint)}
+.addser{margin-top:14px;border:1.5px dashed var(--line);background:var(--card);border-radius:12px;width:100%;padding:13px;font-family:'Hanken Grotesk';font-weight:800;font-size:13.5px;color:var(--ink-2)}
+.addser:hover{border-color:var(--pi);color:#2E5AA8;background:#F4F8FE}
+.serSum{margin-top:14px;font-size:12.5px;color:var(--ink-2);background:var(--card);border-radius:10px;padding:10px 14px;border:1px solid var(--line)}
+
+/* preview */
+.pv-wrap{position:sticky;top:86px}
+.pv{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 18px 50px -30px rgba(22,22,29,.25)}
+.pv-tag{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);font-family:'Hanken Grotesk';font-weight:800;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.pv-tag i{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.cover{position:relative;aspect-ratio:16/10.5;display:flex;flex-direction:column;justify-content:flex-end;padding:22px;color:#fff;background:linear-gradient(135deg,var(--cva,#16A88F),var(--cvb,#0C5A4E))}
+.cover .ring{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.75);display:grid;place-items:center;font-family:'Newsreader',serif;font-size:15px}
+.cover .th{font-family:'Hanken Grotesk';font-weight:800;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;opacity:.85}
+.cover .tt{font-family:'Newsreader',serif;font-weight:600;font-size:clamp(22px,2.4vw,30px);line-height:1.08;margin-top:6px;text-wrap:balance}
+.cover .ss{font-size:12px;opacity:.9;margin-top:7px;font-style:italic;font-family:'Newsreader',serif}
+.cover .ch{position:absolute;left:22px;top:18px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.8;font-weight:700;font-family:'Hanken Grotesk'}
+.pv-sec{padding:16px 18px;border-top:1px solid var(--line)}
+.pv-sec .pk{font-family:'Hanken Grotesk';font-weight:800;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px}
+.srcs{display:grid;gap:7px}
+.srcs .s{display:flex;align-items:baseline;gap:9px;font-size:12px}
+.srcs .s i{width:8px;height:8px;border-radius:50%;flex:0 0 8px;transform:translateY(-1px)}
+.srcs .s b{font-family:'Hanken Grotesk';font-weight:800;font-size:12px;flex:0 0 168px;letter-spacing:-.01em}
+.srcs .s span{color:var(--dim)}
+@media (max-width:400px){.srcs .s b{flex-basis:140px}}
+.arc{display:grid;gap:6px}
+.arc .row{display:flex;gap:10px;align-items:baseline;font-size:12.5px}
+.arc .row b{font-family:'Hanken Grotesk';font-weight:800;flex:0 0 52px;color:var(--ink-2);font-size:11px;letter-spacing:.04em}
+.arc .row span{color:var(--ink-2)}
+.arc .row .pulpit{font-size:9.5px;font-weight:800;letter-spacing:.08em;color:#2E5AA8;background:#EFF5FE;border:1px solid #BBD0F5;border-radius:5px;padding:1px 6px;margin-left:6px;text-transform:uppercase;font-family:'Hanken Grotesk'}
+.day1{font-family:'Newsreader',serif;font-size:14.5px;line-height:1.68;color:var(--ink-2)}
+.day1 .dt{font-family:'Hanken Grotesk';font-weight:800;font-size:13px;color:var(--ink);letter-spacing:-.01em;margin-bottom:2px}
+.day1 .dm{font-size:11px;color:var(--faint);font-family:'Inter';margin-bottom:8px}
+.day1 p{margin:0 0 8px}
+.voice{font-family:'Newsreader',serif;font-size:14px;font-style:italic;color:var(--ink-2);line-height:1.6}
+.voice .who{font-family:'Hanken Grotesk';font-style:normal;font-weight:800;font-size:11.5px;color:var(--gold-d);margin-top:7px}
+.fade{transition:opacity .3s ease}
+.fade.out{opacity:.25}
+.pv-price{display:flex;align-items:baseline;justify-content:space-between;padding:14px 18px;background:var(--card);border-top:1px solid var(--line)}
+.pv-price .n{font-family:'Hanken Grotesk';font-weight:900;font-size:24px}
+.pv-price .d{font-size:11.5px;color:var(--dim)}
+.pv-note{font-size:11px;color:var(--faint);padding:0 18px 14px;background:var(--card);margin:0}
+
+/* blueprint */
+.blue{border:1px solid var(--line);border-radius:18px;background:#fff;padding:clamp(22px,3vw,34px);margin-top:8px}
+.blue .bk{font-family:'Hanken Grotesk';font-weight:800;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange)}
+.blue h2{font-weight:900;font-size:clamp(22px,3vw,30px);margin-top:6px}
+.blue .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.blue .meta span{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;font-family:'Hanken Grotesk';color:var(--ink-2)}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px}
+.tri .t{border:1px solid var(--line);border-left:4px solid var(--tb);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--dim)}
+.tri .t b{display:block;font-family:'Hanken Grotesk';font-weight:800;font-size:12.5px;color:var(--ink);margin-bottom:2px}
+.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+@media (max-width:820px){.bgrid{grid-template-columns:1fr}}
+.bcell h3{font-size:15px;font-weight:800;margin-bottom:8px}
+.bcell{font-size:13.5px;color:var(--ink-2);line-height:1.62}
+.bcell .serif{font-family:'Newsreader',serif;font-size:14.5px}
+.bcell ul{margin:6px 0 0;padding-left:18px}
+.bcell li{margin-bottom:5px}
+.runway{display:grid;gap:5px;font-size:12.5px}
+.runway .r{display:flex;gap:10px}
+.runway .r b{flex:0 0 96px;font-family:'Hanken Grotesk';font-weight:800;font-size:11px;color:var(--ink-2);letter-spacing:.03em}
+.vrow{border-left:3px solid var(--ci);padding:2px 0 2px 12px;margin-bottom:10px}
+.vrow .q{font-family:'Newsreader',serif;font-style:italic}
+.vrow .w{font-family:'Hanken Grotesk';font-weight:800;font-size:11px;color:var(--gold-d);margin-top:3px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.small{font-size:11.5px;color:var(--faint);margin-top:14px;max-width:70ch}
+.band{margin-top:34px;border-radius:18px;background:var(--ink);color:#fff;padding:clamp(24px,3.5vw,36px);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+@media (max-width:760px){.band{grid-template-columns:1fr}}
+.band .bk{color:var(--gold);font-family:'Hanken Grotesk';font-weight:800;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.band h3{font-weight:900;font-size:clamp(19px,2.6vw,26px);margin-top:6px}
+.band p{color:#C9C9D4;font-size:13.5px;max-width:58ch;margin:8px 0 0}
+.band a{background:var(--gold);color:#231A05;font-family:'Hanken Grotesk';font-weight:800;font-size:14px;border-radius:11px;padding:13px 22px;white-space:nowrap}
+.band a:hover{background:#F0BE5C}
+footer{background:var(--ink);color:#B9B9C6;margin-top:70px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;padding-top:26px;padding-bottom:26px;font-size:13px}
+footer .fnav{display:flex;gap:18px}
+footer .fnav a:hover{color:#fff}
+footer .brand{font-family:'Hanken Grotesk';font-weight:900;color:#fff;font-size:15px}
+footer .brand em{color:var(--gold);font-style:normal}
+@media print{
+  header,.mast,.rail,.pv-wrap,.actions,.band,footer,.noprint{display:none!important}
+  .studio{display:block;padding:0}
+  .blue{border:0;padding:0}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<div class="mast"><div class="wrap">
+  <p class="kk">Campaign Builder</p>
+  <h1>Three intelligences. One campaign only your church could run.</h1>
+  <p class="lede">Every build here is composed from three libraries at once — and the panel on the right is not a mockup. It is the same engine that writes every campaign we publish, composing yours as you type.</p>
+  <div class="intel">
+    <div class="i" style="--ib:var(--pi)"><b>Pastor Intelligence</b><span>Your library — the sermons you have already preached, mined for texts, themes, and titles.</span><span class="plus">+</span></div>
+    <div class="i" style="--ib:var(--li)"><b>Lifetogether Intelligence</b><span>Our library — the 1,252-campaign engine and twenty-five years of purpose-driven journeys.</span><span class="plus">+</span></div>
+    <div class="i" style="--ib:var(--ci)"><b>Church Intelligence</b><span>The global church library — the best sermons and teachers of twenty centuries, week by week.</span></div>
+  </div>
+</div></div>
+
+<div class="wrap"><div class="studio">
+
+  <!-- ================= BUILD RAIL ================= -->
+  <div class="rail">
+
+    <!-- 1 · FOUNDATION -->
+    <section class="mv open" id="mv1">
+      <button class="mv-head" data-mv="1" aria-expanded="true">
+        <span class="mv-num">1</span>
+        <span><span class="mv-title">Foundation<span class="tag li">Lifetogether Intelligence</span></span><span class="mv-sub" style="display:block">Start point, category, and audience</span></span>
+        <svg class="mv-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="mv-body">
+        <div class="fld">
+          <span class="lab">Start from</span>
+          <div class="chips" role="group" aria-label="Start from">
+            <button class="chip" id="fromBlank" aria-pressed="true">A blank page</button>
+            <button class="chip" id="fromLib" aria-pressed="false">A proven campaign</button>
+          </div>
+          <div id="libPick" style="display:none;margin-top:10px">
+            <select id="libSel" aria-label="Choose a campaign to start from"></select>
+            <p class="hint">We pre-fill everything from this campaign; change anything you like.</p>
+          </div>
+        </div>
+        <div class="fld">
+          <span class="lab">Category</span>
+          <div class="chips" id="catChips" role="group" aria-label="Category"></div>
+          <p class="hint">The category chooses the theology bank your daily readings draw from — and which voices of the church stand beside your weeks.</p>
+        </div>
+        <div class="fld">
+          <span class="lab">Audience</span>
+          <div class="chips" id="audChips" role="group" aria-label="Audience"></div>
+        </div>
+        <div class="fld">
+          <label for="occ">Occasion or season <span style="font-weight:500;color:var(--faint);text-transform:none;letter-spacing:0">(optional)</span></label>
+          <input type="text" id="occ" placeholder="e.g., Fall kickoff, New Year, capital campaign runway" maxlength="60">
+          <div class="sug" id="occSug"></div>
+        </div>
+        <button class="next" data-go="2">Continue to your sermons</button>
+      </div>
+    </section>
+
+    <!-- 2 · PASTOR INTELLIGENCE -->
+    <section class="mv" id="mv2">
+      <button class="mv-head" data-mv="2" aria-expanded="false">
+        <span class="mv-num">2</span>
+        <span><span class="mv-title">Your sermons<span class="tag pi">Pastor Intelligence</span></span><span class="mv-sub" style="display:block">Bring your pulpit into the build</span></span>
+        <svg class="mv-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="mv-body">
+        <p style="font-size:13px;color:var(--dim);margin:16px 0 0;max-width:62ch">Add the messages you have already preached — or plan to. We mine each one for its scriptures and themes, map your series onto the weeks of the journey, and compose the daily readings and group study to walk beside your pulpit.</p>
+        <div id="serList"></div>
+        <button class="addser" id="addSer">+ Add a sermon</button>
+        <div class="serSum" id="serSum" style="display:none"></div>
+        <p class="hint" style="margin-top:12px">No sermons yet? That is fine — the journey composes beautifully from Lifetogether Intelligence and Church Intelligence alone, and your pulpit can join at any point.</p>
+        <button class="next" data-go="3">Continue to the journey</button>
+      </div>
+    </section>
+
+    <!-- 3 · JOURNEY -->
+    <section class="mv" id="mv3">
+      <button class="mv-head" data-mv="3" aria-expanded="false">
+        <span class="mv-num">3</span>
+        <span><span class="mv-title">The journey<span class="tag li">Lifetogether Intelligence</span></span><span class="mv-sub" style="display:block">Title, promise, length, and anchor verse</span></span>
+        <svg class="mv-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="mv-body">
+        <div class="fld">
+          <label for="ttl">Campaign title</label>
+          <input type="text" id="ttl" placeholder="Name the journey" maxlength="48">
+          <div class="sug" id="ttlSug"></div>
+        </div>
+        <div class="fld">
+          <label for="promise">The promise line</label>
+          <input type="text" id="promise" placeholder="One sentence: what will be true when this journey ends?" maxlength="90">
+          <div class="sug" id="prSug"></div>
+        </div>
+        <div class="fld">
+          <span class="lab">Journey length</span>
+          <div class="lenrow" role="group" aria-label="Journey length">
+            <button class="len" data-len="40-Day" aria-pressed="true"><span class="flag">Flagship</span><b>40 Days</b><span>6 weeks · the full arc</span></button>
+            <button class="len" data-len="30-Day" aria-pressed="false"><b>30 Days</b><span>A focused month</span></button>
+            <button class="len" data-len="21-Day" aria-pressed="false"><b>21 Days</b><span>Three-week reset</span></button>
+            <button class="len" data-len="7-Day" aria-pressed="false"><b>7 Days</b><span>One shared week</span></button>
+          </div>
+        </div>
+        <div class="fld">
+          <label for="scr">Anchor scripture</label>
+          <input type="text" id="scr" placeholder="e.g., Psalm 24:1" maxlength="40">
+          <div class="sug" id="scrSug"></div>
+          <p class="hint">Blue suggestions were mined from your sermons; the rest come from the memory-verse bank of your category.</p>
+        </div>
+        <button class="next" data-go="4">Continue to editions</button>
+      </div>
+    </section>
+
+    <!-- 4 · EDITIONS -->
+    <section class="mv" id="mv4">
+      <button class="mv-head" data-mv="4" aria-expanded="false">
+        <span class="mv-num">4</span>
+        <span><span class="mv-title">Editions</span><span class="mv-sub" style="display:block">What lands in every hand</span></span>
+        <svg class="mv-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="mv-body">
+        <div class="eds" id="eds">
+          <label class="ed core"><input type="checkbox" checked disabled><span><b>Daily devotional</b><span>One reading a day, every day of the journey.</span><span class="pr">Included</span></span></label>
+          <label class="ed core"><input type="checkbox" checked disabled><span><b>6-session group study</b><span>Built so a first-time host can lead it cold.</span><span class="pr">Included</span></span></label>
+          <label class="ed core"><input type="checkbox" checked disabled><span><b>Sermon outlines</b><span>Woven from your messages when you add them.</span><span class="pr">Included</span></span></label>
+          <label class="ed core"><input type="checkbox" checked disabled><span><b>Leader &amp; launch kits</b><span>Host training and the dated launch runway.</span><span class="pr">Included</span></span></label>
+          <label class="ed"><input type="checkbox" data-ed="Youth edition" data-price="49"><span><b>Youth edition</b><span>The same weekly idea, in their world.</span><span class="pr">+ $49</span></span></label>
+          <label class="ed"><input type="checkbox" data-ed="Children's edition" data-price="49"><span><b>Children's edition</b><span>Story, activity, and an echo prayer each week.</span><span class="pr">+ $49</span></span></label>
+          <label class="ed"><input type="checkbox" data-ed="Podcast scripts" data-price="49"><span><b>Podcast scripts</b><span>A companion episode outline per week.</span><span class="pr">+ $49</span></span></label>
+          <label class="ed"><input type="checkbox" data-ed="Video scripts" data-price="49"><span><b>Video scripts</b><span>Direct-to-camera teaching scripts, session by session.</span><span class="pr">+ $49</span></span></label>
+          <label class="ed"><input type="checkbox" data-ed="Print-ready book" data-price="49"><span><b>Print-ready book</b><span>Upload-ready files for KDP or your local printer.</span><span class="pr">+ $49</span></span></label>
+          <label class="ed"><input type="checkbox" data-ed="Online course" data-price="49"><span><b>Online course</b><span>Module structure with objectives and completion track.</span><span class="pr">+ $49</span></span></label>
+        </div>
+        <button class="next" data-go="5">Continue to your church</button>
+      </div>
+    </section>
+
+    <!-- 5 · CHURCH -->
+    <section class="mv" id="mv5">
+      <button class="mv-head" data-mv="5" aria-expanded="false">
+        <span class="mv-num">5</span>
+        <span><span class="mv-title">Your church</span><span class="mv-sub" style="display:block">The name on the cover, the date on the calendar</span></span>
+        <svg class="mv-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="mv-body">
+        <div class="fld"><label for="church">Church name</label><input type="text" id="church" placeholder="e.g., Grace Community Church" maxlength="60"></div>
+        <div class="fld"><label for="pastor">Pastor's name <span style="font-weight:500;color:var(--faint);text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="pastor" placeholder="e.g., Pastor Maria Delgado" maxlength="60"></div>
+        <div class="fld">
+          <label for="kick">Kickoff Sunday</label>
+          <input type="date" id="kick">
+          <p class="hint">We build the whole runway from this date: six preparation weeks, the campaign weeks, and Celebration Sunday.</p>
+        </div>
+        <button class="next" data-go="6">Review the blueprint</button>
+      </div>
+    </section>
+
+    <!-- 6 · REVIEW -->
+    <section class="mv" id="mv6">
+      <button class="mv-head" data-mv="6" aria-expanded="false">
+        <span class="mv-num">6</span>
+        <span><span class="mv-title">Review</span><span class="mv-sub" style="display:block">The complete campaign blueprint</span></span>
+        <svg class="mv-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="mv-body">
+        <div class="blue" id="blueprint" aria-live="polite"></div>
+        <div class="actions noprint">
+          <button class="next orange" id="addCart">Add this campaign to my cart</button>
+          <button class="next ghost" id="printBp">Print the blueprint</button>
+          <button class="next ghost" id="reset">Start over</button>
+        </div>
+        <p class="small noprint">Your build — sermons included — is saved in this browser as you go. Adding to cart locks the blueprint into your order; our team composes the full editions from all three intelligences and delivers every file to your library, usually within two business days.</p>
+        <div class="band noprint">
+          <div>
+            <p class="bk">Want our team in the room?</p>
+            <h3>The Campaign Builder Intensive</h3>
+            <p>Two working sessions with our team: we take your sermon series, your stories, and your voice, and hand back a campaign that sounds like your pulpit — study, devotional, and all editions, end to end.</p>
+          </div>
+          <a href="contact.html?about=intensive">Talk to our team</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ================= LIVE PREVIEW ================= -->
+  <aside class="pv-wrap" aria-label="Live preview">
+    <div class="pv">
+      <div class="pv-tag"><i></i>Your campaign, composing live</div>
+      <div class="cover" id="cover">
+        <span class="ch" id="cvCh"></span>
+        <span class="ring">40</span>
+        <div class="th" id="cvTheme">Stewardship</div>
+        <div class="tt" id="cvTitle">Name the journey</div>
+        <div class="ss" id="cvSub">The promise line will sit here, in your words.</div>
+      </div>
+      <div class="pv-sec">
+        <p class="pk">Composing from three intelligences</p>
+        <div class="srcs" id="srcs"></div>
+      </div>
+      <div class="pv-sec">
+        <p class="pk">The arc of the weeks</p>
+        <div class="arc fade" id="arc"></div>
+      </div>
+      <div class="pv-sec">
+        <p class="pk">Day 1 · composed for this build</p>
+        <div class="day1 fade" id="day1"></div>
+      </div>
+      <div class="pv-sec">
+        <p class="pk">A voice from the church</p>
+        <div class="voice fade" id="voice"></div>
+      </div>
+      <div class="pv-price">
+        <div><div class="n" id="price">$499</div><div class="d" id="priceD">Custom 40-day campaign · all core editions</div></div>
+      </div>
+      <p class="pv-note">One church license: print, project, email, and adapt inside your congregation.</p>
+    </div>
+  </aside>
+
+</div></div>
+
+<footer><div class="wrap">
+  <a class="brand" href="index.html">40 Day <em>Campaigns</em></a>
+  <div class="fnav">
+    <a href="churches.html">Churches</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+  </div>
+</div></footer>
+
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="cart.js"></script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)}, $$=function(s){return [].slice.call(document.querySelectorAll(s))};
+  var CATS=window.CATS||{}, ROWS=window.CAMPAIGNS||[], E=window.Engine;
+
+  /* ================= CHURCH INTELLIGENCE =================
+     The global church library: voices across twenty centuries,
+     public-domain teachers, matched to categories. */
+  var VOICES={
+    1:[{q:"Earn all you can, save all you can, give all you can.",w:"John Wesley, 1703–1791"},
+       {q:"It is not how much we have, but how much we enjoy, that makes happiness.",w:"Charles Spurgeon, 1834–1892"}],
+    2:[{q:"Thou hast made us for Thyself, O Lord, and our heart is restless until it finds its rest in Thee.",w:"Augustine of Hippo, 354–430"},
+       {q:"He is no fool who gives what he cannot keep to gain that which he cannot lose.",w:"Jim Elliot, 1927–1956 · journal, 1949"}],
+    3:[{q:"Find out how much God has given you, and from it take what you need; the remainder is needed by others.",w:"Augustine of Hippo, 354–430"},
+       {q:"Earn all you can, save all you can, give all you can.",w:"John Wesley, 1703–1791"}],
+    4:[{q:"God's work done in God's way will never lack God's supply.",w:"Hudson Taylor, 1832–1905"},
+       {q:"Only one life, 'twill soon be past; only what's done for Christ will last.",w:"C.T. Studd, 1860–1931"}],
+    5:[{q:"Only one life, 'twill soon be past; only what's done for Christ will last.",w:"C.T. Studd, 1860–1931"},
+       {q:"Resolved: to live with all my might, while I do live.",w:"Jonathan Edwards, 1703–1758 · Resolutions"}],
+    6:[{q:"Character is what you are in the dark.",w:"D.L. Moody, 1837–1899"},
+       {q:"Resolved: to live with all my might, while I do live.",w:"Jonathan Edwards, 1703–1758 · Resolutions"}],
+    7:[{q:"In prayer it is better to have a heart without words than words without a heart.",w:"John Bunyan, 1628–1688"},
+       {q:"The first great and primary business to which I ought to attend every day is to have my soul happy in the Lord.",w:"George Müller, 1805–1898"}],
+    8:[{q:"The time of business does not with me differ from the time of prayer.",w:"Brother Lawrence, 1614–1691"},
+       {q:"Character is what you are in the dark.",w:"D.L. Moody, 1837–1899"}],
+    9:[{q:"Humility is the bloom and the beauty of holiness.",w:"Andrew Murray, 1828–1917"},
+       {q:"A Christian is a perfectly free lord of all, and a perfectly dutiful servant of all.",w:"Martin Luther, 1483–1546"}],
+    10:[{q:"Visit many good books, but live in the Bible.",w:"Charles Spurgeon, 1834–1892"},
+       {q:"Without the Way there is no going; without the Truth there is no knowing; without the Life there is no living.",w:"Thomas à Kempis, c. 1380–1471"}],
+    11:[{q:"Trust God and do the next thing.",w:"Oswald Chambers, 1874–1917"},
+       {q:"By perseverance the snail reached the ark.",w:"Charles Spurgeon, 1834–1892"}],
+    12:[{q:"The first great and primary business to which I ought to attend every day is to have my soul happy in the Lord.",w:"George Müller, 1805–1898"},
+       {q:"Thou hast made us for Thyself, O Lord, and our heart is restless until it finds its rest in Thee.",w:"Augustine of Hippo, 354–430"}]
+  };
+  var VOICE_POOL=[{q:"Visit many good books, but live in the Bible.",w:"Charles Spurgeon, 1834–1892"},
+    {q:"Trust God and do the next thing.",w:"Oswald Chambers, 1874–1917"},
+    {q:"Character is what you are in the dark.",w:"D.L. Moody, 1837–1899"},
+    {q:"Without the Way there is no going; without the Truth there is no knowing; without the Life there is no living.",w:"Thomas à Kempis, c. 1380–1471"}];
+  function voicesFor(cat, weeks, seedStr){
+    var pool=(VOICES[cat]||[]).concat(VOICE_POOL);
+    var out=[], seen={};
+    var h=0, s=String(seedStr||'x'); for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0;
+    for(var k=0;k<weeks;k++){ var v=pool[(h+k)%pool.length]; if(seen[v.q]){ v=pool[(h+k+1)%pool.length]; } seen[v.q]=1; out.push(v); }
+    return out;
+  }
+
+  /* ================= PASTOR INTELLIGENCE =================
+     Mining the pastor's own library: scripture refs + theme leaning. */
+  var BOOKS="Genesis Exodus Leviticus Numbers Deuteronomy Joshua Judges Ruth Samuel Kings Chronicles Ezra Nehemiah Esther Job Psalm Psalms Proverbs Ecclesiastes Song Isaiah Jeremiah Lamentations Ezekiel Daniel Hosea Joel Amos Obadiah Jonah Micah Nahum Habakkuk Zephaniah Haggai Zechariah Malachi Matthew Mark Luke John Acts Romans Corinthians Galatians Ephesians Philippians Colossians Thessalonians Timothy Titus Philemon Hebrews James Peter Jude Revelation".split(" ");
+  function mineRefs(text){
+    if(!text) return [];
+    var re=/\b((?:[1-3]\s?)?(?:[A-Z][a-z]+))\s(\d{1,3})(?::(\d{1,3})(?:\s?[–-]\s?(\d{1,3}))?)?/g, m, out=[], seen={};
+    while((m=re.exec(text))){
+      var book=m[1].replace(/^([1-3])\s?/, '$1 ');
+      var bare=book.replace(/^[1-3]\s/,'');
+      if(BOOKS.indexOf(bare)<0) continue;
+      var ref=book+' '+m[2]+(m[3]?':'+m[3]+(m[4]?'–'+m[4]:''):'');
+      if(!seen[ref]){ seen[ref]=1; out.push(ref); }
+      if(out.length>=8) break;
+    }
+    return out;
+  }
+  var CATWORDS={1:['steward','money','budget','finance','resource','provision'],2:['content','enough','treasure','covet','simplicity'],3:['generos','give','giving','tithe','offering'],4:['mission','kingdom','gospel','nations','witness','neighbor'],5:['legacy','inherit','generation','estate'],6:['heir','young','next generation','entitle','character'],7:['family','home','marriage','parent','child'],8:['work','business','marketplace','vocation','labor'],9:['lead','wisdom','decision','influence','servant'],10:['word','scripture','bible','abide','pray','disciple'],11:['season','change','transition','retire','chapter'],12:['hope','grief','heal','anxious','peace','comfort']};
+  function mineLeaning(text){
+    var t=(text||'').toLowerCase(), best=0, bestN=0;
+    for(var c in CATWORDS){ var n=0; CATWORDS[c].forEach(function(w){ n+= (t.split(w).length-1); }); if(n>bestN){ bestN=n; best=+c; } }
+    return bestN>=2 ? best : 0;
+  }
+
+  /* ---------- state ---------- */
+  var S={cat:1, aud:'church', audLabel:'Whole church', occ:'', title:'', promise:'', len:'40-Day', scr:'', church:'', pastor:'', kick:'', eds:[], sermons:[]};
+  try{ var saved=JSON.parse(localStorage.getItem('ltBuilderDraft')||'null'); if(saved) S=Object.assign(S,saved); }catch(e){}
+  if(!Array.isArray(S.sermons)) S.sermons=[];
+  function persist(){ try{ localStorage.setItem('ltBuilderDraft', JSON.stringify(S)); }catch(e){} }
+
+  function slug(t){ return (t||'campaign').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,24); }
+  function custId(){ return 'CUST-'+slug(S.title||'untitled'); }
+  function weeksFor(len){ return {'40-Day':6,'30-Day':5,'21-Day':3,'7-Day':1}[len]||6; }
+  function synthRow(){
+    var theme=(function(){ for(var k in window.THEMEMETA){ if(window.THEMEMETA[k][0]===S.cat) return k; } return CATS[S.cat]||'The Journey'; })();
+    return [ S.title||'Your Campaign', S.promise||'', S.cat, S.len, ['any'], [S.aud], 60, 0, 1, custId(), theme, S.audLabel, S.occ||'', S.scr||'' ];
+  }
+  var debT; function compose(){ clearTimeout(debT); debT=setTimeout(render, 220); }
+
+  /* ---------- foundation ---------- */
+  var catChips=$('#catChips');
+  Object.keys(CATS).forEach(function(k){
+    var b=document.createElement('button'); b.className='chip'; b.setAttribute('aria-pressed', String(+k===+S.cat));
+    b.innerHTML='<span class="dot" style="background:var(--c'+k+'a)"></span>'+CATS[k];
+    b.dataset.cat=k;
+    b.onclick=function(){ setCat(+k); };
+    catChips.appendChild(b);
+  });
+  function setCat(k){ S.cat=k; $$('#catChips .chip').forEach(function(x){x.setAttribute('aria-pressed', String(+x.dataset.cat===k))}); refreshScrSug(); refreshTitleSug(); persist(); compose(); }
+
+  var AUDS=[['church','Whole church'],['family','Families'],['groups','Small groups'],['business','Workplace'],['youth','Youth']];
+  var audChips=$('#audChips');
+  AUDS.forEach(function(a){
+    var b=document.createElement('button'); b.className='chip'; b.textContent=a[1]; b.setAttribute('aria-pressed', String(a[0]===S.aud));
+    b.onclick=function(){ S.aud=a[0]; S.audLabel=a[1]; $$('#audChips .chip').forEach(function(x){x.setAttribute('aria-pressed','false')}); b.setAttribute('aria-pressed','true'); persist(); compose(); };
+    audChips.appendChild(b);
+  });
+
+  var OCC=['Fall kickoff','New Year','Stewardship season','Easter runway','Capital campaign','Church anniversary','Back to school','Advent'];
+  var occSug=$('#occSug');
+  OCC.forEach(function(o){ var b=document.createElement('button'); b.textContent=o; b.onclick=function(){ $('#occ').value=o; S.occ=o; persist(); compose(); }; occSug.appendChild(b); });
+  $('#occ').addEventListener('input', function(){ S.occ=this.value; persist(); compose(); });
+
+  $('#fromBlank').onclick=function(){ this.setAttribute('aria-pressed','true'); $('#fromLib').setAttribute('aria-pressed','false'); $('#libPick').style.display='none'; };
+  $('#fromLib').onclick=function(){ this.setAttribute('aria-pressed','true'); $('#fromBlank').setAttribute('aria-pressed','false'); $('#libPick').style.display='block'; };
+  var libSel=$('#libSel');
+  ROWS.slice().sort(function(a,b){return (b[6]||0)-(a[6]||0)}).slice(0,80).forEach(function(r){
+    var o=document.createElement('option'); o.value=r[9]; o.textContent=r[0]+' — '+(CATS[r[2]]||''); libSel.appendChild(o);
+  });
+  libSel.onchange=function(){
+    var r=ROWS.find(function(x){return x[9]===libSel.value}); if(!r) return;
+    S.title=r[0]; S.promise=r[1]; S.len=(r[3]==='6-Week'?'40-Day':r[3]); S.scr=r[13]||'';
+    $('#ttl').value=S.title; $('#promise').value=S.promise; $('#scr').value=S.scr;
+    $$('.len').forEach(function(x){ x.setAttribute('aria-pressed', String(x.dataset.len===S.len)); });
+    setCat(r[2]);
+  };
+
+  /* ---------- pastor intelligence: sermon list ---------- */
+  var serList=$('#serList');
+  function serTemplate(s,i){
+    var wrap=document.createElement('div'); wrap.className='ser';
+    wrap.innerHTML='<span class="sn">Sermon '+(i+1)+' → Week '+(i+1)+'</span>'+
+      '<button class="rm" aria-label="Remove sermon '+(i+1)+'" title="Remove">×</button>'+
+      '<div class="grid2">'+
+        '<div><label style="font-size:11px;font-weight:800;font-family:\'Hanken Grotesk\';letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:6px">Sermon title</label><input type="text" class="s-title" placeholder="e.g., Whose Money Is It, Anyway?" maxlength="70" value="'+(s.title||'').replace(/"/g,'&quot;')+'"></div>'+
+        '<div><label style="font-size:11px;font-weight:800;font-family:\'Hanken Grotesk\';letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:6px">Primary passage</label><input type="text" class="s-pass" placeholder="e.g., Psalm 24:1–2" maxlength="40" value="'+(s.pass||'').replace(/"/g,'&quot;')+'"></div>'+
+      '</div>'+
+      '<textarea class="s-text" placeholder="Paste your manuscript, outline, or notes (optional). We mine it for every scripture you preached and the themes you leaned on." maxlength="20000">'+(s.text||'').replace(/</g,'&lt;')+'</textarea>'+
+      '<div class="mined"></div>';
+    wrap.querySelector('.rm').onclick=function(){ S.sermons.splice(i,1); persist(); renderSermons(); compose(); };
+    wrap.querySelector('.s-title').addEventListener('input', function(){ s.title=this.value; persist(); updMined(wrap,s); compose(); });
+    wrap.querySelector('.s-pass').addEventListener('input', function(){ s.pass=this.value; persist(); updMined(wrap,s); compose(); });
+    wrap.querySelector('.s-text').addEventListener('input', function(){ s.text=this.value.slice(0,20000); persist(); updMined(wrap,s); compose(); });
+    updMined(wrap,s);
+    return wrap;
+  }
+  function updMined(wrap,s){
+    s.refs=mineRefs((s.pass||'')+' '+(s.text||''));
+    var lean=mineLeaning((s.title||'')+' '+(s.text||''));
+    var el=wrap.querySelector('.mined');
+    var chips=s.refs.map(function(r){return '<span>'+r+'</span>'}).join('');
+    if(lean && lean!==S.cat){ chips+='<span style="cursor:pointer" data-lean="'+lean+'">Leans toward '+CATS[lean].split('&')[0].trim()+' — use it →</span>'; }
+    el.innerHTML=chips || '<span class="none">Paste text and we will mine the scriptures for you</span>';
+    var lb=el.querySelector('[data-lean]'); if(lb){ lb.onclick=function(){ setCat(+lb.dataset.lean); }; }
+    refreshScrSug();
+  }
+  function renderSermons(){
+    serList.innerHTML='';
+    S.sermons.forEach(function(s,i){ serList.appendChild(serTemplate(s,i)); });
+    var w=weeksFor(S.len), n=S.sermons.length;
+    var refs=S.sermons.reduce(function(a,s){return a+(s.refs||[]).length},0);
+    var sum=$('#serSum');
+    if(n){ sum.style.display='block'; sum.innerHTML='<b style="font-family:\'Hanken Grotesk\';font-weight:800">'+n+' sermon'+(n>1?'s':'')+' in the room</b> · '+refs+' passage'+(refs===1?'':'s')+' mined · mapped to Week'+(Math.min(n,w)>1?'s 1–'+Math.min(n,w):' 1')+(n>w?' ('+(n-w)+' beyond this journey length)':''); }
+    else sum.style.display='none';
+    $('#addSer').style.display = S.sermons.length>=6 ? 'none':'block';
+  }
+  $('#addSer').onclick=function(){ S.sermons.push({title:'',pass:'',text:'',refs:[]}); persist(); renderSermons(); var last=serList.lastElementChild; if(last) last.querySelector('.s-title').focus(); };
+  renderSermons();
+
+  /* ---------- journey ---------- */
+  function refreshTitleSug(){
+    var noun={1:'Stewardship',2:'Contentment',3:'Generosity',4:'the Kingdom',5:'Legacy',6:'the Next Generation',7:'Family',8:'Faithful Work',9:'Wisdom',10:'the Word',11:'New Seasons',12:'Hope'}[S.cat]||'Purpose';
+    var pats=['The {x} Journey','{x} Together','Rooted in {x}','{x} Begins at Home','Forty Days of {x}','The Year of {x}'];
+    var el=$('#ttlSug'); el.innerHTML='';
+    (S.sermons[0]&&S.sermons[0].title?[S.sermons[0].title]:[]).forEach(function(t){
+      var b=document.createElement('button'); b.className='mine'; b.textContent=t+' — from your pulpit'; b.onclick=function(){ $('#ttl').value=t; S.title=t; persist(); compose(); }; el.appendChild(b);
+    });
+    pats.forEach(function(p){ var t=p.replace('{x}',noun); var b=document.createElement('button'); b.textContent=t; b.onclick=function(){ $('#ttl').value=t; S.title=t; persist(); compose(); }; el.appendChild(b); });
+  }
+  function refreshPromiseSug(){
+    var el=$('#prSug'); el.innerHTML='';
+    ['A church that prays the same words in every room','Forty days that change what your family talks about','What began in the pulpit becomes the whole week'].forEach(function(t){
+      var b=document.createElement('button'); b.textContent=t; b.onclick=function(){ $('#promise').value=t; S.promise=t; persist(); compose(); }; el.appendChild(b);
+    });
+  }
+  function refreshScrSug(){
+    var el=$('#scrSug'); if(!el) return; el.innerHTML='';
+    var mined=[]; S.sermons.forEach(function(s){ (s.refs||[]).forEach(function(r){ if(mined.indexOf(r)<0) mined.push(r); }); });
+    mined.slice(0,4).forEach(function(r){
+      var b=document.createElement('button'); b.className='mine'; b.textContent=r; b.title='Mined from your sermons';
+      b.onclick=function(){ $('#scr').value=r; S.scr=r; persist(); compose(); }; el.appendChild(b);
+    });
+    try{
+      var fam=E.KB[E.FAM_BY_CAT[S.cat]];
+      (fam.mem||[]).slice(0,4).forEach(function(m){
+        var b=document.createElement('button'); b.textContent=m.v; b.onclick=function(){ $('#scr').value=m.v; S.scr=m.v; persist(); compose(); }; el.appendChild(b);
+      });
+    }catch(e){}
+  }
+  $('#ttl').addEventListener('input', function(){ S.title=this.value; persist(); compose(); });
+  $('#promise').addEventListener('input', function(){ S.promise=this.value; persist(); compose(); });
+  $('#scr').addEventListener('input', function(){ S.scr=this.value; persist(); compose(); });
+  $$('.len').forEach(function(b){ b.onclick=function(){ S.len=b.dataset.len; $$('.len').forEach(function(x){x.setAttribute('aria-pressed','false')}); b.setAttribute('aria-pressed','true'); persist(); renderSermons(); compose(); }; });
+
+  /* ---------- editions ---------- */
+  $$('#eds input[data-ed]').forEach(function(c){
+    c.checked = S.eds.indexOf(c.dataset.ed)>=0;
+    c.addEventListener('change', function(){
+      S.eds = $$('#eds input[data-ed]:checked').map(function(x){return x.dataset.ed});
+      persist(); compose();
+    });
+  });
+
+  /* ---------- church ---------- */
+  ['church','pastor'].forEach(function(k){ $('#'+k).value=S[k]||''; $('#'+k).addEventListener('input', function(){ S[k]=this.value; persist(); compose(); }); });
+  $('#kick').value=S.kick||''; $('#kick').addEventListener('input', function(){ S.kick=this.value; persist(); compose(); });
+  $('#occ').value=S.occ||''; $('#ttl').value=S.title||''; $('#promise').value=S.promise||''; $('#scr').value=S.scr||'';
+
+  /* ---------- movements ---------- */
+  function openMv(n){
+    $$('.mv').forEach(function(m,i){ var on=(i+1)===n; m.classList.toggle('open',on); m.querySelector('.mv-head').setAttribute('aria-expanded',String(on)); m.classList.toggle('done',(i+1)<n); });
+    if(n===6) renderBlueprint();
+    var el=$('#mv'+n); if(el&&window.innerWidth<980) el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $$('.mv-head').forEach(function(h){ h.addEventListener('click', function(){ openMv(+h.dataset.mv); }); });
+  $$('[data-go]').forEach(function(b){ b.addEventListener('click', function(){ openMv(+b.dataset.go); }); });
+
+  /* ---------- pricing & runway ---------- */
+  var BASE={'40-Day':499,'30-Day':449,'21-Day':399,'7-Day':249};
+  function price(){ return (BASE[S.len]||499) + S.eds.length*49; }
+  function runway(){
+    if(!S.kick) return null;
+    var d=new Date(S.kick+'T12:00:00'); if(isNaN(d)) return null;
+    function fmt(x){ return x.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+    var prep=new Date(d); prep.setDate(prep.getDate()-42);
+    var cel=new Date(d); cel.setDate(cel.getDate()+weeksFor(S.len)*7);
+    return {prep:fmt(prep), kick:fmt(d), cel:fmt(cel)};
+  }
+
+  /* ---------- arc with pulpit overlay ---------- */
+  function arcRows(dv){
+    return dv.parts.map(function(p,i){
+      var s=S.sermons[i];
+      var t=(s&&s.title)? s.title : p.title;
+      var mark=(s&&s.title)? '<span class="pulpit">Your pulpit</span>':'';
+      return {label:p.days, title:t, mark:mark, engine:p.title};
+    });
+  }
+
+  /* ---------- live preview ---------- */
+  function render(){
+    var C=synthRow();
+    $('#cvTitle').textContent=S.title||'Name the journey';
+    $('#cvSub').textContent=S.promise||'The promise line will sit here, in your words.';
+    $('#cvTheme').textContent=(CATS[S.cat]||'').split('&')[0].trim();
+    $('#cvCh').textContent=(S.church||'').toUpperCase();
+    var cov=$('#cover'); cov.style.setProperty('--cva','var(--c'+S.cat+'a)'); cov.style.setProperty('--cvb','var(--c'+S.cat+'b)');
+    /* sources strip */
+    var nS=S.sermons.filter(function(s){return s.title||s.text||s.pass}).length;
+    var nR=S.sermons.reduce(function(a,s){return a+(s.refs||[]).length},0);
+    var famLabel=''; try{ famLabel=E.KB[E.FAM_BY_CAT[S.cat]].label; }catch(e){ famLabel=CATS[S.cat]||''; }
+    var w=weeksFor(S.len);
+    $('#srcs').innerHTML=
+      '<div class="s"><i style="background:var(--pi)"></i><b>Pastor Intelligence</b><span>'+(nS? nS+' sermon'+(nS>1?'s':'')+' · '+nR+' passages mined':'awaiting your sermons — add them in Movement 2')+'</span></div>'+
+      '<div class="s"><i style="background:var(--li)"></i><b>Lifetogether Intelligence</b><span>1,252-campaign engine · '+famLabel+' bank</span></div>'+
+      '<div class="s"><i style="background:var(--ci)"></i><b>Church Intelligence</b><span>'+w+' voice'+(w>1?'s':'')+' of the global church, one per week</span></div>';
+    var arc=$('#arc'), day1=$('#day1'), vo=$('#voice');
+    arc.classList.add('out'); day1.classList.add('out'); vo.classList.add('out');
+    try{
+      var dv=E.devotional(C);
+      arc.innerHTML=arcRows(dv).map(function(r){ return '<div class="row"><b>'+r.label.replace('Days','D')+'</b><span>'+r.title+r.mark+'</span></div>'; }).join('');
+      var d1=dv.days[0];
+      var firstP=(d1.body.match(/<p>[\s\S]*?<\/p>/)||[''])[0];
+      day1.innerHTML='<div class="dt">'+d1.title+'</div><div class="dm">'+d1.dn+' · '+d1.scr+'</div>'+firstP+
+        '<p style="font-style:italic;color:var(--faint);font-size:12.5px;font-family:Inter">…and '+(dv.days.length-1)+' more days, each composed from this build.</p>';
+    }catch(e){ day1.innerHTML='<p style="color:var(--faint)">The preview will compose once a category is chosen.</p>'; arc.innerHTML=''; }
+    var v=voicesFor(S.cat, 1, custId()+S.len)[0];
+    vo.innerHTML='“'+v.q+'”<div class="who">'+v.w+'</div>';
+    $('#price').textContent='$'+price();
+    $('#priceD').textContent='Custom '+S.len.toLowerCase().replace('-d',' d')+' campaign · core editions'+(S.eds.length?' + '+S.eds.length+' add-on'+(S.eds.length>1?'s':''):'');
+    setTimeout(function(){ arc.classList.remove('out'); day1.classList.remove('out'); vo.classList.remove('out'); }, 60);
+    if($('#mv6').classList.contains('open')) renderBlueprint();
+  }
+
+  /* ---------- blueprint ---------- */
+  function renderBlueprint(){
+    var C=synthRow(), bp=$('#blueprint');
+    try{
+      var dv=E.devotional(C), gs=E.groupStudy(C), d1=dv.days[0], s1=gs.sessions[0], rw=runway();
+      var m; try{ m=E.meta(C); }catch(e){ m={scr:S.scr, family:CATS[S.cat]}; }
+      var w=weeksFor(S.len);
+      var nS=S.sermons.filter(function(s){return s.title||s.text||s.pass}).length;
+      var nR=S.sermons.reduce(function(a,s){return a+(s.refs||[]).length},0);
+      var vv=voicesFor(S.cat, w, custId()+S.len);
+      var rows=arcRows(dv);
+      bp.innerHTML=
+        '<p class="bk">Campaign blueprint'+(S.church?' · prepared for '+S.church:'')+'</p>'+
+        '<h2>'+(S.title||'Your Campaign')+'</h2>'+
+        (S.promise?'<p class="serif" style="font-family:Newsreader,serif;font-style:italic;color:var(--ink-2);margin:8px 0 0">'+S.promise+'</p>':'')+
+        '<div class="meta">'+
+          '<span>'+S.len+'</span><span>'+(CATS[S.cat]||'')+'</span><span>'+S.audLabel+'</span>'+
+          (S.occ?'<span>'+S.occ+'</span>':'')+(m.scr?'<span>Anchor: '+m.scr+'</span>':'')+
+          (S.pastor?'<span>'+S.pastor+'</span>':'')+
+        '</div>'+
+        '<div class="tri">'+
+          '<div class="t" style="--tb:var(--pi)"><b>Pastor Intelligence</b>'+(nS? nS+' sermon'+(nS>1?'s':'')+' woven in · '+nR+' passages mined from your pulpit':'No sermons added — your pulpit can join at any point')+'</div>'+
+          '<div class="t" style="--tb:var(--li)"><b>Lifetogether Intelligence</b>Composed by the 1,252-campaign engine from the '+((function(){try{return E.KB[E.FAM_BY_CAT[S.cat]].label}catch(e){return CATS[S.cat]}})())+' bank</div>'+
+          '<div class="t" style="--tb:var(--ci)"><b>Church Intelligence</b>'+w+' voices of the global church stand beside the weeks — Augustine to Spurgeon</div>'+
+        '</div>'+
+        '<div class="bgrid">'+
+          '<div class="bcell"><h3>The arc of the weeks</h3>'+rows.map(function(r){return '<div style="display:flex;gap:10px;margin-bottom:4px;align-items:baseline"><b style="font-family:\'Hanken Grotesk\';font-weight:800;font-size:11px;flex:0 0 68px;color:var(--ink-2)">'+r.label+'</b><span>'+r.title+(r.mark?' '+r.mark:'')+'</span></div>'}).join('')+
+          (nS?'<h3 style="margin-top:18px">Woven from your pulpit</h3>'+S.sermons.slice(0,w).map(function(s,i){ if(!(s.title||s.pass)) return ''; return '<div style="margin-bottom:6px"><b style="font-family:\'Hanken Grotesk\';font-weight:800;font-size:12px">Week '+(i+1)+'.</b> '+(s.title||'Untitled message')+(s.pass?' <span style="color:var(--faint)">· '+s.pass+'</span>':'')+((s.refs&&s.refs.length)?'<div style="font-size:11.5px;color:var(--dim)">Supporting texts: '+s.refs.join(', ')+'</div>':'')+'</div>'; }).join(''):'')+
+          (rw?'<h3 style="margin-top:18px">The runway</h3><div class="runway">'+
+            '<div class="r"><b>'+rw.prep+'</b><span>Preparation begins — hosts, sign-ups, sermon planning</span></div>'+
+            '<div class="r"><b>'+rw.kick+'</b><span>Kickoff Sunday — message one, devotionals in every hand</span></div>'+
+            '<div class="r"><b>'+rw.cel+'</b><span>Celebration Sunday — stories, gratitude, and the next step</span></div>'+
+          '</div>':'')+
+          '</div>'+
+          '<div class="bcell"><h3>Session 1 · '+s1.title+'</h3>'+
+            ((S.sermons[0]&&S.sermons[0].title)?'<p style="font-size:11.5px;color:#2E5AA8;font-weight:700;font-family:\'Hanken Grotesk\';margin:0 0 6px">Preached alongside: “'+S.sermons[0].title+'”</p>':'')+
+            '<p><b style="font-family:\'Hanken Grotesk\';font-weight:800;font-size:12px">Big idea.</b> '+s1.big+'</p>'+
+            '<p class="serif">'+s1.welcome+'</p>'+
+            '<p><b style="font-family:\'Hanken Grotesk\';font-weight:800;font-size:12px">Opening question.</b> '+s1.openQ+'</p>'+
+            '<h3 style="margin-top:18px">Voices of the global church</h3>'+
+            vv.map(function(v,i){return '<div class="vrow"><div class="q">“'+v.q+'”</div><div class="w">Week '+(i+1)+' · '+v.w+'</div></div>'}).join('')+
+          '</div>'+
+        '</div>'+
+        '<div class="bgrid">'+
+          '<div class="bcell"><h3>Day 1 · '+d1.title+'</h3><p style="font-size:11px;color:var(--faint);margin:0 0 8px">'+d1.scr+' · Memory verse: '+d1.mem.v+'</p><div class="serif">'+d1.body+'</div></div>'+
+          '<div class="bcell"><h3>Editions in this build</h3><ul>'+
+            '<li>Daily devotional — every day of the journey</li><li>6-session group study</li><li>Sermon outlines'+(nS?' — woven from your '+nS+' message'+(nS>1?'s':''):'')+'</li><li>Leader kit &amp; launch kit</li>'+
+            S.eds.map(function(e){return '<li>'+e+'</li>'}).join('')+
+          '</ul><h3 style="margin-top:16px">Investment</h3><p style="font-family:\'Hanken Grotesk\';font-weight:900;font-size:26px;margin:2px 0 4px">$'+price()+'</p><p style="font-size:12px;color:var(--dim)">One church license · sermon weaving included · every file delivered to your library</p></div>'+
+        '</div>';
+    }catch(e){ bp.innerHTML='<p style="color:var(--faint)">Complete the earlier movements and the blueprint composes here.</p>'; }
+  }
+
+  /* ---------- actions ---------- */
+  $('#addCart').onclick=function(){
+    if(!S.title){ openMv(3); $('#ttl').focus(); return; }
+    var nS=S.sermons.filter(function(s){return s.title||s.text||s.pass}).length;
+    var sub=(S.promise||('Custom '+S.len+' campaign'))+(nS?' · woven from '+nS+' of your sermons':'');
+    window.CART_ADD(custId(), S.title+' — Custom Campaign', sub, S.len, price());
+  };
+  $('#printBp').onclick=function(){ renderBlueprint(); window.print(); };
+  $('#reset').onclick=function(){ try{localStorage.removeItem('ltBuilderDraft')}catch(e){}; location.href='builder.html'; };
+
+  /* ---------- boot ---------- */
+  refreshTitleSug(); refreshPromiseSug(); refreshScrSug(); render();
+})();
+</script>
+</body>
+</html>

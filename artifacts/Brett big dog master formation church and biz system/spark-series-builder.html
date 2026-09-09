@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SPARK Series Builder &middot; LifeTogether</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400;1,600&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#c9a84c;--glt:#e2c97e;--gdk:#8a6e30;--cr:#f9f6ef;--ink:#12131a;--ok:#5a9a6a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Lato',sans-serif;background:#0e0c14;color:#f0ece0;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(5,3,11,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:stretch;padding:0 14px;overflow-x:auto;}
+.nbr{display:flex;flex-direction:column;justify-content:center;padding:9px 12px 9px 0;margin-right:5px;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.nbr-t{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--g);line-height:1;}
+.nbr-s{font-size:5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);font-weight:700;margin-top:2px;}
+.nt{padding:0 11px;font-size:7.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;cursor:pointer;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.25);display:flex;align-items:center;white-space:nowrap;background:none;font-family:'Lato',sans-serif;transition:all .12s;flex-shrink:0;}
+.nt:hover{color:rgba(255,255,255,.6);}
+.nt.on{color:var(--g);border-bottom-color:var(--g);}
+.nt:disabled{opacity:.3;cursor:not-allowed;}
+.pr{margin-left:auto;font-size:7px;letter-spacing:1.3px;text-transform:uppercase;font-weight:700;color:var(--gdk);border:1px solid rgba(201,168,76,.25);padding:4px 9px;align-self:center;cursor:pointer;background:none;font-family:'Lato',sans-serif;flex-shrink:0;}
+.pr:hover{background:rgba(201,168,76,.1);color:var(--g);}
+
+.pnl{display:none;}.pnl.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:32px 22px 70px;}
+.kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:rgba(201,168,76,.55);display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.kk::before{content:'';width:14px;height:1px;background:rgba(201,168,76,.4);}
+.h{font-family:'Playfair Display',serif;font-size:clamp(25px,4.3vw,42px);font-weight:400;color:#fff;line-height:.94;margin-bottom:10px;}
+.h em{font-style:italic;color:var(--g);}
+.sub{font-size:12px;color:rgba(255,255,255,.36);line-height:1.72;margin-bottom:20px;max-width:700px;}
+.step{font-size:7px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--gdk);margin:22px 0 8px;display:flex;align-items:center;gap:9px;}
+.step::before{content:'';width:12px;height:1px;background:rgba(138,110,48,.7);}
+.hint{font-size:10.5px;color:rgba(255,255,255,.3);line-height:1.65;margin-bottom:8px;font-style:italic;}
+.ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#f0ece0;padding:13px 15px;font-size:12.5px;font-family:'Lato',sans-serif;outline:none;resize:vertical;line-height:1.7;}
+.ta::placeholder{color:rgba(255,255,255,.17);}
+.ta:focus{border-color:rgba(201,168,76,.45);}
+.inrow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
+.inrow .ta{flex:1;min-width:140px;resize:none;}
+.opts{display:flex;gap:4px;flex-wrap:wrap;}
+.opt{padding:9px 13px;border:1px solid rgba(255,255,255,.11);color:rgba(255,255,255,.38);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;background:none;font-family:'Lato',sans-serif;transition:all .12s;}
+.opt:hover{border-color:rgba(201,168,76,.4);color:var(--g);}
+.opt.on{border-color:var(--g);color:var(--g);background:rgba(201,168,76,.1);}
+.opt small{display:block;font-size:7.5px;letter-spacing:.5px;text-transform:none;font-weight:400;opacity:.65;margin-top:3px;}
+.btn{background:var(--g);color:#000;border:none;padding:12px 24px;font-size:9.5px;font-weight:900;letter-spacing:2.2px;text-transform:uppercase;cursor:pointer;font-family:'Lato',sans-serif;}
+.btn:hover{background:var(--glt);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btn.ghost{background:none;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.45);}
+.btn.ghost:hover{border-color:rgba(201,168,76,.4);color:var(--g);}
+.btn.sm{padding:8px 14px;font-size:8.5px;}
+.think{display:none;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin:14px 0;}
+.think.on{display:flex;}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pl 1.2s infinite;}
+@keyframes pl{0%,100%{opacity:1;}50%{opacity:.12;}}
+.err{display:none;font-size:11px;color:#e08080;padding:12px;background:rgba(180,50,50,.1);border:1px solid rgba(180,50,50,.2);margin-top:12px;}
+.err.on{display:block;}
+.note{padding:13px 15px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);margin-top:14px;font-size:11.5px;color:rgba(255,255,255,.6);line-height:1.7;}
+.note b{color:var(--g);}
+
+.rail{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;}
+.wkb{padding:11px 15px;border:1px solid rgba(255,255,255,.1);background:none;cursor:pointer;font-family:'Lato',sans-serif;text-align:left;min-width:112px;transition:all .12s;}
+.wkb:hover{border-color:rgba(201,168,76,.4);}
+.wkb.on{border-color:var(--g);background:rgba(201,168,76,.1);}
+.wkb.built{border-left:3px solid var(--ok);}
+.wk-n{font-size:6.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.28);display:block;margin-bottom:3px;}
+.wkb.on .wk-n{color:var(--g);}
+.wk-t{font-family:'Playfair Display',serif;font-size:12.5px;font-style:italic;color:rgba(255,255,255,.7);line-height:1.25;display:block;}
+.wk-s{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--ok);margin-top:4px;display:block;}
+
+.sheet{background:var(--cr);color:var(--ink);padding:42px 48px;margin-bottom:8px;}
+.sh-kk{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:#a08a4a;margin-bottom:9px;}
+.sh-t{font-family:'Playfair Display',serif;font-size:clamp(22px,3.3vw,33px);font-weight:400;line-height:1.05;margin-bottom:7px;}
+.sh-s{font-size:13px;color:#6d6d78;font-family:Georgia,serif;font-style:italic;line-height:1.65;margin-bottom:16px;}
+.sh-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px;}
+.pill{font-size:7px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;color:#8a7540;border:1px solid rgba(160,138,74,.35);padding:4px 10px;}
+.blk{margin-bottom:22px;}
+.blbl{font-size:7px;letter-spacing:3.5px;text-transform:uppercase;font-weight:700;color:#a09888;display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.blbl::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.09);}
+.bidea{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;line-height:1.45;padding:14px 16px;background:rgba(201,168,76,.1);border-left:3px solid var(--g);}
+.com p{font-family:Georgia,serif;font-size:13px;line-height:1.9;color:#4a4a55;margin-bottom:12px;}
+.qq{padding:14px 0;border-bottom:1px solid rgba(0,0,0,.07);}
+.qq:last-child{border-bottom:none;}
+.qh{display:grid;grid-template-columns:28px 1fr;gap:11px;}
+.qn{font-family:'Playfair Display',serif;font-size:19px;color:var(--g);opacity:.6;line-height:1.2;}
+.qt{font-size:14px;color:#25252f;line-height:1.6;margin-bottom:4px;}
+.qnote{font-size:10.5px;color:#8a8a95;font-style:italic;line-height:1.6;}
+.app{padding:14px 16px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);}
+.app-a{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;line-height:1.5;margin-bottom:6px;}
+.app-d{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#a08a4a;}
+.pray{font-family:Georgia,serif;font-size:13px;font-style:italic;line-height:1.85;color:#4a4a55;padding:13px 16px;background:rgba(0,0,0,.03);}
+.dayq{display:grid;grid-template-columns:70px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.07);}
+.dayq:last-child{border-bottom:none;}
+.dq-d{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#a08a4a;padding-top:3px;}
+.dq-q{font-size:13.5px;color:#25252f;line-height:1.6;}
+
+.fill{margin-top:9px;margin-left:39px;}
+.fill textarea{width:100%;background:rgba(255,255,255,.72);border:1px solid rgba(0,0,0,.13);color:#25252f;padding:11px 13px;font-size:13px;font-family:Georgia,serif;line-height:1.9;outline:none;resize:vertical;}
+.fill textarea:focus{border-color:rgba(201,168,76,.7);background:#fff;}
+.fill textarea::placeholder{color:#b8b0a0;font-family:'Lato',sans-serif;font-size:11px;font-style:italic;}
+.printval{display:none;}
+.savedot{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--ok);opacity:0;transition:opacity .3s;margin-top:4px;display:block;}
+.savedot.on{opacity:1;}
+.ruled{margin-top:9px;margin-left:39px;}
+.rl{height:1px;background:rgba(0,0,0,.13);margin-bottom:21px;}
+
+.fb{background:#08060e;padding:24px 20px 40px;}
+.fbin{max-width:1120px;margin:0 auto;}
+.fbctl{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+.fbb{padding:9px 17px;border:1px solid rgba(255,255,255,.14);background:none;color:rgba(255,255,255,.5);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Lato',sans-serif;}
+.fbb:hover:not(:disabled){border-color:var(--g);color:var(--g);}
+.fbb:disabled{opacity:.25;cursor:not-allowed;}
+.fbpg{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.32);font-weight:700;}
+.spread{display:grid;grid-template-columns:1fr 1fr;gap:2px;box-shadow:0 12px 50px rgba(0,0,0,.6);}
+.pg{background:var(--cr);color:var(--ink);padding:38px 40px;min-height:540px;position:relative;}
+.pg.l{box-shadow:inset -14px 0 22px -14px rgba(0,0,0,.28);}
+.pg.r{box-shadow:inset 14px 0 22px -14px rgba(0,0,0,.28);}
+.pg-h{font-size:6.5px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:#c0b8a8;margin-bottom:18px;}
+.pg-n{position:absolute;bottom:18px;font-family:'Playfair Display',serif;font-size:12px;font-style:italic;color:#b8b0a0;}
+.pg.l .pg-n{left:40px;}.pg.r .pg-n{right:40px;}
+.dots{display:flex;gap:4px;flex-wrap:wrap;}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.14);cursor:pointer;border:none;padding:0;}
+.dot.on{background:var(--g);}
+
+@media print{
+  @page{margin:14mm;}
+  body{background:#fff;}
+  .nav,.pnl:not(.on),.noprint,.fb,.savedot{display:none!important;}
+  .wrap{padding:0;max-width:100%;}
+  .sheet{padding:0;margin:0;background:#fff;page-break-after:always;}
+  .blk{page-break-inside:avoid;}
+  .fill textarea{display:none;}
+  .printval{display:block;font-family:Georgia,serif;font-size:12.5px;line-height:2.1;color:#25252f;border-bottom:1px solid rgba(0,0,0,.16);min-height:54px;padding:6px 0;white-space:pre-wrap;}
+}
+@media(max-width:900px){.spread{grid-template-columns:1fr;}}
+@media(max-width:700px){.sheet,.pg{padding:24px 20px;}.fill,.ruled{margin-left:0;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nbr"><div class="nbr-t">Series Builder</div><div class="nbr-s">SPARK &middot; LifeTogether</div></div>
+  <button class="nt on" onclick="tab(0)">Setup</button>
+  <button class="nt" onclick="tab(1)">My Template</button>
+  <button class="nt" id="t2" onclick="tab(2)" disabled>The Series</button>
+  <button class="nt" id="t3" onclick="tab(3)" disabled>Workbook</button>
+  <button class="nt" id="t4" onclick="tab(4)" disabled>Flipbook</button>
+  <button class="pr" onclick="window.print()">&#128424; Print / PDF</button>
+</nav>
+
+<div id="p0" class="pnl on"><div class="wrap">
+  <p class="kk">Sermon In &middot; Whole Series Out</p>
+  <h1 class="h">Build the Series<br><em>Week by Week.</em></h1>
+  <p class="sub">Paste a sermon and build week one. Next week paste the next one and week two builds on top of it &mdash; same series, same voice, connected arc. Every week is print-ready and fillable.</p>
+
+  <div class="note" style="margin-top:0;margin-bottom:16px"><b>Want to see it work first?</b> Click Load Sample Sermon, then Build Week 1. About twenty seconds and you have a complete printable session with fillable answer fields.</div>
+  <button class="btn ghost sm" onclick="loadSample()">&#10022; Load Sample Sermon</button>
+
+  <div class="step">Step One &middot; Series Details</div>
+  <div class="inrow">
+    <input class="ta" id="sname" placeholder="Series title" oninput="draw()">
+    <input class="ta" id="church" placeholder="Church name (optional)" oninput="draw()">
+    <input class="ta" id="wkcount" style="max-width:110px" placeholder="6" oninput="setLen()">
+  </div>
+
+  <div class="step">Step Two &middot; This Week's Sermon</div>
+  <div class="hint">Transcript, manuscript, or detailed outline. On YouTube: click <b>&hellip;</b> under the video, then <b>Show transcript</b>.</div>
+  <textarea class="ta" id="tr" rows="7" placeholder="Paste this week's sermon here..."></textarea>
+  <div class="inrow" style="margin-top:6px"><input class="ta" id="wktitle" placeholder="This week's title (optional \u2014 the engine will write one)"></div>
+
+  <div class="step">Step Three &middot; Series Type</div>
+  <div class="opts" id="oType"></div>
+  <div class="step">Step Four &middot; Depth</div>
+  <div class="opts" id="oDepth"></div>
+
+  <div class="note" id="recap"></div>
+  <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" id="gob" onclick="gen()">Build Week 1 &rarr;</button>
+    <button class="btn ghost" onclick="tab(1)">Use My Template</button>
+  </div>
+  <div class="think" id="think"><div class="pulse"></div><span style="font-size:12px;color:rgba(255,255,255,.38)" id="tmsg">Building&hellip;</span></div>
+  <div class="err" id="err"></div>
+</div></div>
+
+<div id="p1" class="pnl"><div class="wrap">
+  <p class="kk">Match Your Format</p>
+  <h1 class="h">Use <em>My</em> Template.</h1>
+  <p class="sub">Paste one session of curriculum you already publish. The engine reads your structure &mdash; your section names, your order, how many questions you use, your voice &mdash; and writes every week to match it. You are not adopting a format. It is adopting yours.</p>
+  <div class="step">Paste a Sample Session</div>
+  <div class="hint">One complete session is enough. Include your headings exactly as you print them.</div>
+  <textarea class="ta" id="tpl" rows="13" placeholder="Paste one session of your existing curriculum \u2014 headings, questions, and all.&#10;&#10;CONNECT&#10;  Opening question...&#10;&#10;GROW&#10;  Read the passage...&#10;  1. Question...&#10;&#10;SERVE&#10;SHARE&#10;SURRENDER" oninput="tplSave()"></textarea>
+  <div class="step">How Strictly Should It Match</div>
+  <div class="opts" id="oStrict"></div>
+  <div class="note" id="tplnote"></div>
+  <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" onclick="tab(0)">&larr; Back to Setup</button>
+    <button class="btn ghost" onclick="clearTpl()">Clear Template</button>
+  </div>
+</div></div>
+
+<div id="p2" class="pnl"><div class="wrap">
+  <p class="kk noprint">The Series</p>
+  <h1 class="h noprint" id="seriesH">Your <em>Series.</em></h1>
+  <div class="rail noprint" id="rail"></div>
+  <div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+    <button class="btn ghost sm" onclick="tab(0)">+ Build Next Week</button>
+    <button class="btn ghost sm" onclick="printAll()">&#128424; Print Whole Series</button>
+  </div>
+  <div id="seriesOut"></div>
+</div></div>
+
+<div id="p3" class="pnl"><div class="wrap">
+  <p class="kk noprint">Fillable</p>
+  <h1 class="h noprint">The <em>Workbook.</em></h1>
+  <p class="sub noprint">Type your answers straight into the study. Everything saves on this device as you type, and when you print, your written answers print with it.</p>
+  <div class="rail noprint" id="wrail"></div>
+  <div id="workOut"></div>
+</div></div>
+
+<div id="p4" class="pnl"><div class="fb"><div class="fbin">
+  <div class="fbctl">
+    <div style="display:flex;gap:6px"><button class="fbb" id="pv" onclick="flip(-1)">&larr;</button><button class="fbb" id="nx" onclick="flip(1)">&rarr;</button></div>
+    <div class="fbpg" id="fbpg"></div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <div id="spreadOut"></div>
+</div></div></div>
+
+<script>
+var TYPE=[{k:"personal",t:"Personal Series",d:"Solo, reflective"},{k:"group",t:"Group Series",d:"Small group"},
+{k:"ministry",t:"Ministry Series",d:"Targeted context"},{k:"church",t:"Churchwide Series",d:"Whole congregation"}];
+var DEPTH=[{k:"light",t:"Light",d:"30 min"},{k:"standard",t:"Standard",d:"60 min"},{k:"deep",t:"In Depth",d:"90 min"}];
+var STRICT=[{k:"loose",t:"Inspired By",d:"Same spirit"},{k:"close",t:"Close Match",d:"Same sections"},{k:"exact",t:"Exact",d:"Mirror it"}];
+
+var SAMPLE="This morning I want to talk about the gap between what we say we believe and what our week actually shows.\n\nJames writes to a scattered church and opens with something that sounds almost cruel. Count it all joy, he says, when you meet trials of various kinds. Not if. When. He assumes the trial is coming.\n\nThen he tells us why. Because the testing of your faith produces steadfastness. And let steadfastness have its full effect, that you may be perfect and complete, lacking in nothing.\n\nHere is what I have watched for twenty-five years in this room. People pray for God to remove the thing. And God, more often than not, does not remove the thing. He uses it.\n\nThere is a difference between causing and using, and that difference matters enormously. God is not the author of your suffering. But he is not wasting it either.\n\nI think about a man in this church who lost his business three years ago. He prayed for eighteen months that God would save it. God did not save it. If you asked him today what happened, he would tell you the man who runs his life now is not the man who ran that business. He would not choose it again. But he would not trade what came out of it either.\n\nThat is what James is talking about. Steadfastness. The Greek word is hupomone and it does not mean gritting your teeth. It means the capacity to remain under weight without collapsing. It is what happens to a beam when it is load-tested.\n\nSo here is the question I want you to carry home. Not the question you have been asking, which is God get me out of this. The question is what are you forming in me through this.\n\nThose are different questions and they get different answers.\n\nNotice what James says the outcome is. Perfect and complete, lacking in nothing. Teleios. Not sinless. Finished. Whole. The thing you have been asking God for, the thing you think the removal of the trial would give you, is the thing the trial itself is producing.\n\nOne more thing before we close. James says count it. Logizomai. It is an accounting word. It means to reckon, to enter into the ledger, to do the math. He is not asking you to feel joy. He is asking you to calculate. To look at what this is producing and write it down on the correct side of the page.\n\nYou do not have to feel it. You have to count it.\n\nSo this week, before Tuesday, do one thing. Take the situation you have been praying about for months. Instead of praying remove this, write down one sentence answering this question: what has this already produced in me that comfort never would have?\n\nWrite it down. Not think about it. Write it. Then bring it to your group this week.";
+
+var S={type:"group",depth:"standard",strict:"close"};
+var SER={name:"",church:"",len:6,weeks:[],cur:0};
+var TPL="",AN={},pg=0,SPREADS=[],PAGES=[];
+try{var a=localStorage.getItem("spkser");if(a)SER=JSON.parse(a);}catch(e){}
+try{var b=localStorage.getItem("spktpl");if(b)TPL=b;}catch(e){}
+try{var d0=localStorage.getItem("spkans");if(d0)AN=JSON.parse(d0);}catch(e){}
+
+function esc(s){return (s||"").replace(/</g,"&lt;");}
+function saveS(){try{localStorage.setItem("spkser",JSON.stringify(SER));}catch(e){}}
+function saveA(){try{localStorage.setItem("spkans",JSON.stringify(AN));}catch(e){}}
+function nm(a,k){for(var i=0;i<a.length;i++){if(a[i].k===k)return a[i].t;}return k;}
+
+function tab(i){
+  for(var k=0;k<5;k++)document.getElementById("p"+k).classList.remove("on");
+  document.getElementById("p"+i).classList.add("on");
+  var t=document.getElementsByClassName("nt");
+  for(var k=0;k<t.length;k++)t[k].classList.remove("on");
+  t[i].classList.add("on");window.scrollTo(0,0);
+  if(i===3)work();
+  if(i===4)buildSpreads();
+}
+function opts(id,arr,key){
+  var h="";
+  for(var i=0;i<arr.length;i++){var o=arr[i];
+    h+="<button class='opt"+(S[key]===o.k?" on":"")+"' onclick=\"pick('"+key+"','"+o.k+"')\">"+o.t+"<small>"+o.d+"</small></button>";}
+  document.getElementById(id).innerHTML=h;
+}
+function pick(k,v){S[k]=v;draw();}
+function setLen(){var v=parseInt(document.getElementById("wkcount").value);if(v>0&&v<53){SER.len=v;saveS();}draw();rail();}
+function loadSample(){
+  document.getElementById("tr").value=SAMPLE;
+  if(!document.getElementById("sname").value)document.getElementById("sname").value="Count It All Joy";
+  draw();
+}
+function draw(){
+  opts("oType",TYPE,"type");opts("oDepth",DEPTH,"depth");opts("oStrict",STRICT,"strict");
+  SER.name=document.getElementById("sname").value.trim();
+  SER.church=document.getElementById("church").value.trim();saveS();
+  var n=SER.weeks.length+1;
+  document.getElementById("gob").innerHTML="Build Week "+n+" \u2192";
+  var prior=SER.weeks.length?" It builds on "+SER.weeks.length+" week"+(SER.weeks.length>1?"s":"")+" already in this series.":"";
+  document.getElementById("recap").innerHTML="Building <b>Week "+n+" of "+SER.len+"</b> \u2014 a <b>"+nm(TYPE,S.type)+
+   "</b> at <b>"+nm(DEPTH,S.depth)+"</b> depth."+prior+(TPL?" Formatted to <b>your template</b> ("+nm(STRICT,S.strict).toLowerCase()+").":" Using the standard LifeTogether format \u2014 add yours on My Template.");
+  document.getElementById("tplnote").innerHTML=TPL?
+   "<b>Template loaded</b> \u2014 "+TPL.split(/\s+/).filter(Boolean).length+" words. Every week follows your structure at <b>"+nm(STRICT,S.strict)+"</b> fidelity.":
+   "No template yet. Paste one session above and every week is written in your format instead of the default.";
+}
+function tplSave(){TPL=document.getElementById("tpl").value;try{localStorage.setItem("spktpl",TPL);}catch(e){}draw();}
+function clearTpl(){if(!confirm("Clear your template?"))return;TPL="";document.getElementById("tpl").value="";try{localStorage.removeItem("spktpl");}catch(e){}draw();}
+
+function gen(){
+  var tr=document.getElementById("tr").value.trim();
+  var er=document.getElementById("err");
+  if(!tr){er.textContent="Paste a sermon first \u2014 or click Load Sample Sermon to see it work.";er.classList.add("on");return;}
+  SER.name=document.getElementById("sname").value.trim();
+  SER.church=document.getElementById("church").value.trim();saveS();
+  var wn=SER.weeks.length+1,wt=document.getElementById("wktitle").value.trim();
+  var b=document.getElementById("gob"),th=document.getElementById("think");
+  b.disabled=true;b.textContent="Building...";th.classList.add("on");er.classList.remove("on");
+  document.getElementById("tmsg").textContent="Writing Week "+wn+"\u2026";
+
+  var prior="";
+  if(SER.weeks.length){
+    prior="\nPRIOR WEEKS (build on these, never repeat them):\n";
+    for(var i=0;i<SER.weeks.length;i++)prior+="Week "+(i+1)+": "+SER.weeks[i].R.title+" \u2014 "+SER.weeks[i].R.big_idea+"\n";
+    prior+="This week must advance the arc. Reference where the group has already been where it helps.\n";
+  }
+  var tpl="";
+  if(TPL){
+    var fid={loose:"Follow the SPIRIT and tone of this template. Match its voice and general shape.",
+     close:"Match this template CLOSELY. Same section names, same order, same number of questions per section.",
+     exact:"MIRROR this template EXACTLY. Same headings, same order, same question counts, same instruction style. Add nothing, remove nothing."}[S.strict];
+    tpl="\nPUBLISHER TEMPLATE \u2014 "+fid+"\n---\n"+TPL.slice(0,6000).replace(/"/g,"'")+"\n---\nReturn the section names in the 'sections' array and tag each question with its section.\n";
+  }
+  var tg={personal:"PERSONAL SERIES. Solo, second person, reflective. No group language.",
+   group:"SMALL GROUP SERIES. Discussion-driven, opening question, questions building safe to vulnerable.",
+   ministry:"MINISTRY-SPECIFIC SERIES. Assume a targeted ministry context, not general church life.",
+   church:"CHURCHWIDE SERIES. Universal language that works for a group of twelve, a family of five, or one person alone."}[S.type];
+
+  var q="You are the master curriculum architect for Lifetogether Ministries. Build session "+wn+" of a "+SER.len+"-week series"+
+   (SER.name?" called "+SER.name.replace(/"/g,"'"):"")+". Build from what was ACTUALLY PREACHED \u2014 use the preacher's own illustrations, phrases, and word studies, never generic material.\n\n"+
+   "SERMON:\n"+tr.slice(0,13000).replace(/"/g,"'")+"\n"+prior+tpl+
+   "\nFORMAT: "+tg+"\nDEPTH: "+nm(DEPTH,S.depth)+" session."+(wt?"\nTITLE: "+wt.replace(/"/g,"'"):"")+"\n\n"+
+   "Commentary must be three substantive paragraphs a leader could read aloud. Questions must be formation questions that make people lean in, never comprehension questions. Application is one specific irreversible act with a deadline.\n\n"+
+   "Respond ONLY with valid JSON, no fences:\n"+
+   '{"title":"","subtitle":"","big_idea":"","sections":[""],"scripture_ref":"","quote":"","commentary":["","",""],"open_q":"",'+
+   '"questions":[{"q":"","note":"","section":""},{"q":"","note":"","section":""},{"q":"","note":"","section":""},{"q":"","note":"","section":""},{"q":"","note":"","section":""},{"q":"","note":"","section":""}],'+
+   '"application":"","deadline":"","prayer":"","verse_text":"","verse_ref":"",'+
+   '"daily":[{"day":"Sunday","q":""},{"day":"Monday","q":""},{"day":"Tuesday","q":""},{"day":"Wednesday","q":""},{"day":"Thursday","q":""},{"day":"Friday","q":""},{"day":"Saturday","q":""}]}';
+
+  fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:3600,messages:[{role:"user",content:q}]})})
+  .then(function(r){return r.json();}).then(function(dd){
+    var tx="",cc=dd.content||[];
+    for(var i=0;i<cc.length;i++){if(cc[i].type==="text")tx=cc[i].text;}
+    var R=JSON.parse(tx.replace(/```json/g,"").replace(/```/g,"").trim());
+    SER.weeks.push({n:wn,R:R});SER.cur=SER.weeks.length-1;saveS();
+    document.getElementById("tr").value="";document.getElementById("wktitle").value="";
+    document.getElementById("t2").disabled=false;document.getElementById("t3").disabled=false;document.getElementById("t4").disabled=false;
+    rail();series();draw();
+    b.disabled=false;th.classList.remove("on");tab(2);
+  }).catch(function(){
+    er.textContent="Generation failed. Try a shorter section of the sermon and build again.";
+    er.classList.add("on");b.disabled=false;draw();th.classList.remove("on");
+  });
+}
+
+function rail(){
+  var h="";
+  for(var i=0;i<SER.len;i++){
+    var w=SER.weeks[i],built=!!w;
+    var t=built?w.R.title:"Not built yet";
+    var cls="wkb"+(SER.cur===i&&built?" on":"")+(built?" built":"");
+    var on=built?" onclick='goWk("+i+")'":"";
+    h+="<button class='"+cls+"'"+on+"><span class='wk-n'>Week "+(i+1)+"</span><span class='wk-t'>"+esc(t)+"</span>"+(built?"<span class='wk-s'>\u2713 Built</span>":"")+"</button>";
+  }
+  document.getElementById("rail").innerHTML=h;
+  document.getElementById("wrail").innerHTML=h;
+  document.getElementById("seriesH").innerHTML=(SER.name?esc(SER.name):"Your Series")+" &mdash; <em>"+SER.weeks.length+" of "+SER.len+"</em>";
+}
+function goWk(i){SER.cur=i;saveS();rail();series();work();buildSpreads();}
+
+function sheetFor(i,fillable){
+  var w=SER.weeks[i];if(!w)return "";
+  var R=w.R;
+  var pills="<span class='pill'>"+nm(TYPE,S.type)+"</span><span class='pill'>Week "+(i+1)+" of "+SER.len+"</span>";
+  if(SER.church)pills="<span class='pill'>"+esc(SER.church)+"</span>"+pills;
+  if(TPL)pills+="<span class='pill'>Custom Format</span>";
+  var com="";for(var j=0;j<(R.commentary||[]).length;j++)com+="<p>"+esc(R.commentary[j])+"</p>";
+  var qs="",lastSec="",anySec=false;
+  for(var j=0;j<(R.questions||[]).length;j++){
+    var x=R.questions[j];
+    if(x.section&&x.section!==lastSec){qs+="<div class='blbl' style='margin-top:18px'>"+esc(x.section)+"</div>";lastSec=x.section;anySec=true;}
+    qs+="<div class='qq'><div class='qh'><div class='qn'>"+(j+1)+"</div><div><div class='qt'>"+esc(x.q)+"</div>"+
+     (x.note?"<div class='qnote'>"+esc(x.note)+"</div>":"")+"</div></div>";
+    if(fillable){
+      var key=i+"-q"+j,v=AN[key]||"";
+      qs+="<div class='fill'><textarea rows='3' placeholder='Your answer...' data-k='"+key+"' oninput='ans(this)'>"+esc(v)+"</textarea>"+
+       "<div class='printval'>"+esc(v)+"</div><span class='savedot' id='sd-"+key+"'>Saved</span></div>";
+    } else qs+="<div class='ruled'><div class='rl'></div><div class='rl'></div><div class='rl'></div></div>";
+    qs+="</div>";
+  }
+  var dq="";for(var j=0;j<(R.daily||[]).length;j++){var dd=R.daily[j];
+    dq+="<div class='dayq'><div class='dq-d'>"+esc(dd.day)+"</div><div class='dq-q'>"+esc(dd.q)+"</div></div>";}
+  var appFill;
+  if(fillable){
+    var ak=i+"-app",av=AN[ak]||"";
+    appFill="<div class='fill' style='margin-left:0;margin-top:10px'><textarea rows='2' placeholder='What exactly will you do, and when?' data-k='"+ak+"' oninput='ans(this)'>"+esc(av)+"</textarea>"+
+     "<div class='printval'>"+esc(av)+"</div><span class='savedot' id='sd-"+ak+"'>Saved</span></div>";
+  } else appFill="<div class='ruled' style='margin-left:0'><div class='rl'></div><div class='rl'></div></div>";
+
+  return "<div class='sheet'>"+
+   "<div class='sh-kk'>"+(SER.name?esc(SER.name)+" &middot; ":"")+"Week "+(i+1)+" of "+SER.len+"</div>"+
+   "<h2 class='sh-t'>"+esc(R.title)+"</h2><p class='sh-s'>"+esc(R.subtitle)+"</p>"+
+   "<div class='sh-meta'>"+pills+"</div>"+
+   "<div class='blk'><div class='blbl'>The Big Idea</div><div class='bidea'>"+esc(R.big_idea)+"</div></div>"+
+   (R.quote?"<div class='blk'><div class='blbl'>From the Message</div><div class='pray'>"+esc(R.quote)+"</div></div>":"")+
+   "<div class='blk'><div class='blbl'>Opening</div><div class='bidea' style='background:rgba(0,0,0,.03);border-left-color:rgba(0,0,0,.15)'>"+esc(R.open_q)+"</div>"+
+    (R.scripture_ref?"<div class='qnote' style='margin-top:8px'>Text: "+esc(R.scripture_ref)+"</div>":"")+"</div>"+
+   "<div class='blk'><div class='blbl'>Commentary</div><div class='com'>"+com+"</div></div>"+
+   "<div class='blk'>"+(anySec?"":"<div class='blbl'>Discussion</div>")+qs+"</div>"+
+   "<div class='blk'><div class='blbl'>This Week's Application</div><div class='app'><div class='app-a'>"+esc(R.application)+
+    "</div><div class='app-d'>By "+esc(R.deadline)+"</div></div>"+appFill+"</div>"+
+   "<div class='blk'><div class='blbl'>Memory Verse</div><div class='app' style='background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.11);text-align:center'>"+
+    "<div class='app-a'>&ldquo;"+esc(R.verse_text)+"&rdquo;</div><div class='app-d'>"+esc(R.verse_ref)+"</div></div></div>"+
+   "<div class='blk'><div class='blbl'>Daily Questions</div>"+dq+"</div>"+
+   "<div class='blk'><div class='blbl'>Closing Prayer</div><div class='pray'>"+esc(R.prayer)+"</div></div></div>";
+}
+function series(){document.getElementById("seriesOut").innerHTML=sheetFor(SER.cur,false);}
+function work(){document.getElementById("workOut").innerHTML=sheetFor(SER.cur,true);}
+function ans(el){
+  var k=el.getAttribute("data-k");AN[k]=el.value;saveA();
+  var pv=el.parentNode.querySelector(".printval");if(pv)pv.textContent=el.value;
+  var s=document.getElementById("sd-"+k);
+  if(s){s.classList.add("on");clearTimeout(s._t);s._t=setTimeout(function(){s.classList.remove("on");},1400);}
+}
+function printAll(){
+  var h="";for(var i=0;i<SER.weeks.length;i++)h+=sheetFor(i,false);
+  document.getElementById("seriesOut").innerHTML=h;
+  setTimeout(function(){window.print();setTimeout(series,700);},150);
+}
+
+function buildSpreads(){
+  var w=SER.weeks[SER.cur];
+  if(!w){document.getElementById("spreadOut").innerHTML="";return;}
+  var R=w.R;
+  var com="";for(var j=0;j<(R.commentary||[]).length;j++)com+="<p>"+esc(R.commentary[j])+"</p>";
+  var qa="",qb="";
+  for(var j=0;j<(R.questions||[]).length;j++){var x=R.questions[j];
+    var blk="<div class='qq'><div class='qh'><div class='qn'>"+(j+1)+"</div><div><div class='qt'>"+esc(x.q)+"</div>"+
+     (x.note?"<div class='qnote'>"+esc(x.note)+"</div>":"")+"</div></div><div class='ruled'><div class='rl'></div><div class='rl'></div></div></div>";
+    if(j<3)qa+=blk;else qb+=blk;}
+  var dq="";for(var j=0;j<(R.daily||[]).length;j++){var dd=R.daily[j];
+    dq+="<div class='dayq'><div class='dq-d'>"+esc(dd.day)+"</div><div class='dq-q'>"+esc(dd.q)+"</div></div>";}
+  PAGES=[
+   {h:(SER.name||"Series")+" \u00b7 Week "+(SER.cur+1),c:"<div style='padding-top:36px'><div class='sh-kk'>Week "+(SER.cur+1)+" of "+SER.len+"</div>"+
+     "<h2 class='sh-t' style='font-size:31px'>"+esc(R.title)+"</h2><p class='sh-s'>"+esc(R.subtitle)+"</p>"+
+     "<div class='bidea' style='margin-top:24px'>"+esc(R.big_idea)+"</div></div>"},
+   {h:"Opening",c:"<div class='blbl'>Opening Question</div><div class='bidea' style='background:rgba(0,0,0,.03);border-left-color:rgba(0,0,0,.15)'>"+esc(R.open_q)+"</div>"+
+     (R.scripture_ref?"<div class='qnote' style='margin-top:10px'>Text: "+esc(R.scripture_ref)+"</div>":"")+
+     (R.quote?"<div class='blbl' style='margin-top:22px'>From the Message</div><div class='pray'>"+esc(R.quote)+"</div>":"")},
+   {h:"Commentary",c:"<div class='blbl'>Commentary</div><div class='com'>"+com+"</div>"},
+   {h:"Discussion",c:"<div class='blbl'>Discussion</div>"+qa},
+   {h:"Discussion",c:qb},
+   {h:"Application",c:"<div class='blbl'>This Week's Application</div><div class='app'><div class='app-a'>"+esc(R.application)+
+     "</div><div class='app-d'>By "+esc(R.deadline)+"</div></div><div class='ruled' style='margin-left:0;margin-top:14px'><div class='rl'></div><div class='rl'></div></div>"+
+     "<div class='blbl' style='margin-top:18px'>Memory Verse</div><div class='app' style='background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.11);text-align:center'>"+
+     "<div class='app-a'>&ldquo;"+esc(R.verse_text)+"&rdquo;</div><div class='app-d'>"+esc(R.verse_ref)+"</div></div>"},
+   {h:"The Week",c:"<div class='blbl'>Daily Questions</div>"+dq},
+   {h:"Closing",c:"<div class='blbl'>Closing Prayer</div><div class='pray'>"+esc(R.prayer)+"</div>"+
+     "<div class='blbl' style='margin-top:22px'>Notes</div><div class='ruled' style='margin-left:0'><div class='rl'></div><div class='rl'></div><div class='rl'></div><div class='rl'></div><div class='rl'></div></div>"}];
+  SPREADS=[];
+  for(var i=0;i<PAGES.length;i+=2)SPREADS.push([PAGES[i],PAGES[i+1]||null]);
+  pg=0;showSpread();
+}
+function showSpread(){
+  if(!SPREADS.length)return;
+  var s=SPREADS[pg];
+  var l="<div class='pg l'><div class='pg-h'>"+esc(s[0].h)+"</div>"+s[0].c+"<div class='pg-n'>"+(pg*2+1)+"</div></div>";
+  var r=s[1]?"<div class='pg r'><div class='pg-h'>"+esc(s[1].h)+"</div>"+s[1].c+"<div class='pg-n'>"+(pg*2+2)+"</div></div>":"<div class='pg r'></div>";
+  document.getElementById("spreadOut").innerHTML="<div class='spread'>"+l+r+"</div>";
+  document.getElementById("fbpg").textContent="Spread "+(pg+1)+" of "+SPREADS.length+" \u00b7 Week "+(SER.cur+1);
+  document.getElementById("pv").disabled=(pg===0);
+  document.getElementById("nx").disabled=(pg===SPREADS.length-1);
+  var h="";for(var i=0;i<SPREADS.length;i++)h+="<button class='dot"+(i===pg?" on":"")+"' onclick='goSp("+i+")'></button>";
+  document.getElementById("dots").innerHTML=h;
+}
+function flip(dv){var n=pg+dv;if(n<0||n>=SPREADS.length)return;pg=n;showSpread();}
+function goSp(i){pg=i;showSpread();}
+document.addEventListener("keydown",function(e){
+  if(!document.getElementById("p4").classList.contains("on"))return;
+  if(e.key==="ArrowLeft")flip(-1);if(e.key==="ArrowRight")flip(1);});
+
+document.getElementById("sname").value=SER.name||"";
+document.getElementById("church").value=SER.church||"";
+document.getElementById("wkcount").value=SER.len||6;
+document.getElementById("tpl").value=TPL||"";
+if(SER.weeks.length){
+  document.getElementById("t2").disabled=false;document.getElementById("t3").disabled=false;document.getElementById("t4").disabled=false;
+  rail();series();
+}
+draw();
+</script>
+</body>
+</html>

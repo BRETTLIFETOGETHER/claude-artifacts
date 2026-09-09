@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flourishing LifeTogether</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f8fafc; --hero-bg:#2563eb; --hero-text:#ffffff;
+    --card:#ffffff; --ink:#0f172a; --ink-soft:#3f4a5c;
+    --accent:#2563eb; --accent-dark:#1d4ed8; --line:#e2e8f0;
+    --gold:#b45309; --gold-bg:#fffbeb;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:18px;line-height:1.6;}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+  h1,h2,h3,h4{font-family:'Inter',system-ui,sans-serif;font-weight:800;margin:0;line-height:1.2;color:var(--ink);}
+  button{font-family:inherit;cursor:pointer;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .topbar{background:var(--hero-bg);color:#fff;padding:16px 0;text-align:center;position:sticky;top:0;z-index:10;}
+  .topbar .logo{font-weight:800;font-size:16px;}
+  .progress{display:flex;gap:4px;justify-content:center;margin-top:8px;}
+  .progress .dot{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,0.35);}
+  .progress .dot.on{background:#fff;}
+
+  .hero{padding:36px 0 28px;text-align:center;}
+  .hero .eyebrow{font-weight:700;font-size:13px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px;}
+  .hero h1{font-size:27px;}
+  .hero p.lede{font-size:16.5px;color:var(--ink-soft);margin-top:10px;}
+
+  .option-grid{display:flex;flex-direction:column;gap:12px;margin-top:22px;}
+  .option-card{
+    background:var(--card);border:2px solid var(--line);border-radius:14px;
+    padding:18px 20px;text-align:left;display:flex;align-items:center;gap:14px;
+  }
+  .option-card:hover{border-color:var(--accent);}
+  .option-card .ic{font-size:26px;flex-shrink:0;}
+  .option-card .ic svg{width:28px;height:28px;color:var(--accent);}
+  .option-card h4{font-size:17px;}
+  .option-card p{font-size:14.5px;color:var(--ink-soft);margin:3px 0 0;}
+
+  .qcount{font-size:13px;color:var(--accent);font-weight:700;margin-bottom:6px;}
+  .qtext{font-size:21px;font-weight:800;margin-bottom:16px;}
+  .ans-card{
+    background:var(--card);border:2px solid var(--line);border-radius:12px;
+    padding:14px 16px;margin-bottom:10px;width:100%;text-align:left;font-size:15.5px;color:var(--ink);
+  }
+  .ans-card:hover{border-color:var(--accent);background:#eff6ff;}
+
+  .result-card{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:24px 22px;margin-top:20px;}
+  .ai-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-bg);color:var(--gold);font-size:12.5px;font-weight:800;border-radius:20px;padding:5px 12px;margin-bottom:14px;}
+  .result-domain{font-size:24px;font-weight:800;color:var(--accent);}
+  .result-why{font-size:16px;color:var(--ink-soft);margin-top:8px;}
+  .result-study{background:#eff6ff;border-radius:10px;padding:14px 16px;margin-top:16px;}
+  .result-study .st{font-weight:700;font-size:16px;}
+  .result-study .ss{font-size:14px;color:var(--ink-soft);margin-top:3px;}
+
+  .btn{
+    display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;
+    padding:15px;font-size:16.5px;font-weight:700;margin-top:18px;text-align:center;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn-outline{background:#fff;color:var(--accent);border:2px solid var(--accent);}
+  .link-btn{background:none;border:none;color:var(--accent);font-weight:700;font-size:15px;margin-top:14px;display:block;text-align:center;width:100%;}
+
+  .seg-tabs{display:flex;gap:6px;overflow-x:auto;padding:16px 0 4px;}
+  .seg-tab{flex-shrink:0;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:8px 14px;font-size:13.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
+  .seg-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  .price-card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:20px 22px;margin-top:14px;}
+  .price-card.featured{border-color:var(--gold);background:var(--gold-bg);}
+  .price-card .tier-label{font-size:12.5px;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);}
+  .price-card.featured .tier-label{color:var(--gold);}
+  .price-card h3{font-size:20px;margin-top:4px;}
+  .price-card .price{font-size:30px;font-weight:800;color:var(--ink);margin-top:6px;}
+  .price-card .price span{font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .price-card ul{margin:14px 0 0;padding-left:18px;}
+  .price-card li{font-size:14.5px;color:var(--ink-soft);margin-bottom:6px;}
+  .draft-note{background:#fef3c7;border-radius:10px;padding:12px 15px;font-size:13.5px;color:#92400e;margin-top:16px;font-weight:600;}
+
+  section{padding:20px 0;}
+  .core-badge{display:inline-block;background:var(--gold-bg);color:var(--gold);font-size:12px;font-weight:800;border-radius:6px;padding:3px 9px;margin-bottom:10px;}
+  .domain-card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px;}
+  .domain-card.core{border-color:var(--gold);}
+  .domain-card h4{font-size:17px;}
+  .domain-card .dsub{font-size:14px;color:var(--ink-soft);margin:4px 0 10px;}
+  .sample-item{padding:8px 0;border-top:1px dotted var(--line);font-size:14.5px;}
+  .sample-item:first-child{border-top:none;}
+  .sample-item .t{font-weight:700;color:var(--ink);}
+  .sample-item .s{color:var(--ink-soft);font-size:13.5px;}
+  .cat-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;margin-bottom:10px;display:block;width:100%;text-align:left;border-left:5px solid var(--accent);
+  }
+  .cat-card h4{font-size:16.5px;}
+  .cat-card .csub{font-size:13.5px;color:var(--accent);font-weight:600;margin-top:2px;}
+  .cat-card .cmeta{font-size:12.5px;color:var(--ink-soft);font-weight:700;margin-top:6px;}
+
+  footer{padding:22px 0 40px;text-align:center;color:var(--ink-soft);font-size:13px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Flourishing LifeTogether</div>
+  <div class="progress" id="progress"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- SCREEN 1: SEGMENT -->
+  <div class="screen active" id="screen-segment">
+    <div class="hero">
+      <span class="eyebrow">Step 1 of 4</span>
+      <h1>Who is this for?</h1>
+      <p class="lede">This changes what you see next — the studies, the pricing, and where to start.</p>
+    </div>
+    <div class="option-grid">
+      <button class="option-card" onclick="chooseSegment('church')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 7v3h16V7z"/><path d="M6 10v11h4v-6h4v6h4V10"/></svg></span><div><h4>A Church</h4><p>Campaign-wide, sermon + small group + family</p></div></button>
+      <button class="option-card" onclick="chooseSegment('group')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 21c0-4 3-6 6-6s6 2 6 6M10 21c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/></svg></span><div><h4>A Small Group</h4><p>One group, ready to run without writing a lesson</p></div></button>
+      <button class="option-card" onclick="chooseSegment('family')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 3 10h2v10h5v-6h4v6h5V10h2z"/></svg></span><div><h4>A Family</h4><p>Kitchen-table pace, for the whole household</p></div></button>
+      <button class="option-card" onclick="chooseSegment('individual')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><div><h4>Just Me</h4><p>A personal, self-paced path</p></div></button>
+      <button class="option-card" onclick="chooseSegment('business')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span><div><h4>A Business or Ministry Team</h4><p>HR, leadership, or org-wide flourishing</p></div></button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: ASSESSMENT -->
+  <div class="screen" id="screen-assessment">
+    <div class="hero" style="text-align:left;padding-bottom:8px;">
+      <span class="eyebrow" id="q-eyebrow">Step 2 of 4 &middot; Quick Assessment</span>
+    </div>
+    <div id="question-area"></div>
+  </div>
+
+  <!-- SCREEN 3: RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="hero">
+      <span class="eyebrow">Step 3 of 4</span>
+      <h1>Your Starting Point</h1>
+    </div>
+    <div class="result-card">
+      <span class="ai-badge"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.5"/></svg>AI-Personalized Recommendation</span>
+      <div class="result-domain" id="result-domain-name"></div>
+      <div class="result-why" id="result-why"></div>
+      <div class="result-study">
+        <div class="st" id="result-study-title"></div>
+        <div class="ss" id="result-study-sub"></div>
+      </div>
+    </div>
+    <button class="btn" onclick="goTo('pricing')">See Pricing for This Path &rarr;</button>
+    <button class="link-btn" onclick="goTo('catalog')">Skip Ahead to Browse Everything</button>
+  </div>
+
+  <!-- SCREEN 4: PRICING -->
+  <div class="screen" id="screen-pricing">
+    <div class="hero">
+      <span class="eyebrow">Step 4 of 4</span>
+      <h1>Pricing for <span id="price-seg-name"></span></h1>
+      <p class="lede">Three ways to access it, priced for how you'll actually use it.</p>
+    </div>
+    <div id="price-cards"></div>
+    <div class="draft-note">Draft pricing — these numbers are a starting structure to react to, not a final decision. Every price and feature list here is easy to change.</div>
+    <button class="btn" onclick="goTo('catalog')">Browse the Full Catalog &rarr;</button>
+  </div>
+
+  <!-- SCREEN 5: CATALOG -->
+  <div class="screen" id="screen-catalog">
+    <div class="hero" style="text-align:left;">
+      <span class="eyebrow">The Full Library</span>
+      <h1>Six Core Domains, Plus Everything Built on Top</h1>
+      <p class="lede">The six core domains are the ones Harvard's own flourishing research actually measures. Everything else extends that foundation into specific life areas — business, leadership, family wealth, and more.</p>
+    </div>
+
+    <section>
+      <span class="core-badge">&#11088; THE SIX CORE DOMAINS &middot; HARVARD-GROUNDED</span>
+      <div id="core-domains"></div>
+    </section>
+
+    <section>
+      <h2 style="font-size:20px;margin-bottom:4px;">Extended Flourishing Areas</h2>
+      <p style="font-size:14.5px;color:var(--ink-soft);margin:0 0 14px;">Built on the same foundation, applied to specific arenas of life.</p>
+      <div id="extended-list"></div>
+    </section>
+
+    <button class="link-btn" onclick="goTo('segment')">&larr; Start Over</button>
+  </div>
+
+</div>
+
+<footer>FLOURISHING LIFETOGETHER &middot; 6 CORE DOMAINS &middot; <span id="foot-extended-count"></span> EXTENDED TITLES</footer>
+
+<script>
+const CORE6 = __CORE6__;
+const EXTENDED = __EXTENDED__;
+
+const SEGMENT_LABELS = {
+  church: "Your Church", group: "Your Group", family: "Your Family",
+  individual: "You", business: "Your Business or Ministry"
+};
+
+let state = { segment: null, answers: [], scores: {} };
+
+const SCREENS = ['segment','assessment','result','pricing','catalog'];
+function goTo(name){
+  SCREENS.forEach(s => document.getElementById('screen-'+s).classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  renderProgress(name);
+  window.scrollTo(0,0);
+}
+function renderProgress(name){
+  const idx = SCREENS.indexOf(name);
+  const el = document.getElementById('progress');
+  el.innerHTML = SCREENS.slice(0,4).map((s,i) => `<span class="dot ${i<=idx || name==='catalog' ? 'on':''}"></span>`).join('');
+}
+
+function chooseSegment(seg){
+  state.segment = seg;
+  state.answers = [];
+  state.scores = {};
+  goTo('assessment');
+  renderQuestion(0);
+}
+
+const QUESTIONS = [
+  {q:"Which pulls at you most right now?", opts:[
+    ["A deeper sense of joy and contentment","Joy"],
+    ["Better physical and emotional health","Health"],
+    ["Finally knowing what you're actually here to do","Purpose"],
+    ["Becoming someone more grounded and trustworthy","Character"],
+    ["Relationships that go deeper than they do now","Relationships"],
+    ["Real peace about money, instead of constant stress","Stewardship"]
+  ]},
+  {q:"If the next season went genuinely well, what would be different?", opts:[
+    ["I'd actually feel good more often, not just okay","Joy"],
+    ["I'd have real energy instead of running on empty","Health"],
+    ["I'd stop feeling scattered and know my direction","Purpose"],
+    ["I'd trust my own decisions and follow-through more","Character"],
+    ["I wouldn't feel so alone in it","Relationships"],
+    ["I wouldn't dread opening my bank statements","Stewardship"]
+  ]},
+  {q:"What's been hardest to admit lately?", opts:[
+    ["I'm not actually enjoying my life much right now","Joy"],
+    ["I'm running on fumes and calling it normal","Health"],
+    ["I don't really know what I'm working toward","Purpose"],
+    ["I keep making the same compromises","Character"],
+    ["My closest relationships feel more distant than I'd like","Relationships"],
+    ["Money anxiety is quietly running my decisions","Stewardship"]
+  ]},
+  {q:"What would you actually commit six weeks to working on?", opts:[
+    ["Practicing gratitude and contentment on purpose","Joy"],
+    ["Rebuilding rest, energy, and healthy rhythms","Health"],
+    ["Getting real clarity on my calling and direction","Purpose"],
+    ["Building the character my calling actually requires","Character"],
+    ["Repairing or deepening a specific relationship","Relationships"],
+    ["Getting genuinely honest about money","Stewardship"]
+  ]}
+];
+
+function renderQuestion(i){
+  document.getElementById('q-eyebrow').textContent = `Step 2 of 4 \u00b7 Question ${i+1} of ${QUESTIONS.length}`;
+  const q = QUESTIONS[i];
+  document.getElementById('question-area').innerHTML = `
+    <div class="qtext">${q.q}</div>
+    ${q.opts.map(([label,domain]) => `<button class="ans-card" onclick="answer('${domain}', ${i})">${label}</button>`).join('')}
+  `;
+}
+
+function answer(domain, i){
+  state.scores[domain] = (state.scores[domain] || 0) + 1;
+  if(i+1 < QUESTIONS.length){
+    renderQuestion(i+1);
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  let top = "Purpose", max = -1;
+  for(const [d,v] of Object.entries(state.scores)){
+    if(v > max){ max = v; top = d; }
+  }
+  const domain = CORE6.find(c => c.name.includes(top));
+  document.getElementById('result-domain-name').textContent = domain.name;
+  document.getElementById('result-why').textContent = `Based on your answers, ${SEGMENT_LABELS[state.segment].toLowerCase()} would benefit most from starting here: ${domain.sub.toLowerCase()}.`;
+  const sample = domain.items[0];
+  document.getElementById('result-study-title').textContent = sample[0];
+  document.getElementById('result-study-sub').textContent = sample[1];
+  goTo('result');
+}
+
+const PRICING = {
+  church: [
+    {tier:"Single Study", price:"$49", period:"one-time", feats:["One 6-session study","Print-ready participant guide","Video session access","Single campus"]},
+    {tier:"Full Domain", price:"$299", period:"one-time", feats:["Every study in one domain","Campaign-ready for a full year","Sermon outlines included","Single campus"]},
+    {tier:"All-Access Church Pass", price:"$1,499", period:"per year", feats:["Every domain, every study","Unlimited campaigns all year","Multi-campus license","New titles added at no extra cost"], featured:true}
+  ],
+  group: [
+    {tier:"Single Study", price:"$19", period:"one-time", feats:["One 6-session study","Leader + participant guide"]},
+    {tier:"Full Domain", price:"$99", period:"one-time", feats:["Every study in one domain","Run studies back-to-back all year"]},
+    {tier:"All-Access Group Pass", price:"$299", period:"per year", feats:["Every domain, every study","Never run out of the next study"], featured:true}
+  ],
+  family: [
+    {tier:"Single Study", price:"$15", period:"one-time", feats:["One study, family-paced","Kids and teen discussion notes"]},
+    {tier:"Full Domain", price:"$59", period:"one-time", feats:["Every study in one domain","Family devotional pacing"]},
+    {tier:"All-Access Family Pass", price:"$149", period:"per year", feats:["Every domain, every study","One shared family login"], featured:true}
+  ],
+  individual: [
+    {tier:"Single Study", price:"$9", period:"one-time", feats:["One 6-session personal study"]},
+    {tier:"Full Domain", price:"$39", period:"one-time", feats:["Every study in one domain"]},
+    {tier:"All-Access Personal Pass", price:"$99", period:"per year", feats:["Every domain, every study","New titles included"], featured:true}
+  ],
+  business: [
+    {tier:"Single Study / Training", price:"$99", period:"one-time", feats:["One study or training module","Team facilitator guide"]},
+    {tier:"Full Domain License", price:"$799", period:"one-time", feats:["Every study in one domain","Company-wide usage rights"]},
+    {tier:"All-Access Business Pass", price:"$2,999", period:"per year", feats:["Every core + extended domain","HR, CEO, Owner, Leaders &amp; Employee tiers included","Unlimited team seats"], featured:true}
+  ]
+};
+
+function renderPricing(){
+  document.getElementById('price-seg-name').textContent = SEGMENT_LABELS[state.segment] || "You";
+  const tiers = PRICING[state.segment] || PRICING.individual;
+  document.getElementById('price-cards').innerHTML = tiers.map(t => `
+    <div class="price-card ${t.featured ? 'featured' : ''}">
+      <div class="tier-label">${t.featured ? 'Best Value' : 'Tier'}</div>
+      <h3>${t.tier}</h3>
+      <div class="price">${t.price} <span>${t.period}</span></div>
+      <ul>${t.feats.map(f => `<li>${f}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+}
+
+function renderCatalog(){
+  document.getElementById('core-domains').innerHTML = CORE6.map(d => `
+    <div class="domain-card core">
+      <h4>${d.name}</h4>
+      <div class="dsub">${d.sub}</div>
+      ${d.items.map(it => `<div class="sample-item"><div class="t">${it[0]}</div><div class="s">${it[1]}</div></div>`).join('')}
+    </div>
+  `).join('');
+
+  document.getElementById('extended-list').innerHTML = EXTENDED.map(c => `
+    <button class="cat-card" onclick="alert('Opens the full ${c.name} browser in the companion catalogue page.')">
+      <h4>${c.name}</h4>
+      <div class="csub">${c.subtitle}</div>
+      <div class="cmeta">${c.count} titles &middot; ${c.domains.length} domains</div>
+    </button>
+  `).join('');
+
+  document.getElementById('foot-extended-count').textContent = EXTENDED.reduce((a,c)=>a+c.count,0).toLocaleString();
+}
+
+// hook pricing + catalog render into goTo
+const origGoTo = goTo;
+goTo = function(name){
+  origGoTo(name);
+  if(name === 'pricing') renderPricing();
+  if(name === 'catalog') renderCatalog();
+};
+
+renderProgress('segment');
+</script>
+
+</body>
+</html>

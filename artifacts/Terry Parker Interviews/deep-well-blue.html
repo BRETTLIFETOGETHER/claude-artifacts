@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Deep Well — Find Your Starting Point</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --blue:#1d4ed8; --blue-dark:#1e3a8a; --blue-soft:#eff4ff;
+  --ink:#0f172a; --body:#334155; --mute:#64748b; --faint:#94a3b8;
+  --ground:#f6f8fb; --card:#ffffff; --line:#e4e9f2;
+  --ok:#15803d; --warn:#b45309;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ground);color:var(--body);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.hd{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
+.logo{font-weight:800;font-size:17px;color:var(--ink);letter-spacing:-.02em}
+.logo span{color:var(--blue)}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.stepdot{font-size:11px;font-weight:600;color:var(--faint);padding:5px 9px;border-radius:12px;background:var(--ground);white-space:nowrap}
+.stepdot.on{background:var(--blue);color:#fff}
+.stepdot.done{background:var(--blue-soft);color:var(--blue)}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.15;letter-spacing:-.03em;color:var(--ink);font-weight:800;margin:0 0 16px}
+h2{font-size:clamp(21px,4.5vw,28px);line-height:1.25;letter-spacing:-.02em;color:var(--ink);font-weight:700;margin:0 0 12px}
+h3{font-size:17px;font-weight:700;color:var(--ink);margin:0 0 6px;letter-spacing:-.01em}
+p{margin:0 0 14px}
+.lead{font-size:18px;color:var(--body)}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin:0 0 10px}
+.sec{padding:56px 0;border-top:1px solid var(--line)}
+.sec:first-of-type{border-top:none}
+.hero{background:var(--card);padding:56px 0 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.pick{cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.pick:hover{border-color:var(--blue)}
+.pick.sel{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.12)}
+.pick .role{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.pick p{font-size:14px;color:var(--mute);margin:0}
+.btn{font-family:inherit;font-size:14px;font-weight:600;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:13px 22px;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--blue-dark)}
+.btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.btn.alt{background:var(--card);color:var(--blue);border:1px solid var(--line)}
+.btn.alt:hover{background:var(--blue-soft)}
+.q{border-bottom:1px solid var(--line);padding:18px 0}
+.q:last-child{border-bottom:none}
+.qt{font-size:15px;color:var(--ink);font-weight:500;margin-bottom:12px}
+.qd{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.opts{display:flex;gap:6px}
+.opts label{flex:1}
+.opts input{display:none}
+.opts span{display:block;text-align:center;padding:11px 0;border:1px solid var(--line);border-radius:12px;font-size:14px;font-weight:600;color:var(--mute);cursor:pointer;transition:.13s}
+.opts input:checked + span{background:var(--blue);color:#fff;border-color:var(--blue)}
+.scalelbl{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:6px}
+.hidden{display:none}
+.band{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:12px;background:var(--blue-soft);color:var(--blue)}
+.score{font-size:52px;font-weight:800;color:var(--blue);line-height:1;letter-spacing:-.03em}
+.bars{margin-top:20px}
+.brow{margin-bottom:11px}
+.bl{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px}
+.bt{height:7px;background:var(--ground);border-radius:12px;overflow:hidden}
+.bt i{display:block;height:100%;background:var(--blue)}
+ol.next{margin:0;padding-left:20px}
+ol.next li{margin-bottom:10px;font-size:15px}
+.tier{display:flex;flex-direction:column}
+.tier .price{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.03em;margin:8px 0 2px}
+.tier .per{font-size:13px;color:var(--faint);margin-bottom:14px}
+.tier ul{list-style:none;padding:0;margin:0 0 18px;flex:1}
+.tier li{font-size:14px;padding:7px 0;border-bottom:1px solid var(--line);color:var(--body)}
+.tier li:last-child{border-bottom:none}
+.tier.feature{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.1)}
+.flag{font-size:12px;font-weight:600;background:#fef3c7;color:var(--warn);border-radius:12px;padding:9px 13px;display:inline-block}
+.cat{display:block;text-decoration:none;color:inherit}
+.cat:hover{border-color:var(--blue)}
+.cat .tag{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);margin-bottom:7px}
+.cat .meta{font-size:12px;color:var(--faint);margin-top:10px}
+.st{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:12px;display:inline-block}
+.st.ready{background:#dcfce7;color:var(--ok)}
+.st.draft{background:#fef3c7;color:var(--warn)}
+.st.prop{background:var(--ground);color:var(--mute)}
+footer{background:var(--card);border-top:1px solid var(--line);padding:36px 0;margin-top:0}
+footer p{font-size:13px;color:var(--faint);margin:0 0 10px}
+.tests{font-size:12px;color:var(--faint);font-weight:600}
+@media(max-width:760px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .sec{padding:40px 0}
+  .hero{padding:40px 0 34px}
+  .steps{display:none}
+  .opts span{padding:13px 0}
+}
+</style>
+</head>
+<body>
+
+<header><div class="wrap hd">
+  <div class="logo">Life<span>together</span></div>
+  <div class="steps">
+    <span class="stepdot on" id="d1">1 Who You Are</span>
+    <span class="stepdot" id="d2">2 Assessment</span>
+    <span class="stepdot" id="d3">3 Result</span>
+    <span class="stepdot" id="d4">4 Access</span>
+    <span class="stepdot" id="d5">5 Library</span>
+  </div>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <p class="kicker">The Deep Well</p>
+  <h1>Six things a person entrusted with something has to let go of.</h1>
+  <p class="lead">Families hire for wills, trusts, and tax structure. The actual obstacle is that one person cannot let go, everyone knows it, and nobody can say it out loud. Start by finding out where your hand is closed.</p>
+  <p style="margin-top:20px"><a class="btn" href="#seg" style="text-decoration:none;display:inline-block">Find Your Starting Point</a></p>
+</div></div>
+
+<!-- 1 SEGMENTATION -->
+<div class="sec" id="seg"><div class="wrap">
+  <p class="kicker">Step One</p>
+  <h2>Who is this for?</h2>
+  <p>Everything after this is shaped by your answer.</p>
+  <div class="grid g4" style="margin-top:22px" id="segs"></div>
+  <p style="margin-top:22px"><button class="btn" id="toAssess" disabled>Continue</button></p>
+</div></div>
+
+<!-- 2 ASSESSMENT -->
+<div class="sec hidden" id="assess"><div class="wrap">
+  <p class="kicker">Step Two</p>
+  <h2>Six questions.</h2>
+  <p id="assessIntro">Rate each honestly, as you are rather than as you intend to be. Two minutes.</p>
+  <div class="card" style="margin-top:20px" id="qbox"></div>
+  <p style="margin-top:20px"><button class="btn" id="toResult">See My Result</button> <button class="btn alt" id="backSeg">Back</button></p>
+  <p id="warn" class="hidden" style="margin-top:12px"><span class="flag">Answer all six. A partial result on this instrument misleads.</span></p>
+</div></div>
+
+<!-- 3 RESULT -->
+<div class="sec hidden" id="result"><div class="wrap">
+  <p class="kicker">Step Three</p>
+  <div class="card">
+    <div style="display:flex;gap:22px;align-items:baseline;flex-wrap:wrap">
+      <span class="score" id="scoreNum">0</span>
+      <div><div style="font-size:12px;color:var(--faint);font-weight:600">of 30</div><div style="margin-top:6px"><span class="band" id="bandName">-</span></div></div>
+    </div>
+    <p style="margin-top:18px" id="bandCopy"></p>
+    <div class="bars" id="bars"></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3 id="nextTitle">Your next three moves</h3>
+    <ol class="next" id="nextList"></ol>
+  </div>
+  <p style="margin-top:20px"><button class="btn" id="toPricing">See Access Options</button> <button class="btn alt" id="backAssess">Change Answers</button></p>
+</div></div>
+
+<!-- 4 PRICING -->
+<div class="sec hidden" id="pricing"><div class="wrap">
+  <p class="kicker">Step Four</p>
+  <h2 id="priceTitle">Access</h2>
+  <p style="margin-bottom:18px"><span class="flag">Proposed. No pricing has been set, tested, or approved. Figures below are placeholders for internal discussion only.</span></p>
+  <div class="grid g3" id="tiers"></div>
+  <p style="margin-top:20px"><button class="btn" id="toCatalog">Browse the Library</button></p>
+</div></div>
+
+<!-- 5 CATALOG -->
+<div class="sec hidden" id="catalog"><div class="wrap">
+  <p class="kicker">Step Five</p>
+  <h2 id="catTitle">The library</h2>
+  <p id="catIntro">Filtered to what is relevant for you. Status is stated honestly on every item.</p>
+  <div class="grid g3" style="margin-top:20px" id="catbox"></div>
+  <p style="margin-top:24px"><button class="btn alt" id="startOver">Start Over</button></p>
+</div></div>
+
+<footer><div class="wrap">
+  <p><strong style="color:var(--body)">Working document.</strong> Status language is deliberate: proposed, draft, ready. Nothing here implies endorsement, partnership, or funding. No pricing has been approved.</p>
+  <p>Assessment scoring runs entirely in this browser. Nothing is transmitted or stored. Private spiritual and relational disclosure is never treated as sales intelligence.</p>
+  <p class="tests" id="testline"></p>
+</div></footer>
+
+<script>
+var SEGS = [
+  {id:"advisor", name:"Advisor", blurb:"Financial, legal, or tax professional serving families."},
+  {id:"family", name:"Family", blurb:"A family with something to pass down and a conversation to have."},
+  {id:"church", name:"Church Leader", blurb:"Pastor or lay leader serving a congregation."},
+  {id:"inst", name:"Institution", blurb:"Foundation, sponsor, network, or advisor association."}
+];
+
+var QS = [
+  {d:"Ownership", t:"I can name specific people, other than myself, without whom this would not exist."},
+  {d:"Ideas", t:"I teach what I know rather than protecting it."},
+  {d:"People", t:"I know what the people who work with me actually need this year."},
+  {d:"Truth", t:"I say the true thing even when saying it costs me something."},
+  {d:"Timing", t:"I act on important decisions before they become urgent."},
+  {d:"Release", t:"There is a real decision that used to be mine and is now someone else's."}
+];
+
+var BANDS = [
+  {lo:24, hi:30, name:"Run", copy:"You are already living with an open hand in most areas. The work ahead is transfer rather than change: making what you practice into something that survives you as a habit rather than a memory."},
+  {lo:16, hi:23, name:"Walk", copy:"Real movement is underway and it is uneven. One or two areas are carrying the rest. The opportunity is to name the weakest one honestly and give it a season, rather than taking comfort in a good average."},
+  {lo:6, hi:15, name:"Crawl", copy:"The grip is present and mostly unexamined, which is the ordinary condition of people who have built something and not a failing. What is missing is not intention. It is a conversation that has not been scheduled."}
+];
+
+var NEXT = {
+  advisor: {
+    Crawl: ["Run the five-minute exercise: go back through your last five liquidity events and write down the date of the charitable conversation relative to the letter of intent. Write the dates before you explain them.","Read the sample chapter on being paid on assets your client should give away.","Pick one client and hand them a book with your name nowhere in it."],
+    Walk: ["Add one field to your CRM: date of charitable conversation, compared against date of LOI, reviewed quarterly.","Identify the client twelve to twenty-four months from a transaction and open the subject this quarter.","Decide what portion of your revenue is indifferent to whether a client gives an asset away."],
+    Run: ["Say the disclosure sentence out loud to a client, once, where it is true.","Train one junior advisor to open the subject without it sounding like a pitch.","Consider certification as a facilitator, and note that shelf three requires it."]
+  },
+  family: {
+    Crawl: ["Do nothing structural yet. One evening, one meal, and the First Memory exercise.","Everyone takes the full assessment separately before anyone discusses anything.","Identify the oldest living person who knows something about your family that nobody has recorded."],
+    Walk: ["Run the Three Names exercise. Everyone writes separately, youngest reads first, whoever built it reads last.","Name what this family is currently waiting on, written as an event rather than a feeling.","Schedule one day, not one hour, and put it on a calendar before anyone leaves the room."],
+    Run: ["Name one decision, currently one person's, that transfers to a named person within twelve months, with a date.","Run the Give It Away evening with real money and everyone including the teenagers.","Set the annual rhythm. Most family governance fails because there was never a second meeting."]
+  },
+  church: {
+    Crawl: ["Do not start with a fund. Start with an instrument offered free to the congregation.","Identify who in your church would own this. If the answer is nobody, that is the first problem to solve.","Read the four shelves and notice that none of them start with money."],
+    Walk: ["Name a lay operator from your marketplace leaders. The product is the person, not the tool.","Find out which families in your congregation are within three years of a transaction.","Run one experience, not a campaign. An evening, and see who comes back."],
+    Run: ["Consider a church-branded giving fund carried legally by a national sponsor, so you hold the moment and none of the liability.","Build the annual rhythm into the church calendar rather than running it as an event.","Train two facilitators from inside the congregation."]
+  },
+  inst: {
+    Crawl: ["Offer the assessment free to your families. It costs nothing, requires no licensing, and produces data you do not currently have.","Ask one question internally: which of our families are actually ready for what we offer?","Read the access tiers, because the trust architecture is the product."],
+    Walk: ["Run the instrument across one region or one cohort and read the spread rather than the average.","Define what happens after your moment. Every organization in this field creates one and none own the follow-through.","Identify who on your team would own a family conversation that is not a solicitation."],
+    Run: ["Pilot the full journey with three families across three different shelves.","Discuss anonymized aggregate benchmarks, and note that this tier is the most likely to be abused and should be built last.","Consider whether a shared readiness instrument across the field is worth more than a proprietary one."]
+  }
+};
+
+var TIERS = {
+  advisor: [
+    {n:"Assessment", p:"Free", per:"Always", f:["Personal assessment","Score band and dimension bars","The discernment layer","No account required"]},
+    {n:"Practice", p:"$—", per:"Per advisor, annually", f:["Everything in Assessment","Client-facing books at cost","The family instrument and spread grid","Session guides for shelves one, two, and four","Decision log and record"], feat:true},
+    {n:"Firm", p:"$—", per:"Per firm, annually", f:["Everything in Practice","Values register of your choice, co-branded","Facilitator certification seats","Aggregate readiness reporting","Template rights agreement"]}
+  ],
+  family: [
+    {n:"Assessment", p:"Free", per:"Always", f:["Personal assessment for every member","Score band and dimension bars","The spread reading","No account required"]},
+    {n:"The Journey", p:"$—", per:"Per family, one time", f:["Everything in Assessment","The book, one edition, one copy per member","Forty-day companion","Four to six session guides","The family record and decision log"], feat:true},
+    {n:"Facilitated", p:"$—", per:"Per engagement", f:["Everything in The Journey","Certified facilitator for the full arc","One day or one overnight","Capture and transcription","Annual return visit"]}
+  ],
+  church: [
+    {n:"Assessment", p:"Free", per:"Always", f:["Offered free to your whole congregation","No fund, no vehicle, no liability","Aggregate readiness picture","No account required"]},
+    {n:"Ministry Kit", p:"$—", per:"By attendance band", f:["Everything in Assessment","Six-session campaign kit","Sermon outlines and message graphics","Small group companion","Lay operator training"], feat:true},
+    {n:"Church Partner", p:"$—", per:"Annually, by attendance band", f:["Everything in Ministry Kit","Full campaign library access","Two facilitator certifications","Marketplace ministry starter system","Sponsor referral pathway for giving funds"]}
+  ],
+  inst: [
+    {n:"Instrument", p:"Free", per:"Always", f:["Assessment for your whole population","You keep your data","Anonymized field benchmarks returned","No licensing conversation required"]},
+    {n:"Network License", p:"$—", per:"Annually", f:["Everything in Instrument","Library access for your local teams","Values register of your choice","Facilitator certification cohort","Aggregate reporting dashboard"], feat:true},
+    {n:"Field Partner", p:"$—", per:"Negotiated", f:["Everything in Network License","Co-developed edition for your audience","Named collaboration on the founding archive","Priority on new titles","Joint research on readiness benchmarks"]}
+  ]
+};
+
+var CATALOG = [
+  {t:"The Deep Well", s:"A family story about everything they tried to keep. Five of six chapters drafted.", tag:"Book", st:"draft", stl:"Draft", segs:["family","church","inst"], href:"The_Deep_Well_Family_Edition_Outline.md", meta:"Outline and four chapter files"},
+  {t:"A Different Kind of Advisor", s:"Six sessions, forty days, three editions with the switchable formation block.", tag:"Book", st:"draft", stl:"Draft", segs:["advisor","inst"], href:"Different_Kind_of_Advisor_Three_Editions.md", meta:"Architecture · 1,728 words"},
+  {t:"The Conversation That Costs You", s:"Paid on assets your client should give away. The sample chapter.", tag:"Chapter", st:"ready", stl:"Drafted", segs:["advisor","inst"], href:"Advisor_Book_Ch7_The_Conversation_That_Costs_You.md", meta:"3,200 words"},
+  {t:"Two Books Instead of One", s:"The fable. Three visits to a lawyer's office, plus the model section.", tag:"Fable", st:"ready", stl:"Drafted", segs:["advisor","family","church"], href:"Two_Books_Instead_of_One_draft.md", meta:"3,311 words"},
+  {t:"The Assessments", s:"Personal and family instruments. The family version scores the spread, not the average.", tag:"Instrument", st:"ready", stl:"Print-ready", segs:["advisor","family","church","inst"], href:"Deep_Well_Assessments_and_Tools.md", meta:"Band math checked"},
+  {t:"The Toolbox", s:"Twenty-five experiential tools with facilitator notes and the capture protocol.", tag:"Tools", st:"ready", stl:"Complete", segs:["advisor","family","church","inst"], href:"Deep_Well_Toolbox_Expanded.md", meta:"3,543 words"},
+  {t:"The Family Library", s:"Four shelves by readiness. Experiences from an evening to a five-day trip.", tag:"Interactive", st:"ready", stl:"Live", segs:["family","advisor","church"], href:"family-library.html", meta:"HTML"},
+  {t:"Case Studies and Voices", s:"Three-register switch, ten composite case studies, draft endorsements labeled.", tag:"Interactive", st:"draft", stl:"Draft quotes", segs:["advisor","inst"], href:"case-studies-and-voices.html", meta:"HTML"},
+  {t:"Video, Access and Go-Live", s:"Honest video inventory, readiness gate, five access tiers, permission matrix.", tag:"Operations", st:"ready", stl:"Live", segs:["inst","advisor"], href:"video-access-golive.html", meta:"HTML"},
+  {t:"Treasure Principle · 40 Days", s:"Six sessions on the six keys, forty daily readings, sermon series and kit.", tag:"Campaign", st:"prop", stl:"Unsent proposal", segs:["church","inst"], href:"Treasure_Principle_40_Day_Campaign_Proposal.md", meta:"Third-party title, unlicensed"},
+  {t:"The Platform Overview", s:"The founding claim, six releases, campaign library, rights terms, open flags.", tag:"Strategy", st:"ready", stl:"Live", segs:["inst","advisor","church"], href:"deep-well-platform.html", meta:"HTML"},
+  {t:"The Archive", s:"Every artifact produced, with honest status on each.", tag:"Index", st:"ready", stl:"Live", segs:["advisor","family","church","inst"], href:"index.html", meta:"HTML"}
+];
+
+var seg = null;
+var tests = {pass:0, total:0};
+
+function t(name, cond){ tests.total++; if(cond){ tests.pass++; } }
+
+function el(id){ return document.getElementById(id); }
+
+function renderSegs(){
+  var h = "";
+  for(var i=0;i<SEGS.length;i++){
+    var s = SEGS[i];
+    h += '<div class="card pick" data-seg="' + s.id + '"><div class="role">' + s.name + '</div><p>' + s.blurb + '</p></div>';
+  }
+  el("segs").innerHTML = h;
+  var picks = document.querySelectorAll(".pick");
+  for(var j=0;j<picks.length;j++){
+    picks[j].addEventListener("click", function(){
+      var all = document.querySelectorAll(".pick");
+      for(var k=0;k<all.length;k++){ all[k].classList.remove("sel"); }
+      this.classList.add("sel");
+      seg = this.getAttribute("data-seg");
+      el("toAssess").disabled = false;
+    });
+  }
+}
+
+function renderQs(){
+  var h = "";
+  for(var i=0;i<QS.length;i++){
+    var o = "";
+    for(var v=1;v<=5;v++){
+      o += '<label><input type="radio" name="q' + i + '" value="' + v + '"><span>' + v + '</span></label>';
+    }
+    h += '<div class="q"><div class="qd">' + QS[i].d + '</div><div class="qt">' + QS[i].t + '</div><div class="opts">' + o + '</div><div class="scalelbl"><span>Not true of me</span><span>Consistently true</span></div></div>';
+  }
+  el("qbox").innerHTML = h;
+}
+
+function getAnswers(){
+  var a = [];
+  for(var i=0;i<QS.length;i++){
+    var c = document.querySelector('input[name="q' + i + '"]:checked');
+    a.push(c ? parseInt(c.value,10) : 0);
+  }
+  return a;
+}
+
+function bandFor(total){
+  for(var i=0;i<BANDS.length;i++){
+    if(total >= BANDS[i].lo && total <= BANDS[i].hi){ return BANDS[i]; }
+  }
+  return BANDS[BANDS.length-1];
+}
+
+function showStep(id){
+  var ids = ["seg","assess","result","pricing","catalog"];
+  for(var i=0;i<ids.length;i++){
+    if(ids[i] === id){ el(ids[i]).classList.remove("hidden"); }
+  }
+  var n = ids.indexOf(id) + 1;
+  for(var d=1;d<=5;d++){
+    var dot = el("d" + d);
+    dot.className = "stepdot";
+    if(d < n){ dot.className = "stepdot done"; }
+    if(d === n){ dot.className = "stepdot on"; }
+  }
+  el(id).scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function renderResult(){
+  var a = getAnswers();
+  var total = 0;
+  for(var i=0;i<a.length;i++){ total += a[i]; }
+  var b = bandFor(total);
+  el("scoreNum").textContent = total;
+  el("bandName").textContent = b.name;
+  el("bandCopy").textContent = b.copy;
+  var bh = "";
+  for(var j=0;j<a.length;j++){
+    var pct = Math.round(a[j] / 5 * 100);
+    bh += '<div class="brow"><div class="bl"><span>' + QS[j].d + '</span><span>' + a[j] + ' / 5</span></div><div class="bt"><i style="width:' + pct + '%"></i></div></div>';
+  }
+  el("bars").innerHTML = bh;
+  var steps = NEXT[seg][b.name];
+  var nh = "";
+  for(var k=0;k<steps.length;k++){ nh += "<li>" + steps[k] + "</li>"; }
+  el("nextList").innerHTML = nh;
+  var segName = "";
+  for(var s=0;s<SEGS.length;s++){ if(SEGS[s].id === seg){ segName = SEGS[s].name; } }
+  el("nextTitle").textContent = "Your next three moves as " + (seg === "inst" ? "an institution" : "a" + (segName.charAt(0) === "A" ? "n " : " ") + segName.toLowerCase());
+  el("priceTitle").textContent = "Access for " + segName.toLowerCase() + "s";
+  el("catTitle").textContent = "The library for " + segName.toLowerCase() + "s";
+}
+
+function renderTiers(){
+  var list = TIERS[seg];
+  var h = "";
+  for(var i=0;i<list.length;i++){
+    var x = list[i];
+    var f = "";
+    for(var j=0;j<x.f.length;j++){ f += "<li>" + x.f[j] + "</li>"; }
+    h += '<div class="card tier' + (x.feat ? " feature" : "") + '"><h3>' + x.n + '</h3><div class="price">' + x.p + '</div><div class="per">' + x.per + '</div><ul>' + f + '</ul></div>';
+  }
+  el("tiers").innerHTML = h;
+}
+
+function renderCatalog(){
+  var h = "";
+  for(var i=0;i<CATALOG.length;i++){
+    var c = CATALOG[i];
+    if(c.segs.indexOf(seg) === -1){ continue; }
+    h += '<a class="card cat" href="' + c.href + '"><div class="tag">' + c.tag + '</div><h3>' + c.t + '</h3><p style="font-size:14px;color:var(--mute);margin:0">' + c.s + '</p><div class="meta">' + c.meta + '</div><div style="margin-top:10px"><span class="st ' + c.st + '">' + c.stl + '</span></div></a>';
+  }
+  el("catbox").innerHTML = h;
+}
+
+renderSegs();
+renderQs();
+
+el("toAssess").addEventListener("click", function(){ showStep("assess"); });
+el("backSeg").addEventListener("click", function(){ showStep("seg"); });
+el("backAssess").addEventListener("click", function(){ showStep("assess"); });
+el("toResult").addEventListener("click", function(){
+  var a = getAnswers();
+  var complete = true;
+  for(var i=0;i<a.length;i++){ if(a[i] === 0){ complete = false; } }
+  if(!complete){ el("warn").classList.remove("hidden"); return; }
+  el("warn").classList.add("hidden");
+  renderResult();
+  showStep("result");
+});
+el("toPricing").addEventListener("click", function(){ renderTiers(); showStep("pricing"); });
+el("toCatalog").addEventListener("click", function(){ renderCatalog(); showStep("catalog"); });
+el("startOver").addEventListener("click", function(){ location.reload(); });
+
+// self tests
+t("bands cover 6", bandFor(6).name === "Crawl");
+t("bands cover 15", bandFor(15).name === "Crawl");
+t("bands cover 16", bandFor(16).name === "Walk");
+t("bands cover 23", bandFor(23).name === "Walk");
+t("bands cover 24", bandFor(24).name === "Run");
+t("bands cover 30", bandFor(30).name === "Run");
+t("four segments", SEGS.length === 4);
+t("six questions", QS.length === 6);
+t("next steps for every segment and band", (function(){
+  var ok = true;
+  for(var i=0;i<SEGS.length;i++){
+    var m = NEXT[SEGS[i].id];
+    if(!m || !m.Crawl || !m.Walk || !m.Run){ ok = false; }
+    if(m && (m.Crawl.length !== 3 || m.Walk.length !== 3 || m.Run.length !== 3)){ ok = false; }
+  }
+  return ok;
+})());
+t("three tiers per segment", (function(){
+  var ok = true;
+  for(var i=0;i<SEGS.length;i++){ if(!TIERS[SEGS[i].id] || TIERS[SEGS[i].id].length !== 3){ ok = false; } }
+  return ok;
+})());
+t("free tier is real in every segment", (function(){
+  var ok = true;
+  for(var i=0;i<SEGS.length;i++){ if(TIERS[SEGS[i].id][0].p !== "Free"){ ok = false; } }
+  return ok;
+})());
+t("every catalog item has a segment", (function(){
+  var ok = true;
+  for(var i=0;i<CATALOG.length;i++){ if(CATALOG[i].segs.length === 0){ ok = false; } }
+  return ok;
+})());
+t("every segment sees at least four items", (function(){
+  var ok = true;
+  for(var i=0;i<SEGS.length;i++){
+    var n = 0;
+    for(var j=0;j<CATALOG.length;j++){ if(CATALOG[j].segs.indexOf(SEGS[i].id) > -1){ n++; } }
+    if(n < 4){ ok = false; }
+  }
+  return ok;
+})());
+el("testline").textContent = tests.pass + "/" + tests.total + " tests pass";
+</script>
+</body>
+</html>
